@@ -1,0 +1,99 @@
+# convert.py PRD
+
+convert.py is a Python script for converting Flutter and Dart documentation files from HTML to markdown.
+
+## Inputs
+
+convert.py must accept the following command line arguments:
+- Mandatory --documents {DOC_DIR} or -d {DOC_DIR}, where {DOC_DIR} is an absolute or relative path to the directory containing the HTML documentation to convert
+- Mandatory --section {SECTION} or -s {SECTION}, where {SECTION} is the name of the specific documentation section to convert.
+- Mandatory --output {OUTPUT_DIR} or -o {OUTPUT_DIR}, where {OUTPUT_DIR} is an absolute or relative path to the directory where the converted markdown files will be saved.
+- Optional --verbose or -v, which when present enables verbose logging output.
+- Optional --help or -h, which when present displays usage information.
+
+## Outputs
+
+convert.py must place the converted markdown files in the directory {OUTPUT_DIR}/{SECTION}
+
+## Functional Requirements
+
+convert.py will find all files matching the pattern {DOC_DIR}/flutter/{SECTION}/{ENTITY}-class.html, where {ENTITY} is the name of a documented class or entity. If no such files exist, convert.py must print a message indicating that no files were found and exit with a zero status code.
+
+For each HTML file {DOC_DIR}/flutter/{SECTION}/{ENTITY}-class.html, convert.py must:
+1. Convert {DOC_DIR}/flutter/{SECTION}/{ENTITY}-class.html to markdown.
+2. Convert all {DOC_DIR}/flutter/{SECTION}/{ENTITY}/*.html to markdown, if any such files exist.
+3. Convert all {DOC_DIR}/snippets/{SECTION}.{ENTITY}.*.html to markdown, if any such files exist.
+4. Concatenate the converted markdown files in the following order:
+   a. {ENTITY}-class.html
+   b. All files from {ENTITY}/*.html in alphabetical order.
+   c. All files from snippets/{SECTION}.{ENTITY}.*.html in alphabetical order.
+5. Save the concatenated markdown file as {OUTPUT_DIR}/{SECTION}/{ENTITY}.md, creating any necessary directories, and overwriting any existing file with the same name.
+
+If the --verbose or -v flag is present, convert.py must print detailed logging information about its progress, including which files are being processed and any transformations being applied.
+
+If convert.py completes successfully, it must print a summary indicating the number of {DOC_DIR}/flutter/{SECTION}/{ENTITY}-class.html files processed and exit with a zero status code.
+
+## Conversion Details
+
+convert.py must convert an HTML file to markdown using the `markitdown` package.
+
+After conversion, convert.py must apply the following transformations to the markdown content in the order listed:
+1. Remove all lines prior to the first occurence of a heading of any level (i.e., lines starting with `#`).
+2. Remove from the line containing the text "1. [Flutter](index.html)" to the end of the file, if any such line exists.
+3. Remove all links to other HTML files, if any, replacing them with just the link text. For example, `[SomeClass](SomeClass-class.html)` becomes `SomeClass`.
+
+Each transformation must be implemented as a separate function to support:
+- Unit testing of each transformation function.
+- Future reuse of transformation functions in other scripts.
+- Easy addition, removal, or reordering of transformations.
+
+convert.py should assume and expect that all files are UTF-8 encoded.
+
+## MarkItDown Usage
+
+convert.py should follow the basic usage pattern for `markitdown`.
+
+```python
+from markitdown import MarkItDown
+
+md = MarkItDown(enable_plugins=False)
+result = md.convert("test.html")
+```
+
+## Error Handling
+
+convert.py must print a clear and concise error message and exit with a non-zero status code in the following scenarios:
+- Missing or invalid command line arguments.
+- {DOC_DIR} does not exist or is not a directory.
+- {DOC_DIR}/flutter/{SECTION} does not exist or is not a directory.
+- {DOC_DIR}/snippets does not exist or is not a directory.
+- {OUTPUT_DIR}/{SECTION} cannot be created or is not writable.
+- Any HTML file that is expected to be converted does not exist.
+- Any unexpected error during file reading, writing, or conversion.
+
+## Performance Requirements
+
+convert.py is not performance critical. Files should be processed sequentially for simplicity and readability. However, convert.py should handle large documentation sets (e.g., thousands of files) without excessive memory usage or crashes.
+
+## Testing Requirements
+
+convert.py must include the following tests:
+- Unit tests for each transformation function, verifying correct behavior with various input scenarios.
+- Integration tests that simulate the full conversion process with a small set of sample HTML files, verifying correct output markdown files.
+- Error handling tests that verify appropriate error messages and exit codes for various failure scenarios.
+
+Test fixtures:
+- Sample HTML files representing Flutter/Dart documentation for various entities.
+- Expected markdown output files for the sample HTML files after conversion and transformations.
+- Store in `doc_gen/tests/fixtures` directory.
+- Execute with `uv run pytest doc_gen/tests`.
+
+## Dependencies
+
+convert.py must use the following dependencies:
+- Python 3.12 or later.
+- `markitdown` package for HTML to markdown conversion.
+- Standard Python libraries for file handling, command line argument parsing, and logging.
+- `uv` for script and dependency management.
+- `pytest` for testing.
+- Any additional dependencies must be approved and documented in this PRD before use.
