@@ -1,24 +1,75 @@
 ---
-description: "doc_gen script instructions"
-name: doc_gen
-applyTo: "doc_gen/**/*.py"
+description: "Python development instructions"
+name: python_dev
+applyTo: "**/*.py"
 ---
 
-# GitHub Copilot Instructions for Python Scripts in doc_gen Directory
+# Instructions for Python Coding and Development
 
-Instructions for generating and managing Python scripts for converting Flutter/Dart documentation to Markdown format suitable for an MCP server.
+Instructions for developing and managing Python single-file scripts and multi-file applications.
 
-## Python Script Management with uv
+All Python scripts and applications are managed using [`uv`](https://github.com/astral-sh/uv). Do not use or require `venv` or `virtualenv`. `uv` automatically manages isolated environments per-project and caches them globally for efficiency.
 
-- **Use `uv` for script management**: All Python scripts in the `doc_gen` directory must be executed using [`uv`](https://github.com/astral-sh/uv) via `uv run`.
+## Choosing Between Single-File Scripts and Multi-File Applications
+
+- **Use single-file scripts for**:
+  - Standalone utilities, tools, or data processing tasks
+  - Code that doesn't need to be imported by other modules
+
+- **Use multi-file applications for**:
+  - Projects with multiple modules or packages
+  - Code that needs to be installed or distributed
+  - Code that will be imported and reused across the repository
+
+## Python Single-File Script Management with uv
+
+These instructions apply only to single-file Python scripts implemented in this repository.
+- **Script execution**: Always run scripts with `uv run path/to/script.py` to ensure dependencies are resolved and installed automatically.
 - **Inline dependencies**: Specify dependencies inline at the top of each script per [PEP 723](https://peps.python.org/pep-0723/). Do not maintain a `requirements.txt` file.
-- **Manage dependencies with uv commands**: To add or remove inline dependencies, use `uv add --script script.py <dependency>` or `uv remove --script script.py <dependency>`. Do not edit inline dependencies directly.
-- **No explicit virtual environments**: Do not use or require `venv` or `virtualenv`. Dependency isolation and management are handled by `uv`.
-- **Script execution**: Always run scripts with `uv run script.py` to ensure dependencies are resolved and installed automatically.
+- **Add or remove inline dependencies**: To add or remove inline dependencies, use `uv add --script path/to/script.py <packages>` or `uv remove --script path/to/script.py <packages>`. When adding dependencies, specify version constraints as needed.
+- **Update inline dependencies**: Use `uv lock --upgrade-package <package> --script path/to/script.py` to update a package to a specific version or the latest version.
+
+### Example of Inline Script Metadata
+
+The following is an example of inline script metadata per PEP 723 which always appears at the top of the file, before any code, but possibly after a shebang.
+
+  ```python
+  # /// script
+  # requires-python = ">=3.11"
+  # dependencies = [
+  #     "markitdown",
+  #     "requests>=2.30.0,<3.0.0",
+  # ]
+  # ///
+  ```
+
+## Python Multi-File Application Management with uv
+
+These instructions apply only to multi-file Python applications implemented in this repository.
+- **Application structure**: Always structure applications as `uv` projects in their own directories initialized with `uv init`.
+- **Add or remove dependencies**: To add or remove project dependencies, use `uv add <package>` or `uv remove <package>`. When adding dependencies, specify version constraints as needed.
+- **Update dependencies**: Use `uv lock --upgrade-package <package>` to update a package to a specific version or the latest version.
 
 ## Python Tool Execution with uv
 
-- **Use `uvx` to run tools**: All Python-based tools for linting, formatting, and testing must be executed using `uvx`, e.g., `uvx ruff .` for linting.
+These instructions apply to all Python-based tools used in this repository but not implemented in this repository.
+- **Use `uvx` to run tools**: All Python-based tools for linting, formatting, etc., must be executed using `uvx`, e.g., `uvx ruff .` for linting. The only exceptions are tools that require an application project is installed, e.g., `pytest`, which must be run using `uv run`.
+
+## Python Version Management with uv
+
+- **Check available Python versions**: Use `uv python list` to see installed versions.
+- **Project Python version**: Specify the required Python version in single-file scripts using the `requires-python` field in the inline script metadata.
+- **System Python versions**: Use `uv python install <version>` to install specific Python versions managed by `uv`.
+- **Pin versions**: Use `uv python pin <version>` in application directories to lock the Python version for that project.
+
+## Testing Python Code with uv
+
+- **Testing**:
+  - Write tests for your code using the `pytest` framework. 
+  - Add pytest as a dev dependency: `uv add --dev pytest` for applications or include it in script dependencies for single-file scripts with tests.
+- **Running tests**:
+  - Use `uv run pytest` for applications
+  - Use `uv run pytest path/to/tests` for scripts
 
 ## General Python Best Practices
 
