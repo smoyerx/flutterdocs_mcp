@@ -91,6 +91,10 @@ Test organization and execution:
 - Store test fixtures in `doc_gen/tests/convert/fixtures` directory
 - Execute with `uvx pytest doc_gen/tests/convert`
 
+## Flutter/Dart Documentation Sample
+
+To aid in development and testing, a small sample of Flutter/Dart documentation HTML files is provided. These sample files are in directory `doc_gen/tests/convert/samples`, which represents {DOC_DIR} as used throughout this specification. Subdirectories and files within `samples` mimic the actual structure of Flutter/Dart documentation.
+
 ## Dependencies
 
 convert.py must use the following dependencies:
