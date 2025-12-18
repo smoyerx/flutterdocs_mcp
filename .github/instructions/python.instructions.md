@@ -23,8 +23,8 @@ Instructions for developing Python single-file scripts and multi-file applicatio
 
 ## Testing
 
-- Write tests using `pytest` framework
-- Structure tests in parallel directory structure to source code
+- Write tests using the `pytest` framework
+- Structure tests in a parallel directory structure to the source code
 
 ## General Best Practices
 

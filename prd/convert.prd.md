@@ -1,6 +1,6 @@
 # convert.py PRD
 
-convert.py is a Python script for converting Flutter and Dart documentation files from HTML to markdown.
+convert.py is a single-file Python script for converting Flutter and Dart documentation files from HTML to markdown.
 
 ## Inputs
 
@@ -57,7 +57,7 @@ convert.py should follow the basic usage pattern for `markitdown`.
 from markitdown import MarkItDown
 
 md = MarkItDown(enable_plugins=False)
-result = md.convert("test.html")
+result = md.convert("my_file.html")
 ```
 
 ## Error Handling
@@ -85,8 +85,11 @@ convert.py must include the following tests:
 Test fixtures:
 - Sample HTML files representing Flutter/Dart documentation for various entities.
 - Expected markdown output files for the sample HTML files after conversion and transformations.
-- Store in `doc_gen/tests/fixtures` directory.
-- Execute with `uv run pytest doc_gen/tests`.
+
+Test organization and execution:
+- Store tests in `doc_gen/tests/convert` 
+- Store test fixtures in `doc_gen/tests/convert/fixtures` directory
+- Execute with `uvx pytest doc_gen/tests/convert`
 
 ## Dependencies
 
