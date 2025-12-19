@@ -1,56 +1,19 @@
+# /// script
+# requires-python = ">=3.12"
+# dependencies = [
+#     "pytest>=8.0.0",
+#     "markitdown>=0.1.4",
+# ]
+# ///
 """Unit tests for transformation functions in convert.py."""
 
-import re
+import sys
 from pathlib import Path
 
+# Add parent directory to path to import convert module
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-# Import transformation functions directly by parsing the module
-# This avoids importing markitdown which is only available via uv run
-def _load_transform_functions():
-    """Load transformation functions from convert.py without importing markitdown."""
-    convert_path = Path(__file__).parent.parent.parent / "convert.py"
-    source = convert_path.read_text(encoding="utf-8")
-
-    # Create a namespace for the functions
-    namespace = {"re": re}
-
-    # Extract and execute just the transformation functions
-    # Find the transformation functions section
-    lines = source.split("\n")
-    in_function = False
-    function_lines = []
-
-    for line in lines:
-        # Start capturing when we see a transformation function def
-        if line.startswith("def remove_header(") or \
-           line.startswith("def remove_footer(") or \
-           line.startswith("def remove_html_links(") or \
-           line.startswith("def apply_transformations("):
-            in_function = True
-            function_lines.append(line)
-        elif in_function:
-            # Continue until we hit a non-indented, non-empty line that's not a continuation
-            if line and not line.startswith(" ") and not line.startswith("\t"):
-                # End of function, but check if this is a new function we want
-                if line.startswith("def remove_") or line.startswith("def apply_"):
-                    function_lines.append("")
-                    function_lines.append(line)
-                else:
-                    in_function = False
-            else:
-                function_lines.append(line)
-
-    # Execute the extracted functions
-    exec("\n".join(function_lines), namespace)
-
-    return (
-        namespace["remove_header"],
-        namespace["remove_footer"],
-        namespace["remove_html_links"],
-    )
-
-
-remove_header, remove_footer, remove_html_links = _load_transform_functions()
+from convert import remove_header, remove_footer, remove_html_links
 
 
 
@@ -225,3 +188,9 @@ class TestRemoveHtmlLinks:
         content = "[BuildContext](dart-ui/BuildContext-class.html)"
         result = remove_html_links(content)
         assert result == "BuildContext"
+
+
+if __name__ == "__main__":
+    import pytest
+    import sys
+    sys.exit(pytest.main([__file__, "-v"]))
