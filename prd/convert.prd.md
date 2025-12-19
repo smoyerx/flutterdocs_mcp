@@ -22,18 +22,24 @@ convert.py will find all files matching the pattern {DOC_DIR}/flutter/{SECTION}/
 For each HTML file {DOC_DIR}/flutter/{SECTION}/{ENTITY}-class.html, convert.py must:
 1. Convert {DOC_DIR}/flutter/{SECTION}/{ENTITY}-class.html to markdown.
 2. Convert all {DOC_DIR}/flutter/{SECTION}/{ENTITY}/*.html to markdown, if any such files exist.
-3. Convert all {DOC_DIR}/snippets/{SECTION}.{ENTITY}.*.html to markdown, if any such files exist.
+3. Convert all {DOC_DIR}/snippets/{SECTION}.{ENTITY}.*.dart to markdown, if any such files exist.
 4. Concatenate the converted markdown files in the following order:
    a. {ENTITY}-class.html
    b. All files from {ENTITY}/*.html in alphabetical order.
-   c. All files from snippets/{SECTION}.{ENTITY}.*.html in alphabetical order.
+   c. All files from snippets/{SECTION}.{ENTITY}.*.dart in alphabetical order.
 5. Save the concatenated markdown file as {OUTPUT_DIR}/{SECTION}/{ENTITY}.md, creating any necessary directories, and overwriting any existing file with the same name.
 
-If the --verbose or -v flag is present, convert.py must print detailed logging information about its progress, including which files are being processed and any transformations being applied.
+If the --verbose or -v flag is present, convert.py must:
+- Print the name of each file being processed as it is read
+- Print a summary of the number of files processed in each {SECTION} after all processing is complete
 
 If convert.py completes successfully, it must print a summary indicating the number of {DOC_DIR}/flutter/{SECTION}/{ENTITY}-class.html files processed and exit with a zero status code.
 
-## Conversion Details
+**Important**:
+- Each HTML file must be converted to markdown by applying a series of transformations as specified in the "HTML Conversion Details" section below.
+- Each Dart snippet file must be converted to markdown as specified in the "Dart Snippet Conversion Details" section below.
+
+## HTML Conversion Details
 
 convert.py must convert an HTML file to markdown using the `markitdown` package.
 
@@ -48,6 +54,20 @@ Each transformation must be implemented as a separate function to support:
 - Easy addition, removal, or reordering of transformations.
 
 convert.py should assume and expect that all files are UTF-8 encoded.
+
+## Dart Snippet Conversion Details
+
+When converting Dart snippet files from {DOC_DIR}/snippets/{SECTION}.{ENTITY}.*.dart to markdown, convert.py must:
+1. Read the contents of the Dart file.
+2. Wrap the contents in a markdown header and markdown code block with syntax highlighting for Dart as follows:
+
+````markdown
+# Code Snippet
+
+```dart
+// Contents of the Dart snippet file
+```
+````
 
 ## MarkItDown Usage
 
