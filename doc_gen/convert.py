@@ -1,9 +1,3 @@
-# /// script
-# requires-python = ">=3.12"
-# dependencies = [
-#     "markitdown>=0.1.4",
-# ]
-# ///
 """Convert Flutter/Dart HTML documentation to markdown.
 
 This script converts HTML documentation files to markdown format using the

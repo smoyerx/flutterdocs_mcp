@@ -1,21 +1,6 @@
-# /// script
-# requires-python = ">=3.12"
-# dependencies = [
-#     "pytest>=8.0.0",
-#     "markitdown>=0.1.4",
-# ]
-# ///
 """Unit tests for transformation functions in convert.py."""
 
-import sys
-from pathlib import Path
-
-# Add parent directory to path to import convert module
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-
 from convert import remove_header, remove_footer, remove_html_links
-
-
 
 class TestRemoveHeader:
     """Tests for remove_header transformation function."""
@@ -188,9 +173,3 @@ class TestRemoveHtmlLinks:
         content = "[BuildContext](dart-ui/BuildContext-class.html)"
         result = remove_html_links(content)
         assert result == "BuildContext"
-
-
-if __name__ == "__main__":
-    import pytest
-    import sys
-    sys.exit(pytest.main([__file__, "-v"]))

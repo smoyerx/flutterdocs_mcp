@@ -1,3 +1,4 @@
 {
-    "chat.useClaudeSkills": true
+    "chat.useClaudeSkills": true,
+    "python.useEnvironmentsExtension": true
 }
