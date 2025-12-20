@@ -103,13 +103,11 @@ convert.py must include the following tests:
 - Error handling tests that verify appropriate error messages and exit codes for various failure scenarios.
 
 Test fixtures:
-- Sample HTML files representing Flutter/Dart documentation for various entities.
-- Expected markdown output files for the sample HTML files after conversion and transformations.
+- Sample HTML files representing Flutter/Dart documentation for various entities, as described in the "Flutter/Dart Documentation Sample" section below.
 
 Test organization and execution:
 - Store tests in `doc_gen/tests/convert` 
-- Store test fixtures in `doc_gen/tests/convert/fixtures` directory
-- Execute with `uvx pytest doc_gen/tests/convert`
+- Within the `doc_gen` directory, execute tests with `uv run pytest tests/convert`
 
 ## Flutter/Dart Documentation Sample
 
@@ -117,10 +115,10 @@ To aid in development and testing, a small sample of Flutter/Dart documentation 
 
 ## Dependencies
 
-convert.py must use the following dependencies:
+convert.py has the following dependencies:
 - Python 3.12 or later.
 - `markitdown` package for HTML to markdown conversion.
 - Standard Python libraries for file handling, command line argument parsing, and logging.
-- `uv` for script and dependency management.
+- `uv` for project management.
 - `pytest` for testing.
 - Any additional dependencies must be approved and documented in this PRD before use.

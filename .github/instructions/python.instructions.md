@@ -25,7 +25,7 @@ Instructions for developing Python code in this project.
 
 - Write tests using the `pytest` framework
 
-### Process Workflow
+## Process Workflow
 
 When completing a Python coding task, run the following in the Python project root (e.g., `doc_gen/`):
 1. Run `uvx ruff check --fix` to lint the code. If any errors remain (were not auto-fixed):
