@@ -31,13 +31,13 @@ For each HTML file {DOC_DIR}/flutter/{SECTION}/{ENTITY}-class.html, convert.py m
 
 If the --verbose or -v flag is present, convert.py must:
 - Print the name of each file being processed as it is read
-- Print a summary of the number of files processed in each {SECTION} after all processing is complete
+- Print a summary of the number of files processed in {SECTION} after all processing is complete
 
 If convert.py completes successfully, it must print a summary indicating the number of {DOC_DIR}/flutter/{SECTION}/{ENTITY}-class.html files processed and exit with a zero status code.
 
 **Important**:
-- Each HTML file must be converted to markdown by applying a series of transformations as specified in the "HTML Conversion Details" section below.
-- Each Dart snippet file must be converted to markdown as specified in the "Dart Snippet Conversion Details" section below.
+- Each HTML file must be converted to markdown by applying a series of transformations as specified in the [HTML Conversion Details](#html-conversion-details) section below.
+- Each Dart snippet file must be converted to markdown as specified in the [Dart Snippet Conversion Details](#dart-snippet-conversion-details) section below.
 
 ## HTML Conversion Details
 
@@ -103,15 +103,15 @@ convert.py must include the following tests:
 - Error handling tests that verify appropriate error messages and exit codes for various failure scenarios.
 
 Test fixtures:
-- Sample HTML files representing Flutter/Dart documentation for various entities, as described in the "Flutter/Dart Documentation Sample" section below.
+- Sample HTML files representing Flutter and Dart documentation for various entities, as described in the [Flutter and Dart Documentation Sample](#flutter-and-dart-documentation-sample) section below.
 
 Test organization and execution:
 - Store tests in `doc_gen/tests/convert` 
 - Within the `doc_gen` directory, execute tests with `uv run pytest tests/convert`
 
-## Flutter/Dart Documentation Sample
+## Flutter and Dart Documentation Sample
 
-To aid in development and testing, a small sample of Flutter/Dart documentation HTML files is provided. These sample files are in directory `doc_gen/tests/convert/samples`, which represents {DOC_DIR} as used throughout this specification. Subdirectories and files within `samples` mimic the actual structure of Flutter/Dart documentation.
+To aid in development and testing, a small sample of Flutter and Dart documentation HTML files is provided. These sample files are in directory `doc_gen/tests/convert/samples`, which represents {DOC_DIR} as used throughout this specification. Subdirectories and files within `samples` mimic the actual structure of Flutter and Dart documentation.
 
 ## Dependencies
 

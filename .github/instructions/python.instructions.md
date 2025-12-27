@@ -28,12 +28,12 @@ Instructions for developing Python code in this project.
 ## Process Workflow
 
 When completing a Python coding task, run the following in the Python project root (e.g., `doc_gen/`):
-1. Run `uvx ruff check --fix` to lint the code. If any errors remain (were not auto-fixed):
+1. Run `uvx ruff check --fix` to lint the code. If any lint errors were not auto-fixed:
    - Fix each lint error
    - Run `uvx ruff check --fix` again
    - Repeat until clean
 2. Run `uvx ruff format` to auto-format the code
-3. Run `uv run pytest` to ensure all tests pass. If failures are found:
+3. Run `uv run pytest` to ensure all tests pass. If any tests fail:
    - Fix each test failure
    - Run `uv run pytest` again
    - Repeat until all tests pass

@@ -91,9 +91,7 @@ class TestConvertIntegration:
         return tmp_path / "output"
 
     @pytest.mark.parametrize("section", get_available_sections())
-    def test_convert_section_succeeds(
-        self, section: str, output_dir: Path
-    ) -> None:
+    def test_convert_section_succeeds(self, section: str, output_dir: Path) -> None:
         """Conversion should succeed for each available section."""
         result = run_convert(SAMPLES_DIR, section, output_dir)
 
@@ -142,14 +140,10 @@ class TestConvertIntegration:
         for md_file in section_output.glob("*.md"):
             content = md_file.read_text(encoding="utf-8")
             # Check for .html) pattern which indicates remaining HTML links
-            assert ".html)" not in content, (
-                f"File {md_file.name} contains HTML links"
-            )
+            assert ".html)" not in content, f"File {md_file.name} contains HTML links"
 
     @pytest.mark.parametrize("section", get_available_sections())
-    def test_output_files_have_no_footer(
-        self, section: str, output_dir: Path
-    ) -> None:
+    def test_output_files_have_no_footer(self, section: str, output_dir: Path) -> None:
         """Output files should not contain footer marker."""
         result = run_convert(SAMPLES_DIR, section, output_dir)
         assert result.returncode == 0
@@ -163,9 +157,7 @@ class TestConvertIntegration:
             )
 
     @pytest.mark.parametrize("section", get_available_sections())
-    def test_verbose_output_shows_files(
-        self, section: str, output_dir: Path
-    ) -> None:
+    def test_verbose_output_shows_files(self, section: str, output_dir: Path) -> None:
         """Verbose mode should show files being processed."""
         result = run_convert(SAMPLES_DIR, section, output_dir, verbose=True)
         assert result.returncode == 0
@@ -176,9 +168,7 @@ class TestConvertIntegration:
         assert "Converting entity:" in combined_output
 
     @pytest.mark.parametrize("section", get_available_sections())
-    def test_verbose_output_shows_summary(
-        self, section: str, output_dir: Path
-    ) -> None:
+    def test_verbose_output_shows_summary(self, section: str, output_dir: Path) -> None:
         """Verbose mode should show file count summary."""
         result = run_convert(SAMPLES_DIR, section, output_dir, verbose=True)
         assert result.returncode == 0
@@ -237,7 +227,10 @@ class TestConvertErrorHandling:
         """Conversion should fail if doc directory doesn't exist."""
         result = run_convert(Path("/nonexistent/path"), "material", output_dir)
         assert result.returncode != 0
-        assert "does not exist" in result.stderr.lower() or "error" in result.stderr.lower()
+        assert (
+            "does not exist" in result.stderr.lower()
+            or "error" in result.stderr.lower()
+        )
 
     def test_nonexistent_section_fails(self, output_dir: Path) -> None:
         """Conversion should fail if section directory doesn't exist."""

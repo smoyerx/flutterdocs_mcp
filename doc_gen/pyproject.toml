@@ -9,6 +9,7 @@ dependencies = [
 [dependency-groups]
 dev = [
     "pytest>=9.0.2",
+    "snakeviz>=2.2.2",
 ]
 
 [tool.pytest.ini_options]

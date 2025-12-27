@@ -368,7 +368,9 @@ def main() -> None:
     if args.verbose:
         logging.info(f"\nSection '{args.section}': {total_files} files processed")
 
-    print(f"Successfully processed {len(entities)} entities from section '{args.section}'")
+    print(
+        f"Successfully processed {len(entities)} entities from section '{args.section}'"
+    )
 
 
 if __name__ == "__main__":

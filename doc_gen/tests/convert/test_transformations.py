@@ -2,6 +2,7 @@
 
 from convert import remove_header, remove_footer, remove_html_links
 
+
 class TestRemoveHeader:
     """Tests for remove_header transformation function."""
 
