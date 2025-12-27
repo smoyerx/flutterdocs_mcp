@@ -2,7 +2,7 @@
 
 This script converts HTML documentation files to markdown format using the
 html_to_markdown package, applies transformations to clean up the output, and
-concatenates related files into single entity documentation files.
+concatenates related files into single class documentation files.
 """
 
 import argparse
@@ -152,12 +152,12 @@ def convert_dart_snippet(dart_path: Path) -> str:
 # --- File Discovery Functions ---
 
 
-def find_entity_files(
+def find_class_files(
     doc_dir: Path, section: str
 ) -> list[tuple[str, Path, list[Path], list[Path]]]:
-    """Find all entity documentation files for a section.
+    """Find all class documentation files for a section.
 
-    Discovers entity class files and their related property/method files
+    Discovers class files and their related property/method files
     and code snippets.
 
     Args:
@@ -166,7 +166,7 @@ def find_entity_files(
 
     Returns:
         A list of tuples, each containing:
-        - entity_name: The name of the entity
+        - class_name: The name of the class
         - class_file: Path to the main class HTML file
         - member_files: List of paths to member HTML files (sorted alphabetically)
         - snippet_files: List of paths to snippet Dart files (sorted alphabetically)
@@ -174,53 +174,53 @@ def find_entity_files(
     section_dir = doc_dir / "flutter" / section
     snippets_dir = doc_dir / "snippets"
 
-    entities = []
+    classes = []
 
     # Find all *-class.html files
     class_files = sorted(section_dir.glob("*-class.html"))
 
     for class_file in class_files:
-        # Extract entity name from filename (e.g., "ListTile" from "ListTile-class.html")
-        entity_name = class_file.stem.replace("-class", "")
+        # Extract class name from filename (e.g., "ListTile" from "ListTile-class.html")
+        class_name = class_file.stem.replace("-class", "")
 
-        # Find member files in entity subdirectory
-        entity_subdir = section_dir / entity_name
+        # Find member files in class subdirectory
+        class_subdir = section_dir / class_name
         member_files: list[Path] = []
-        if entity_subdir.is_dir():
-            member_files = sorted(entity_subdir.glob("*.html"))
+        if class_subdir.is_dir():
+            member_files = sorted(class_subdir.glob("*.html"))
 
         # Find snippet files
-        snippet_pattern = f"{section}.{entity_name}.*.dart"
+        snippet_pattern = f"{section}.{class_name}.*.dart"
         snippet_files = sorted(snippets_dir.glob(snippet_pattern))
 
-        entities.append((entity_name, class_file, member_files, snippet_files))
+        classes.append((class_name, class_file, member_files, snippet_files))
 
-    return entities
+    return classes
 
 
 # --- Main Processing Functions ---
 
 
-def process_entity(
+def process_class(
     options_handle: ConversionOptionsHandle,
-    entity_name: str,
+    class_name: str,
     class_file: Path,
     member_files: list[Path],
     snippet_files: list[Path],
     verbose: bool = False,
 ) -> str:
-    """Process all files for an entity and return concatenated markdown.
+    """Process all files for a class and return concatenated markdown.
 
     Args:
         options_handle: The ConversionOptionsHandle instance to use for conversion.
-        entity_name: The name of the entity being processed.
+        class_name: The name of the class being processed.
         class_file: Path to the main class HTML file.
         member_files: List of paths to member HTML files.
         snippet_files: List of paths to snippet Dart files.
         verbose: Whether to log file processing details.
 
     Returns:
-        The concatenated markdown content for the entity.
+        The concatenated markdown content for the class.
     """
     parts: list[str] = []
 
@@ -343,22 +343,22 @@ def main() -> None:
     # Initialize html_to_markdown
     options_handle = create_options_handle(ConversionOptions())
 
-    # Find and process entities
-    entities = find_entity_files(args.documents, args.section)
+    # Find and process class documentation files
+    classes = find_class_files(args.documents, args.section)
 
-    if not entities:
+    if not classes:
         print(f"No files found matching pattern in section '{args.section}'")
         sys.exit(0)
 
     total_files = 0
-    for entity_name, class_file, member_files, snippet_files in entities:
+    for class_name, class_file, member_files, snippet_files in classes:
         if args.verbose:
-            logging.info(f"Converting entity: {entity_name}")
+            logging.info(f"Converting class: {class_name}")
 
-        # Process entity
-        markdown_content = process_entity(
+        # Process documentation files for the class
+        markdown_content = process_class(
             options_handle,
-            entity_name,
+            class_name,
             class_file,
             member_files,
             snippet_files,
@@ -366,7 +366,7 @@ def main() -> None:
         )
 
         # Write output file
-        output_file = output_section_dir / f"{entity_name}.md"
+        output_file = output_section_dir / f"{class_name}.md"
         try:
             output_file.write_text(markdown_content, encoding="utf-8")
         except OSError as e:
@@ -374,15 +374,15 @@ def main() -> None:
             sys.exit(1)
 
         # Count files processed
-        entity_file_count = 1 + len(member_files) + len(snippet_files)
-        total_files += entity_file_count
+        class_file_count = 1 + len(member_files) + len(snippet_files)
+        total_files += class_file_count
 
     # Print summary
     if args.verbose:
         logging.info(f"\nSection '{args.section}': {total_files} files processed")
 
     print(
-        f"Successfully processed {len(entities)} entities from section '{args.section}'"
+        f"Successfully processed {len(classes)} classes from section '{args.section}'"
     )
 
 

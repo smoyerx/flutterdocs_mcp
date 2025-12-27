@@ -62,24 +62,24 @@ def get_available_sections() -> list[str]:
     return [d.name for d in flutter_dir.iterdir() if d.is_dir()]
 
 
-def get_entities_for_section(section: str) -> list[str]:
-    """Get list of entity names for a section.
+def get_class_names_for_section(section: str) -> list[str]:
+    """Get list of class names for a section.
 
     Args:
         section: The section name.
 
     Returns:
-        List of entity names found in the section.
+        List of class names found in the section.
     """
     section_dir = SAMPLES_DIR / "flutter" / section
     if not section_dir.exists():
         return []
 
-    entities = []
+    class_names = []
     for f in section_dir.glob("*-class.html"):
-        entity_name = f.stem.replace("-class", "")
-        entities.append(entity_name)
-    return sorted(entities)
+        class_name = f.stem.replace("-class", "")
+        class_names.append(class_name)
+    return sorted(class_names)
 
 
 class TestConvertIntegration:
@@ -99,18 +99,18 @@ class TestConvertIntegration:
         assert "Successfully processed" in result.stdout
 
     @pytest.mark.parametrize("section", get_available_sections())
-    def test_creates_output_files_for_all_entities(
+    def test_creates_output_files_for_all_class_names(
         self, section: str, output_dir: Path
     ) -> None:
-        """Output files should be created for each entity in the section."""
+        """Output files should be created for each class name in the section."""
         result = run_convert(SAMPLES_DIR, section, output_dir)
         assert result.returncode == 0
 
-        expected_entities = get_entities_for_section(section)
+        expected_class_names = get_class_names_for_section(section)
         section_output = output_dir / section
 
-        for entity in expected_entities:
-            output_file = section_output / f"{entity}.md"
+        for class_name in expected_class_names:
+            output_file = section_output / f"{class_name}.md"
             assert output_file.exists(), f"Missing output file: {output_file}"
 
     @pytest.mark.parametrize("section", get_available_sections())
@@ -165,7 +165,7 @@ class TestConvertIntegration:
         # Verbose output goes to stderr via logging
         combined_output = result.stdout + result.stderr
         assert "Processing:" in combined_output
-        assert "Converting entity:" in combined_output
+        assert "Converting class:" in combined_output
 
     @pytest.mark.parametrize("section", get_available_sections())
     def test_verbose_output_shows_summary(self, section: str, output_dir: Path) -> None:
