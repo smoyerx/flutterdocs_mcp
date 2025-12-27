@@ -1,4 +1,5 @@
 {
     "chat.useClaudeSkills": true,
-    "python.useEnvironmentsExtension": true
+    "python.useEnvironmentsExtension": true,
+    "python-envs.pythonProjects": []
 }

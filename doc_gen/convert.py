@@ -1,7 +1,7 @@
 """Convert Flutter/Dart HTML documentation to markdown.
 
 This script converts HTML documentation files to markdown format using the
-markitdown package, applies transformations to clean up the output, and
+html_to_markdown package, applies transformations to clean up the output, and
 concatenates related files into single entity documentation files.
 """
 
@@ -11,7 +11,12 @@ import re
 import sys
 from pathlib import Path
 
-from markitdown import MarkItDown
+from html_to_markdown import (
+    ConversionOptions,
+    convert_with_handle,
+    create_options_handle,
+)
+from html_to_markdown._html_to_markdown import ConversionOptionsHandle
 
 
 # --- Transformation Functions ---
@@ -95,11 +100,13 @@ def apply_transformations(content: str) -> str:
 # --- Conversion Functions ---
 
 
-def convert_html_to_markdown(md: MarkItDown, html_path: Path) -> str:
+def convert_html_to_markdown(
+    options_handle: ConversionOptionsHandle, html_path: Path
+) -> str:
     """Convert an HTML file to markdown and apply transformations.
 
     Args:
-        md: The MarkItDown instance to use for conversion.
+        options_handle: The ConversionOptionsHandle instance to use for conversion.
         html_path: Path to the HTML file to convert.
 
     Returns:
@@ -111,8 +118,14 @@ def convert_html_to_markdown(md: MarkItDown, html_path: Path) -> str:
     if not html_path.exists():
         raise FileNotFoundError(f"HTML file not found: {html_path}")
 
-    result = md.convert(str(html_path))
-    return apply_transformations(result.text_content)
+    try:
+        md_text = convert_with_handle(
+            html_path.read_text(encoding="utf-8"), options_handle
+        )
+    except Exception as e:
+        raise RuntimeError(f"Error reading or converting HTML file {html_path}: {e}")
+
+    return apply_transformations(md_text)
 
 
 def convert_dart_snippet(dart_path: Path) -> str:
@@ -189,7 +202,7 @@ def find_entity_files(
 
 
 def process_entity(
-    md: MarkItDown,
+    options_handle: ConversionOptionsHandle,
     entity_name: str,
     class_file: Path,
     member_files: list[Path],
@@ -199,7 +212,7 @@ def process_entity(
     """Process all files for an entity and return concatenated markdown.
 
     Args:
-        md: The MarkItDown instance to use for conversion.
+        options_handle: The ConversionOptionsHandle instance to use for conversion.
         entity_name: The name of the entity being processed.
         class_file: Path to the main class HTML file.
         member_files: List of paths to member HTML files.
@@ -214,13 +227,13 @@ def process_entity(
     # Convert main class file
     if verbose:
         logging.info(f"  Processing: {class_file}")
-    parts.append(convert_html_to_markdown(md, class_file))
+    parts.append(convert_html_to_markdown(options_handle, class_file))
 
     # Convert member files
     for member_file in member_files:
         if verbose:
             logging.info(f"  Processing: {member_file}")
-        parts.append(convert_html_to_markdown(md, member_file))
+        parts.append(convert_html_to_markdown(options_handle, member_file))
 
     # Convert snippet files
     for snippet_file in snippet_files:
@@ -327,8 +340,8 @@ def main() -> None:
     # Create output directory
     output_section_dir = create_output_directory(args.output, args.section)
 
-    # Initialize MarkItDown
-    md = MarkItDown(enable_plugins=False)
+    # Initialize html_to_markdown
+    options_handle = create_options_handle(ConversionOptions())
 
     # Find and process entities
     entities = find_entity_files(args.documents, args.section)
@@ -344,7 +357,7 @@ def main() -> None:
 
         # Process entity
         markdown_content = process_entity(
-            md,
+            options_handle,
             entity_name,
             class_file,
             member_files,

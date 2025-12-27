@@ -5,7 +5,7 @@ This project is a Model Context Protocol (MCP) server for Flutter and Dart docum
 ## Technology Stack
 
 - **MCP Server**: Dart, the `dart_mcp` package for building MCP servers, and the `sqlite_async` package for retrieving documentation data.
-- **Documentation Generation**: Python, the `markitdown` package for converting Flutter/Dart documentation from HTML to markdown, and the `sqlite3` module for storing the converted documentation.
+- **Documentation Generation**: Python, the `html_to_markdown` package for converting Flutter/Dart documentation from HTML to markdown, and the `sqlite3` module for storing the converted documentation.
 
 ## Project Structure
 

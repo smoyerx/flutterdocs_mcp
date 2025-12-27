@@ -41,7 +41,7 @@ If convert.py completes successfully, it must print a summary indicating the num
 
 ## HTML Conversion Details
 
-convert.py must convert an HTML file to markdown using the `markitdown` package.
+convert.py must convert an HTML file to markdown using the `html_to_markdown` package.
 
 After conversion, convert.py must apply the following transformations to the markdown content in the order listed:
 1. Remove all lines prior to the first occurence of a heading of any level (i.e., lines starting with `#`).
@@ -69,15 +69,17 @@ When converting Dart snippet files from {DOC_DIR}/snippets/{SECTION}.{ENTITY}.*.
 ```
 ````
 
-## MarkItDown Usage
+## html_to_markdown Usage
 
-convert.py should follow the basic usage pattern for `markitdown`.
+convert.py should follow this basic usage pattern for `html_to_markdown` which reuses parsed options when converting multiple HTML files to markdown.
 
 ```python
-from markitdown import MarkItDown
+from html_to_markdown import ConversionOptions, convert_with_handle, create_options_handle
 
-md = MarkItDown(enable_plugins=False)
-result = md.convert("my_file.html")
+options_handle = create_options_handle(ConversionOptions())
+
+for html in documents:
+    markdown = convert_with_handle(html, options_handle)
 ```
 
 ## Error Handling
@@ -117,7 +119,7 @@ To aid in development and testing, a small sample of Flutter and Dart documentat
 
 convert.py has the following dependencies:
 - Python 3.12 or later.
-- `markitdown` package for HTML to markdown conversion.
+- `html_to_markdown` package for HTML to markdown conversion.
 - Standard Python libraries for file handling, command line argument parsing, and logging.
 - `uv` for project management.
 - `pytest` for testing.
