@@ -13,10 +13,10 @@ from pathlib import Path
 
 from html_to_markdown import (
     ConversionOptions,
+    ConversionOptionsHandle,
     convert_with_handle,
     create_options_handle,
 )
-from html_to_markdown._html_to_markdown import ConversionOptionsHandle
 
 
 # --- Transformation Functions ---

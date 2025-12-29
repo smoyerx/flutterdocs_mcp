@@ -3,7 +3,7 @@ name = "doc-gen"
 version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
-    "html-to-markdown>=2.16.1",
+    "html-to-markdown>=2.19.1",
 ]
 
 [dependency-groups]
