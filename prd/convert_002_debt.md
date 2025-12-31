@@ -113,36 +113,16 @@ This is brittle because:
 - Formatting changes break extraction silently
 
 **Resolution:**
-- Document the expected input format explicitly
-- Consider alternative detection strategies (e.g., line position, surrounding context)
-- Add defensive handling for arrow variations
+The text following the arrow represents a return type. A more robust capture approach:
+1. Start at end-of-line after the link
+2. Skip any trailing whitespace
+3. Capture all contiguous non-whitespace characters as the return type
+
+This avoids dependency on the specific arrow character and handles formatting variations.
 
 ---
 
-### TD-006: Incomplete Operator Filename Mapping
-
-**Severity:** Medium  
-**Location:** `OPERATOR_FILENAME_MAP`
-
-**Problem:** The operator-to-filename mapping only includes operators discovered during testing:
-```python
-OPERATOR_FILENAME_MAP = {
-    "operator ==": "operator_equals",
-    "operator []": "operator_get",
-    ...
-}
-```
-
-Dart has additional operators that may appear in Flutter documentation but aren't mapped, causing silent failures.
-
-**Resolution:**
-- Create exhaustive mapping from Dart language specification
-- Add fallback handling that logs unmapped operators
-- Consider algorithmic mapping based on operator character patterns
-
----
-
-### TD-007: Scattered Regex Patterns
+### TD-006: Scattered Regex Patterns
 
 **Severity:** Low  
 **Location:** Multiple `transform_*` functions
@@ -171,7 +151,7 @@ Dart has additional operators that may appear in Flutter documentation but aren'
 
 ## Low Priority: Code Quality
 
-### TD-008: Analytics URL Filtering in Noise Removal
+### TD-007: Analytics URL Filtering in Noise Removal
 
 **Severity:** Low  
 **Location:** `remove_noise_lines()`
@@ -191,7 +171,7 @@ This mixes concerns (noise string removal vs. tracking URL removal) and uses sub
 
 ---
 
-### TD-009: Integration Test Assertions Too Strict
+### TD-008: Integration Test Assertions Too Strict
 
 **Severity:** Low  
 **Location:** `test_integration.py::test_output_files_have_no_html_links`
@@ -207,6 +187,70 @@ This mixes concerns (noise string removal vs. tracking URL removal) and uses sub
 
 ---
 
+## Specification Gaps
+
+### TD-009: Missing Static Methods Section Processing
+
+**Severity:** Medium  
+**Location:** `convert_002.md` specification  
+**Status:** Closed (Implemented 2025-12-31)
+
+**Problem:** The convert_002.md specification neglected to include processing for the `## Static Methods` section, which is present in some Flutter class documentation.
+
+Static methods differ from instance methods:
+- They are associated with the class itself, not instances of the class
+- They are always **native** to the class (never inherited)
+- They require a separate output directory to distinguish from instance methods
+
+**Impact:**
+- Static methods in Flutter documentation are not converted
+- Classes with static methods have incomplete documentation output
+
+**Resolution:**
+Update the specification to add a new step (or sub-step of Step 4) for processing static methods:
+
+1. Scan the static methods section (`## Static Methods`) of the {CLASS}.md content for lines that **start** with `[{METHOD}](mcp://flutter/api/{SECTION}/{CLASS}/{METHOD})`
+2. For each such line found:
+   - Convert {DOC_DIR}/flutter/{SECTION}/{CLASS}/{METHOD}.html to markdown
+   - Save the converted markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/statics/{METHOD}.md
+3. Continue without printing an informational or error message if:
+   - No static methods section found
+   - No lines matching the pattern in the static methods section
+4. Print error and exit with non-zero status if:
+   - HTML file for a static method does not exist
+   - Link URI scheme does not match the specified pattern
+
+**Note:** Static methods have no inherited variant since static members belong to the declaring class only.
+
+---
+
+### TD-010: Static Methods Processing Not Implemented
+
+**Severity:** Medium  
+**Location:** `convert.py` - missing implementation
+
+**Problem:** Following the resolution of TD-009, the convert_002.md specification now includes requirements for processing static methods (section `## Static Methods`). However, convert.py has not yet been updated to implement this functionality.
+
+**Impact:**
+- Static methods in Flutter class documentation are not converted
+- Classes with static methods have incomplete documentation output
+- Implementation is out of sync with updated specification
+
+**Resolution:**
+Implement static methods processing in convert.py following the specification in convert_002.md:
+
+1. Add a new processing step (after operators, before snippets) to scan for `## Static Methods` section
+2. Extract static method links matching pattern `[{METHOD}](mcp://flutter/api/{SECTION}/{CLASS}/{METHOD})`
+3. Convert HTML files from `{DOC_DIR}/flutter/{SECTION}/{CLASS}/{METHOD}.html`
+4. Save to `{OUTPUT_DIR}/api/{SECTION}/{CLASS}/statics/{METHOD}.md`
+5. Handle informational cases (no section found, no methods) and error cases (missing HTML file) per spec
+6. Add unit tests for static method extraction and processing
+7. Add integration tests verifying static method output files
+
+**Note:** This is a new feature implementation, not a bug fix. Since static methods have no inherited variant, the implementation is simpler than instance methods.
+
+---
+
 ## Summary
 
 | ID | Severity | Category | Status |
@@ -216,9 +260,10 @@ This mixes concerns (noise string removal vs. tracking URL removal) and uses sub
 | TD-003 | Medium | Fragile | Open |
 | TD-004 | Medium | Fragile | Open |
 | TD-005 | Medium | Fragile | Open |
-| TD-006 | Medium | Fragile | Open |
+| TD-006 | Low | Code Quality | Open |
 | TD-007 | Low | Code Quality | Open |
 | TD-008 | Low | Code Quality | Open |
-| TD-009 | Low | Code Quality | Open |
+| TD-009 | Medium | Spec Gap | **Closed** |
+| TD-010 | Medium | Missing Feature | Open |
 
-**Recommended Priority:** Address TD-001 and TD-002 first as they block the intended use of convert.py for documentation discovery.
+**Recommended Priority:** Address TD-001 and TD-002 first as they block the intended use of convert.py for documentation discovery. TD-010 should be implemented in the next development iteration to bring convert.py into compliance with the updated specification.

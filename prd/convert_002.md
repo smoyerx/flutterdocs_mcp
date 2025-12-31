@@ -172,7 +172,26 @@ This operator is inherited from [{SOME_CLASS}](mcp://flutter/api/{SOME_SECTION}/
 See further details at [{OPERATOR_SYMBOL}](mcp://flutter/api/{SOME_SECTION}/{SOME_CLASS}/{OPERATOR}).
 ````
 
-#### Step 6: Process Code Snippet Files
+#### Step 6: Process Static Method Files
+
+**Note**:
+- Static methods have no inherited variant since static members belong to the declaring class only.
+- Many classes do not have any static methods.
+
+Scan the static methods section (`## Static Methods`) of the {CLASS}.md content for lines that **start** with `[{METHOD}](mcp://flutter/api/{SECTION}/{CLASS}/{METHOD})`, where {METHOD} is the name of a static method documented for {CLASS}. For each such line found:
+- Convert {DOC_DIR}/flutter/{SECTION}/{CLASS}/{METHOD}.html to markdown
+- Save the converted markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/statics/{METHOD}.md
+
+convert.py MUST continue processing without printing any messages if it:
+- Does not find a static methods section in the {CLASS}.md content
+- Finds no lines matching the specified pattern in the static methods section of the {CLASS}.md content
+
+convert.py MUST always print an error message and exit with a non-zero status code if it:
+- Finds a line matching the specified pattern for static methods in the static methods section of the {CLASS}.md content but the corresponding HTML file {DOC_DIR}/flutter/{SECTION}/{CLASS}/{METHOD}.html does not exist
+- Finds a static method link with a URI scheme that does not match the specified pattern
+
+
+#### Step 7: Process Code Snippet Files
 
 For each Dart code snippet file matching the pattern {DOC_DIR}/snippets/{SECTION}.{CLASS}.*.dart:
 - Convert the Dart snippet file to markdown
