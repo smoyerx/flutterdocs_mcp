@@ -15,8 +15,11 @@ This document specifies a set of changes to convert.py to enhance its functional
 The following describes changes to to how convert.py processes class documentation files, which are identified by the presence of an HTML file named {CLASS}-class.html in the {DOC_DIR}/flutter/{SECTION} directory, where {CLASS} is the name of a documented class.
 
 **Important**:
-- The changes described below only apply to processing class documentation files.
-- The code for convert.py MUST be structured so that it can be extened to process other types of documentation files in the future without significant refactoring.
+- The changes described below only apply to processing class documentation files, which are the only type of documentation files that convert.py currently processes.
+- In the future, convert.py MAY be extended to process other types of documentation files (e.g., Material Design constants, Flutter guides, etc.). To accommodate this possibility, the changes described below are structured to isolate class documentation file processing from any future processing of other types of documentation files and the updated convert.py MUST be implemented accordingly.
+- Do NOT preserve any existing behavior of convert.py that is **updated** or **changed** by this document.
+- DO preserve any existing behavior of convert.py that is **not** updated or changed by this document.
+- DO preserve the overall structure and organization of convert.py as a single-file script.
 
 ### CURRENT Class Documentation File Processing Behavior
 
@@ -39,6 +42,8 @@ convert.py must be UPDATED to implement the steps below for processing each clas
 **Important**:
 - When converting any HTML file to markdown, convert.py MUST apply the transformations specified in the [HTML Conversion Details](#html-conversion-details) section
 - When converting any Dart code snippet file to markdown, convert.py MUST apply the transformations specified in the [Dart Snippet Conversion Details](#dart-snippet-conversion-details) section
+- When instructed to scan markdown content for lines that **start** with a specific pattern, convert.py MUST ignore leading whitespace characters before the start of the pattern
+- When instructed to scan markdown content within a specified section, convert.py MUST only consider lines that appear after the heading for that section (e.g., `## Constructors`) and before the heading for the next section of the same or higher level (e.g., `## Properties` or `# Another Section`)
 - When saving any converted markdown file, convert.py MUST create any necessary directories and overwrite any existing file with the same name
 
 #### Step 1: Process the Class File
@@ -53,12 +58,13 @@ Scan the constructors section (`## Constructors`) of the {CLASS}.md content for 
 - Convert {DOC_DIR}/flutter/{SECTION}/{CLASS}/{CONSTRUCTOR}.html to markdown
 - Save the converted markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/constructors/{CONSTRUCTOR}.md
 
-convert.py MUST print an informational message and continue processing if it:
+convert.py MUST print an informational message (when in verbose mode) and continue processing if it:
 - Does not find a constructors section in the {CLASS}.md content
 - Finds no lines matching the specified pattern in the constructors section of the {CLASS}.md content
 
-convert.py MUST print an error message and exit with a non-zero status code if it:
+convert.py MUST always print an error message and exit with a non-zero status code if it:
 - Finds a line matching the specified pattern in the constructors section of the {CLASS}.md content but the corresponding HTML file {DOC_DIR}/flutter/{SECTION}/{CLASS}/{CONSTRUCTOR}.html does not exist
+- Finds a constructor link with a URI scheme that does not match the specified pattern
 
 #### Step 3: Process or Generate Property Files
 
@@ -67,8 +73,8 @@ Scan the properties section (`## Properties`) of the {CLASS}.md content for line
    - Convert {DOC_DIR}/flutter/{SECTION}/{CLASS}/{PROPERTY}.html to markdown
    - Save the converted markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/properties/native/{PROPERTY}.md
 - If {SOME_SECTION} is not equal to {SECTION} or {SOME_CLASS} is not equal to {CLASS} this is an **inherited** property of {CLASS}:
-   - Capture the {RESULT_TYPE} for the property which is on the same line as the property link, starts with the first non-whitespace charater following the unicode rightwards arrow, and is terminated by a whitespace character or the end of the line
-   - Capture the {DESCRIPTION} for the property which is the non-blank lines immediately following the line containing the property link
+   - Capture the {RESULT_TYPE} for the property which is on the same line as the property link, starts with the first non-whitespace character following the unicode rightwards arrow (U+2192), and is terminated by a whitespace character or the end of the line
+   - Capture the {DESCRIPTION} for the property which is all lines starting with the line immediately following the property link line and ending at the first blank line
    - Generate a markdown file as described below and save it as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/properties/inherited/{SOME_SECTION}-{SOME_CLASS}-{PROPERTY}.md
 
 Use the following template to generate the markdown file for an inherited property:
@@ -83,13 +89,14 @@ This property is inherited from [{SOME_CLASS}](mcp://flutter/api/{SOME_SECTION}/
 See further details at [{PROPERTY}](mcp://flutter/api/{SOME_SECTION}/{SOME_CLASS}/{PROPERTY}).
 ````
 
-convert.py MUST print an informational message and continue processing if it:
+convert.py MUST print an informational message (when in verbose mode) and continue processing if it:
 - Does not find a properties section in the {CLASS}.md content
 - Finds no lines matching the specified pattern in the properties section of the {CLASS}.md content
 
-convert.py MUST print an error message and exit with a non-zero status code if it:
+convert.py MUST always print an error message and exit with a non-zero status code if it:
 - Finds a line matching the specified pattern for **native** properties in the properties section of the {CLASS}.md content but the corresponding HTML file {DOC_DIR}/flutter/{SECTION}/{CLASS}/{PROPERTY}.html does not exist
 - Finds a line matching the specified pattern for **inherited** properties in the properties section of the {CLASS}.md content but is unable to capture the {RESULT_TYPE} or {DESCRIPTION} for the property
+- Finds a property link with a URI scheme that does not match the specified pattern
 
 #### Step 4: Process or Generate Method Files
 
@@ -98,8 +105,8 @@ Scan the methods section (`## Methods`) of the {CLASS}.md content for lines that
    - Convert {DOC_DIR}/flutter/{SECTION}/{CLASS}/{METHOD}.html to markdown
    - Save the converted markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/methods/native/{METHOD}.md
 - If {SOME_SECTION} is not equal to {SECTION} or {SOME_CLASS} is not equal to {CLASS} this is an **inherited** method of {CLASS}:
-   - Capture the {RESULT_TYPE} for the method which is on the same line as the method link, starts with the first non-whitespace charater following the unicode rightwards arrow, and is terminated by a whitespace character or the end of the line
-   - Capture the {DESCRIPTION} for the method which is the non-blank lines immediately following the line containing the method link
+   - Capture the {RESULT_TYPE} for the method which is on the same line as the method link, starts with the first non-whitespace character following the unicode rightwards arrow (U+2192), and is terminated by a whitespace character or the end of the line
+   - Capture the {DESCRIPTION} for the method which is all lines starting with the line immediately following the method link line and ending at the first blank line
    - Generate a markdown file as described below and save it as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/methods/inherited/{SOME_SECTION}-{SOME_CLASS}-{METHOD}.md
 
 Use the following template to generate the markdown file for an inherited method:
@@ -114,23 +121,28 @@ This method is inherited from [{SOME_CLASS}](mcp://flutter/api/{SOME_SECTION}/{S
 See further details at [{METHOD}](mcp://flutter/api/{SOME_SECTION}/{SOME_CLASS}/{METHOD}).
 ````
 
-convert.py MUST print an informational message and continue processing if it:
+convert.py MUST print an informational message (when in verbose mode) and continue processing if it:
 - Does not find a methods section in the {CLASS}.md content
 - Finds no lines matching the specified pattern in the methods section of the {CLASS}.md content
 
-convert.py MUST print an error message and exit with a non-zero status code if it:
+convert.py MUST always print an error message and exit with a non-zero status code if it:
 - Finds a line matching the specified pattern for **native** methods in the methods section of the {CLASS}.md content but the corresponding HTML file {DOC_DIR}/flutter/{SECTION}/{CLASS}/{METHOD}.html does not exist
 - Finds a line matching the specified pattern for **inherited** methods in the methods section of the {CLASS}.md content but is unable to capture the {RESULT_TYPE} or {DESCRIPTION} for the method
+- Finds a method link with a URI scheme that does not match the specified pattern
 
 #### Step 5: Process or Generate Operator Files
+
+**Note**: In this section
+- {OPERATOR_SYMBOL} refers to the link text for an operator, e.g., `operator ==`
+- {OPERATOR} refers to the URI text for an operator, e.g., `operator_equals`
 
 Scan the operators section (`## Operators`) of the {CLASS}.md content for lines that **start** with `[{OPERATOR_SYMBOL}](mcp://flutter/api/{SOME_SECTION}/{SOME_CLASS}/{OPERATOR})`, where {OPERATOR} is the name of an operator documented for {CLASS}. For each such line found:
 - If {SOME_SECTION} is equal to {SECTION} and {SOME_CLASS} is equal to {CLASS} this is a **native** (not inherited) operator of {CLASS}:
    - Convert {DOC_DIR}/flutter/{SECTION}/{CLASS}/{OPERATOR}.html to markdown
    - Save the converted markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/operators/native/{OPERATOR}.md
 - If {SOME_SECTION} is not equal to {SECTION} or {SOME_CLASS} is not equal to {CLASS} this is an **inherited** operator of {CLASS}:
-   - Capture the {RESULT_TYPE} for the operator which is on the same line as the operator link, starts with the first non-whitespace charater following the unicode rightwards arrow, and is terminated by a whitespace character or the end of the line
-   - Capture the {DESCRIPTION} for the operator which is the non-blank lines immediately following the line containing the operator link
+   - Capture the {RESULT_TYPE} for the operator which is on the same line as the operator link, starts with the first non-whitespace character following the unicode rightwards arrow (U+2192), and is terminated by a whitespace character or the end of the line
+   - Capture the {DESCRIPTION} for the operator which is all lines starting with the line immediately following the operator link line and ending at the first blank line
    - Generate a markdown file as described below and save it as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/operators/inherited/{SOME_SECTION}-{SOME_CLASS}-{OPERATOR}.md
 
 Use the following template to generate the markdown file for an inherited operator:
@@ -145,19 +157,20 @@ This operator is inherited from [{SOME_CLASS}](mcp://flutter/api/{SOME_SECTION}/
 See further details at [{OPERATOR_SYMBOL}](mcp://flutter/api/{SOME_SECTION}/{SOME_CLASS}/{OPERATOR}).
 ````
 
-convert.py MUST print an informational message and continue processing if it:
+convert.py MUST print an informational message (when in verbose mode) and continue processing if it:
 - Does not find a operators section in the {CLASS}.md content
 - Finds no lines matching the specified pattern in the operators section of the {CLASS}.md content
 
-convert.py MUST print an error message and exit with a non-zero status code if it:
+convert.py MUST always print an error message and exit with a non-zero status code if it:
 - Finds a line matching the specified pattern for **native** operators in the operators section of the {CLASS}.md content but the corresponding HTML file {DOC_DIR}/flutter/{SECTION}/{CLASS}/{OPERATOR}.html does not exist
 - Finds a line matching the specified pattern for **inherited** operators in the operators section of the {CLASS}.md content but is unable to capture the {RESULT_TYPE} or {DESCRIPTION} for the operator
+- Finds an operator link with a URI scheme that does not match the specified pattern
 
 #### Step 6: Process Code Snippet Files
 
 For each Dart code snippet file matching the pattern {DOC_DIR}/snippets/{SECTION}.{CLASS}.*.dart:
 - Convert the Dart snippet file to markdown
-- Save the converted markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/snippets/{FILENAME}.md, where {FILENAME} is the original Dart filename without the .dart extension
+- Save the converted markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/snippets/{SHORT_NAME}.md, where {SHORT_NAME} is the original Dart filename without the `{SECTION}.{CLASS}.` prefix and without the `.dart` extension
 
 convert.py MUST continue processing without printing any messages if no such files exist.
 
@@ -165,20 +178,20 @@ convert.py MUST continue processing without printing any messages if no such fil
 
 convert.py currently converts HTML files to markdown using the `html_to_markdown` package and MUST continue to do so after the updates specified in this document.
 
-convert.py MUST be updated to apply the following categories of transformations to the markdown content generated by `html_to_markdown`.
-
-convert.py MUST apply transaformations in the following order:
+convert.py MUST be updated to apply the following categories of transformations to the markdown content generated by `html_to_markdown` in the order:
 - Cleanup Transformations
 - Link Transformations
 
 ### Cleanup Transformations
 
-Cleanup transformations remove unwanted content from the markdown content.
+Cleanup transformations remove unwanted or extraneous text from the markdown content.
 
 convert.py MUST apply the following cleanup transformations to the markdown content in the order listed:
-1. Remove all lines prior to the first occurence of a heading of any level (i.e., lines starting with `#`).
-2. Remove from the line containing the text "1. [Flutter](index.html)" to the end of the file, if any such line exists.
-3. Remove lines that contain only whitespace and exactly one occurence of exactly one of the following strings:
+1. Remove all lines prior to the first occurrence of a heading of any level (i.e., lines starting with `#`).
+   - This is remove_header() in the current implementation of convert.py, which MUST be retained unchanged
+2. Remove from the line containing the text "1. [Flutter](index.html)" to the end of the file, if any such line exists
+   - This is remove_footer() in the current implementation of convert.py, which MUST be retained unchanged
+3. Remove lines that contain only whitespace **and** exactly one occurrence of exactly one of the following strings:
    - "const"
    - "final"
    - "no setterinherited"
@@ -186,9 +199,10 @@ convert.py MUST apply the following cleanup transformations to the markdown cont
    - "inherited"
    - `[*link*](# "Copy link to clipboard")`
 
-Cleanup transformations MUST be implemented so that they are:
-- Easy to unit test individually
-- Easy to extend in the future by adding, removing, or reordering transformations
+**Important**:
+- The last element in the list above (`[*link*](# "Copy link to clipboard")`) is a literal string and NOT a regular expression pattern
+- remove_html_links() in the current implementation of convert.py MUST be removed and NOT retained
+- Cleanup transformations MUST be implemented so that they are easy to unit test individually, similar to the current implementation of convert.py.
 
 ### Link Transformations
 
@@ -199,19 +213,17 @@ Link transformation modify links in the markdown content to:
 convert.py MUST apply the following link transformations to the markdown content in the order listed:
 1. Replace all links of the form `[{CLASS_NAME}]({SECTION_NAME}/{CLASS_NAME}-class.html)` with `[{CLASS_NAME}](mcp://flutter/api/{SECTION_NAME}/{CLASS_NAME}`, where `{SECTION_NAME}/{CLASS_NAME}-class.html` MUST be a relative URI.
 2. Replace all links of the form `[{MEMBER}]({SECTION}/{CLASS}/{MEMBER}.html)` with `[{MEMBER}](mcp://flutter/api/{SECTION}/{CLASS}/{MEMBER})`, where `{SECTION}/{CLASS}/{MEMBER}.html` MUST be a relative URI.
-3. Replace all links of the form `![{Link Text}]({IMAGE_PATH})` with `[Image: {Link Text}]`, where {IMAGE_PATH} is any URI (relative or absolute)
-4. Replace all links of the form `[{Link Text}]({EXTERNAL_URI})` with `[Note: Interative sample omitted]`, where {EXTERNAL_URI} MUST contain the substring "dartpad.dev"
+3. Replace all links of the form `![{Link Text}]({IMAGE_PATH})` with `[Note: Image {Link Text} omitted]`, where {IMAGE_PATH} is any URI (relative or absolute)
+4. Replace all links of the form `[{Link Text}]({EXTERNAL_URI})` with `[Note: Interactive sample omitted]`, where {EXTERNAL_URI} MUST contain the substring "dartpad.dev"
 
-Link transformations MUST be implemented so that they are:
-- Easy to unit test individually
-- Easy to extend in the future by adding, removing, or reordering transformations
+Link transformations MUST be implemented so that they are easy to unit test individually, similar to the current implementation of cleanup transformations in convert.py.
 
-convert.py MUST print an informaitonal message and continue processing if it encounters a link with a relative URI that does not match any of the patterns specified above.
+convert.py MUST print an informational message (when in verbose mode) and continue processing if it encounters a link with a relative URI that does not match any of the patterns specified above.
 
 
 ## Dart Snippet Conversion Details
 
-convert.py MUST be updated to convert a Dart code snippet file {DOC_DIR}/snippets/{SECTION}.{CLASS}.*.dart o markdown as follows:
+convert.py MUST be updated to convert a Dart code snippet file {DOC_DIR}/snippets/{SECTION}.{CLASS}.*.dart to markdown as follows:
 1. Read the contents of the Dart file.
 2. Wrap the contents in a markdown header and markdown code block with syntax highlighting for Dart as follows:
 
@@ -225,7 +237,7 @@ convert.py MUST be updated to convert a Dart code snippet file {DOC_DIR}/snippet
 
 ## html_to_markdown Usage
 
-convert.py MUST continue to follow this basic usage pattern for `html_to_markdown` which reuses parsed options when converting multiple HTML files to markdown.
+convert.py MUST **continue** to follow this basic usage pattern for `html_to_markdown` which reuses parsed options to increase efficiency when converting multiple HTML files to markdown.
 
 ```python
 from html_to_markdown import ConversionOptions, ConversionOptionsHandle, convert_with_handle, create_options_handle
@@ -264,6 +276,11 @@ Test fixtures:
 Test organization and execution:
 - Store tests in `doc_gen/tests/convert` 
 - Within the `doc_gen` directory, execute tests with `uv run pytest tests/convert`
+
+**Note**: Testing MUST adhere to the following guidelines:
+- Preserve the existing organization of test files in the `doc_gen/tests/convert` directory
+- Update existing tests as necessary to accommodate the changes specified in this document
+- Add new tests as necessary to cover all new functionality specified in this document
 
 ## Flutter and Dart Documentation Sample
 
