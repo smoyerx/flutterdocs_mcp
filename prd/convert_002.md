@@ -4,6 +4,8 @@ convert.py is a single-file Python script for converting Flutter and Dart docume
 
 This document specifies a set of changes to convert.py to enhance its functionality, improve code organization, and ensure maintainability.
 
+**Note**: It is NOT a goal to maintain backward compatibility with any previous version of convert.py. The changes specified in this document may significantly alter or replace existing functionality.
+
 ## Definitions
 
 - {DOC_DIR}: The root directory containing the HTML documentation files to be converted. Specified as a command line argument.
@@ -75,9 +77,19 @@ Scan the properties section (`## Properties`) of the {CLASS}.md content for line
 - If {SOME_SECTION} is not equal to {SECTION} or {SOME_CLASS} is not equal to {CLASS} this is an **inherited** property of {CLASS}:
    - Capture the {RESULT_TYPE} for the property which is on the same line as the property link, starts with the first non-whitespace character following the unicode rightwards arrow (U+2192), and is terminated by a whitespace character or the end of the line
    - Capture the {DESCRIPTION} for the property which is all lines starting with the line immediately following the property link line and ending at the first blank line
-   - Generate a markdown file as described below and save it as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/properties/inherited/{SOME_SECTION}-{SOME_CLASS}-{PROPERTY}.md
+   - Generate a markdown file for the inherited property using the template defined below
+   - Save the generated markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/properties/inherited/{SOME_SECTION}-{SOME_CLASS}-{PROPERTY}.md
 
-Use the following template to generate the markdown file for an inherited property:
+convert.py MUST print an informational message (when in verbose mode) and continue processing if it:
+- Does not find a properties section in the {CLASS}.md content
+- Finds no lines matching the specified pattern in the properties section of the {CLASS}.md content
+
+convert.py MUST always print an error message and exit with a non-zero status code if it:
+- Finds a line matching the specified pattern for **native** properties in the properties section of the {CLASS}.md content but the corresponding HTML file {DOC_DIR}/flutter/{SECTION}/{CLASS}/{PROPERTY}.html does not exist
+- Finds a line matching the specified pattern for **inherited** properties in the properties section of the {CLASS}.md content but is unable to capture the {RESULT_TYPE} or {DESCRIPTION} for the property
+- Finds a property link with a URI scheme that does not match the specified pattern
+
+##### Template for Inherited Property Markdown File
 ````markdown
 # {PROPERTY} property
 
@@ -89,15 +101,6 @@ This property is inherited from [{SOME_CLASS}](mcp://flutter/api/{SOME_SECTION}/
 See further details at [{PROPERTY}](mcp://flutter/api/{SOME_SECTION}/{SOME_CLASS}/{PROPERTY}).
 ````
 
-convert.py MUST print an informational message (when in verbose mode) and continue processing if it:
-- Does not find a properties section in the {CLASS}.md content
-- Finds no lines matching the specified pattern in the properties section of the {CLASS}.md content
-
-convert.py MUST always print an error message and exit with a non-zero status code if it:
-- Finds a line matching the specified pattern for **native** properties in the properties section of the {CLASS}.md content but the corresponding HTML file {DOC_DIR}/flutter/{SECTION}/{CLASS}/{PROPERTY}.html does not exist
-- Finds a line matching the specified pattern for **inherited** properties in the properties section of the {CLASS}.md content but is unable to capture the {RESULT_TYPE} or {DESCRIPTION} for the property
-- Finds a property link with a URI scheme that does not match the specified pattern
-
 #### Step 4: Process or Generate Method Files
 
 Scan the methods section (`## Methods`) of the {CLASS}.md content for lines that **start** with `[{METHOD}](mcp://flutter/api/{SOME_SECTION}/{SOME_CLASS}/{METHOD})`, where {METHOD} is the name of a method documented for {CLASS}. For each such line found:
@@ -107,9 +110,19 @@ Scan the methods section (`## Methods`) of the {CLASS}.md content for lines that
 - If {SOME_SECTION} is not equal to {SECTION} or {SOME_CLASS} is not equal to {CLASS} this is an **inherited** method of {CLASS}:
    - Capture the {RESULT_TYPE} for the method which is on the same line as the method link, starts with the first non-whitespace character following the unicode rightwards arrow (U+2192), and is terminated by a whitespace character or the end of the line
    - Capture the {DESCRIPTION} for the method which is all lines starting with the line immediately following the method link line and ending at the first blank line
-   - Generate a markdown file as described below and save it as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/methods/inherited/{SOME_SECTION}-{SOME_CLASS}-{METHOD}.md
+   - Generate a markdown file for the inherited method using the template defined below
+   - Save the generated markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/methods/inherited/{SOME_SECTION}-{SOME_CLASS}-{METHOD}.md
 
-Use the following template to generate the markdown file for an inherited method:
+convert.py MUST print an informational message (when in verbose mode) and continue processing if it:
+- Does not find a methods section in the {CLASS}.md content
+- Finds no lines matching the specified pattern in the methods section of the {CLASS}.md content
+
+convert.py MUST always print an error message and exit with a non-zero status code if it:
+- Finds a line matching the specified pattern for **native** methods in the methods section of the {CLASS}.md content but the corresponding HTML file {DOC_DIR}/flutter/{SECTION}/{CLASS}/{METHOD}.html does not exist
+- Finds a line matching the specified pattern for **inherited** methods in the methods section of the {CLASS}.md content but is unable to capture the {RESULT_TYPE} or {DESCRIPTION} for the method
+- Finds a method link with a URI scheme that does not match the specified pattern
+
+##### Template for Inherited Method Markdown File
 ````markdown
 # {METHOD} method
 
@@ -121,20 +134,12 @@ This method is inherited from [{SOME_CLASS}](mcp://flutter/api/{SOME_SECTION}/{S
 See further details at [{METHOD}](mcp://flutter/api/{SOME_SECTION}/{SOME_CLASS}/{METHOD}).
 ````
 
-convert.py MUST print an informational message (when in verbose mode) and continue processing if it:
-- Does not find a methods section in the {CLASS}.md content
-- Finds no lines matching the specified pattern in the methods section of the {CLASS}.md content
-
-convert.py MUST always print an error message and exit with a non-zero status code if it:
-- Finds a line matching the specified pattern for **native** methods in the methods section of the {CLASS}.md content but the corresponding HTML file {DOC_DIR}/flutter/{SECTION}/{CLASS}/{METHOD}.html does not exist
-- Finds a line matching the specified pattern for **inherited** methods in the methods section of the {CLASS}.md content but is unable to capture the {RESULT_TYPE} or {DESCRIPTION} for the method
-- Finds a method link with a URI scheme that does not match the specified pattern
-
 #### Step 5: Process or Generate Operator Files
 
 **Note**: In this section
 - {OPERATOR_SYMBOL} refers to the link text for an operator, e.g., `operator ==`
 - {OPERATOR} refers to the URI text for an operator, e.g., `operator_equals`
+- The text for {OPERATOR_SYMBOL} and {OPERATOR} are in the {CLASS}.md content and so no programmatic mapping between the two is required
 
 Scan the operators section (`## Operators`) of the {CLASS}.md content for lines that **start** with `[{OPERATOR_SYMBOL}](mcp://flutter/api/{SOME_SECTION}/{SOME_CLASS}/{OPERATOR})`, where {OPERATOR} is the name of an operator documented for {CLASS}. For each such line found:
 - If {SOME_SECTION} is equal to {SECTION} and {SOME_CLASS} is equal to {CLASS} this is a **native** (not inherited) operator of {CLASS}:
@@ -143,9 +148,19 @@ Scan the operators section (`## Operators`) of the {CLASS}.md content for lines 
 - If {SOME_SECTION} is not equal to {SECTION} or {SOME_CLASS} is not equal to {CLASS} this is an **inherited** operator of {CLASS}:
    - Capture the {RESULT_TYPE} for the operator which is on the same line as the operator link, starts with the first non-whitespace character following the unicode rightwards arrow (U+2192), and is terminated by a whitespace character or the end of the line
    - Capture the {DESCRIPTION} for the operator which is all lines starting with the line immediately following the operator link line and ending at the first blank line
-   - Generate a markdown file as described below and save it as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/operators/inherited/{SOME_SECTION}-{SOME_CLASS}-{OPERATOR}.md
+   - Generate a markdown file for the inherited operator using the template defined below
+   - Save the generated markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/operators/inherited/{SOME_SECTION}-{SOME_CLASS}-{OPERATOR}.md
 
-Use the following template to generate the markdown file for an inherited operator:
+convert.py MUST print an informational message (when in verbose mode) and continue processing if it:
+- Does not find a operators section in the {CLASS}.md content
+- Finds no lines matching the specified pattern in the operators section of the {CLASS}.md content
+
+convert.py MUST always print an error message and exit with a non-zero status code if it:
+- Finds a line matching the specified pattern for **native** operators in the operators section of the {CLASS}.md content but the corresponding HTML file {DOC_DIR}/flutter/{SECTION}/{CLASS}/{OPERATOR}.html does not exist
+- Finds a line matching the specified pattern for **inherited** operators in the operators section of the {CLASS}.md content but is unable to capture the {RESULT_TYPE} or {DESCRIPTION} for the operator
+- Finds an operator link with a URI scheme that does not match the specified pattern
+
+##### Template for Inherited Operator Markdown File
 ````markdown
 # {OPERATOR_SYMBOL} ({OPERATOR}) method
 
@@ -156,15 +171,6 @@ Use the following template to generate the markdown file for an inherited operat
 This operator is inherited from [{SOME_CLASS}](mcp://flutter/api/{SOME_SECTION}/{SOME_CLASS}).
 See further details at [{OPERATOR_SYMBOL}](mcp://flutter/api/{SOME_SECTION}/{SOME_CLASS}/{OPERATOR}).
 ````
-
-convert.py MUST print an informational message (when in verbose mode) and continue processing if it:
-- Does not find a operators section in the {CLASS}.md content
-- Finds no lines matching the specified pattern in the operators section of the {CLASS}.md content
-
-convert.py MUST always print an error message and exit with a non-zero status code if it:
-- Finds a line matching the specified pattern for **native** operators in the operators section of the {CLASS}.md content but the corresponding HTML file {DOC_DIR}/flutter/{SECTION}/{CLASS}/{OPERATOR}.html does not exist
-- Finds a line matching the specified pattern for **inherited** operators in the operators section of the {CLASS}.md content but is unable to capture the {RESULT_TYPE} or {DESCRIPTION} for the operator
-- Finds an operator link with a URI scheme that does not match the specified pattern
 
 #### Step 6: Process Code Snippet Files
 
@@ -258,6 +264,13 @@ convert.py MUST continue or be updated to print a clear and concise error messag
 - {OUTPUT_DIR}/api/{SECTION} cannot be created or is not writable. Note: this is the only UPDATE in this list.
 - Any HTML file that is expected to be converted does not exist.
 - Any unexpected error during file reading, writing, or conversion.
+
+## Logging and Verbose Mode
+
+- Where this specification requires convert.py to print an informaitional message use logging.info()
+- Where this specification requires convert.py to print an error message use logging.error()
+- convert.py MUST include a command line argument `--verbose` that enables verbose logging when specified. When in verbose mode, convert.py MUST print informational messages as specified throughout this document.
+- convert.py MUST always print error messages regardless of whether verbose mode is enabled.
 
 ## Performance Requirements
 
