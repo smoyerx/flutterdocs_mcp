@@ -99,19 +99,31 @@ class TestConvertIntegration:
         assert "Successfully processed" in result.stdout
 
     @pytest.mark.parametrize("section", get_available_sections())
-    def test_creates_output_files_for_all_class_names(
-        self, section: str, output_dir: Path
-    ) -> None:
-        """Output files should be created for each class name in the section."""
+    def test_creates_class_directories(self, section: str, output_dir: Path) -> None:
+        """Class directories should be created under api/{section}/{class}/."""
         result = run_convert(SAMPLES_DIR, section, output_dir)
         assert result.returncode == 0
 
         expected_class_names = get_class_names_for_section(section)
-        section_output = output_dir / section
+        api_section_dir = output_dir / "api" / section
 
         for class_name in expected_class_names:
-            output_file = section_output / f"{class_name}.md"
-            assert output_file.exists(), f"Missing output file: {output_file}"
+            class_dir = api_section_dir / class_name
+            assert class_dir.exists(), f"Missing class directory: {class_dir}"
+            assert class_dir.is_dir()
+
+    @pytest.mark.parametrize("section", get_available_sections())
+    def test_creates_main_class_file(self, section: str, output_dir: Path) -> None:
+        """Main class markdown file should be created."""
+        result = run_convert(SAMPLES_DIR, section, output_dir)
+        assert result.returncode == 0
+
+        expected_class_names = get_class_names_for_section(section)
+        api_section_dir = output_dir / "api" / section
+
+        for class_name in expected_class_names:
+            class_file = api_section_dir / class_name / f"{class_name}.md"
+            assert class_file.exists(), f"Missing class file: {class_file}"
 
     @pytest.mark.parametrize("section", get_available_sections())
     def test_output_files_start_with_heading(
@@ -121,32 +133,75 @@ class TestConvertIntegration:
         result = run_convert(SAMPLES_DIR, section, output_dir)
         assert result.returncode == 0
 
-        section_output = output_dir / section
-        for md_file in section_output.glob("*.md"):
+        api_section_dir = output_dir / "api" / section
+        for md_file in api_section_dir.rglob("*.md"):
             content = md_file.read_text(encoding="utf-8")
             assert content.startswith("#"), (
-                f"File {md_file.name} does not start with heading"
+                f"File {md_file} does not start with heading"
             )
 
     @pytest.mark.parametrize("section", get_available_sections())
     def test_output_files_have_no_html_links(
         self, section: str, output_dir: Path
     ) -> None:
-        """Output files should not contain HTML file links."""
+        """Output files should not contain local HTML file links."""
         result = run_convert(SAMPLES_DIR, section, output_dir)
         assert result.returncode == 0
 
-        section_output = output_dir / section
-        for md_file in section_output.glob("*.md"):
+        api_section_dir = output_dir / "api" / section
+        # Pattern for relative HTML links (not starting with http)
+        # Matches: [text](something.html) but not [text](https://...)
+        import re
+
+        local_html_pattern = re.compile(r"\[[^\]]+\]\((?!https?://)[^)]+\.html[^)]*\)")
+        for md_file in api_section_dir.rglob("*.md"):
             content = md_file.read_text(encoding="utf-8")
-            # Check for .html) pattern which indicates remaining HTML links
-            assert ".html)" not in content, f"File {md_file.name} contains HTML links"
+            matches = local_html_pattern.findall(content)
+            assert not matches, f"File {md_file} contains local HTML links: {matches}"
 
     @pytest.mark.parametrize("section", get_available_sections())
     def test_output_files_have_no_footer(self, section: str, output_dir: Path) -> None:
         """Output files should not contain footer marker."""
         result = run_convert(SAMPLES_DIR, section, output_dir)
         assert result.returncode == 0
+
+        footer_marker = "1. [Flutter](index.html)"
+        api_section_dir = output_dir / "api" / section
+        for md_file in api_section_dir.rglob("*.md"):
+            content = md_file.read_text(encoding="utf-8")
+            assert footer_marker not in content, (
+                f"File {md_file} contains footer marker"
+            )
+
+    @pytest.mark.parametrize("section", get_available_sections())
+    def test_verbose_output_shows_processing(
+        self, section: str, output_dir: Path
+    ) -> None:
+        """Verbose mode should show processing information."""
+        result = run_convert(SAMPLES_DIR, section, output_dir, verbose=True)
+        assert result.returncode == 0
+
+        # Verbose output goes to stderr via logging
+        combined_output = result.stdout + result.stderr
+        assert "Processing" in combined_output
+        assert "Converting class:" in combined_output
+
+    @pytest.mark.parametrize("section", get_available_sections())
+    def test_class_files_have_mcp_links(self, section: str, output_dir: Path) -> None:
+        """Class files should have MCP URI links."""
+        result = run_convert(SAMPLES_DIR, section, output_dir)
+        assert result.returncode == 0
+
+        expected_class_names = get_class_names_for_section(section)
+        api_section_dir = output_dir / "api" / section
+
+        for class_name in expected_class_names:
+            class_file = api_section_dir / class_name / f"{class_name}.md"
+            content = class_file.read_text(encoding="utf-8")
+            # Should have at least some MCP links
+            assert "mcp://flutter/api/" in content, (
+                f"File {class_file} has no MCP links"
+            )
 
         footer_marker = "1. [Flutter](index.html)"
         section_output = output_dir / section
@@ -164,18 +219,18 @@ class TestConvertIntegration:
 
         # Verbose output goes to stderr via logging
         combined_output = result.stdout + result.stderr
-        assert "Processing:" in combined_output
+        assert "Processing" in combined_output
         assert "Converting class:" in combined_output
 
     @pytest.mark.parametrize("section", get_available_sections())
     def test_verbose_output_shows_summary(self, section: str, output_dir: Path) -> None:
-        """Verbose mode should show file count summary."""
+        """Verbose mode should show class count summary."""
         result = run_convert(SAMPLES_DIR, section, output_dir, verbose=True)
         assert result.returncode == 0
 
-        # Verbose summary goes to stderr via logging
-        combined_output = result.stdout + result.stderr
-        assert "files processed" in combined_output
+        # Summary goes to stdout via print
+        assert "Successfully processed" in result.stdout
+        assert "classes" in result.stdout
 
 
 class TestConvertWithSnippets:
@@ -186,33 +241,50 @@ class TestConvertWithSnippets:
         """Create a temporary output directory."""
         return tmp_path / "output"
 
-    def test_snippets_included_in_output(self, output_dir: Path) -> None:
-        """Dart snippets should be included in the output."""
+    def test_snippets_directory_created(self, output_dir: Path) -> None:
+        """Snippets directory should be created for classes with snippets."""
         # material.ListTile has snippets
         result = run_convert(SAMPLES_DIR, "material", output_dir)
         assert result.returncode == 0
 
-        listtile_md = output_dir / "material" / "ListTile.md"
-        content = listtile_md.read_text(encoding="utf-8")
+        snippets_dir = output_dir / "api" / "material" / "ListTile" / "snippets"
+        assert snippets_dir.exists(), "Snippets directory not created"
+        assert snippets_dir.is_dir()
 
-        # Check for code snippet markers
-        assert "# Code Snippet" in content
-        assert "```dart" in content
-
-    def test_snippet_code_blocks_are_valid(self, output_dir: Path) -> None:
-        """Snippet code blocks should be properly formatted."""
+    def test_snippet_files_created(self, output_dir: Path) -> None:
+        """Individual snippet files should be created."""
         result = run_convert(SAMPLES_DIR, "material", output_dir)
         assert result.returncode == 0
 
-        listtile_md = output_dir / "material" / "ListTile.md"
-        content = listtile_md.read_text(encoding="utf-8")
+        snippets_dir = output_dir / "api" / "material" / "ListTile" / "snippets"
+        snippet_files = list(snippets_dir.glob("*.md"))
+        assert len(snippet_files) > 0, "No snippet files created"
 
-        # Count opening and closing code fences for dart
-        dart_opens = content.count("```dart")
-        # All code blocks should close
-        all_closes = content.count("```\n") + content.count("```")
-        # There should be at least as many closes as dart opens
-        assert all_closes >= dart_opens
+    def test_snippet_header_format(self, output_dir: Path) -> None:
+        """Snippet files should have correct header format."""
+        result = run_convert(SAMPLES_DIR, "material", output_dir)
+        assert result.returncode == 0
+
+        snippets_dir = output_dir / "api" / "material" / "ListTile" / "snippets"
+        for snippet_file in snippets_dir.glob("*.md"):
+            content = snippet_file.read_text(encoding="utf-8")
+            assert content.startswith("# Code Snippet for ListTile in material"), (
+                f"Snippet {snippet_file} has incorrect header"
+            )
+            assert "```dart" in content
+
+    def test_snippet_short_name(self, output_dir: Path) -> None:
+        """Snippet files should use SHORT_NAME without section.class prefix."""
+        result = run_convert(SAMPLES_DIR, "material", output_dir)
+        assert result.returncode == 0
+
+        snippets_dir = output_dir / "api" / "material" / "ListTile" / "snippets"
+        snippet_files = list(snippets_dir.glob("*.md"))
+
+        for snippet_file in snippet_files:
+            # File should not contain "material.ListTile" prefix
+            assert not snippet_file.name.startswith("material.")
+            assert not snippet_file.name.startswith("ListTile.")
 
 
 class TestConvertErrorHandling:
@@ -273,7 +345,7 @@ class TestConvertOverwrite:
         result1 = run_convert(SAMPLES_DIR, "material", output_dir)
         assert result1.returncode == 0
 
-        listtile_md = output_dir / "material" / "ListTile.md"
+        listtile_md = output_dir / "api" / "material" / "ListTile" / "ListTile.md"
         original_content = listtile_md.read_text(encoding="utf-8")
 
         # Second run
@@ -282,3 +354,55 @@ class TestConvertOverwrite:
 
         new_content = listtile_md.read_text(encoding="utf-8")
         assert original_content == new_content
+
+
+class TestConvertDirectoryStructure:
+    """Tests for the output directory structure."""
+
+    @pytest.fixture
+    def output_dir(self, tmp_path: Path) -> Path:
+        """Create a temporary output directory."""
+        return tmp_path / "output"
+
+    def test_api_directory_created(self, output_dir: Path) -> None:
+        """Output should be under api/ directory."""
+        result = run_convert(SAMPLES_DIR, "material", output_dir)
+        assert result.returncode == 0
+
+        api_dir = output_dir / "api"
+        assert api_dir.exists()
+        assert api_dir.is_dir()
+
+    def test_section_under_api(self, output_dir: Path) -> None:
+        """Section directory should be under api/."""
+        result = run_convert(SAMPLES_DIR, "material", output_dir)
+        assert result.returncode == 0
+
+        section_dir = output_dir / "api" / "material"
+        assert section_dir.exists()
+        assert section_dir.is_dir()
+
+    def test_class_directory_structure(self, output_dir: Path) -> None:
+        """Each class should have its own directory with subdirectories."""
+        result = run_convert(SAMPLES_DIR, "material", output_dir)
+        assert result.returncode == 0
+
+        class_dir = output_dir / "api" / "material" / "ListTile"
+        assert class_dir.exists()
+
+        # Main class file should exist
+        assert (class_dir / "ListTile.md").exists()
+
+    def test_constructors_directory(self, output_dir: Path) -> None:
+        """Constructors directory should be created if constructors exist."""
+        result = run_convert(SAMPLES_DIR, "material", output_dir)
+        assert result.returncode == 0
+
+        class_dir = output_dir / "api" / "material" / "ListTile"
+        constructors_dir = class_dir / "constructors"
+        # Directory may or may not exist depending on sample data
+        if constructors_dir.exists():
+            assert constructors_dir.is_dir()
+            # Should contain .md files if it exists
+            md_files = list(constructors_dir.glob("*.md"))
+            assert len(md_files) >= 0

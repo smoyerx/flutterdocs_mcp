@@ -1,6 +1,16 @@
 """Unit tests for transformation functions in convert.py."""
 
-from convert import remove_header, remove_footer, remove_html_links
+from convert import (
+    extract_member_links,
+    extract_section_content,
+    remove_footer,
+    remove_header,
+    remove_noise_lines,
+    transform_class_links,
+    transform_dartpad_links,
+    transform_image_links,
+    transform_member_links,
+)
 
 
 class TestRemoveHeader:
@@ -107,70 +117,320 @@ class TestRemoveFooter:
         assert result == ""
 
 
-class TestRemoveHtmlLinks:
-    """Tests for remove_html_links transformation function."""
+class TestRemoveNoiseLines:
+    """Tests for remove_noise_lines transformation function."""
 
-    def test_removes_simple_html_link(self) -> None:
-        """Simple HTML link should be replaced with just link text."""
-        content = "See [SomeClass](SomeClass-class.html) for details."
-        result = remove_html_links(content)
-        assert result == "See SomeClass for details."
+    def test_removes_const_line(self) -> None:
+        """Line containing only 'const' should be removed."""
+        content = "# Heading\nconst\nBody content"
+        result = remove_noise_lines(content)
+        assert result == "# Heading\nBody content"
 
-    def test_removes_link_with_path(self) -> None:
-        """HTML link with path should be replaced."""
-        content = "Check [Widget](widgets/Widget-class.html) here."
-        result = remove_html_links(content)
-        assert result == "Check Widget here."
+    def test_removes_final_line(self) -> None:
+        """Line containing only 'final' should be removed."""
+        content = "# Heading\nfinal\nBody content"
+        result = remove_noise_lines(content)
+        assert result == "# Heading\nBody content"
 
-    def test_removes_multiple_links(self) -> None:
-        """Multiple HTML links should all be replaced."""
-        content = "[Class1](a.html) and [Class2](b.html) are related."
-        result = remove_html_links(content)
-        assert result == "Class1 and Class2 are related."
+    def test_removes_inherited_line(self) -> None:
+        """Line containing only 'inherited' should be removed."""
+        content = "# Heading\ninherited\nBody content"
+        result = remove_noise_lines(content)
+        assert result == "# Heading\nBody content"
 
-    def test_preserves_non_html_links(self) -> None:
-        """Links to non-HTML files should be preserved."""
-        content = "See [image](picture.png) and [doc](file.pdf)."
-        result = remove_html_links(content)
-        assert result == "See [image](picture.png) and [doc](file.pdf)."
+    def test_removes_no_setter_inherited_line(self) -> None:
+        """Line containing only 'no setterinherited' should be removed."""
+        content = "# Heading\nno setterinherited\nBody content"
+        result = remove_noise_lines(content)
+        assert result == "# Heading\nBody content"
 
-    def test_preserves_external_urls(self) -> None:
-        """External URLs should be preserved."""
-        content = "Visit [Flutter](https://flutter.dev) for more."
-        result = remove_html_links(content)
-        assert result == "Visit [Flutter](https://flutter.dev) for more."
+    def test_removes_final_inherited_line(self) -> None:
+        """Line containing only 'finalinherited' should be removed."""
+        content = "# Heading\nfinalinherited\nBody content"
+        result = remove_noise_lines(content)
+        assert result == "# Heading\nBody content"
 
-    def test_handles_link_text_with_spaces(self) -> None:
-        """Link text with spaces should be preserved."""
-        content = "[Some Long Class Name](class.html)"
-        result = remove_html_links(content)
-        assert result == "Some Long Class Name"
+    def test_removes_copy_link_line(self) -> None:
+        """Line containing only the copy link markdown should be removed."""
+        content = '# Heading\n[*link*](# "Copy link to clipboard")\nBody content'
+        result = remove_noise_lines(content)
+        assert result == "# Heading\nBody content"
+
+    def test_removes_noise_with_whitespace(self) -> None:
+        """Noise strings with leading/trailing whitespace should be removed."""
+        content = "# Heading\n   const   \nBody content"
+        result = remove_noise_lines(content)
+        assert result == "# Heading\nBody content"
+
+    def test_preserves_noise_string_in_sentence(self) -> None:
+        """Noise strings within sentences should be preserved."""
+        content = "# Heading\nThis is a const variable.\nBody content"
+        result = remove_noise_lines(content)
+        assert result == "# Heading\nThis is a const variable.\nBody content"
+
+    def test_preserves_normal_content(self) -> None:
+        """Normal content without noise should be unchanged."""
+        content = "# Heading\nBody content\nMore content"
+        result = remove_noise_lines(content)
+        assert result == content
 
     def test_handles_empty_string(self) -> None:
         """Empty string should return empty string."""
-        result = remove_html_links("")
+        result = remove_noise_lines("")
         assert result == ""
 
-    def test_handles_no_links(self) -> None:
-        """Content without links should be unchanged."""
-        content = "Just plain text with no links."
-        result = remove_html_links(content)
+    def test_removes_multiple_noise_lines(self) -> None:
+        """Multiple noise lines should all be removed."""
+        content = "# Heading\nconst\nBody\nfinal\nMore"
+        result = remove_noise_lines(content)
+        assert result == "# Heading\nBody\nMore"
+
+
+class TestTransformClassLinks:
+    """Tests for transform_class_links transformation function."""
+
+    def test_transforms_class_link(self) -> None:
+        """Class link should be transformed to MCP URI."""
+        content = "See [Widget](widgets/Widget-class.html) for details."
+        result = transform_class_links(content)
+        assert result == "See [Widget](mcp://flutter/api/widgets/Widget) for details."
+
+    def test_transforms_multiple_class_links(self) -> None:
+        """Multiple class links should all be transformed."""
+        content = (
+            "[Widget](widgets/Widget-class.html) and [Text](widgets/Text-class.html)"
+        )
+        result = transform_class_links(content)
+        assert (
+            result
+            == "[Widget](mcp://flutter/api/widgets/Widget) and [Text](mcp://flutter/api/widgets/Text)"
+        )
+
+    def test_preserves_non_class_links(self) -> None:
+        """Links that don't match class pattern should be preserved."""
+        content = "[method](widgets/Widget/build.html)"
+        result = transform_class_links(content)
         assert result == content
 
-    def test_handles_nested_brackets_in_link_text(self) -> None:
-        """Link text with special characters."""
-        content = "[List<Widget>](List.html)"
-        result = remove_html_links(content)
-        assert result == "List<Widget>"
+    def test_preserves_absolute_urls(self) -> None:
+        """Absolute URLs should be preserved."""
+        content = "[Flutter](https://flutter.dev/Widget-class.html)"
+        result = transform_class_links(content)
+        assert result == content
 
-    def test_handles_index_html_link(self) -> None:
-        """The Flutter index link should be replaced."""
-        content = "1. [Flutter](index.html)"
-        result = remove_html_links(content)
-        assert result == "1. Flutter"
+    def test_handles_empty_string(self) -> None:
+        """Empty string should return empty string."""
+        result = transform_class_links("")
+        assert result == ""
 
-    def test_handles_complex_path(self) -> None:
-        """Links with complex paths should be handled."""
-        content = "[BuildContext](dart-ui/BuildContext-class.html)"
-        result = remove_html_links(content)
-        assert result == "BuildContext"
+
+class TestTransformMemberLinks:
+    """Tests for transform_member_links transformation function."""
+
+    def test_transforms_member_link(self) -> None:
+        """Member link should be transformed to MCP URI."""
+        content = "See [build](widgets/Widget/build.html) method."
+        result = transform_member_links(content)
+        assert result == "See [build](mcp://flutter/api/widgets/Widget/build) method."
+
+    def test_transforms_multiple_member_links(self) -> None:
+        """Multiple member links should all be transformed."""
+        content = (
+            "[build](widgets/Widget/build.html) and [key](widgets/Widget/key.html)"
+        )
+        result = transform_member_links(content)
+        assert (
+            result
+            == "[build](mcp://flutter/api/widgets/Widget/build) and [key](mcp://flutter/api/widgets/Widget/key)"
+        )
+
+    def test_preserves_non_member_links(self) -> None:
+        """Links that don't match member pattern should be preserved."""
+        content = "[Widget](widgets/Widget-class.html)"
+        result = transform_member_links(content)
+        assert result == content
+
+    def test_handles_empty_string(self) -> None:
+        """Empty string should return empty string."""
+        result = transform_member_links("")
+        assert result == ""
+
+
+class TestTransformImageLinks:
+    """Tests for transform_image_links transformation function."""
+
+    def test_transforms_image_link(self) -> None:
+        """Image link should be transformed to placeholder text."""
+        content = "See ![example image](images/example.png) here."
+        result = transform_image_links(content)
+        assert result == "See [Note: Image example image omitted] here."
+
+    def test_transforms_image_with_url(self) -> None:
+        """Image with absolute URL should be transformed."""
+        content = "![logo](https://example.com/logo.png)"
+        result = transform_image_links(content)
+        assert result == "[Note: Image logo omitted]"
+
+    def test_transforms_multiple_images(self) -> None:
+        """Multiple images should all be transformed."""
+        content = "![img1](a.png) and ![img2](b.jpg)"
+        result = transform_image_links(content)
+        assert result == "[Note: Image img1 omitted] and [Note: Image img2 omitted]"
+
+    def test_preserves_regular_links(self) -> None:
+        """Regular markdown links should be preserved."""
+        content = "See [Flutter](https://flutter.dev) site."
+        result = transform_image_links(content)
+        assert result == content
+
+    def test_handles_empty_alt_text(self) -> None:
+        """Image with empty alt text should work."""
+        content = "![](image.png)"
+        result = transform_image_links(content)
+        assert result == "[Note: Image  omitted]"
+
+    def test_handles_empty_string(self) -> None:
+        """Empty string should return empty string."""
+        result = transform_image_links("")
+        assert result == ""
+
+
+class TestTransformDartpadLinks:
+    """Tests for transform_dartpad_links transformation function."""
+
+    def test_transforms_dartpad_link(self) -> None:
+        """DartPad link should be transformed to placeholder text."""
+        content = "Try [this example](https://dartpad.dev/?id=123)."
+        result = transform_dartpad_links(content)
+        assert result == "Try [Note: Interactive sample omitted]."
+
+    def test_transforms_multiple_dartpad_links(self) -> None:
+        """Multiple DartPad links should all be transformed."""
+        content = "[ex1](https://dartpad.dev/a) and [ex2](https://dartpad.dev/b)"
+        result = transform_dartpad_links(content)
+        assert (
+            result
+            == "[Note: Interactive sample omitted] and [Note: Interactive sample omitted]"
+        )
+
+    def test_preserves_non_dartpad_links(self) -> None:
+        """Non-DartPad links should be preserved."""
+        content = "See [Flutter](https://flutter.dev) site."
+        result = transform_dartpad_links(content)
+        assert result == content
+
+    def test_handles_empty_string(self) -> None:
+        """Empty string should return empty string."""
+        result = transform_dartpad_links("")
+        assert result == ""
+
+
+class TestExtractSectionContent:
+    """Tests for extract_section_content function."""
+
+    def test_extracts_section_content(self) -> None:
+        """Should extract content between section heading and next section."""
+        content = "# Title\n## Properties\nprop1\nprop2\n## Methods\nmethod1"
+        result = extract_section_content(content, "Properties")
+        assert result == "prop1\nprop2"
+
+    def test_returns_none_for_missing_section(self) -> None:
+        """Should return None if section is not found."""
+        content = "# Title\n## Properties\ncontent"
+        result = extract_section_content(content, "Methods")
+        assert result is None
+
+    def test_extracts_to_end_if_no_next_section(self) -> None:
+        """Should extract to end if no following section."""
+        content = "# Title\n## Properties\nprop1\nprop2"
+        result = extract_section_content(content, "Properties")
+        assert result == "prop1\nprop2"
+
+    def test_handles_h1_as_section_terminator(self) -> None:
+        """Should stop at h1 heading."""
+        content = "## Properties\nprop1\n# New Doc\ncontent"
+        result = extract_section_content(content, "Properties")
+        assert result == "prop1"
+
+    def test_includes_h3_subheadings(self) -> None:
+        """Should include h3+ subheadings within section."""
+        content = "## Properties\n### Subsection\ncontent\n## Methods"
+        result = extract_section_content(content, "Properties")
+        assert result == "### Subsection\ncontent"
+
+    def test_handles_whitespace_in_heading(self) -> None:
+        """Should handle whitespace around section name."""
+        content = "##   Properties  \ncontent\n## Methods"
+        result = extract_section_content(content, "Properties")
+        assert result == "content"
+
+
+class TestExtractMemberLinks:
+    """Tests for extract_member_links function."""
+
+    def test_extracts_member_link(self) -> None:
+        """Should extract member link with all fields."""
+        content = "[hashCode](mcp://flutter/api/dart-core/Object/hashCode)→ int\nThe hash code."
+        result = extract_member_links(content)
+        assert len(result) == 1
+        assert result[0]["link_text"] == "hashCode"
+        assert result[0]["section"] == "dart-core"
+        assert result[0]["class_name"] == "Object"
+        assert result[0]["member"] == "hashCode"
+        assert result[0]["result_type"] == "int"
+        assert result[0]["description"] == "The hash code."
+
+    def test_extracts_multiple_members(self) -> None:
+        """Should extract multiple member links."""
+        content = (
+            "[prop1](mcp://flutter/api/widgets/Widget/prop1)→ String\nDesc1\n\n"
+            "[prop2](mcp://flutter/api/widgets/Widget/prop2)→ int\nDesc2"
+        )
+        result = extract_member_links(content)
+        assert len(result) == 2
+        assert result[0]["member"] == "prop1"
+        assert result[1]["member"] == "prop2"
+
+    def test_ignores_links_without_arrow(self) -> None:
+        """Should ignore links that don't have type signature arrow."""
+        content = "[method](mcp://flutter/api/widgets/Widget/method)\nDescription here."
+        result = extract_member_links(content)
+        # Links without arrow are inline references, not member definitions
+        assert len(result) == 0
+
+    def test_handles_multiline_description(self) -> None:
+        """Should capture multiline description until blank line."""
+        content = "[prop](mcp://flutter/api/s/C/prop)→ int\nLine 1\nLine 2\n\nNext"
+        result = extract_member_links(content)
+        assert result[0]["description"] == "Line 1\nLine 2"
+
+    def test_handles_leading_whitespace(self) -> None:
+        """Should handle leading whitespace before link."""
+        content = "  [prop](mcp://flutter/api/s/C/prop)→ int\nDesc"
+        result = extract_member_links(content)
+        assert len(result) == 1
+        assert result[0]["member"] == "prop"
+
+    def test_returns_empty_for_no_links(self) -> None:
+        """Should return empty list if no matching links."""
+        content = "No links here, just text."
+        result = extract_member_links(content)
+        assert result == []
+
+    def test_ignores_inline_references(self) -> None:
+        """Should ignore links that appear as inline references within text."""
+        content = (
+            "[highlightShape](mcp://flutter/api/material/InkResponse/highlightShape) is BoxShape.\n\n"
+            "[highlightShape](mcp://flutter/api/material/InkResponse/highlightShape)→ BoxShape\n"
+            "The shape to use for highlights."
+        )
+        result = extract_member_links(content)
+        # Only the second one with arrow should be extracted
+        assert len(result) == 1
+        assert result[0]["result_type"] == "BoxShape"
+
+    def test_captures_full_result_type(self) -> None:
+        """Should capture the full result type including links and generics."""
+        content = "[prop](mcp://flutter/api/s/C/prop)→ [Widget](mcp://flutter/api/widgets/Widget)?\nDesc"
+        result = extract_member_links(content)
+        assert result[0]["result_type"] == "[Widget](mcp://flutter/api/widgets/Widget)?"
