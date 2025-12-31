@@ -1,16 +1,64 @@
 """Unit tests for transformation functions in convert.py."""
 
+import re
+
 from convert import (
+    LINK_PATTERNS,
+    apply_transformations,
     extract_member_links,
     extract_section_content,
+    extract_static_method_links,
+    get_unmatched_patterns,
     remove_footer,
     remove_header,
     remove_noise_lines,
+    remove_tracking_urls,
+    reset_unmatched_patterns,
     transform_class_links,
     transform_dartpad_links,
     transform_image_links,
     transform_member_links,
 )
+
+
+class TestLinkPatternRegistry:
+    """Tests for the centralized LINK_PATTERNS registry."""
+
+    def test_all_patterns_have_required_fields(self) -> None:
+        """All patterns should have name, pattern, replacement, and description."""
+        for p in LINK_PATTERNS:
+            assert p.name, "Pattern must have a name"
+            assert p.pattern, "Pattern must have a regex pattern"
+            assert p.replacement is not None, "Pattern must have a replacement"
+            assert p.description, "Pattern must have a description"
+
+    def test_all_patterns_compile(self) -> None:
+        """All patterns should be valid regex patterns."""
+        for p in LINK_PATTERNS:
+            try:
+                re.compile(p.pattern)
+            except re.error as e:
+                raise AssertionError(f"Pattern '{p.name}' has invalid regex: {e}")
+
+    def test_pattern_names_are_unique(self) -> None:
+        """All pattern names should be unique."""
+        names = [p.name for p in LINK_PATTERNS]
+        assert len(names) == len(set(names)), "Pattern names must be unique"
+
+    def test_expected_patterns_exist(self) -> None:
+        """Expected patterns should be present in registry."""
+        expected_names = {
+            "class_link",
+            "type_link",
+            "dotted_member_link",
+            "member_link",
+            "image_link",
+            "dartpad_link",
+        }
+        actual_names = {p.name for p in LINK_PATTERNS}
+        assert expected_names == actual_names, (
+            f"Missing patterns: {expected_names - actual_names}"
+        )
 
 
 class TestRemoveHeader:
@@ -184,6 +232,35 @@ class TestRemoveNoiseLines:
         content = "# Heading\nconst\nBody\nfinal\nMore"
         result = remove_noise_lines(content)
         assert result == "# Heading\nBody\nMore"
+
+
+class TestRemoveTrackingUrls:
+    """Tests for remove_tracking_urls transformation function."""
+
+    def test_removes_googletagmanager_line(self) -> None:
+        """Line containing googletagmanager.com should be removed."""
+        content = "# Heading\n<script>googletagmanager.com/abc</script>\nBody content"
+        result = remove_tracking_urls(content)
+        assert result == "# Heading\nBody content"
+
+    def test_removes_multiple_tracking_lines(self) -> None:
+        """Multiple tracking lines should all be removed."""
+        content = (
+            "# Heading\ngoogletagmanager.com line1\nBody\ngoogletagmanager.com line2"
+        )
+        result = remove_tracking_urls(content)
+        assert result == "# Heading\nBody"
+
+    def test_preserves_normal_content(self) -> None:
+        """Normal content without tracking URLs should be unchanged."""
+        content = "# Heading\nBody content\nMore content"
+        result = remove_tracking_urls(content)
+        assert result == content
+
+    def test_handles_empty_string(self) -> None:
+        """Empty string should return empty string."""
+        result = remove_tracking_urls("")
+        assert result == ""
 
 
 class TestTransformClassLinks:
@@ -364,6 +441,36 @@ class TestExtractSectionContent:
         result = extract_section_content(content, "Properties")
         assert result == "content"
 
+    def test_handles_anchor_syntax(self) -> None:
+        """Should strip anchor syntax like {#constructors} from heading."""
+        content = "## Constructors {#constructors}\nconstructor content\n## Properties"
+        result = extract_section_content(content, "Constructors")
+        assert result == "constructor content"
+
+    def test_case_insensitive_matching(self) -> None:
+        """Should match section names case-insensitively."""
+        content = "## PROPERTIES\nprop1\n## Methods"
+        result = extract_section_content(content, "Properties")
+        assert result == "prop1"
+
+    def test_case_insensitive_matching_lowercase(self) -> None:
+        """Should match lowercase heading with titlecase search."""
+        content = "## properties\nprop1\n## Methods"
+        result = extract_section_content(content, "Properties")
+        assert result == "prop1"
+
+    def test_handles_multiple_whitespace(self) -> None:
+        """Should normalize multiple whitespace in heading."""
+        content = "## Static   Methods\nmethod1\n## Other"
+        result = extract_section_content(content, "Static Methods")
+        assert result == "method1"
+
+    def test_anchor_with_extra_whitespace(self) -> None:
+        """Should handle anchor with whitespace."""
+        content = "##  Methods  {#methods}  \nmethod content\n## Properties"
+        result = extract_section_content(content, "Methods")
+        assert result == "method content"
+
 
 class TestExtractMemberLinks:
     """Tests for extract_member_links function."""
@@ -411,6 +518,34 @@ class TestExtractMemberLinks:
         assert len(result) == 1
         assert result[0]["member"] == "prop"
 
+    def test_handles_ascii_arrow(self) -> None:
+        """Should handle ASCII arrow (->) format."""
+        content = "[prop](mcp://flutter/api/s/C/prop)-> int\nDesc"
+        result = extract_member_links(content)
+        assert len(result) == 1
+        assert result[0]["result_type"] == "int"
+
+    def test_handles_fat_arrow(self) -> None:
+        """Should handle fat arrow (=>) format."""
+        content = "[prop](mcp://flutter/api/s/C/prop)=> int\nDesc"
+        result = extract_member_links(content)
+        assert len(result) == 1
+        assert result[0]["result_type"] == "int"
+
+    def test_handles_whitespace_before_arrow(self) -> None:
+        """Should handle whitespace between link and arrow."""
+        content = "[prop](mcp://flutter/api/s/C/prop) → int\nDesc"
+        result = extract_member_links(content)
+        assert len(result) == 1
+        assert result[0]["result_type"] == "int"
+
+    def test_handles_multiple_whitespace_before_arrow(self) -> None:
+        """Should handle multiple whitespace characters before arrow."""
+        content = "[prop](mcp://flutter/api/s/C/prop)   →   int\nDesc"
+        result = extract_member_links(content)
+        assert len(result) == 1
+        assert result[0]["result_type"] == "int"
+
     def test_returns_empty_for_no_links(self) -> None:
         """Should return empty list if no matching links."""
         content = "No links here, just text."
@@ -434,3 +569,134 @@ class TestExtractMemberLinks:
         content = "[prop](mcp://flutter/api/s/C/prop)→ [Widget](mcp://flutter/api/widgets/Widget)?\nDesc"
         result = extract_member_links(content)
         assert result[0]["result_type"] == "[Widget](mcp://flutter/api/widgets/Widget)?"
+
+
+class TestUnmatchedPatternTracking:
+    """Tests for unmatched HTML link pattern tracking."""
+
+    def setup_method(self) -> None:
+        """Reset unmatched patterns before each test."""
+        reset_unmatched_patterns()
+
+    def test_collects_mixin_patterns(self) -> None:
+        """Mixin link patterns should be collected as unmatched."""
+        content = (
+            "See [Diagnosticable](foundation/Diagnosticable-mixin.html) for details."
+        )
+        apply_transformations(content, source_context="test.html")
+        patterns = get_unmatched_patterns()
+        assert len(patterns) == 1
+        assert "Diagnosticable-mixin.html" in patterns[0][1]
+        assert patterns[0][0] == "test.html"
+
+    def test_collects_constant_patterns_2_part(self) -> None:
+        """Two-part constant link patterns should be collected as unmatched."""
+        content = "Use [optionalTypeArgs](meta/optionalTypeArgs-constant.html)."
+        apply_transformations(content, source_context="test.html")
+        patterns = get_unmatched_patterns()
+        assert len(patterns) == 1
+        assert "optionalTypeArgs-constant.html" in patterns[0][1]
+
+    def test_collects_constant_patterns_3_part(self) -> None:
+        """Three-part constant link patterns should be collected as unmatched."""
+        content = "Color is [transparent](material/Colors/transparent-constant.html)."
+        apply_transformations(content, source_context="test.html")
+        patterns = get_unmatched_patterns()
+        assert len(patterns) == 1
+        assert "transparent-constant.html" in patterns[0][1]
+
+    def test_does_not_collect_transformed_class_links(self) -> None:
+        """Transformed class links should not be collected."""
+        content = "See [Widget](widgets/Widget-class.html) for details."
+        apply_transformations(content, source_context="test.html")
+        patterns = get_unmatched_patterns()
+        assert len(patterns) == 0
+
+    def test_does_not_collect_transformed_member_links(self) -> None:
+        """Transformed member links should not be collected."""
+        content = "See [build](widgets/Widget/build.html) method."
+        apply_transformations(content, source_context="test.html")
+        patterns = get_unmatched_patterns()
+        assert len(patterns) == 0
+
+    def test_does_not_collect_absolute_urls(self) -> None:
+        """Absolute URLs should not be collected as unmatched."""
+        content = "See [Flutter](https://flutter.dev/docs/index.html) for details."
+        apply_transformations(content, source_context="test.html")
+        patterns = get_unmatched_patterns()
+        assert len(patterns) == 0
+
+    def test_collects_multiple_patterns(self) -> None:
+        """Multiple unmatched patterns should all be collected."""
+        content = (
+            "[Diagnosticable](foundation/Diagnosticable-mixin.html) and "
+            "[optionalTypeArgs](meta/optionalTypeArgs-constant.html)"
+        )
+        apply_transformations(content, source_context="test.html")
+        patterns = get_unmatched_patterns()
+        assert len(patterns) == 2
+
+    def test_reset_clears_patterns(self) -> None:
+        """Reset should clear all collected patterns."""
+        content = "[Diagnosticable](foundation/Diagnosticable-mixin.html)"
+        apply_transformations(content)
+        reset_unmatched_patterns()
+        patterns = get_unmatched_patterns()
+        assert len(patterns) == 0
+
+
+class TestExtractStaticMethodLinks:
+    """Tests for extract_static_method_links function."""
+
+    def test_extracts_static_method_link(self) -> None:
+        """Should extract static method link with parameters."""
+        content = (
+            "[divideTiles](mcp://flutter/api/material/ListTile/divideTiles)"
+            "({BuildContext? context, required Iterable<Widget> tiles}) → Iterable<Widget>"
+        )
+        result = extract_static_method_links(content)
+        assert len(result) == 1
+        assert result[0]["link_text"] == "divideTiles"
+        assert result[0]["section"] == "material"
+        assert result[0]["class_name"] == "ListTile"
+        assert result[0]["member"] == "divideTiles"
+
+    def test_extracts_multiple_static_methods(self) -> None:
+        """Should extract multiple static method links."""
+        content = (
+            "[method1](mcp://flutter/api/section/Class/method1)() → void\n"
+            "[method2](mcp://flutter/api/section/Class/method2)() → int\n"
+        )
+        result = extract_static_method_links(content)
+        assert len(result) == 2
+        assert result[0]["member"] == "method1"
+        assert result[1]["member"] == "method2"
+
+    def test_ignores_non_link_lines(self) -> None:
+        """Should ignore lines that don't start with MCP links."""
+        content = (
+            "Some description text\n"
+            "[divideTiles](mcp://flutter/api/material/ListTile/divideTiles)() → void\n"
+            "More text here"
+        )
+        result = extract_static_method_links(content)
+        assert len(result) == 1
+        assert result[0]["member"] == "divideTiles"
+
+    def test_handles_leading_whitespace(self) -> None:
+        """Should handle leading whitespace on link lines."""
+        content = "  [method](mcp://flutter/api/section/Class/method)() → void"
+        result = extract_static_method_links(content)
+        assert len(result) == 1
+        assert result[0]["member"] == "method"
+
+    def test_returns_empty_for_no_links(self) -> None:
+        """Should return empty list if no matching links."""
+        content = "No links here, just text."
+        result = extract_static_method_links(content)
+        assert result == []
+
+    def test_returns_empty_for_empty_content(self) -> None:
+        """Should return empty list for empty content."""
+        result = extract_static_method_links("")
+        assert result == []

@@ -7,7 +7,8 @@ This document tracks technical debt identified during the convert_002 implementa
 ### TD-001: Unauthorized Link Transformations
 
 **Severity:** High  
-**Location:** `transform_class_links()`, `transform_member_links()`
+**Location:** `transform_class_links()`, `transform_member_links()`  
+**Status:** RESOLVED (2025-12-31)
 
 **Problem:** The implementation added transformations for link patterns not specified in convert_002.md:
 - `-mixin.html` suffix (e.g., `Diagnosticable-mixin.html`)
@@ -30,7 +31,8 @@ These were added to make integration tests pass rather than following the spec's
 ### TD-002: Missing Informational Logging for Unmatched Patterns
 
 **Severity:** High  
-**Location:** `transform_class_links()`, `transform_member_links()`
+**Location:** `transform_class_links()`, `transform_member_links()`  
+**Status:** RESOLVED (2025-12-31)
 
 **Problem:** The spec requires:
 > "Any relative URI that does not match one of the following patterns will be logged as an informational message..."
@@ -51,7 +53,8 @@ This logging was never implemented. Instead, unmatched patterns were either:
 ### TD-003: Hardcoded Noise Strings
 
 **Severity:** Medium  
-**Location:** `remove_noise_lines()`
+**Location:** `remove_noise_lines()`  
+**Status:** RESOLVED (2025-12-31)
 
 **Problem:** Noise strings are hardcoded:
 ```python
@@ -77,7 +80,8 @@ These are artifacts of `html_to_markdown` conversion behavior. Changes to the li
 ### TD-004: Fragile Section Heading Detection
 
 **Severity:** Medium  
-**Location:** `extract_section_content()`
+**Location:** `extract_section_content()`  
+**Status:** RESOLVED (2025-12-31)
 
 **Problem:** Section detection uses exact heading format matching:
 ```python
@@ -99,7 +103,8 @@ This fails for:
 ### TD-005: Member Link Extraction Depends on Arrow Character
 
 **Severity:** Medium  
-**Location:** `extract_member_links()`
+**Location:** `extract_member_links()`  
+**Status:** RESOLVED (2025-12-31)
 
 **Problem:** The regex requires the arrow character `→` immediately after the link to distinguish member definitions from inline references:
 ```python
@@ -113,19 +118,22 @@ This is brittle because:
 - Formatting changes break extraction silently
 
 **Resolution:**
-The text following the arrow represents a return type. A more robust capture approach:
-1. Start at end-of-line after the link
-2. Skip any trailing whitespace
-3. Capture all contiguous non-whitespace characters as the return type
+The arrow character is semantically important—it distinguishes member definitions (with type signatures) from inline references. Removing arrow detection would break this distinction.
 
-This avoids dependency on the specific arrow character and handles formatting variations.
+Instead, robustness was improved by:
+1. Supporting multiple arrow formats: `→` (U+2192), `->`, `=>`, `➜` (U+279C), `➔` (U+2794)
+2. Allowing optional whitespace between the link closing `)` and the arrow
+3. Using regex alternation pattern for arrow detection
+
+This maintains correct semantic filtering while accommodating formatting variations.
 
 ---
 
 ### TD-006: Scattered Regex Patterns
 
 **Severity:** Low  
-**Location:** Multiple `transform_*` functions
+**Location:** Multiple `transform_*` functions  
+**Status:** RESOLVED (2025-12-31)
 
 **Problem:** Each transformation function contains inline regex patterns with no central registry or validation. This makes it difficult to:
 - Audit all patterns in one place
@@ -154,7 +162,8 @@ This avoids dependency on the specific arrow character and handles formatting va
 ### TD-007: Analytics URL Filtering in Noise Removal
 
 **Severity:** Low  
-**Location:** `remove_noise_lines()`
+**Location:** `remove_noise_lines()`  
+**Status:** RESOLVED (2025-12-31)
 
 **Problem:** Google Tag Manager URL filtering was added as a special case:
 ```python
@@ -174,7 +183,8 @@ This mixes concerns (noise string removal vs. tracking URL removal) and uses sub
 ### TD-008: Integration Test Assertions Too Strict
 
 **Severity:** Low  
-**Location:** `test_integration.py::test_output_files_have_no_html_links`
+**Location:** `test_integration.py::test_output_files_have_no_html_links`  
+**Status:** RESOLVED (2025-12-31)
 
 **Problem:** The test was updated to use a regex that excludes HTTPS URLs, but the fundamental assertion (no local HTML links) conflicts with the spec's allowance for unmatched patterns.
 
@@ -227,7 +237,8 @@ Update the specification to add a new step (or sub-step of Step 4) for processin
 ### TD-010: Static Methods Processing Not Implemented
 
 **Severity:** Medium  
-**Location:** `convert.py` - missing implementation
+**Location:** `convert.py` - missing implementation  
+**Status:** RESOLVED (2025-12-31)
 
 **Problem:** Following the resolution of TD-009, the convert_002.md specification now includes requirements for processing static methods (section `## Static Methods`). However, convert.py has not yet been updated to implement this functionality.
 

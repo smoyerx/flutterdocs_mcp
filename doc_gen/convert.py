@@ -9,6 +9,7 @@ import argparse
 import logging
 import re
 import sys
+from dataclasses import dataclass
 from pathlib import Path
 
 from html_to_markdown import (
@@ -17,6 +18,121 @@ from html_to_markdown import (
     convert_with_handle,
     create_options_handle,
 )
+
+
+# Module-level tracking of unmatched HTML link patterns
+_unmatched_patterns: list[tuple[str, str]] = []  # List of (context, pattern)
+
+# Noise strings to remove from converted markdown
+# These are artifacts from the HTML conversion that don't add value
+NOISE_STRINGS: tuple[str, ...] = (
+    "const",
+    "final",
+    "no setterinherited",
+    "finalinherited",
+    "inherited",
+    '[*link*](# "Copy link to clipboard")',
+)
+
+# Analytics/tracking domains to filter from output
+TRACKING_DOMAINS: tuple[str, ...] = ("googletagmanager.com",)
+
+
+# --- Link Transformation Pattern Registry ---
+
+
+@dataclass(frozen=True)
+class LinkPattern:
+    """A pattern for transforming markdown links.
+
+    Attributes:
+        name: A human-readable name for the pattern.
+        pattern: The regex pattern to match.
+        replacement: The replacement string (can use capture groups).
+        description: A description of what this pattern matches.
+    """
+
+    name: str
+    pattern: str
+    replacement: str
+    description: str
+
+
+# Centralized registry of link transformation patterns
+# Order matters: more specific patterns should come before less specific ones
+LINK_PATTERNS: tuple[LinkPattern, ...] = (
+    # Class links
+    LinkPattern(
+        name="class_link",
+        pattern=r"\[([^\]]+)\]\(([a-zA-Z0-9_-]+)/([a-zA-Z0-9_]+)-class\.html\)",
+        replacement=r"[\1](mcp://flutter/api/\2/\3)",
+        description="[ClassName](section/ClassName-class.html)",
+    ),
+    LinkPattern(
+        name="type_link",
+        pattern=r"\[([^\]]+)\]\(([a-zA-Z0-9_-]+)/([a-zA-Z0-9_]+)\.html\)",
+        replacement=r"[\1](mcp://flutter/api/\2/\3)",
+        description="[Type](section/Type.html) - types and references",
+    ),
+    # Member links (more specific patterns first)
+    LinkPattern(
+        name="dotted_member_link",
+        pattern=r"\[([^\]]+)\]\(([a-zA-Z0-9_-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+\.[a-zA-Z0-9_]+)\.html\)",
+        replacement=r"[\1](mcp://flutter/api/\2/\3/\4)",
+        description="[Class.member](section/Class/Class.member.html) - named constructors/static methods",
+    ),
+    LinkPattern(
+        name="member_link",
+        pattern=r"\[([^\]]+)\]\(([a-zA-Z0-9_-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)\.html\)",
+        replacement=r"[\1](mcp://flutter/api/\2/\3/\4)",
+        description="[member](section/Class/member.html)",
+    ),
+    # Special links
+    LinkPattern(
+        name="image_link",
+        pattern=r"!\[([^\]]*)\]\([^)]+\)",
+        replacement=r"[Note: Image \1 omitted]",
+        description="![alt text](path) - image links",
+    ),
+    LinkPattern(
+        name="dartpad_link",
+        pattern=r"\[[^\]]+\]\([^)]*dartpad\.dev[^)]*\)",
+        replacement="[Note: Interactive sample omitted]",
+        description="[text](url with dartpad.dev) - DartPad links",
+    ),
+)
+
+# Pattern for detecting unmatched relative HTML links
+UNMATCHED_HTML_LINK_PATTERN = re.compile(r"\[[^\]]+\]\((?!https?://)[^)]+\.html[^)]*\)")
+
+
+def reset_unmatched_patterns() -> None:
+    """Reset the unmatched patterns tracking list."""
+    global _unmatched_patterns
+    _unmatched_patterns = []
+
+
+def get_unmatched_patterns() -> list[tuple[str, str]]:
+    """Get the list of unmatched patterns collected during processing.
+
+    Returns:
+        List of tuples containing (source_context, pattern_string).
+    """
+    return _unmatched_patterns.copy()
+
+
+def log_unmatched_summary() -> None:
+    """Log a summary of all unmatched HTML link patterns found."""
+    if _unmatched_patterns:
+        unique_patterns = set(pattern for _, pattern in _unmatched_patterns)
+        logging.info(
+            "Found %d unmatched HTML link patterns (%d unique)",
+            len(_unmatched_patterns),
+            len(unique_patterns),
+        )
+        for pattern in sorted(unique_patterns):
+            count = sum(1 for _, p in _unmatched_patterns if p == pattern)
+            logging.info("  %dx: %s", count, pattern)
 
 
 # --- Transformation Functions ---
@@ -61,18 +177,10 @@ def remove_footer(content: str) -> str:
 
 
 def remove_noise_lines(content: str) -> str:
-    """Remove lines containing only whitespace and specific noise strings.
+    """Remove lines containing only specific noise strings.
 
     Removes lines that contain only whitespace and exactly one occurrence
-    of exactly one of the following strings:
-    - "const"
-    - "final"
-    - "no setterinherited"
-    - "finalinherited"
-    - "inherited"
-    - '[*link*](# "Copy link to clipboard")'
-
-    Also removes lines containing analytics/tracking URLs.
+    of exactly one of the strings defined in NOISE_STRINGS.
 
     Args:
         content: The markdown content to transform.
@@ -80,25 +188,37 @@ def remove_noise_lines(content: str) -> str:
     Returns:
         The content with noise lines removed.
     """
-    noise_strings = [
-        "const",
-        "final",
-        "no setterinherited",
-        "finalinherited",
-        "inherited",
-        '[*link*](# "Copy link to clipboard")',
-    ]
-
     lines = content.split("\n")
     result_lines = []
 
     for line in lines:
         stripped = line.strip()
         # Skip noise strings
-        if stripped in noise_strings:
+        if stripped in NOISE_STRINGS:
             continue
-        # Skip analytics/tracking lines
-        if "googletagmanager.com" in line:
+        result_lines.append(line)
+
+    return "\n".join(result_lines)
+
+
+def remove_tracking_urls(content: str) -> str:
+    """Remove lines containing analytics/tracking URLs.
+
+    Removes lines containing any domain from TRACKING_DOMAINS.
+    This separates tracking URL removal from general noise removal
+    for better maintainability and testability.
+
+    Args:
+        content: The markdown content to transform.
+
+    Returns:
+        The content with tracking URL lines removed.
+    """
+    lines = content.split("\n")
+    result_lines = []
+
+    for line in lines:
+        if any(domain in line for domain in TRACKING_DOMAINS):
             continue
         result_lines.append(line)
 
@@ -109,37 +229,28 @@ def remove_noise_lines(content: str) -> str:
 
 
 def transform_class_links(content: str) -> str:
-    """Transform class and mixin links to MCP URI format.
+    """Transform class links to MCP URI format.
 
     Replaces links of the form:
     - [CLASS_NAME](SECTION/CLASS_NAME-class.html)
-    - [MIXIN_NAME](SECTION/MIXIN_NAME-mixin.html)
-    - [CONSTANT](SECTION/CONSTANT-constant.html)
     - [TYPE](SECTION/TYPE.html)
     with [NAME](mcp://flutter/api/SECTION/NAME).
+
+    Uses patterns from LINK_PATTERNS registry.
 
     Args:
         content: The markdown content to transform.
 
     Returns:
-        The content with class/mixin/constant links transformed.
+        The content with class links transformed.
     """
-    # Match [ClassName](section/ClassName-class.html) - relative URI only
-    pattern = r"\[([^\]]+)\]\(([a-zA-Z0-9_-]+)/([a-zA-Z0-9_]+)-class\.html\)"
-    content = re.sub(pattern, r"[\1](mcp://flutter/api/\2/\3)", content)
+    # Apply class_link pattern
+    class_pattern = next(p for p in LINK_PATTERNS if p.name == "class_link")
+    content = re.sub(class_pattern.pattern, class_pattern.replacement, content)
 
-    # Match [MixinName](section/MixinName-mixin.html)
-    pattern_mixin = r"\[([^\]]+)\]\(([a-zA-Z0-9_-]+)/([a-zA-Z0-9_]+)-mixin\.html\)"
-    content = re.sub(pattern_mixin, r"[\1](mcp://flutter/api/\2/\3)", content)
-
-    # Match [ConstantName](section/ConstantName-constant.html)
-    pattern_const = r"\[([^\]]+)\]\(([a-zA-Z0-9_-]+)/([a-zA-Z0-9_]+)-constant\.html\)"
-    content = re.sub(pattern_const, r"[\1](mcp://flutter/api/\2/\3)", content)
-
-    # Match [ClassName](section/ClassName.html) - types and other references
-    # Avoid matching 3-part member paths and external URLs
-    pattern2 = r"\[([^\]]+)\]\(([a-zA-Z0-9_-]+)/([a-zA-Z0-9_]+)\.html\)"
-    return re.sub(pattern2, r"[\1](mcp://flutter/api/\2/\3)", content)
+    # Apply type_link pattern
+    type_pattern = next(p for p in LINK_PATTERNS if p.name == "type_link")
+    return re.sub(type_pattern.pattern, type_pattern.replacement, content)
 
 
 def transform_member_links(content: str) -> str:
@@ -148,7 +259,8 @@ def transform_member_links(content: str) -> str:
     Replaces links of the form:
     - [MEMBER](SECTION/CLASS/MEMBER.html) -> mcp://flutter/api/SECTION/CLASS/MEMBER
     - [CLASS.MEMBER](SECTION/CLASS/CLASS.MEMBER.html) -> mcp://flutter/api/SECTION/CLASS/CLASS.MEMBER
-    - [MEMBER](SECTION/CLASS/MEMBER-constant.html) -> mcp://flutter/api/SECTION/CLASS/MEMBER
+
+    Uses patterns from LINK_PATTERNS registry.
 
     Args:
         content: The markdown content to transform.
@@ -156,17 +268,13 @@ def transform_member_links(content: str) -> str:
     Returns:
         The content with member links transformed.
     """
-    # Match [Class.member](section/Class/Class.member.html) - named constructors/static methods
-    pattern4 = r"\[([^\]]+)\]\(([a-zA-Z0-9_-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+\.[a-zA-Z0-9_]+)\.html\)"
-    content = re.sub(pattern4, r"[\1](mcp://flutter/api/\2/\3/\4)", content)
+    # Apply dotted_member_link pattern first (more specific)
+    dotted_pattern = next(p for p in LINK_PATTERNS if p.name == "dotted_member_link")
+    content = re.sub(dotted_pattern.pattern, dotted_pattern.replacement, content)
 
-    # Match [member](section/Class/member-constant.html) - class constants
-    pattern_const = r"\[([^\]]+)\]\(([a-zA-Z0-9_-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)-constant\.html\)"
-    content = re.sub(pattern_const, r"[\1](mcp://flutter/api/\2/\3/\4)", content)
-
-    # Match [member](section/Class/member.html) - relative URI only
-    pattern3 = r"\[([^\]]+)\]\(([a-zA-Z0-9_-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)\.html\)"
-    return re.sub(pattern3, r"[\1](mcp://flutter/api/\2/\3/\4)", content)
+    # Apply member_link pattern
+    member_pattern = next(p for p in LINK_PATTERNS if p.name == "member_link")
+    return re.sub(member_pattern.pattern, member_pattern.replacement, content)
 
 
 def transform_image_links(content: str) -> str:
@@ -175,15 +283,16 @@ def transform_image_links(content: str) -> str:
     Replaces image links of the form ![Link Text](IMAGE_PATH)
     with [Note: Image Link Text omitted].
 
+    Uses patterns from LINK_PATTERNS registry.
+
     Args:
         content: The markdown content to transform.
 
     Returns:
         The content with image links replaced by placeholder text.
     """
-    # Match ![alt text](any/path/or/url)
-    pattern = r"!\[([^\]]*)\]\([^)]+\)"
-    return re.sub(pattern, r"[Note: Image \1 omitted]", content)
+    image_pattern = next(p for p in LINK_PATTERNS if p.name == "image_link")
+    return re.sub(image_pattern.pattern, image_pattern.replacement, content)
 
 
 def transform_dartpad_links(content: str) -> str:
@@ -192,24 +301,45 @@ def transform_dartpad_links(content: str) -> str:
     Replaces links containing "dartpad.dev" in the URI
     with [Note: Interactive sample omitted].
 
+    Uses patterns from LINK_PATTERNS registry.
+
     Args:
         content: The markdown content to transform.
 
     Returns:
         The content with DartPad links replaced by placeholder text.
     """
-    # Match [text](url containing dartpad.dev)
-    pattern = r"\[[^\]]+\]\([^)]*dartpad\.dev[^)]*\)"
-    return re.sub(pattern, "[Note: Interactive sample omitted]", content)
+    dartpad_pattern = next(p for p in LINK_PATTERNS if p.name == "dartpad_link")
+    return re.sub(dartpad_pattern.pattern, dartpad_pattern.replacement, content)
 
 
-def apply_transformations(content: str) -> str:
+def _collect_unmatched_patterns(content: str, source_context: str = "") -> None:
+    """Detect and collect any remaining relative HTML links that weren't transformed.
+
+    This function identifies HTML links that weren't matched by any transformation
+    pattern, adding them to the module-level tracking list.
+
+    Uses UNMATCHED_HTML_LINK_PATTERN for detection.
+
+    Args:
+        content: The markdown content to check for unmatched links.
+        source_context: Optional context string to identify the source file.
+    """
+    global _unmatched_patterns
+    matches = UNMATCHED_HTML_LINK_PATTERN.findall(content)
+
+    for match in matches:
+        _unmatched_patterns.append((source_context, match))
+
+
+def apply_transformations(content: str, source_context: str = "") -> str:
     """Apply all markdown transformations in the specified order.
 
     Cleanup transformations (applied first):
     1. Remove header content before first heading
     2. Remove footer content from Flutter index link
     3. Remove noise lines (const, final, inherited markers, etc.)
+    4. Remove tracking URL lines (analytics, etc.)
 
     Link transformations (applied second):
     1. Transform class links to MCP URI format
@@ -217,8 +347,12 @@ def apply_transformations(content: str) -> str:
     3. Transform image links to placeholder text
     4. Transform DartPad links to placeholder text
 
+    After transformations, any remaining relative HTML links are collected
+    as unmatched patterns for summary reporting.
+
     Args:
         content: The markdown content to transform.
+        source_context: Optional context string for identifying unmatched patterns.
 
     Returns:
         The fully transformed markdown content.
@@ -227,6 +361,7 @@ def apply_transformations(content: str) -> str:
     content = remove_header(content)
     content = remove_footer(content)
     content = remove_noise_lines(content)
+    content = remove_tracking_urls(content)
 
     # Link transformations
     content = transform_class_links(content)
@@ -234,17 +369,40 @@ def apply_transformations(content: str) -> str:
     content = transform_image_links(content)
     content = transform_dartpad_links(content)
 
+    # Collect any remaining unmatched HTML links
+    _collect_unmatched_patterns(content, source_context)
+
     return content
 
 
 # --- Section Parsing Functions ---
 
 
+def _normalize_heading_text(heading_text: str) -> str:
+    """Normalize heading text for comparison.
+
+    Removes anchor syntax ({#id}), normalizes whitespace, and converts to lowercase.
+
+    Args:
+        heading_text: The raw heading text (after ## prefix).
+
+    Returns:
+        Normalized heading text for case-insensitive comparison.
+    """
+    # Remove anchor syntax like {#constructors}
+    anchor_pattern = re.compile(r"\s*\{#[^}]+\}\s*")
+    text = anchor_pattern.sub("", heading_text)
+    # Normalize whitespace and lowercase
+    return " ".join(text.split()).lower()
+
+
 def extract_section_content(markdown: str, section_name: str) -> str | None:
     """Extract content from a specific section of markdown.
 
     Extracts all content between a section heading (## section_name) and the
-    next heading of the same or higher level.
+    next heading of the same or higher level. Handles variations in heading
+    format including extra whitespace, anchor syntax ({#id}), and is
+    case-insensitive.
 
     Args:
         markdown: The markdown content to search.
@@ -256,14 +414,17 @@ def extract_section_content(markdown: str, section_name: str) -> str | None:
     lines = markdown.split("\n")
     in_section = False
     section_lines: list[str] = []
+    normalized_target = _normalize_heading_text(section_name)
 
     for line in lines:
         stripped = line.lstrip()
 
         # Check if this is the target section heading
-        if stripped.startswith("## ") and stripped[3:].strip() == section_name:
-            in_section = True
-            continue
+        if stripped.startswith("## "):
+            heading_text = stripped[3:]
+            if _normalize_heading_text(heading_text) == normalized_target:
+                in_section = True
+                continue
 
         # Check if we've hit the next section (same or higher level heading)
         if in_section and stripped.startswith("#"):
@@ -293,8 +454,8 @@ def extract_member_links(
     """Extract member links from section content.
 
     Parses lines that start with [MEMBER](mcp://flutter/api/SECTION/CLASS/MEMBER)
-    followed by a type signature arrow (→), and captures the link text, section,
-    class, member name, result type, and description.
+    followed by a type signature arrow (→, ->, etc.), and captures the link text,
+    section, class, member name, result type, and description.
 
     Args:
         section_content: The markdown content of a section.
@@ -305,19 +466,22 @@ def extract_member_links(
         - section: The section from the URI
         - class_name: The class from the URI
         - member: The member name from the URI
-        - result_type: The result type (text after → on the same line), or empty string
+        - result_type: The result type (text after arrow on the same line), or empty string
         - description: Lines following the link until a blank line, or empty string
     """
     members: list[dict[str, str]] = []
     lines = section_content.split("\n")
 
-    # Unicode rightwards arrow
-    arrow = "\u2192"
+    # Arrow patterns: Unicode rightwards arrow, ASCII arrow variants
+    # Supported: → (U+2192), -> , => , ➜ (U+279C), ➔ (U+2794)
+    arrow_pattern = r"(?:\u2192|\u279C|\u2794|->|=>)"
 
-    # Pattern to match [text](mcp://flutter/api/section/class/member) followed by → (type signature)
+    # Pattern to match [text](mcp://flutter/api/section/class/member) followed by
+    # optional whitespace and an arrow (type signature).
     # This distinguishes property definitions from inline references
     link_pattern = re.compile(
-        r"^\s*\[([^\]]+)\]\(mcp://flutter/api/([^/]+)/([^/]+)/([^)]+)\)" + arrow
+        r"^\s*\[([^\]]+)\]\(mcp://flutter/api/([^/]+)/([^/]+)/([^)]+)\)\s*"
+        + arrow_pattern
     )
 
     i = 0
@@ -331,11 +495,12 @@ def extract_member_links(
             class_name = match.group(3)
             member = match.group(4)
 
-            # Extract result type (after → on same line)
+            # Extract result type (after arrow on same line)
+            # Use regex to find the arrow and extract what follows
             result_type = ""
-            arrow_pos = line.find(arrow)
-            if arrow_pos != -1:
-                after_arrow = line[arrow_pos + 1 :].strip()
+            arrow_search = re.search(arrow_pattern, line)
+            if arrow_search:
+                after_arrow = line[arrow_search.end() :].strip()
                 # Result type is everything after the arrow on the same line
                 if after_arrow:
                     result_type = after_arrow
@@ -362,6 +527,55 @@ def extract_member_links(
             )
 
         i += 1
+
+    return members
+
+
+def extract_static_method_links(
+    section_content: str,
+) -> list[dict[str, str]]:
+    """Extract static method links from section content.
+
+    Parses lines that start with [METHOD](mcp://flutter/api/SECTION/CLASS/METHOD)
+    for static methods. Unlike properties/methods, static methods don't require
+    capturing result_type or description - we just need the link information.
+
+    Args:
+        section_content: The markdown content of the Static Methods section.
+
+    Returns:
+        A list of dictionaries, each containing:
+        - link_text: The text of the link
+        - section: The section from the URI
+        - class_name: The class from the URI
+        - member: The member name from the URI
+    """
+    members: list[dict[str, str]] = []
+    lines = section_content.split("\n")
+
+    # Pattern to match [text](mcp://flutter/api/section/class/member)
+    # For static methods, we don't require the arrow - just the MCP link at line start
+    link_pattern = re.compile(
+        r"^\s*\[([^\]]+)\]\(mcp://flutter/api/([^/]+)/([^/]+)/([^)]+)\)"
+    )
+
+    for line in lines:
+        match = link_pattern.match(line)
+
+        if match:
+            link_text = match.group(1)
+            section = match.group(2)
+            class_name = match.group(3)
+            member = match.group(4)
+
+            members.append(
+                {
+                    "link_text": link_text,
+                    "section": section,
+                    "class_name": class_name,
+                    "member": member,
+                }
+            )
 
     return members
 
@@ -427,7 +641,7 @@ def convert_html_to_markdown(
     except Exception as e:
         raise RuntimeError(f"Error reading or converting HTML file {html_path}: {e}")
 
-    return apply_transformations(md_text)
+    return apply_transformations(md_text, source_context=str(html_path))
 
 
 def convert_dart_snippet(dart_path: Path, class_name: str, section: str) -> str:
@@ -758,6 +972,73 @@ def process_operators(
             output_file.write_text(markdown_content, encoding="utf-8")
 
 
+def process_static_methods(
+    class_markdown: str,
+    current_section: str,
+    current_class: str,
+    doc_dir: Path,
+    output_dir: Path,
+    options_handle: ConversionOptionsHandle,
+) -> None:
+    """Process static method files for a class.
+
+    Scans the Static Methods section and converts native static method HTML files.
+    Static methods have no inherited variant since static members belong to the
+    declaring class only.
+
+    Args:
+        class_markdown: The converted markdown content of the main class file.
+        current_section: The current documentation section name.
+        current_class: The current class name.
+        doc_dir: The root documentation directory.
+        output_dir: The class output directory.
+        options_handle: The ConversionOptionsHandle instance for conversion.
+    """
+    section_content = extract_section_content(class_markdown, "Static Methods")
+    if section_content is None:
+        # Silent handling per spec - no message if section not found
+        return
+
+    members = extract_static_method_links(section_content)
+    if not members:
+        # Silent handling per spec - no message if no matches found
+        return
+
+    statics_dir = output_dir / "statics"
+
+    for member in members:
+        # Validate that static method belongs to current class
+        is_native = (
+            member["section"] == current_section
+            and member["class_name"] == current_class
+        )
+
+        if not is_native:
+            # Static methods should only reference the current class
+            logging.error(
+                f"Static method link has unexpected URI scheme: "
+                f"{member['section']}/{member['class_name']}/{member['member']} "
+                f"(expected {current_section}/{current_class})"
+            )
+            sys.exit(1)
+
+        statics_dir.mkdir(parents=True, exist_ok=True)
+        html_path = (
+            doc_dir
+            / "flutter"
+            / current_section
+            / current_class
+            / f"{member['member']}.html"
+        )
+        if not html_path.exists():
+            logging.error(f"Static method HTML file not found: {html_path}")
+            sys.exit(1)
+
+        markdown_content = convert_html_to_markdown(options_handle, html_path)
+        output_file = statics_dir / f"{member['member']}.md"
+        output_file.write_text(markdown_content, encoding="utf-8")
+
+
 def process_snippets(
     doc_dir: Path,
     output_dir: Path,
@@ -835,7 +1116,7 @@ def process_class(
     doc_dir: Path,
     output_dir: Path,
 ) -> None:
-    """Process all documentation files for a class using the 6-step pipeline.
+    """Process all documentation files for a class using the 7-step pipeline.
 
     Steps:
     1. Process the class file
@@ -843,7 +1124,8 @@ def process_class(
     3. Process property files
     4. Process method files
     5. Process operator files
-    6. Process code snippet files
+    6. Process static method files
+    7. Process code snippet files
 
     Args:
         options_handle: The ConversionOptionsHandle instance for conversion.
@@ -887,7 +1169,13 @@ def process_class(
         class_markdown, section, class_name, doc_dir, class_output_dir, options_handle
     )
 
-    # Step 6: Process code snippet files
+    # Step 6: Process static method files
+    logging.info(f"  Processing static methods for {class_name}")
+    process_static_methods(
+        class_markdown, section, class_name, doc_dir, class_output_dir, options_handle
+    )
+
+    # Step 7: Process code snippet files
     logging.info(f"  Processing snippets for {class_name}")
     process_snippets(doc_dir, class_output_dir, section, class_name)
 
@@ -982,6 +1270,9 @@ def main() -> None:
         format="%(message)s",
     )
 
+    # Reset unmatched pattern tracking
+    reset_unmatched_patterns()
+
     # Validate directories
     validate_directories(args.documents, args.section)
 
@@ -1014,6 +1305,9 @@ def main() -> None:
         except OSError as e:
             logging.error(f"Cannot write output file for {class_name}: {e}")
             sys.exit(1)
+
+    # Log summary of unmatched HTML link patterns
+    log_unmatched_summary()
 
     print(
         f"Successfully processed {len(classes)} classes from section '{args.section}'"

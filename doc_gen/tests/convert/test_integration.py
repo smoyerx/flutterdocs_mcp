@@ -141,23 +141,54 @@ class TestConvertIntegration:
             )
 
     @pytest.mark.parametrize("section", get_available_sections())
-    def test_output_files_have_no_html_links(
+    def test_spec_defined_link_patterns_are_transformed(
         self, section: str, output_dir: Path
     ) -> None:
-        """Output files should not contain local HTML file links."""
+        """Spec-defined link patterns should be transformed to MCP URIs.
+
+        The converter transforms class links (-class.html, .html) and member links
+        (section/class/member.html) to MCP URIs. Other patterns like -mixin.html
+        and -constant.html are intentionally left untransformed and logged for
+        future pattern discovery.
+        """
         result = run_convert(SAMPLES_DIR, section, output_dir)
         assert result.returncode == 0
 
         api_section_dir = output_dir / "api" / section
-        # Pattern for relative HTML links (not starting with http)
-        # Matches: [text](something.html) but not [text](https://...)
         import re
 
-        local_html_pattern = re.compile(r"\[[^\]]+\]\((?!https?://)[^)]+\.html[^)]*\)")
+        # Patterns that SHOULD be transformed (should NOT appear in output)
+        class_link_pattern = re.compile(
+            r"\[[^\]]+\]\((?!https?://)[a-zA-Z0-9_-]+/[a-zA-Z0-9_]+-class\.html\)"
+        )
+        member_link_pattern = re.compile(
+            r"\[[^\]]+\]\((?!https?://)[a-zA-Z0-9_-]+/[a-zA-Z0-9_]+/[a-zA-Z0-9_.]+\.html\)"
+        )
+
         for md_file in api_section_dir.rglob("*.md"):
             content = md_file.read_text(encoding="utf-8")
-            matches = local_html_pattern.findall(content)
-            assert not matches, f"File {md_file} contains local HTML links: {matches}"
+
+            class_matches = class_link_pattern.findall(content)
+            assert not class_matches, (
+                f"File {md_file} contains untransformed class links: {class_matches}"
+            )
+
+            member_matches = member_link_pattern.findall(content)
+            # Filter out known unhandled patterns (-constant.html in 3-part paths)
+            member_matches = [m for m in member_matches if "-constant.html" not in m]
+            assert not member_matches, (
+                f"File {md_file} contains untransformed member links: {member_matches}"
+            )
+
+        # Verify MCP URIs are present (transformations occurred)
+        mcp_pattern = re.compile(r"mcp://flutter/api/")
+        has_mcp_links = False
+        for md_file in api_section_dir.rglob("*.md"):
+            content = md_file.read_text(encoding="utf-8")
+            if mcp_pattern.search(content):
+                has_mcp_links = True
+                break
+        assert has_mcp_links, "No MCP URIs found - transformations may have failed"
 
     @pytest.mark.parametrize("section", get_available_sections())
     def test_output_files_have_no_footer(self, section: str, output_dir: Path) -> None:
@@ -406,3 +437,22 @@ class TestConvertDirectoryStructure:
             # Should contain .md files if it exists
             md_files = list(constructors_dir.glob("*.md"))
             assert len(md_files) >= 0
+
+    def test_statics_directory(self, output_dir: Path) -> None:
+        """Statics directory should be created for classes with static methods."""
+        result = run_convert(SAMPLES_DIR, "material", output_dir)
+        assert result.returncode == 0
+
+        class_dir = output_dir / "api" / "material" / "ListTile"
+        statics_dir = class_dir / "statics"
+        # ListTile has a divideTiles static method
+        assert statics_dir.exists(), "statics directory should exist for ListTile"
+        assert statics_dir.is_dir()
+
+        # divideTiles.md should be present
+        dividetiles_file = statics_dir / "divideTiles.md"
+        assert dividetiles_file.exists(), "divideTiles.md should exist"
+
+        # Verify the file starts with a heading
+        content = dividetiles_file.read_text(encoding="utf-8")
+        assert content.startswith("#"), "Static method file should start with heading"
