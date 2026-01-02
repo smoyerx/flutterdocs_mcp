@@ -41,8 +41,7 @@ doc_gen/
 │           ├── __init__.py          # Package exports
 │           ├── __main__.py          # CLI entry point (python -m flutterdoc_gen.convert)
 │           ├── cli.py               # Argument parsing and main()
-│           ├── patterns.py          # Pattern definitions (LINK_PATTERNS, NOISE_STRINGS, etc.)
-│           ├── transformations.py   # Cleanup and link transformation functions
+│           ├── patterns.py          # Pattern definitions (LINK_PATTERNS, NOISE_STRINGS, etc.)           ├── paths.py             # Output path construction for markdown files│           ├── transformations.py   # Cleanup and link transformation functions
 │           ├── parsing.py           # Section extraction and member link parsing
 │           ├── conversion.py        # HTML-to-markdown and Dart snippet conversion
 │           ├── processors.py        # Class member processing functions
@@ -104,6 +103,37 @@ Contains all pattern definitions and constants:
 - TRACKING_DOMAINS tuple
 - UNMATCHED_HTML_LINK_PATTERN regex
 ```
+
+### `paths.py`
+
+Contains functions for constructing output file paths:
+
+```python
+# Output path construction for markdown files
+- get_class_file_path(output_dir, section, class_name) -> Path
+- get_constructor_file_path(output_dir, section, class_name, constructor) -> Path
+- get_native_property_file_path(output_dir, section, class_name, property) -> Path
+- get_inherited_property_file_path(output_dir, section, class_name, source_section, source_class, property) -> Path
+- get_native_method_file_path(output_dir, section, class_name, method) -> Path
+- get_inherited_method_file_path(output_dir, section, class_name, source_section, source_class, method) -> Path
+- get_native_operator_file_path(output_dir, section, class_name, operator) -> Path
+- get_inherited_operator_file_path(output_dir, section, class_name, source_section, source_class, operator) -> Path
+- get_static_method_file_path(output_dir, section, class_name, method) -> Path
+- get_snippet_file_path(output_dir, section, class_name, short_name) -> Path
+
+# Directory creation helpers
+- ensure_class_directory(output_dir, section, class_name) -> Path
+- ensure_constructors_directory(output_dir, section, class_name) -> Path
+- ensure_native_properties_directory(output_dir, section, class_name) -> Path
+- ensure_inherited_properties_directory(output_dir, section, class_name) -> Path
+# ... similar for other member types
+```
+
+**Design rationale**: Output path construction is a separate concern from link transformation patterns. Isolating path logic in its own module:
+- Makes output structure easily discoverable and modifiable
+- Enables other tools to construct paths consistently (e.g., an index tool)
+- Simplifies testing of path construction logic
+- Reduces coupling between file I/O and business logic
 
 ### `transformations.py`
 
@@ -266,6 +296,7 @@ Unit tests are organized by module under each tool's test directory:
 | Test File | Module Under Test | Coverage |
 |-----------|------------------|----------|
 | `tests/convert/unit/test_patterns.py` | `flutterdoc_gen.convert.patterns` | Pattern registry validation, regex compilation |
+| `tests/convert/unit/test_paths.py` | `flutterdoc_gen.convert.paths` | Output path construction, directory helpers |
 | `tests/convert/unit/test_transformations.py` | `flutterdoc_gen.convert.transformations` | All cleanup and link transformation functions |
 | `tests/convert/unit/test_parsing.py` | `flutterdoc_gen.convert.parsing` | Section extraction, member link parsing |
 | `tests/convert/unit/test_conversion.py` | `flutterdoc_gen.convert.conversion` | HTML-to-markdown conversion, Dart snippet wrapping |
@@ -325,7 +356,8 @@ testpaths = ["tests"]
 3. Create `src/flutterdoc_gen/convert/` directory
 4. Create `__init__.py` and `__main__.py` files for convert
 5. Move pattern definitions to `patterns.py`
-6. Move template strings to `templates.py`
+6. Extract path construction logic to `paths.py`
+7. Move template strings to `templates.py`
 
 ### Phase 2: Split Transformation and Parsing Logic
 
@@ -373,6 +405,11 @@ testpaths = ["tests"]
 from flutterdoc_gen.convert.conversion import convert_html_to_markdown, convert_dart_snippet
 from flutterdoc_gen.convert.parsing import extract_section_content, extract_member_links
 from flutterdoc_gen.convert.templates import INHERITED_PROPERTY_TEMPLATE
+from flutterdoc_gen.convert.paths import (
+    get_constructor_file_path,
+    get_native_property_file_path,
+    ensure_constructors_directory,
+)
 ```
 
 ### Cross-Tool Imports (future shared utilities)
