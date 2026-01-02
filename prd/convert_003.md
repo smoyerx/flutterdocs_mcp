@@ -41,7 +41,9 @@ doc_gen/
 │           ├── __init__.py          # Package exports
 │           ├── __main__.py          # CLI entry point (python -m flutterdoc_gen.convert)
 │           ├── cli.py               # Argument parsing and main()
-│           ├── patterns.py          # Pattern definitions (LINK_PATTERNS, NOISE_STRINGS, etc.)           ├── paths.py             # Output path construction for markdown files│           ├── transformations.py   # Cleanup and link transformation functions
+│           ├── patterns.py          # Pattern definitions (LINK_PATTERNS, NOISE_STRINGS, etc.)
+│           ├── paths.py             # Output path construction for markdown files
+│           ├── transformations.py   # Cleanup and link transformation functions
 │           ├── parsing.py           # Section extraction and member link parsing
 │           ├── conversion.py        # HTML-to-markdown and Dart snippet conversion
 │           ├── processors.py        # Class member processing functions

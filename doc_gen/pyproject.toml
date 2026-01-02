@@ -1,10 +1,20 @@
 [project]
 name = "doc-gen"
-version = "0.1.0"
+version = "0.2.0"
 requires-python = ">=3.12"
 dependencies = [
     "html-to-markdown>=2.19.1",
 ]
+
+[project.scripts]
+convert = "flutterdoc_gen.convert.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/flutterdoc_gen"]
 
 [dependency-groups]
 dev = [
@@ -13,4 +23,5 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
-pythonpath = ["."]
+pythonpath = ["src"]
+testpaths = ["tests"]
