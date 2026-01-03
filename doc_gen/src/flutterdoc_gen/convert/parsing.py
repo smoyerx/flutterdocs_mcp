@@ -160,6 +160,144 @@ def extract_member_links(
     return members
 
 
+def extract_constructor_links(
+    section_content: str,
+) -> list[dict[str, str]]:
+    """Extract constructor links from section content.
+
+    Parses lines that start with [CONSTRUCTOR](mcp://flutter/api/SECTION/CLASS/CONSTRUCTOR)
+    for constructors. Constructors are followed by parameter lists, not arrows.
+
+    Args:
+        section_content: The markdown content of the Constructors section.
+
+    Returns:
+        A list of dictionaries, each containing:
+        - link_text: The text of the link
+        - section: The section from the URI
+        - class_name: The class from the URI
+        - member: The member name from the URI
+    """
+    members: list[dict[str, str]] = []
+    lines = section_content.split("\n")
+
+    # Pattern to match [text](mcp://flutter/api/section/class/member)
+    # For constructors, we don't require the arrow - just the MCP link at line start
+    link_pattern = re.compile(
+        r"^\s*\[([^\]]+)\]\(mcp://flutter/api/([^/]+)/([^/]+)/([^)]+)\)"
+    )
+
+    for line in lines:
+        match = link_pattern.match(line)
+
+        if match:
+            link_text = match.group(1)
+            section = match.group(2)
+            class_name = match.group(3)
+            member = match.group(4)
+
+            members.append(
+                {
+                    "link_text": link_text,
+                    "section": section,
+                    "class_name": class_name,
+                    "member": member,
+                }
+            )
+
+    return members
+
+
+def extract_method_links(
+    section_content: str,
+) -> list[dict[str, str]]:
+    """Extract method links from section content.
+
+    Parses lines that start with [METHOD](mcp://flutter/api/SECTION/CLASS/METHOD)
+    for methods. Methods have parameters followed by an arrow and return type.
+    The arrow may appear after the parameters, not immediately after the link.
+
+    For inherited methods, captures the result_type and description.
+    
+    Only links with arrows are considered method definitions. Links without
+    arrows are treated as inline references and ignored.
+
+    Args:
+        section_content: The markdown content of the Methods section.
+
+    Returns:
+        A list of dictionaries, each containing:
+        - link_text: The text of the link
+        - section: The section from the URI
+        - class_name: The class from the URI
+        - member: The member name from the URI
+        - result_type: The result type (text after arrow), or empty string
+        - description: Lines following the link until a blank line, or empty string
+    """
+    members: list[dict[str, str]] = []
+    lines = section_content.split("\n")
+
+    # Arrow patterns: Unicode rightwards arrow, ASCII arrow variants
+    # Supported: → (U+2192), -> , => , ➜ (U+279C), ➔ (U+2794)
+    arrow_pattern = r"(?:\u2192|\u279C|\u2794|->|=>)"
+
+    # Pattern to match [text](mcp://flutter/api/section/class/member)
+    # For methods, the link is at the start of the line, but the arrow comes after parameters
+    link_pattern = re.compile(
+        r"^\s*\[([^\]]+)\]\(mcp://flutter/api/([^/]+)/([^/]+)/([^)]+)\)"
+    )
+
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        match = link_pattern.match(line)
+
+        if match:
+            # Check if this line has an arrow - only then is it a method definition
+            arrow_search = re.search(arrow_pattern, line)
+            if not arrow_search:
+                # No arrow means this is just an inline reference, not a method definition
+                i += 1
+                continue
+
+            link_text = match.group(1)
+            section = match.group(2)
+            class_name = match.group(3)
+            member = match.group(4)
+
+            # Extract result type (after arrow on same line)
+            result_type = ""
+            after_arrow = line[arrow_search.end() :].strip()
+            # Result type is everything after the arrow on the same line
+            if after_arrow:
+                result_type = after_arrow
+
+            # Extract description (lines until blank line)
+            description_lines: list[str] = []
+            j = i + 1
+            while j < len(lines):
+                desc_line = lines[j]
+                if desc_line.strip() == "":
+                    break
+                description_lines.append(desc_line)
+                j += 1
+
+            members.append(
+                {
+                    "link_text": link_text,
+                    "section": section,
+                    "class_name": class_name,
+                    "member": member,
+                    "result_type": result_type,
+                    "description": "\n".join(description_lines),
+                }
+            )
+
+        i += 1
+
+    return members
+
+
 def extract_static_method_links(
     section_content: str,
 ) -> list[dict[str, str]]:

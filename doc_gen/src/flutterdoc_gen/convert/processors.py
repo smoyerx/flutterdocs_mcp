@@ -16,7 +16,9 @@ from flutterdoc_gen.convert.conversion import (
     convert_html_to_markdown,
 )
 from flutterdoc_gen.convert.parsing import (
+    extract_constructor_links,
     extract_member_links,
+    extract_method_links,
     extract_section_content,
     extract_static_method_links,
 )
@@ -69,7 +71,7 @@ def process_constructors(
         logging.info(f"No Constructors section found in {current_class}")
         return
 
-    members = extract_member_links(section_content)
+    members = extract_constructor_links(section_content)
     if not members:
         logging.info(f"No constructor links found in {current_class}")
         return
@@ -205,7 +207,7 @@ def process_methods(
         logging.info(f"No Methods section found in {current_class}")
         return
 
-    members = extract_member_links(section_content)
+    members = extract_method_links(section_content)
     if not members:
         logging.info(f"No method links found in {current_class}")
         return

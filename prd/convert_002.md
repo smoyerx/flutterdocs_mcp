@@ -47,6 +47,7 @@ convert.py must be UPDATED to implement the steps below for processing each clas
 - When instructed to scan markdown content for lines that **start** with a specific pattern, convert.py MUST ignore leading whitespace characters before the start of the pattern
 - When instructed to scan markdown content within a specified section, convert.py MUST only consider lines that appear after the heading for that section (e.g., `## Constructors`) and before the heading for the next section of the same or higher level (e.g., `## Properties` or `# Another Section`)
 - When saving any converted markdown file, convert.py MUST create any necessary directories and overwrite any existing file with the same name
+- **Distinguishing member definitions from inline references**: Multi-line descriptions for properties, methods, and operators may contain inline references to other members that happen to start a new line. Member definitions can be distinguished from inline references by the presence of a type signature indicator (the unicode rightwards arrow → or U+2192) somewhere on the same line as the member link. Links without arrows on the same line are inline references and should be ignored during member scanning
 
 #### Step 1: Process the Class File
 
@@ -60,6 +61,8 @@ Scan the constructors section (`## Constructors`) of the {CLASS}.md content for 
 - Convert {DOC_DIR}/flutter/{SECTION}/{CLASS}/{CONSTRUCTOR}.html to markdown
 - Save the converted markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/constructors/{CONSTRUCTOR}.md
 
+**Note**: Constructor definitions are followed by parameter lists in parentheses, not by arrows and return types, since constructors return instances of the class implicitly. Any link matching the pattern above in the Constructors section should be treated as a constructor definition regardless of whether an arrow appears on the line
+
 convert.py MUST print an informational message (when in verbose mode) and continue processing if it:
 - Does not find a constructors section in the {CLASS}.md content
 - Finds no lines matching the specified pattern in the constructors section of the {CLASS}.md content
@@ -70,7 +73,11 @@ convert.py MUST always print an error message and exit with a non-zero status co
 
 #### Step 3: Process or Generate Property Files
 
-Scan the properties section (`## Properties`) of the {CLASS}.md content for lines that **start** with `[{PROPERTY}](mcp://flutter/api/{SOME_SECTION}/{SOME_CLASS}/{PROPERTY})`, where {PROPERTY} is the name of a property documented for {CLASS}. For each such line found:
+Scan the properties section (`## Properties`) of the {CLASS}.md content for lines that **start** with `[{PROPERTY}](mcp://flutter/api/{SOME_SECTION}/{SOME_CLASS}/{PROPERTY})`, where {PROPERTY} is the name of a property documented for {CLASS}. 
+
+**Note**: Property definitions always have an arrow (→) followed by the property type on the same line as the property link. This distinguishes property definitions from inline references to properties that may appear in multi-line descriptions. Only match lines that contain an arrow.
+
+For each such line found:
 - If {SOME_SECTION} is equal to {SECTION} and {SOME_CLASS} is equal to {CLASS} this is a **native** (not inherited) property of {CLASS}:
    - Convert {DOC_DIR}/flutter/{SECTION}/{CLASS}/{PROPERTY}.html to markdown
    - Save the converted markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/properties/native/{PROPERTY}.md
@@ -103,7 +110,11 @@ See further details at [{PROPERTY}](mcp://flutter/api/{SOME_SECTION}/{SOME_CLASS
 
 #### Step 4: Process or Generate Method Files
 
-Scan the methods section (`## Methods`) of the {CLASS}.md content for lines that **start** with `[{METHOD}](mcp://flutter/api/{SOME_SECTION}/{SOME_CLASS}/{METHOD})`, where {METHOD} is the name of a method documented for {CLASS}. For each such line found:
+Scan the methods section (`## Methods`) of the {CLASS}.md content for lines that **start** with `[{METHOD}](mcp://flutter/api/{SOME_SECTION}/{SOME_CLASS}/{METHOD})`, where {METHOD} is the name of a method documented for {CLASS}.
+
+**Note**: Method definitions always have an arrow (→) followed by the return type somewhere on the same line as the method link (the arrow appears after the parameter list). This distinguishes method definitions from inline references to methods that may appear in multi-line descriptions. Only match lines that contain an arrow.
+
+For each such line found:
 - If {SOME_SECTION} is equal to {SECTION} and {SOME_CLASS} is equal to {CLASS} this is a **native** (not inherited) method of {CLASS}:
    - Convert {DOC_DIR}/flutter/{SECTION}/{CLASS}/{METHOD}.html to markdown
    - Save the converted markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/methods/native/{METHOD}.md
@@ -141,7 +152,11 @@ See further details at [{METHOD}](mcp://flutter/api/{SOME_SECTION}/{SOME_CLASS}/
 - {OPERATOR} refers to the URI text for an operator, e.g., `operator_equals`
 - The text for {OPERATOR_SYMBOL} and {OPERATOR} are in the {CLASS}.md content and so no programmatic mapping between the two is required
 
-Scan the operators section (`## Operators`) of the {CLASS}.md content for lines that **start** with `[{OPERATOR_SYMBOL}](mcp://flutter/api/{SOME_SECTION}/{SOME_CLASS}/{OPERATOR})`, where {OPERATOR} is the name of an operator documented for {CLASS}. For each such line found:
+Scan the operators section (`## Operators`) of the {CLASS}.md content for lines that **start** with `[{OPERATOR_SYMBOL}](mcp://flutter/api/{SOME_SECTION}/{SOME_CLASS}/{OPERATOR})`, where {OPERATOR} is the name of an operator documented for {CLASS}.
+
+**Note**: Operator definitions always have an arrow (→) followed by the return type somewhere on the same line as the operator link (the arrow appears after the parameter list). This distinguishes operator definitions from inline references to operators that may appear in multi-line descriptions. Only match lines that contain an arrow.
+
+For each such line found:
 - If {SOME_SECTION} is equal to {SECTION} and {SOME_CLASS} is equal to {CLASS} this is a **native** (not inherited) operator of {CLASS}:
    - Convert {DOC_DIR}/flutter/{SECTION}/{CLASS}/{OPERATOR}.html to markdown
    - Save the converted markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/operators/native/{OPERATOR}.md
