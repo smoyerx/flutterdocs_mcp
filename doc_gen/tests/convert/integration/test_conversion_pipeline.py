@@ -217,3 +217,97 @@ class TestConvertWithSnippets:
             # File should not contain "material.ListTile" prefix
             assert not snippet_file.name.startswith("material.")
             assert not snippet_file.name.startswith("ListTile.")
+
+
+class TestInheritedMemberGeneration:
+    """Tests for inherited member file generation."""
+
+    @pytest.fixture
+    def output_dir(self, tmp_path: Path) -> Path:
+        """Create a temporary output directory."""
+        return tmp_path / "output"
+
+    def test_inherited_operator_file_generated(self, output_dir: Path) -> None:
+        """Inherited operator files should be generated for classes with inherited operators."""
+        # InkWell inherits operator == from Widget
+        result = run_convert(SAMPLES_DIR, "material", output_dir)
+        assert result.returncode == 0
+
+        operator_file = (
+            output_dir
+            / "api"
+            / "material"
+            / "InkWell"
+            / "operators"
+            / "inherited"
+            / "widgets-Widget-operator_equals.md"
+        )
+        assert operator_file.exists(), (
+            f"Missing inherited operator file: {operator_file}"
+        )
+
+    def test_inherited_operator_file_content(self, output_dir: Path) -> None:
+        """Inherited operator files should have correct content."""
+        result = run_convert(SAMPLES_DIR, "material", output_dir)
+        assert result.returncode == 0
+
+        operator_file = (
+            output_dir
+            / "api"
+            / "material"
+            / "InkWell"
+            / "operators"
+            / "inherited"
+            / "widgets-Widget-operator_equals.md"
+        )
+        content = operator_file.read_text(encoding="utf-8")
+
+        # Should have title with operator symbol and member name
+        assert content.startswith("# operator == (operator_equals)")
+
+        # Should reference the parent class
+        assert "This operator is inherited from" in content
+        assert "[Widget](mcp://flutter/api/widgets/Widget)" in content
+
+        # Should have link to the original operator documentation
+        assert (
+            "[operator ==](mcp://flutter/api/widgets/Widget/operator_equals)" in content
+        )
+
+    def test_inherited_properties_generated(self, output_dir: Path) -> None:
+        """Inherited property files should be generated."""
+        result = run_convert(SAMPLES_DIR, "material", output_dir)
+        assert result.returncode == 0
+
+        # InkWell inherits properties from InkResponse and Widget
+        inherited_props_dir = (
+            output_dir / "api" / "material" / "InkWell" / "properties" / "inherited"
+        )
+        assert inherited_props_dir.exists()
+
+        # Check for at least some inherited properties
+        prop_files = list(inherited_props_dir.glob("*.md"))
+        assert len(prop_files) > 0, "No inherited property files generated"
+
+        # Verify one specific inherited property from Widget
+        hashcode_file = inherited_props_dir / "widgets-Widget-hashCode.md"
+        assert hashcode_file.exists(), f"Missing inherited property: {hashcode_file}"
+
+    def test_inherited_methods_generated(self, output_dir: Path) -> None:
+        """Inherited method files should be generated."""
+        result = run_convert(SAMPLES_DIR, "material", output_dir)
+        assert result.returncode == 0
+
+        # InkWell inherits methods from InkResponse and StatelessWidget
+        inherited_methods_dir = (
+            output_dir / "api" / "material" / "InkWell" / "methods" / "inherited"
+        )
+        assert inherited_methods_dir.exists()
+
+        # Check for at least some inherited methods
+        method_files = list(inherited_methods_dir.glob("*.md"))
+        assert len(method_files) > 0, "No inherited method files generated"
+
+        # Verify one specific inherited method
+        build_file = inherited_methods_dir / "material-InkResponse-build.md"
+        assert build_file.exists(), f"Missing inherited method: {build_file}"

@@ -34,7 +34,9 @@ class TestConvertDartSnippet:
 
     def test_preserves_dart_code_unchanged(self, tmp_path: Path) -> None:
         """Dart code content should be preserved exactly as-is."""
-        dart_code = "import 'package:flutter/material.dart';\n\nvoid main() => runApp(MyApp());"
+        dart_code = (
+            "import 'package:flutter/material.dart';\n\nvoid main() => runApp(MyApp());"
+        )
         dart_file = tmp_path / "snippet.dart"
         dart_file.write_text(dart_code, encoding="utf-8")
 

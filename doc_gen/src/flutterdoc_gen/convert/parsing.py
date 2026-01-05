@@ -7,6 +7,131 @@ information from markdown content, such as section content and member links.
 import re
 
 
+def split_into_paragraphs(section_content: str) -> list[str]:
+    """Split section content into paragraphs.
+
+    A paragraph is a block of non-empty lines bounded by blank lines or section
+    headers. Section headers act as paragraph boundaries but are not included
+    in the resulting paragraphs.
+
+    This approach is robust to markdown formatting variations - it works whether
+    or not there are blank lines after section headers or before the next section.
+
+    Args:
+        section_content: The markdown content of a section.
+
+    Returns:
+        A list of paragraph strings, where each paragraph is the concatenated
+        lines of that paragraph (preserving internal newlines).
+    """
+    lines = section_content.split("\n")
+    paragraphs: list[str] = []
+    current_paragraph: list[str] = []
+
+    for line in lines:
+        # Section header terminates current paragraph (but is not included)
+        if line.strip().startswith("#"):
+            if current_paragraph:
+                paragraphs.append("\n".join(current_paragraph))
+                current_paragraph = []
+            continue
+
+        # Blank line terminates current paragraph
+        if line.strip() == "":
+            if current_paragraph:
+                paragraphs.append("\n".join(current_paragraph))
+                current_paragraph = []
+            continue
+
+        # Content line - add to current paragraph
+        current_paragraph.append(line)
+
+    # Don't forget the last paragraph
+    if current_paragraph:
+        paragraphs.append("\n".join(current_paragraph))
+
+    return paragraphs
+
+
+def extract_member_definitions(section_content: str) -> list[dict[str, str]]:
+    """Extract member definitions from section content.
+
+    Works for Properties, Methods, and Operators sections. Uses paragraph-based
+    parsing for robustness: each member definition is a paragraph where the first
+    line contains the member link with an arrow, and remaining lines are the
+    description.
+
+    This unified approach handles all member types (properties, methods, operators)
+    consistently, regardless of where the arrow appears on the first line.
+
+    Args:
+        section_content: The markdown content of a section.
+
+    Returns:
+        A list of dictionaries, each containing:
+        - link_text: The text of the link
+        - section: The section from the URI
+        - class_name: The class from the URI
+        - member: The member name from the URI
+        - result_type: The result type (text after arrow on first line), stripped
+        - description: Lines following the first line, or empty string
+    """
+    members: list[dict[str, str]] = []
+    paragraphs = split_into_paragraphs(section_content)
+
+    # Pattern to match [text](mcp://flutter/api/section/class/member)
+    link_pattern = re.compile(
+        r"^\s*\[([^\]]+)\]\(mcp://flutter/api/([^/]+)/([^/]+)/([^)]+)\)"
+    )
+
+    # Arrow pattern: Unicode rightwards arrow, ASCII arrow variants
+    # Supported: → (U+2192), -> , => , ➜ (U+279C), ➔ (U+2794)
+    arrow_pattern = re.compile(r"(?:\u2192|\u279C|\u2794|->|=>)")
+
+    for paragraph in paragraphs:
+        lines = paragraph.split("\n")
+        if not lines:
+            continue
+
+        first_line = lines[0]
+        description_lines = lines[1:] if len(lines) > 1 else []
+
+        # Check if first line has an MCP link
+        match = link_pattern.match(first_line)
+        if not match:
+            continue
+
+        # Check if first line has an arrow (distinguishes definitions from inline refs)
+        arrow_match = arrow_pattern.search(first_line)
+        if not arrow_match:
+            continue
+
+        # Extract link components
+        link_text = match.group(1)
+        section = match.group(2)
+        class_name = match.group(3)
+        member = match.group(4)
+
+        # Extract result type: everything after arrow on first line, stripped
+        result_type = first_line[arrow_match.end() :].strip()
+
+        # Extract description: remaining lines of paragraph
+        description = "\n".join(description_lines).strip()
+
+        members.append(
+            {
+                "link_text": link_text,
+                "section": section,
+                "class_name": class_name,
+                "member": member,
+                "result_type": result_type,
+                "description": description,
+            }
+        )
+
+    return members
+
+
 def _normalize_heading_text(heading_text: str) -> str:
     """Normalize heading text for comparison.
 
@@ -218,7 +343,7 @@ def extract_method_links(
     The arrow may appear after the parameters, not immediately after the link.
 
     For inherited methods, captures the result_type and description.
-    
+
     Only links with arrows are considered method definitions. Links without
     arrows are treated as inline references and ignored.
 

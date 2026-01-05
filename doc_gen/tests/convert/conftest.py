@@ -14,7 +14,7 @@ SAMPLES_DIR = Path(__file__).parent / "integration" / "samples"
 @pytest.fixture
 def samples_dir() -> Path:
     """Path to convert sample documentation files.
-    
+
     Returns:
         Path to the samples directory containing test documentation.
     """
