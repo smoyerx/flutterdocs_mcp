@@ -47,7 +47,10 @@ convert.py must be UPDATED to implement the steps below for processing each clas
 - When instructed to scan markdown content for lines that **start** with a specific pattern, convert.py MUST ignore leading whitespace characters before the start of the pattern
 - When instructed to scan markdown content within a specified section, convert.py MUST only consider lines that appear after the heading for that section (e.g., `## Constructors`) and before the heading for the next section of the same or higher level (e.g., `## Properties` or `# Another Section`)
 - When saving any converted markdown file, convert.py MUST create any necessary directories and overwrite any existing file with the same name
-- **Distinguishing member definitions from inline references**: Multi-line descriptions for properties, methods, and operators may contain inline references to other members that happen to start a new line. Member definitions can be distinguished from inline references by the presence of a type signature indicator (the unicode rightwards arrow → or U+2192) somewhere on the same line as the member link. Links without arrows on the same line are inline references and should be ignored during member scanning
+
+**Definitions**:
+- A **blank line** in markdown content is a line comprising only whitespace
+- A **paragraph** of markdown content is a set of consecutive non-blank lines that are immediately preceded and followed by either a blank line or a section header
 
 #### Step 1: Process the Class File
 
@@ -57,43 +60,39 @@ convert.py must be UPDATED to implement the steps below for processing each clas
 
 #### Step 2: Process Constructor Files
 
-Scan the constructors section (`## Constructors`) of the {CLASS}.md content for lines that **start** with `[{CONSTRUCTOR}](mcp://flutter/api/{SECTION}/{CLASS}/{CONSTRUCTOR})`, where {CONSTRUCTOR} is the name of a constructor documented for the class. For each such line found:
+Scan the constructors section (`## Constructors`) of the {CLASS}.md content for paragraphs with **first** lines that start with `[{CONSTRUCTOR}](mcp://flutter/api/{SECTION}/{CLASS}/{CONSTRUCTOR})`, where {CONSTRUCTOR} is the name of a constructor documented for the class. For each such line found:
 - Convert {DOC_DIR}/flutter/{SECTION}/{CLASS}/{CONSTRUCTOR}.html to markdown
 - Save the converted markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/constructors/{CONSTRUCTOR}.md
 
-**Note**: Constructor definitions are followed by parameter lists in parentheses, not by arrows and return types, since constructors return instances of the class implicitly. Any link matching the pattern above in the Constructors section should be treated as a constructor definition regardless of whether an arrow appears on the line
-
 convert.py MUST print an informational message (when in verbose mode) and continue processing if it:
 - Does not find a constructors section in the {CLASS}.md content
-- Finds no lines matching the specified pattern in the constructors section of the {CLASS}.md content
+- Finds no paragraphs with first lines matching the specified pattern in the constructors section of the {CLASS}.md content
 
 convert.py MUST always print an error message and exit with a non-zero status code if it:
-- Finds a line matching the specified pattern in the constructors section of the {CLASS}.md content but the corresponding HTML file {DOC_DIR}/flutter/{SECTION}/{CLASS}/{CONSTRUCTOR}.html does not exist
+- Finds a paragraph with a first line matching the specified pattern in the constructors section of the {CLASS}.md content but the corresponding HTML file {DOC_DIR}/flutter/{SECTION}/{CLASS}/{CONSTRUCTOR}.html does not exist
 - Finds a constructor link with a URI scheme that does not match the specified pattern
 
 #### Step 3: Process or Generate Property Files
 
-Scan the properties section (`## Properties`) of the {CLASS}.md content for lines that **start** with `[{PROPERTY}](mcp://flutter/api/{SOME_SECTION}/{SOME_CLASS}/{PROPERTY})`, where {PROPERTY} is the name of a property documented for {CLASS}. 
-
-**Note**: Property definitions always have an arrow (→) followed by the property type on the same line as the property link. This distinguishes property definitions from inline references to properties that may appear in multi-line descriptions. Only match lines that contain an arrow.
+Scan the properties section (`## Properties`) of the {CLASS}.md content for paragraphs with **first** lines that start with `[{PROPERTY}](mcp://flutter/api/{SOME_SECTION}/{SOME_CLASS}/{PROPERTY})`, where {PROPERTY} is the name of a property documented for {CLASS}. 
 
 For each such line found:
 - If {SOME_SECTION} is equal to {SECTION} and {SOME_CLASS} is equal to {CLASS} this is a **native** (not inherited) property of {CLASS}:
    - Convert {DOC_DIR}/flutter/{SECTION}/{CLASS}/{PROPERTY}.html to markdown
    - Save the converted markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/properties/native/{PROPERTY}.md
 - If {SOME_SECTION} is not equal to {SECTION} or {SOME_CLASS} is not equal to {CLASS} this is an **inherited** property of {CLASS}:
-   - Capture the {RESULT_TYPE} for the property which is on the same line as the property link, starts with the first non-whitespace character following the unicode rightwards arrow (U+2192), and is terminated by a whitespace character or the end of the line
-   - Capture the {DESCRIPTION} for the property which is all lines starting with the line immediately following the property link line and ending at the first blank line
+   - Capture the {RESULT_TYPE} for the property which is on the same **first** line as the property link, starts with the first non-whitespace character following the unicode rightwards arrow (U+2192), and is terminated by a whitespace character or the end of the line
+   - Capture the {DESCRIPTION} for the property which runs from the **second** line of the paragraph to the end of the paragraph
    - Generate a markdown file for the inherited property using the template defined below
    - Save the generated markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/properties/inherited/{SOME_SECTION}-{SOME_CLASS}-{PROPERTY}.md
 
 convert.py MUST print an informational message (when in verbose mode) and continue processing if it:
 - Does not find a properties section in the {CLASS}.md content
-- Finds no lines matching the specified pattern in the properties section of the {CLASS}.md content
+- Finds no paragraphs with first lines matching the specified pattern in the properties section of the {CLASS}.md content
 
 convert.py MUST always print an error message and exit with a non-zero status code if it:
-- Finds a line matching the specified pattern for **native** properties in the properties section of the {CLASS}.md content but the corresponding HTML file {DOC_DIR}/flutter/{SECTION}/{CLASS}/{PROPERTY}.html does not exist
-- Finds a line matching the specified pattern for **inherited** properties in the properties section of the {CLASS}.md content but is unable to capture the {RESULT_TYPE} or {DESCRIPTION} for the property
+- Finds a paragraph with a first line matching the specified pattern for **native** properties in the properties section of the {CLASS}.md content but the corresponding HTML file {DOC_DIR}/flutter/{SECTION}/{CLASS}/{PROPERTY}.html does not exist
+- Finds a paragraph with a first line matching the specified pattern for **inherited** properties in the properties section of the {CLASS}.md content but is unable to capture the {RESULT_TYPE} or {DESCRIPTION} for the property
 - Finds a property link with a URI scheme that does not match the specified pattern
 
 ##### Template for Inherited Property Markdown File
@@ -110,27 +109,25 @@ See further details at [{PROPERTY}](mcp://flutter/api/{SOME_SECTION}/{SOME_CLASS
 
 #### Step 4: Process or Generate Method Files
 
-Scan the methods section (`## Methods`) of the {CLASS}.md content for lines that **start** with `[{METHOD}](mcp://flutter/api/{SOME_SECTION}/{SOME_CLASS}/{METHOD})`, where {METHOD} is the name of a method documented for {CLASS}.
-
-**Note**: Method definitions always have an arrow (→) followed by the return type somewhere on the same line as the method link (the arrow appears after the parameter list). This distinguishes method definitions from inline references to methods that may appear in multi-line descriptions. Only match lines that contain an arrow.
+Scan the methods section (`## Methods`) of the {CLASS}.md content for paragraphs with **first** lines that start with `[{METHOD}](mcp://flutter/api/{SOME_SECTION}/{SOME_CLASS}/{METHOD})`, where {METHOD} is the name of a method documented for {CLASS}.
 
 For each such line found:
 - If {SOME_SECTION} is equal to {SECTION} and {SOME_CLASS} is equal to {CLASS} this is a **native** (not inherited) method of {CLASS}:
    - Convert {DOC_DIR}/flutter/{SECTION}/{CLASS}/{METHOD}.html to markdown
    - Save the converted markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/methods/native/{METHOD}.md
 - If {SOME_SECTION} is not equal to {SECTION} or {SOME_CLASS} is not equal to {CLASS} this is an **inherited** method of {CLASS}:
-   - Capture the {RESULT_TYPE} for the method which is on the same line as the method link, starts with the first non-whitespace character following the unicode rightwards arrow (U+2192), and is terminated by a whitespace character or the end of the line
-   - Capture the {DESCRIPTION} for the method which is all lines starting with the line immediately following the method link line and ending at the first blank line
+   - Capture the {RESULT_TYPE} for the method which is on the same **first** line as the method link, starts with the first non-whitespace character following the unicode rightwards arrow (U+2192), and is terminated by a whitespace character or the end of the line
+   - Capture the {DESCRIPTION} for the method which runs from the **second** line of the paragraph to the end of the paragraph
    - Generate a markdown file for the inherited method using the template defined below
    - Save the generated markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/methods/inherited/{SOME_SECTION}-{SOME_CLASS}-{METHOD}.md
 
 convert.py MUST print an informational message (when in verbose mode) and continue processing if it:
 - Does not find a methods section in the {CLASS}.md content
-- Finds no lines matching the specified pattern in the methods section of the {CLASS}.md content
+- Finds no paragraphs with first lines matching the specified pattern in the methods section of the {CLASS}.md content
 
 convert.py MUST always print an error message and exit with a non-zero status code if it:
-- Finds a line matching the specified pattern for **native** methods in the methods section of the {CLASS}.md content but the corresponding HTML file {DOC_DIR}/flutter/{SECTION}/{CLASS}/{METHOD}.html does not exist
-- Finds a line matching the specified pattern for **inherited** methods in the methods section of the {CLASS}.md content but is unable to capture the {RESULT_TYPE} or {DESCRIPTION} for the method
+- Finds a paragraph with a first line matching the specified pattern for **native** methods in the methods section of the {CLASS}.md content but the corresponding HTML file {DOC_DIR}/flutter/{SECTION}/{CLASS}/{METHOD}.html does not exist
+- Finds a paragraph with a first line matching the specified pattern for **inherited** methods in the methods section of the {CLASS}.md content but is unable to capture the {RESULT_TYPE} or {DESCRIPTION} for the method
 - Finds a method link with a URI scheme that does not match the specified pattern
 
 ##### Template for Inherited Method Markdown File
@@ -152,27 +149,25 @@ See further details at [{METHOD}](mcp://flutter/api/{SOME_SECTION}/{SOME_CLASS}/
 - {OPERATOR} refers to the URI text for an operator, e.g., `operator_equals`
 - The text for {OPERATOR_SYMBOL} and {OPERATOR} are in the {CLASS}.md content and so no programmatic mapping between the two is required
 
-Scan the operators section (`## Operators`) of the {CLASS}.md content for lines that **start** with `[{OPERATOR_SYMBOL}](mcp://flutter/api/{SOME_SECTION}/{SOME_CLASS}/{OPERATOR})`, where {OPERATOR} is the name of an operator documented for {CLASS}.
-
-**Note**: Operator definitions always have an arrow (→) followed by the return type somewhere on the same line as the operator link (the arrow appears after the parameter list). This distinguishes operator definitions from inline references to operators that may appear in multi-line descriptions. Only match lines that contain an arrow.
+Scan the operators section (`## Operators`) of the {CLASS}.md content for paragraphs with **first** lines that start with `[{OPERATOR_SYMBOL}](mcp://flutter/api/{SOME_SECTION}/{SOME_CLASS}/{OPERATOR})`, where {OPERATOR} is the name of an operator documented for {CLASS}.
 
 For each such line found:
 - If {SOME_SECTION} is equal to {SECTION} and {SOME_CLASS} is equal to {CLASS} this is a **native** (not inherited) operator of {CLASS}:
    - Convert {DOC_DIR}/flutter/{SECTION}/{CLASS}/{OPERATOR}.html to markdown
    - Save the converted markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/operators/native/{OPERATOR}.md
 - If {SOME_SECTION} is not equal to {SECTION} or {SOME_CLASS} is not equal to {CLASS} this is an **inherited** operator of {CLASS}:
-   - Capture the {RESULT_TYPE} for the operator which is on the same line as the operator link, starts with the first non-whitespace character following the unicode rightwards arrow (U+2192), and is terminated by a whitespace character or the end of the line
-   - Capture the {DESCRIPTION} for the operator which is all lines starting with the line immediately following the operator link line and ending at the first blank line
+   - Capture the {RESULT_TYPE} for the operator which is on the same **first** line as the operator link, starts with the first non-whitespace character following the unicode rightwards arrow (U+2192), and is terminated by a whitespace character or the end of the line
+   - Capture the {DESCRIPTION} for the operator which runs from the **second** line of the paragraph to the end of the paragraph
    - Generate a markdown file for the inherited operator using the template defined below
    - Save the generated markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/operators/inherited/{SOME_SECTION}-{SOME_CLASS}-{OPERATOR}.md
 
 convert.py MUST print an informational message (when in verbose mode) and continue processing if it:
 - Does not find a operators section in the {CLASS}.md content
-- Finds no lines matching the specified pattern in the operators section of the {CLASS}.md content
+- Finds no paragraphs with first lines matching the specified pattern in the operators section of the {CLASS}.md content
 
 convert.py MUST always print an error message and exit with a non-zero status code if it:
-- Finds a line matching the specified pattern for **native** operators in the operators section of the {CLASS}.md content but the corresponding HTML file {DOC_DIR}/flutter/{SECTION}/{CLASS}/{OPERATOR}.html does not exist
-- Finds a line matching the specified pattern for **inherited** operators in the operators section of the {CLASS}.md content but is unable to capture the {RESULT_TYPE} or {DESCRIPTION} for the operator
+- Finds a paragraph with a first line matching the specified pattern for **native** operators in the operators section of the {CLASS}.md content but the corresponding HTML file {DOC_DIR}/flutter/{SECTION}/{CLASS}/{OPERATOR}.html does not exist
+- Finds a paragraph with a first line matching the specified pattern for **inherited** operators in the operators section of the {CLASS}.md content but is unable to capture the {RESULT_TYPE} or {DESCRIPTION} for the operator
 - Finds an operator link with a URI scheme that does not match the specified pattern
 
 ##### Template for Inherited Operator Markdown File
@@ -193,16 +188,16 @@ See further details at [{OPERATOR_SYMBOL}](mcp://flutter/api/{SOME_SECTION}/{SOM
 - Static methods have no inherited variant since static members belong to the declaring class only.
 - Many classes do not have any static methods.
 
-Scan the static methods section (`## Static Methods`) of the {CLASS}.md content for lines that **start** with `[{METHOD}](mcp://flutter/api/{SECTION}/{CLASS}/{METHOD})`, where {METHOD} is the name of a static method documented for {CLASS}. For each such line found:
+Scan the static methods section (`## Static Methods`) of the {CLASS}.md content for paragraphs with **first** lines that start with `[{METHOD}](mcp://flutter/api/{SECTION}/{CLASS}/{METHOD})`, where {METHOD} is the name of a static method documented for {CLASS}. For each such line found:
 - Convert {DOC_DIR}/flutter/{SECTION}/{CLASS}/{METHOD}.html to markdown
 - Save the converted markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/statics/{METHOD}.md
 
 convert.py MUST continue processing without printing any messages if it:
 - Does not find a static methods section in the {CLASS}.md content
-- Finds no lines matching the specified pattern in the static methods section of the {CLASS}.md content
+- Finds no paragraphs with first lines matching the specified pattern in the static methods section of the {CLASS}.md content
 
 convert.py MUST always print an error message and exit with a non-zero status code if it:
-- Finds a line matching the specified pattern for static methods in the static methods section of the {CLASS}.md content but the corresponding HTML file {DOC_DIR}/flutter/{SECTION}/{CLASS}/{METHOD}.html does not exist
+- Finds a paragraph with a first line matching the specified pattern for static methods in the static methods section of the {CLASS}.md content but the corresponding HTML file {DOC_DIR}/flutter/{SECTION}/{CLASS}/{METHOD}.html does not exist
 - Finds a static method link with a URI scheme that does not match the specified pattern
 
 
