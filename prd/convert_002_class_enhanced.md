@@ -84,7 +84,7 @@ For each such line found:
    - Capture the {RESULT_TYPE} for the property which is on the same **first** line as the property link, starts with the first non-whitespace character following the unicode rightwards arrow (U+2192), and is terminated by a whitespace character or the end of the line
    - Capture the {DESCRIPTION} for the property which runs from the **second** line of the paragraph to the end of the paragraph
    - Generate a markdown file for the inherited property using the template defined below
-   - Save the generated markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/properties/inherited/{SOME_SECTION}-{SOME_CLASS}-{PROPERTY}.md
+   - Save the generated markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/properties/inherited/{SOME_SECTION}___{SOME_CLASS}___{PROPERTY}.md
 
 convert.py MUST print an informational message (when in verbose mode) and continue processing if it:
 - Does not find a properties section in the {CLASS}.md content
@@ -119,7 +119,7 @@ For each such line found:
    - Capture the {RESULT_TYPE} for the method which is on the same **first** line as the method link, starts with the first non-whitespace character following the unicode rightwards arrow (U+2192), and is terminated by a whitespace character or the end of the line
    - Capture the {DESCRIPTION} for the method which runs from the **second** line of the paragraph to the end of the paragraph
    - Generate a markdown file for the inherited method using the template defined below
-   - Save the generated markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/methods/inherited/{SOME_SECTION}-{SOME_CLASS}-{METHOD}.md
+   - Save the generated markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/methods/inherited/{SOME_SECTION}___{SOME_CLASS}___{METHOD}.md
 
 convert.py MUST print an informational message (when in verbose mode) and continue processing if it:
 - Does not find a methods section in the {CLASS}.md content
@@ -159,7 +159,7 @@ For each such line found:
    - Capture the {RESULT_TYPE} for the operator which is on the same **first** line as the operator link, starts with the first non-whitespace character following the unicode rightwards arrow (U+2192), and is terminated by a whitespace character or the end of the line
    - Capture the {DESCRIPTION} for the operator which runs from the **second** line of the paragraph to the end of the paragraph
    - Generate a markdown file for the inherited operator using the template defined below
-   - Save the generated markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/operators/inherited/{SOME_SECTION}-{SOME_CLASS}-{OPERATOR}.md
+   - Save the generated markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/operators/inherited/{SOME_SECTION}___{SOME_CLASS}___{OPERATOR}.md
 
 convert.py MUST print an informational message (when in verbose mode) and continue processing if it:
 - Does not find a operators section in the {CLASS}.md content

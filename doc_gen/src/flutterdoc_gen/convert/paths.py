@@ -191,9 +191,9 @@ def get_inherited_member_file(
         member_name: The member name.
 
     Returns:
-        Path to the {section}-{class}-{member}.md file.
+        Path to the {section}___{class}___{member}.md file.
     """
-    filename = f"{source_section}-{source_class}-{member_name}.md"
+    filename = f"{source_section}___{source_class}___{member_name}.md"
     return inherited_dir / filename
 
 

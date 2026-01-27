@@ -9,7 +9,7 @@ import logging
 import sys
 from pathlib import Path
 
-from html_to_markdown import ConversionOptions, create_options_handle
+from html_to_markdown import ConversionOptions, ConversionOptionsHandle, create_options_handle
 
 from flutterdoc_gen.convert.conversion import convert_html_to_markdown
 from flutterdoc_gen.convert.paths import (
@@ -60,7 +60,7 @@ def find_class_files(doc_dir: Path, section: str) -> list[tuple[str, Path]]:
 
 
 def process_class(
-    options_handle,
+    options_handle: ConversionOptionsHandle,
     class_name: str,
     class_file: Path,
     section: str,
@@ -79,7 +79,7 @@ def process_class(
     7. Process code snippet files
 
     Args:
-        options_handle: The ConversionOptionsHandle instance for conversion.
+        options_handle: The ConversionOptionsHandle instance to use for conversion.
         class_name: The name of the class being processed.
         class_file: Path to the main class HTML file.
         section: The documentation section name.
