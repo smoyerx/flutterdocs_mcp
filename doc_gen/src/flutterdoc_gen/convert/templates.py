@@ -4,32 +4,34 @@ This module contains template strings used to generate markdown content
 for inherited members (properties, methods, operators).
 """
 
-INHERITED_PROPERTY_TEMPLATE = """# {property} property
+from flutterdoc_gen.convert.patterns import MCP_URI_PREFIX
 
-{result_type} {property}
+INHERITED_PROPERTY_TEMPLATE = f"""# {{property}} property
 
-{description}
+{{result_type}} {{property}}
 
-This property is inherited from [{some_class}](mcp://flutter/api/{some_section}/{some_class}).
-See further details at [{property}](mcp://flutter/api/{some_section}/{some_class}/{property}).
+{{description}}
+
+This property is inherited from [{{some_class}}]({MCP_URI_PREFIX}{{some_section}}/{{some_class}}).
+See further details at [{{property}}]({MCP_URI_PREFIX}{{some_section}}/{{some_class}}/{{property}}).
 """
 
-INHERITED_METHOD_TEMPLATE = """# {method} method
+INHERITED_METHOD_TEMPLATE = f"""# {{method}} method
 
-{result_type} {method}(/* See {some_class} documentation for parameters */)
+{{result_type}} {{method}}(/* See {{some_class}} documentation for parameters */)
 
-{description}
+{{description}}
 
-This method is inherited from [{some_class}](mcp://flutter/api/{some_section}/{some_class}).
-See further details at [{method}](mcp://flutter/api/{some_section}/{some_class}/{method}).
+This method is inherited from [{{some_class}}]({MCP_URI_PREFIX}{{some_section}}/{{some_class}}).
+See further details at [{{method}}]({MCP_URI_PREFIX}{{some_section}}/{{some_class}}/{{method}}).
 """
 
-INHERITED_OPERATOR_TEMPLATE = """# {operator_symbol} ({operator}) method
+INHERITED_OPERATOR_TEMPLATE = f"""# {{operator_symbol}} ({{operator}}) method
 
-{result_type} {operator_symbol}(/* See {some_class} documentation for parameters */)
+{{result_type}} {{operator_symbol}}(/* See {{some_class}} documentation for parameters */)
 
-{description}
+{{description}}
 
-This operator is inherited from [{some_class}](mcp://flutter/api/{some_section}/{some_class}).
-See further details at [{operator_symbol}](mcp://flutter/api/{some_section}/{some_class}/{operator}).
+This operator is inherited from [{{some_class}}]({MCP_URI_PREFIX}{{some_section}}/{{some_class}}).
+See further details at [{{operator_symbol}}]({MCP_URI_PREFIX}{{some_section}}/{{some_class}}/{{operator}}).
 """

@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pytest
 
+from flutterdoc_gen.convert.patterns import MCP_URI_PREFIX
 from flutterdoc_gen.convert.paths import (
     get_input_flutter_dir,
     get_input_section_dir,
@@ -14,6 +15,25 @@ from flutterdoc_gen.convert.paths import (
 
 # Path to convert sample documentation files
 SAMPLES_DIR = Path(__file__).parent / "integration" / "samples"
+
+
+def make_mcp_uri(section: str, class_name: str, member: str | None = None) -> str:
+    """Construct an MCP URI for Flutter API documentation.
+
+    Helper function for tests to generate consistent MCP URIs using the
+    centralized MCP_URI_PREFIX constant.
+
+    Args:
+        section: The documentation section (e.g., "widgets", "material").
+        class_name: The class name (e.g., "Widget", "ListTile").
+        member: Optional member name (e.g., "build", "hashCode").
+
+    Returns:
+        Full MCP URI string like "mcp://flutter/api/widgets/Widget/build".
+    """
+    if member:
+        return f"{MCP_URI_PREFIX}{section}/{class_name}/{member}"
+    return f"{MCP_URI_PREFIX}{section}/{class_name}"
 
 
 @pytest.fixture

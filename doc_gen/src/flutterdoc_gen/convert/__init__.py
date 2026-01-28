@@ -10,7 +10,9 @@ from flutterdoc_gen.convert.conversion import (
     convert_html_to_markdown,
 )
 from flutterdoc_gen.convert.patterns import (
+    COPY_LINK_NOISE,
     LINK_PATTERNS,
+    MCP_URI_PREFIX,
     NOISE_STRINGS,
     TRACKING_DOMAINS,
     UNMATCHED_HTML_LINK_PATTERN,
@@ -22,6 +24,7 @@ from flutterdoc_gen.convert.templates import (
     INHERITED_PROPERTY_TEMPLATE,
 )
 from flutterdoc_gen.convert.transformations import (
+    FOOTER_MARKER,
     apply_transformations,
     get_unmatched_patterns,
     log_unmatched_summary,
@@ -32,8 +35,10 @@ __all__ = [
     # CLI
     "main",
     # Patterns
+    "COPY_LINK_NOISE",
     "LinkPattern",
     "LINK_PATTERNS",
+    "MCP_URI_PREFIX",
     "NOISE_STRINGS",
     "TRACKING_DOMAINS",
     "UNMATCHED_HTML_LINK_PATTERN",
@@ -46,6 +51,7 @@ __all__ = [
     "convert_html_to_markdown",
     # Transformations
     "apply_transformations",
+    "FOOTER_MARKER",
     "get_unmatched_patterns",
     "log_unmatched_summary",
     "reset_unmatched_patterns",

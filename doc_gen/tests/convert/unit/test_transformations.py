@@ -1,6 +1,8 @@
 """Unit tests for transformation functions."""
 
+from flutterdoc_gen.convert.patterns import COPY_LINK_NOISE, TRACKING_DOMAINS
 from flutterdoc_gen.convert.transformations import (
+    FOOTER_MARKER,
     apply_transformations,
     get_unmatched_patterns,
     remove_footer,
@@ -79,7 +81,7 @@ class TestRemoveFooter:
 
     def test_removes_footer_content(self) -> None:
         """Content from footer marker to end should be removed."""
-        content = "# Heading\nBody\n1. [Flutter](index.html)\nFooter stuff"
+        content = f"# Heading\nBody\n{FOOTER_MARKER}\nFooter stuff"
         result = remove_footer(content)
         assert result == "# Heading\nBody"
 
@@ -91,13 +93,13 @@ class TestRemoveFooter:
 
     def test_handles_marker_at_start(self) -> None:
         """Footer marker at start of content removes everything."""
-        content = "1. [Flutter](index.html)\nAll footer"
+        content = f"{FOOTER_MARKER}\nAll footer"
         result = remove_footer(content)
         assert result == ""
 
     def test_handles_marker_with_surrounding_whitespace(self) -> None:
         """Footer marker detection works with surrounding content on line."""
-        content = "Body\n   1. [Flutter](index.html)   \nFooter"
+        content = f"Body\n   {FOOTER_MARKER}   \nFooter"
         result = remove_footer(content)
         assert result == "Body"
 
@@ -108,13 +110,13 @@ class TestRemoveFooter:
 
     def test_removes_trailing_whitespace(self) -> None:
         """Trailing whitespace before footer should be stripped."""
-        content = "# Heading\nBody\n\n\n1. [Flutter](index.html)"
+        content = f"# Heading\nBody\n\n\n{FOOTER_MARKER}"
         result = remove_footer(content)
         assert result == "# Heading\nBody"
 
     def test_handles_marker_as_only_content(self) -> None:
         """Just the footer marker should result in empty string."""
-        content = "1. [Flutter](index.html)"
+        content = FOOTER_MARKER
         result = remove_footer(content)
         assert result == ""
 
@@ -154,7 +156,7 @@ class TestRemoveNoiseLines:
 
     def test_removes_copy_link_line(self) -> None:
         """Line containing only the copy link markdown should be removed."""
-        content = '# Heading\n[*link*](# "Copy link to clipboard")\nBody content'
+        content = f"# Heading\n{COPY_LINK_NOISE}\nBody content"
         result = remove_noise_lines(content)
         assert result == "# Heading\nBody content"
 
@@ -192,15 +194,15 @@ class TestRemoveTrackingUrls:
     """Tests for remove_tracking_urls transformation function."""
 
     def test_removes_googletagmanager_line(self) -> None:
-        """Line containing googletagmanager.com should be removed."""
-        content = "# Heading\n<script>googletagmanager.com/abc</script>\nBody content"
+        """Line containing tracking domain should be removed."""
+        content = f"# Heading\n<script>{TRACKING_DOMAINS[0]}/abc</script>\nBody content"
         result = remove_tracking_urls(content)
         assert result == "# Heading\nBody content"
 
     def test_removes_multiple_tracking_lines(self) -> None:
         """Multiple tracking lines should all be removed."""
         content = (
-            "# Heading\ngoogletagmanager.com line1\nBody\ngoogletagmanager.com line2"
+            f"# Heading\n{TRACKING_DOMAINS[0]} line1\nBody\n{TRACKING_DOMAINS[0]} line2"
         )
         result = remove_tracking_urls(content)
         assert result == "# Heading\nBody"

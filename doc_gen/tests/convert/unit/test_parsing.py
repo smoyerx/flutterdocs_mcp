@@ -1,5 +1,7 @@
 """Unit tests for parsing functions."""
 
+from convert.conftest import make_mcp_uri
+
 from flutterdoc_gen.convert.parsing import (
     extract_member_definitions,
     extract_member_links,
@@ -150,7 +152,7 @@ class TestExtractMemberDefinitions:
     def test_extracts_property_definition(self) -> None:
         """Should extract property with arrow immediately after link."""
         content = (
-            "[hashCode](mcp://flutter/api/dart-core/Object/hashCode)→ int\n"
+            f"[hashCode]({make_mcp_uri('dart-core', 'Object', 'hashCode')})→ int\n"
             "The hash code."
         )
         result = extract_member_definitions(content)
@@ -165,7 +167,7 @@ class TestExtractMemberDefinitions:
     def test_extracts_method_definition(self) -> None:
         """Should extract method with arrow after parameters."""
         content = (
-            "[build](mcp://flutter/api/widgets/StatelessWidget/build)"
+            f"[build]({make_mcp_uri('widgets', 'StatelessWidget', 'build')})"
             "(BuildContext context) → Widget\n"
             "Describes the part of the user interface."
         )
@@ -181,9 +183,9 @@ class TestExtractMemberDefinitions:
     def test_extracts_operator_definition(self) -> None:
         """Should extract operator with arrow after parameters."""
         content = (
-            "[operator ==](mcp://flutter/api/widgets/Widget/operator_equals)"
-            "([Object](mcp://flutter/api/dart-core/Object) other) → "
-            "[bool](mcp://flutter/api/dart-core/bool)\n"
+            f"[operator ==]({make_mcp_uri('widgets', 'Widget', 'operator_equals')})"
+            f"([Object]({make_mcp_uri('dart-core', 'Object')}) other) → "
+            f"[bool]({make_mcp_uri('dart-core', 'bool')})\n"
             "The equality operator."
         )
         result = extract_member_definitions(content)
@@ -192,15 +194,17 @@ class TestExtractMemberDefinitions:
         assert result[0]["section"] == "widgets"
         assert result[0]["class_name"] == "Widget"
         assert result[0]["member"] == "operator_equals"
-        assert result[0]["result_type"] == "[bool](mcp://flutter/api/dart-core/bool)"
+        assert (
+            result[0]["result_type"] == f"[bool]({make_mcp_uri('dart-core', 'bool')})"
+        )
         assert result[0]["description"] == "The equality operator."
 
     def test_extracts_multiple_members(self) -> None:
         """Should extract multiple member definitions."""
         content = (
-            "[prop1](mcp://flutter/api/widgets/Widget/prop1)→ String\n"
+            f"[prop1]({make_mcp_uri('widgets', 'Widget', 'prop1')})→ String\n"
             "Description 1\n\n"
-            "[prop2](mcp://flutter/api/widgets/Widget/prop2)→ int\n"
+            f"[prop2]({make_mcp_uri('widgets', 'Widget', 'prop2')})→ int\n"
             "Description 2"
         )
         result = extract_member_definitions(content)
@@ -211,9 +215,9 @@ class TestExtractMemberDefinitions:
     def test_ignores_links_without_arrow(self) -> None:
         """Should ignore inline references without arrows."""
         content = (
-            "[highlightShape](mcp://flutter/api/material/InkResponse/highlightShape) "
+            f"[highlightShape]({make_mcp_uri('material', 'InkResponse', 'highlightShape')}) "
             "is BoxShape.\n\n"
-            "[highlightShape](mcp://flutter/api/material/InkResponse/highlightShape)→ BoxShape\n"
+            f"[highlightShape]({make_mcp_uri('material', 'InkResponse', 'highlightShape')})→ BoxShape\n"
             "The shape to use."
         )
         result = extract_member_definitions(content)
@@ -222,16 +226,14 @@ class TestExtractMemberDefinitions:
 
     def test_handles_multiline_description(self) -> None:
         """Should capture multiline descriptions within paragraph."""
-        content = (
-            "[prop](mcp://flutter/api/s/C/prop)→ int\nLine 1\nLine 2\n\nNext member"
-        )
+        content = f"[prop]({make_mcp_uri('s', 'C', 'prop')})→ int\nLine 1\nLine 2\n\nNext member"
         result = extract_member_definitions(content)
         assert result[0]["description"] == "Line 1\nLine 2"
 
     def test_handles_complex_result_types(self) -> None:
         """Should capture full result type including links and generics."""
         content = (
-            "[prop](mcp://flutter/api/s/C/prop)→ "
+            f"[prop]({make_mcp_uri('s', 'C', 'prop')})→ "
             "[List](link)<[Widget](link)>?\n"
             "Description"
         )
@@ -240,21 +242,21 @@ class TestExtractMemberDefinitions:
 
     def test_handles_ascii_arrow(self) -> None:
         """Should handle ASCII arrow (->) format."""
-        content = "[prop](mcp://flutter/api/s/C/prop)-> int\nDesc"
+        content = f"[prop]({make_mcp_uri('s', 'C', 'prop')})-> int\nDesc"
         result = extract_member_definitions(content)
         assert len(result) == 1
         assert result[0]["result_type"] == "int"
 
     def test_handles_fat_arrow(self) -> None:
         """Should handle fat arrow (=>) format."""
-        content = "[prop](mcp://flutter/api/s/C/prop)=> int\nDesc"
+        content = f"[prop]({make_mcp_uri('s', 'C', 'prop')})=> int\nDesc"
         result = extract_member_definitions(content)
         assert len(result) == 1
         assert result[0]["result_type"] == "int"
 
     def test_strips_result_type_whitespace(self) -> None:
         """Should strip leading and trailing whitespace from result type."""
-        content = "[prop](mcp://flutter/api/s/C/prop)→   int  \nDesc"
+        content = f"[prop]({make_mcp_uri('s', 'C', 'prop')})→   int  \nDesc"
         result = extract_member_definitions(content)
         assert result[0]["result_type"] == "int"
 
@@ -270,7 +272,7 @@ class TestExtractMemberLinks:
 
     def test_extracts_member_link(self) -> None:
         """Should extract member link with all fields."""
-        content = "[hashCode](mcp://flutter/api/dart-core/Object/hashCode)→ int\nThe hash code."
+        content = f"[hashCode]({make_mcp_uri('dart-core', 'Object', 'hashCode')})→ int\nThe hash code."
         result = extract_member_links(content)
         assert len(result) == 1
         assert result[0]["link_text"] == "hashCode"
@@ -283,8 +285,8 @@ class TestExtractMemberLinks:
     def test_extracts_multiple_members(self) -> None:
         """Should extract multiple member links."""
         content = (
-            "[prop1](mcp://flutter/api/widgets/Widget/prop1)→ String\nDesc1\n\n"
-            "[prop2](mcp://flutter/api/widgets/Widget/prop2)→ int\nDesc2"
+            f"[prop1]({make_mcp_uri('widgets', 'Widget', 'prop1')})→ String\nDesc1\n\n"
+            f"[prop2]({make_mcp_uri('widgets', 'Widget', 'prop2')})→ int\nDesc2"
         )
         result = extract_member_links(content)
         assert len(result) == 2
@@ -293,48 +295,50 @@ class TestExtractMemberLinks:
 
     def test_ignores_links_without_arrow(self) -> None:
         """Should ignore links that don't have type signature arrow."""
-        content = "[method](mcp://flutter/api/widgets/Widget/method)\nDescription here."
+        content = f"[method]({make_mcp_uri('widgets', 'Widget', 'method')})\nDescription here."
         result = extract_member_links(content)
         # Links without arrow are inline references, not member definitions
         assert len(result) == 0
 
     def test_handles_multiline_description(self) -> None:
         """Should capture multiline description until blank line."""
-        content = "[prop](mcp://flutter/api/s/C/prop)→ int\nLine 1\nLine 2\n\nNext"
+        content = (
+            f"[prop]({make_mcp_uri('s', 'C', 'prop')})→ int\nLine 1\nLine 2\n\nNext"
+        )
         result = extract_member_links(content)
         assert result[0]["description"] == "Line 1\nLine 2"
 
     def test_handles_leading_whitespace(self) -> None:
         """Should handle leading whitespace before link."""
-        content = "  [prop](mcp://flutter/api/s/C/prop)→ int\nDesc"
+        content = f"  [prop]({make_mcp_uri('s', 'C', 'prop')})→ int\nDesc"
         result = extract_member_links(content)
         assert len(result) == 1
         assert result[0]["member"] == "prop"
 
     def test_handles_ascii_arrow(self) -> None:
         """Should handle ASCII arrow (->) format."""
-        content = "[prop](mcp://flutter/api/s/C/prop)-> int\nDesc"
+        content = f"[prop]({make_mcp_uri('s', 'C', 'prop')})-> int\nDesc"
         result = extract_member_links(content)
         assert len(result) == 1
         assert result[0]["result_type"] == "int"
 
     def test_handles_fat_arrow(self) -> None:
         """Should handle fat arrow (=>) format."""
-        content = "[prop](mcp://flutter/api/s/C/prop)=> int\nDesc"
+        content = f"[prop]({make_mcp_uri('s', 'C', 'prop')})=> int\nDesc"
         result = extract_member_links(content)
         assert len(result) == 1
         assert result[0]["result_type"] == "int"
 
     def test_handles_whitespace_before_arrow(self) -> None:
         """Should handle whitespace between link and arrow."""
-        content = "[prop](mcp://flutter/api/s/C/prop) → int\nDesc"
+        content = f"[prop]({make_mcp_uri('s', 'C', 'prop')}) → int\nDesc"
         result = extract_member_links(content)
         assert len(result) == 1
         assert result[0]["result_type"] == "int"
 
     def test_handles_multiple_whitespace_before_arrow(self) -> None:
         """Should handle multiple whitespace characters before arrow."""
-        content = "[prop](mcp://flutter/api/s/C/prop)   →   int\nDesc"
+        content = f"[prop]({make_mcp_uri('s', 'C', 'prop')})   →   int\nDesc"
         result = extract_member_links(content)
         assert len(result) == 1
         assert result[0]["result_type"] == "int"
@@ -348,8 +352,8 @@ class TestExtractMemberLinks:
     def test_ignores_inline_references(self) -> None:
         """Should ignore links that appear as inline references within text."""
         content = (
-            "[highlightShape](mcp://flutter/api/material/InkResponse/highlightShape) is BoxShape.\n\n"
-            "[highlightShape](mcp://flutter/api/material/InkResponse/highlightShape)→ BoxShape\n"
+            f"[highlightShape]({make_mcp_uri('material', 'InkResponse', 'highlightShape')}) is BoxShape.\n\n"
+            f"[highlightShape]({make_mcp_uri('material', 'InkResponse', 'highlightShape')})→ BoxShape\n"
             "The shape to use for highlights."
         )
         result = extract_member_links(content)
@@ -359,9 +363,12 @@ class TestExtractMemberLinks:
 
     def test_captures_full_result_type(self) -> None:
         """Should capture the full result type including links and generics."""
-        content = "[prop](mcp://flutter/api/s/C/prop)→ [Widget](mcp://flutter/api/widgets/Widget)?\nDesc"
+        content = f"[prop]({make_mcp_uri('s', 'C', 'prop')})→ [Widget]({make_mcp_uri('widgets', 'Widget')})?\nDesc"
         result = extract_member_links(content)
-        assert result[0]["result_type"] == "[Widget](mcp://flutter/api/widgets/Widget)?"
+        assert (
+            result[0]["result_type"]
+            == f"[Widget]({make_mcp_uri('widgets', 'Widget')})?"
+        )
 
 
 class TestExtractStaticMethodLinks:
@@ -370,7 +377,7 @@ class TestExtractStaticMethodLinks:
     def test_extracts_static_method_link(self) -> None:
         """Should extract static method link with parameters."""
         content = (
-            "[divideTiles](mcp://flutter/api/material/ListTile/divideTiles)"
+            f"[divideTiles]({make_mcp_uri('material', 'ListTile', 'divideTiles')})"
             "({BuildContext? context, required Iterable<Widget> tiles}) → Iterable<Widget>"
         )
         result = extract_static_method_links(content)
@@ -383,8 +390,8 @@ class TestExtractStaticMethodLinks:
     def test_extracts_multiple_static_methods(self) -> None:
         """Should extract multiple static method links."""
         content = (
-            "[method1](mcp://flutter/api/section/Class/method1)() → void\n"
-            "[method2](mcp://flutter/api/section/Class/method2)() → int\n"
+            f"[method1]({make_mcp_uri('section', 'Class', 'method1')})() → void\n"
+            f"[method2]({make_mcp_uri('section', 'Class', 'method2')})() → int\n"
         )
         result = extract_static_method_links(content)
         assert len(result) == 2
@@ -395,7 +402,7 @@ class TestExtractStaticMethodLinks:
         """Should ignore lines that don't start with MCP links."""
         content = (
             "Some description text\n"
-            "[divideTiles](mcp://flutter/api/material/ListTile/divideTiles)() → void\n"
+            f"[divideTiles]({make_mcp_uri('material', 'ListTile', 'divideTiles')})() → void\n"
             "More text here"
         )
         result = extract_static_method_links(content)
@@ -404,7 +411,7 @@ class TestExtractStaticMethodLinks:
 
     def test_handles_leading_whitespace(self) -> None:
         """Should handle leading whitespace on link lines."""
-        content = "  [method](mcp://flutter/api/section/Class/method)() → void"
+        content = f"  [method]({make_mcp_uri('section', 'Class', 'method')})() → void"
         result = extract_static_method_links(content)
         assert len(result) == 1
         assert result[0]["member"] == "method"
@@ -426,7 +433,7 @@ class TestExtractMethodLinks:
 
     def test_extracts_method_with_parameters(self) -> None:
         """Should extract method link with parameters before arrow."""
-        content = "[build](mcp://flutter/api/widgets/StatelessWidget/build)(BuildContext context) → Widget\nDesc"
+        content = f"[build]({make_mcp_uri('widgets', 'StatelessWidget', 'build')})(BuildContext context) → Widget\nDesc"
         result = extract_method_links(content)
         assert len(result) == 1
         assert result[0]["link_text"] == "build"
@@ -438,27 +445,29 @@ class TestExtractMethodLinks:
 
     def test_extracts_operator_with_parameters(self) -> None:
         """Should extract operator link with parameters before arrow."""
-        content = "[operator ==](mcp://flutter/api/widgets/Widget/operator_equals)([Object](mcp://flutter/api/dart-core/Object) other) → [bool](mcp://flutter/api/dart-core/bool)\nThe equality operator."
+        content = f"[operator ==]({make_mcp_uri('widgets', 'Widget', 'operator_equals')})([Object]({make_mcp_uri('dart-core', 'Object')}) other) → [bool]({make_mcp_uri('dart-core', 'bool')})\nThe equality operator."
         result = extract_method_links(content)
         assert len(result) == 1
         assert result[0]["link_text"] == "operator =="
         assert result[0]["section"] == "widgets"
         assert result[0]["class_name"] == "Widget"
         assert result[0]["member"] == "operator_equals"
-        assert result[0]["result_type"] == "[bool](mcp://flutter/api/dart-core/bool)"
+        assert (
+            result[0]["result_type"] == f"[bool]({make_mcp_uri('dart-core', 'bool')})"
+        )
         assert result[0]["description"] == "The equality operator."
 
     def test_ignores_links_without_arrow(self) -> None:
         """Should ignore method links that don't have return type arrow."""
-        content = "[method](mcp://flutter/api/widgets/Widget/method)(int param)\nDescription here."
+        content = f"[method]({make_mcp_uri('widgets', 'Widget', 'method')})(int param)\nDescription here."
         result = extract_method_links(content)
         assert len(result) == 0
 
     def test_extracts_multiple_methods(self) -> None:
         """Should extract multiple method links."""
         content = (
-            "[method1](mcp://flutter/api/section/Class/method1)() → void\nDesc1\n\n"
-            "[method2](mcp://flutter/api/section/Class/method2)(int x) → int\nDesc2"
+            f"[method1]({make_mcp_uri('section', 'Class', 'method1')})() → void\nDesc1\n\n"
+            f"[method2]({make_mcp_uri('section', 'Class', 'method2')})(int x) → int\nDesc2"
         )
         result = extract_method_links(content)
         assert len(result) == 2
@@ -467,7 +476,7 @@ class TestExtractMethodLinks:
 
     def test_handles_complex_parameters(self) -> None:
         """Should handle methods with complex parameter types."""
-        content = "[method](mcp://flutter/api/s/C/method)([Map<String, dynamic>](link) data) → Future<void>\nAsync method."
+        content = f"[method]({make_mcp_uri('s', 'C', 'method')})([Map<String, dynamic>](link) data) → Future<void>\nAsync method."
         result = extract_method_links(content)
         assert len(result) == 1
         assert result[0]["result_type"] == "Future<void>"
@@ -475,15 +484,13 @@ class TestExtractMethodLinks:
 
     def test_handles_multiline_description(self) -> None:
         """Should capture multiline description until blank line."""
-        content = (
-            "[method](mcp://flutter/api/s/C/method)() → void\nLine 1\nLine 2\n\nNext"
-        )
+        content = f"[method]({make_mcp_uri('s', 'C', 'method')})() → void\nLine 1\nLine 2\n\nNext"
         result = extract_method_links(content)
         assert result[0]["description"] == "Line 1\nLine 2"
 
     def test_handles_leading_whitespace(self) -> None:
         """Should handle leading whitespace before link."""
-        content = "  [method](mcp://flutter/api/s/C/method)() → void\nDesc"
+        content = f"  [method]({make_mcp_uri('s', 'C', 'method')})() → void\nDesc"
         result = extract_method_links(content)
         assert len(result) == 1
         assert result[0]["member"] == "method"

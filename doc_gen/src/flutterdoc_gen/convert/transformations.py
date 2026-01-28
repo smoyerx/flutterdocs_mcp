@@ -14,6 +14,9 @@ from flutterdoc_gen.convert.patterns import (
     UNMATCHED_HTML_LINK_PATTERN,
 )
 
+# Footer marker for content removal - the start of Flutter doc footer navigation
+FOOTER_MARKER = "1. [Flutter](index.html)"
+
 # Module-level tracking of unmatched HTML link patterns
 _unmatched_patterns: list[tuple[str, str]] = []  # List of (context, pattern)
 
@@ -70,7 +73,7 @@ def remove_header(content: str) -> str:
 def remove_footer(content: str) -> str:
     """Remove footer content starting from the Flutter index link.
 
-    Removes all content from the line containing "1. [Flutter](index.html)"
+    Removes all content from the line containing FOOTER_MARKER
     to the end of the file.
 
     Args:
@@ -80,10 +83,9 @@ def remove_footer(content: str) -> str:
         The content with footer removed. If the footer marker is not found,
         returns the original content.
     """
-    marker = "1. [Flutter](index.html)"
     lines = content.split("\n")
     for i, line in enumerate(lines):
-        if marker in line:
+        if FOOTER_MARKER in line:
             return "\n".join(lines[:i]).rstrip()
     return content
 

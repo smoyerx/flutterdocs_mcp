@@ -8,6 +8,9 @@ import re
 from dataclasses import dataclass
 
 
+# MCP URI scheme prefix for Flutter API documentation
+MCP_URI_PREFIX = "mcp://flutter/api/"
+
 # Noise strings to remove from converted markdown
 # These are artifacts from the HTML conversion that don't add value
 NOISE_STRINGS: tuple[str, ...] = (
@@ -18,6 +21,9 @@ NOISE_STRINGS: tuple[str, ...] = (
     "inherited",
     '[*link*](# "Copy link to clipboard")',
 )
+
+# Named constant for easy test access to the copy link noise string
+COPY_LINK_NOISE = NOISE_STRINGS[5]
 
 # Analytics/tracking domains to filter from output
 TRACKING_DOMAINS: tuple[str, ...] = ("googletagmanager.com",)
@@ -47,26 +53,26 @@ LINK_PATTERNS: tuple[LinkPattern, ...] = (
     LinkPattern(
         name="class_link",
         pattern=r"\[([^\]]+)\]\(([a-zA-Z0-9_-]+)/([a-zA-Z0-9_]+)-class\.html\)",
-        replacement=r"[\1](mcp://flutter/api/\2/\3)",
+        replacement=rf"[\1]({MCP_URI_PREFIX}\2/\3)",
         description="[ClassName](section/ClassName-class.html)",
     ),
     LinkPattern(
         name="type_link",
         pattern=r"\[([^\]]+)\]\(([a-zA-Z0-9_-]+)/([a-zA-Z0-9_]+)\.html\)",
-        replacement=r"[\1](mcp://flutter/api/\2/\3)",
+        replacement=rf"[\1]({MCP_URI_PREFIX}\2/\3)",
         description="[Type](section/Type.html) - types and references",
     ),
     # Member links (more specific patterns first)
     LinkPattern(
         name="dotted_member_link",
         pattern=r"\[([^\]]+)\]\(([a-zA-Z0-9_-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+\.[a-zA-Z0-9_]+)\.html\)",
-        replacement=r"[\1](mcp://flutter/api/\2/\3/\4)",
+        replacement=rf"[\1]({MCP_URI_PREFIX}\2/\3/\4)",
         description="[Class.member](section/Class/Class.member.html) - named constructors/static methods",
     ),
     LinkPattern(
         name="member_link",
         pattern=r"\[([^\]]+)\]\(([a-zA-Z0-9_-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)\.html\)",
-        replacement=r"[\1](mcp://flutter/api/\2/\3/\4)",
+        replacement=rf"[\1]({MCP_URI_PREFIX}\2/\3/\4)",
         description="[member](section/Class/member.html)",
     ),
     # Special links

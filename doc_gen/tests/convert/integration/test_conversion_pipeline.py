@@ -7,9 +7,11 @@ import pytest
 from convert.conftest import (
     get_available_sections,
     get_class_names_for_section,
+    make_mcp_uri,
     run_convert,
     SAMPLES_DIR,
 )
+from flutterdoc_gen.convert.patterns import MCP_URI_PREFIX
 from flutterdoc_gen.convert.paths import (
     get_api_section_dir,
     get_class_dir,
@@ -21,6 +23,7 @@ from flutterdoc_gen.convert.paths import (
     get_class_snippets_dir,
     get_inherited_member_file,
 )
+from flutterdoc_gen.convert.transformations import FOOTER_MARKER
 
 
 class TestConvertIntegration:
@@ -120,7 +123,7 @@ class TestConvertIntegration:
             )
 
         # Verify MCP URIs are present (transformations occurred)
-        mcp_pattern = re.compile(r"mcp://flutter/api/")
+        mcp_pattern = re.compile(MCP_URI_PREFIX)
         has_mcp_links = False
         for md_file in api_section_dir.rglob("*.md"):
             content = md_file.read_text(encoding="utf-8")
@@ -135,11 +138,10 @@ class TestConvertIntegration:
         result = run_convert(SAMPLES_DIR, section, output_dir)
         assert result.returncode == 0
 
-        footer_marker = "1. [Flutter](index.html)"
         api_section_dir = get_api_section_dir(output_dir, section)
         for md_file in api_section_dir.rglob("*.md"):
             content = md_file.read_text(encoding="utf-8")
-            assert footer_marker not in content, (
+            assert FOOTER_MARKER not in content, (
                 f"File {md_file} contains footer marker"
             )
 
@@ -168,9 +170,7 @@ class TestConvertIntegration:
             class_file = get_class_file(output_dir, section, class_name)
             content = class_file.read_text(encoding="utf-8")
             # Should have at least some MCP links
-            assert "mcp://flutter/api/" in content, (
-                f"File {class_file} has no MCP links"
-            )
+            assert MCP_URI_PREFIX in content, f"File {class_file} has no MCP links"
 
 
 class TestConvertWithSnippets:
@@ -275,11 +275,12 @@ class TestInheritedMemberGeneration:
 
         # Should reference the parent class
         assert "This operator is inherited from" in content
-        assert "[Widget](mcp://flutter/api/widgets/Widget)" in content
+        assert f"[Widget]({make_mcp_uri('widgets', 'Widget')})" in content
 
         # Should have link to the original operator documentation
         assert (
-            "[operator ==](mcp://flutter/api/widgets/Widget/operator_equals)" in content
+            f"[operator ==]({make_mcp_uri('widgets', 'Widget', 'operator_equals')})"
+            in content
         )
 
     def test_inherited_properties_generated(self, output_dir: Path) -> None:

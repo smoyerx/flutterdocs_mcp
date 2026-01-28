@@ -9,7 +9,11 @@ import logging
 import sys
 from pathlib import Path
 
-from html_to_markdown import ConversionOptions, ConversionOptionsHandle, create_options_handle
+from html_to_markdown import (
+    ConversionOptions,
+    ConversionOptionsHandle,
+    create_options_handle,
+)
 
 from flutterdoc_gen.convert.conversion import convert_html_to_markdown
 from flutterdoc_gen.convert.paths import (

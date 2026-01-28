@@ -6,6 +6,8 @@ information from markdown content, such as section content and member links.
 
 import re
 
+from flutterdoc_gen.convert.patterns import MCP_URI_PREFIX
+
 
 def split_into_paragraphs(section_content: str) -> list[str]:
     """Split section content into paragraphs.
@@ -81,7 +83,7 @@ def extract_member_definitions(section_content: str) -> list[dict[str, str]]:
 
     # Pattern to match [text](mcp://flutter/api/section/class/member)
     link_pattern = re.compile(
-        r"^\s*\[([^\]]+)\]\(mcp://flutter/api/([^/]+)/([^/]+)/([^)]+)\)"
+        rf"^\s*\[([^\]]+)\]\({MCP_URI_PREFIX}([^/]+)/([^/]+)/([^)]+)\)"
     )
 
     # Arrow pattern: Unicode rightwards arrow, ASCII arrow variants
@@ -234,7 +236,7 @@ def extract_member_links(
     # optional whitespace and an arrow (type signature).
     # This distinguishes property definitions from inline references
     link_pattern = re.compile(
-        r"^\s*\[([^\]]+)\]\(mcp://flutter/api/([^/]+)/([^/]+)/([^)]+)\)\s*"
+        rf"^\s*\[([^\]]+)\]\({MCP_URI_PREFIX}([^/]+)/([^/]+)/([^)]+)\)\s*"
         + arrow_pattern
     )
 
@@ -309,7 +311,7 @@ def extract_constructor_links(
     # Pattern to match [text](mcp://flutter/api/section/class/member)
     # For constructors, we don't require the arrow - just the MCP link at line start
     link_pattern = re.compile(
-        r"^\s*\[([^\]]+)\]\(mcp://flutter/api/([^/]+)/([^/]+)/([^)]+)\)"
+        rf"^\s*\[([^\]]+)\]\({MCP_URI_PREFIX}([^/]+)/([^/]+)/([^)]+)\)"
     )
 
     for line in lines:
@@ -369,7 +371,7 @@ def extract_method_links(
     # Pattern to match [text](mcp://flutter/api/section/class/member)
     # For methods, the link is at the start of the line, but the arrow comes after parameters
     link_pattern = re.compile(
-        r"^\s*\[([^\]]+)\]\(mcp://flutter/api/([^/]+)/([^/]+)/([^)]+)\)"
+        rf"^\s*\[([^\]]+)\]\({MCP_URI_PREFIX}([^/]+)/([^/]+)/([^)]+)\)"
     )
 
     i = 0
@@ -448,7 +450,7 @@ def extract_static_method_links(
     # Pattern to match [text](mcp://flutter/api/section/class/member)
     # For static methods, we don't require the arrow - just the MCP link at line start
     link_pattern = re.compile(
-        r"^\s*\[([^\]]+)\]\(mcp://flutter/api/([^/]+)/([^/]+)/([^)]+)\)"
+        rf"^\s*\[([^\]]+)\]\({MCP_URI_PREFIX}([^/]+)/([^/]+)/([^)]+)\)"
     )
 
     for line in lines:
