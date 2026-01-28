@@ -10,7 +10,6 @@ from flutterdoc_gen.convert.conversion import (
     convert_html_to_markdown,
 )
 from flutterdoc_gen.convert.patterns import (
-    COPY_LINK_NOISE,
     LINK_PATTERNS,
     MCP_URI_PREFIX,
     NOISE_STRINGS,
@@ -35,7 +34,6 @@ __all__ = [
     # CLI
     "main",
     # Patterns
-    "COPY_LINK_NOISE",
     "LinkPattern",
     "LINK_PATTERNS",
     "MCP_URI_PREFIX",

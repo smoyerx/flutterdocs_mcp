@@ -1,6 +1,8 @@
 """Unit tests for transformation functions."""
 
-from flutterdoc_gen.convert.patterns import COPY_LINK_NOISE, TRACKING_DOMAINS
+import pytest
+
+from flutterdoc_gen.convert.patterns import NOISE_STRINGS, TRACKING_DOMAINS
 from flutterdoc_gen.convert.transformations import (
     FOOTER_MARKER,
     apply_transformations,
@@ -124,41 +126,15 @@ class TestRemoveFooter:
 class TestRemoveNoiseLines:
     """Tests for remove_noise_lines transformation function."""
 
-    def test_removes_const_line(self) -> None:
-        """Line containing only 'const' should be removed."""
-        content = "# Heading\nconst\nBody content"
-        result = remove_noise_lines(content)
-        assert result == "# Heading\nBody content"
-
-    def test_removes_final_line(self) -> None:
-        """Line containing only 'final' should be removed."""
-        content = "# Heading\nfinal\nBody content"
-        result = remove_noise_lines(content)
-        assert result == "# Heading\nBody content"
-
-    def test_removes_inherited_line(self) -> None:
-        """Line containing only 'inherited' should be removed."""
-        content = "# Heading\ninherited\nBody content"
-        result = remove_noise_lines(content)
-        assert result == "# Heading\nBody content"
-
-    def test_removes_no_setter_inherited_line(self) -> None:
-        """Line containing only 'no setterinherited' should be removed."""
-        content = "# Heading\nno setterinherited\nBody content"
-        result = remove_noise_lines(content)
-        assert result == "# Heading\nBody content"
-
-    def test_removes_final_inherited_line(self) -> None:
-        """Line containing only 'finalinherited' should be removed."""
-        content = "# Heading\nfinalinherited\nBody content"
-        result = remove_noise_lines(content)
-        assert result == "# Heading\nBody content"
-
-    def test_removes_copy_link_line(self) -> None:
-        """Line containing only the copy link markdown should be removed."""
-        content = f"# Heading\n{COPY_LINK_NOISE}\nBody content"
-        result = remove_noise_lines(content)
-        assert result == "# Heading\nBody content"
+    @pytest.mark.parametrize(
+        ("noise_string", "test_input", "expected_output"), NOISE_STRINGS
+    )
+    def test_removes_noise_string(
+        self, noise_string: str, test_input: str, expected_output: str
+    ) -> None:
+        """Each noise string should be removed from content."""
+        result = remove_noise_lines(test_input)
+        assert result == expected_output
 
     def test_removes_noise_with_whitespace(self) -> None:
         """Noise strings with leading/trailing whitespace should be removed."""
@@ -193,17 +169,21 @@ class TestRemoveNoiseLines:
 class TestRemoveTrackingUrls:
     """Tests for remove_tracking_urls transformation function."""
 
-    def test_removes_googletagmanager_line(self) -> None:
-        """Line containing tracking domain should be removed."""
-        content = f"# Heading\n<script>{TRACKING_DOMAINS[0]}/abc</script>\nBody content"
-        result = remove_tracking_urls(content)
-        assert result == "# Heading\nBody content"
+    @pytest.mark.parametrize(
+        ("tracking_domain", "test_input", "expected_output"), TRACKING_DOMAINS
+    )
+    def test_removes_tracking_domain(
+        self, tracking_domain: str, test_input: str, expected_output: str
+    ) -> None:
+        """Each tracking domain should be removed from content."""
+        result = remove_tracking_urls(test_input)
+        assert result == expected_output
 
     def test_removes_multiple_tracking_lines(self) -> None:
         """Multiple tracking lines should all be removed."""
-        content = (
-            f"# Heading\n{TRACKING_DOMAINS[0]} line1\nBody\n{TRACKING_DOMAINS[0]} line2"
-        )
+        # Extract first tracking domain for testing multiple occurrences
+        tracking_domain = TRACKING_DOMAINS[0][0]
+        content = f"# Heading\n{tracking_domain} line1\nBody\n{tracking_domain} line2"
         result = remove_tracking_urls(content)
         assert result == "# Heading\nBody"
 

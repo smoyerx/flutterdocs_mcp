@@ -105,10 +105,13 @@ def remove_noise_lines(content: str) -> str:
     lines = content.split("\n")
     result_lines = []
 
+    # Extract just the noise strings from the tuples
+    noise_strings = tuple(noise[0] for noise in NOISE_STRINGS)
+
     for line in lines:
         stripped = line.strip()
         # Skip noise strings
-        if stripped in NOISE_STRINGS:
+        if stripped in noise_strings:
             continue
         result_lines.append(line)
 
@@ -131,8 +134,11 @@ def remove_tracking_urls(content: str) -> str:
     lines = content.split("\n")
     result_lines = []
 
+    # Extract just the tracking domains from the tuples
+    tracking_domains = tuple(domain[0] for domain in TRACKING_DOMAINS)
+
     for line in lines:
-        if any(domain in line for domain in TRACKING_DOMAINS):
+        if any(domain in line for domain in tracking_domains):
             continue
         result_lines.append(line)
 
