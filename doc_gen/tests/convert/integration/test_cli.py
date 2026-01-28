@@ -7,6 +7,17 @@ from pathlib import Path
 import pytest
 
 from convert.conftest import run_convert, SAMPLES_DIR
+from flutterdoc_gen.convert.paths import (
+    get_api_root_dir,
+    get_api_section_dir,
+    get_class_dir,
+    get_class_file,
+    get_constructors_dir,
+    get_input_section_dir,
+    get_input_snippets_dir,
+    get_native_member_file,
+    get_statics_dir,
+)
 
 
 class TestConvertErrorHandling:
@@ -45,8 +56,8 @@ class TestConvertErrorHandling:
         """Empty section (no class files) should exit with zero status."""
         # Create empty directory structure
         doc_dir = tmp_path / "empty_docs"
-        (doc_dir / "flutter" / "empty_section").mkdir(parents=True)
-        (doc_dir / "snippets").mkdir(parents=True)
+        get_input_section_dir(doc_dir, "empty_section").mkdir(parents=True)
+        get_input_snippets_dir(doc_dir).mkdir(parents=True)
 
         result = run_convert(doc_dir, "empty_section", output_dir)
         assert result.returncode == 0
@@ -67,7 +78,7 @@ class TestConvertOverwrite:
         result1 = run_convert(SAMPLES_DIR, "material", output_dir)
         assert result1.returncode == 0
 
-        listtile_md = output_dir / "api" / "material" / "ListTile" / "ListTile.md"
+        listtile_md = get_class_file(output_dir, "material", "ListTile")
         original_content = listtile_md.read_text(encoding="utf-8")
 
         # Second run
@@ -91,7 +102,7 @@ class TestConvertDirectoryStructure:
         result = run_convert(SAMPLES_DIR, "material", output_dir)
         assert result.returncode == 0
 
-        api_dir = output_dir / "api"
+        api_dir = get_api_root_dir(output_dir)
         assert api_dir.exists()
         assert api_dir.is_dir()
 
@@ -100,7 +111,7 @@ class TestConvertDirectoryStructure:
         result = run_convert(SAMPLES_DIR, "material", output_dir)
         assert result.returncode == 0
 
-        section_dir = output_dir / "api" / "material"
+        section_dir = get_api_section_dir(output_dir, "material")
         assert section_dir.exists()
         assert section_dir.is_dir()
 
@@ -109,19 +120,19 @@ class TestConvertDirectoryStructure:
         result = run_convert(SAMPLES_DIR, "material", output_dir)
         assert result.returncode == 0
 
-        class_dir = output_dir / "api" / "material" / "ListTile"
+        class_dir = get_class_dir(output_dir, "material", "ListTile")
         assert class_dir.exists()
 
         # Main class file should exist
-        assert (class_dir / "ListTile.md").exists()
+        assert get_class_file(output_dir, "material", "ListTile").exists()
 
     def test_constructors_directory(self, output_dir: Path) -> None:
         """Constructors directory should be created if constructors exist."""
         result = run_convert(SAMPLES_DIR, "material", output_dir)
         assert result.returncode == 0
 
-        class_dir = output_dir / "api" / "material" / "ListTile"
-        constructors_dir = class_dir / "constructors"
+        class_dir = get_class_dir(output_dir, "material", "ListTile")
+        constructors_dir = get_constructors_dir(class_dir)
         # Directory may or may not exist depending on sample data
         if constructors_dir.exists():
             assert constructors_dir.is_dir()
@@ -134,14 +145,14 @@ class TestConvertDirectoryStructure:
         result = run_convert(SAMPLES_DIR, "material", output_dir)
         assert result.returncode == 0
 
-        class_dir = output_dir / "api" / "material" / "ListTile"
-        statics_dir = class_dir / "statics"
+        class_dir = get_class_dir(output_dir, "material", "ListTile")
+        statics_dir = get_statics_dir(class_dir)
         # ListTile has a divideTiles static method
         assert statics_dir.exists(), "statics directory should exist for ListTile"
         assert statics_dir.is_dir()
 
         # divideTiles.md should be present
-        dividetiles_file = statics_dir / "divideTiles.md"
+        dividetiles_file = get_native_member_file(statics_dir, "divideTiles")
         assert dividetiles_file.exists(), "divideTiles.md should exist"
 
         # Verify the file starts with a heading

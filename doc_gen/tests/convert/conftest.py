@@ -6,6 +6,11 @@ from pathlib import Path
 
 import pytest
 
+from flutterdoc_gen.convert.paths import (
+    get_input_flutter_dir,
+    get_input_section_dir,
+)
+
 
 # Path to convert sample documentation files
 SAMPLES_DIR = Path(__file__).parent / "integration" / "samples"
@@ -66,7 +71,7 @@ def get_available_sections() -> list[str]:
     Returns:
         List of section directory names.
     """
-    flutter_dir = SAMPLES_DIR / "flutter"
+    flutter_dir = get_input_flutter_dir(SAMPLES_DIR)
     if not flutter_dir.exists():
         return []
     return [d.name for d in flutter_dir.iterdir() if d.is_dir()]
@@ -81,7 +86,7 @@ def get_class_names_for_section(section: str) -> list[str]:
     Returns:
         List of class names found in the section.
     """
-    section_dir = SAMPLES_DIR / "flutter" / section
+    section_dir = get_input_section_dir(SAMPLES_DIR, section)
     if not section_dir.exists():
         return []
 

@@ -10,6 +10,17 @@ from convert.conftest import (
     run_convert,
     SAMPLES_DIR,
 )
+from flutterdoc_gen.convert.paths import (
+    get_api_section_dir,
+    get_class_dir,
+    get_class_file,
+    get_class_inherited_member_file,
+    get_class_methods_inherited_dir,
+    get_class_operators_inherited_dir,
+    get_class_properties_inherited_dir,
+    get_class_snippets_dir,
+    get_inherited_member_file,
+)
 
 
 class TestConvertIntegration:
@@ -35,10 +46,9 @@ class TestConvertIntegration:
         assert result.returncode == 0
 
         expected_class_names = get_class_names_for_section(section)
-        api_section_dir = output_dir / "api" / section
 
         for class_name in expected_class_names:
-            class_dir = api_section_dir / class_name
+            class_dir = get_class_dir(output_dir, section, class_name)
             assert class_dir.exists(), f"Missing class directory: {class_dir}"
             assert class_dir.is_dir()
 
@@ -49,10 +59,9 @@ class TestConvertIntegration:
         assert result.returncode == 0
 
         expected_class_names = get_class_names_for_section(section)
-        api_section_dir = output_dir / "api" / section
 
         for class_name in expected_class_names:
-            class_file = api_section_dir / class_name / f"{class_name}.md"
+            class_file = get_class_file(output_dir, section, class_name)
             assert class_file.exists(), f"Missing class file: {class_file}"
 
     @pytest.mark.parametrize("section", get_available_sections())
@@ -63,7 +72,7 @@ class TestConvertIntegration:
         result = run_convert(SAMPLES_DIR, section, output_dir)
         assert result.returncode == 0
 
-        api_section_dir = output_dir / "api" / section
+        api_section_dir = get_api_section_dir(output_dir, section)
         for md_file in api_section_dir.rglob("*.md"):
             content = md_file.read_text(encoding="utf-8")
             assert content.startswith("#"), (
@@ -84,7 +93,7 @@ class TestConvertIntegration:
         result = run_convert(SAMPLES_DIR, section, output_dir)
         assert result.returncode == 0
 
-        api_section_dir = output_dir / "api" / section
+        api_section_dir = get_api_section_dir(output_dir, section)
         import re
 
         # Patterns that SHOULD be transformed (should NOT appear in output)
@@ -127,7 +136,7 @@ class TestConvertIntegration:
         assert result.returncode == 0
 
         footer_marker = "1. [Flutter](index.html)"
-        api_section_dir = output_dir / "api" / section
+        api_section_dir = get_api_section_dir(output_dir, section)
         for md_file in api_section_dir.rglob("*.md"):
             content = md_file.read_text(encoding="utf-8")
             assert footer_marker not in content, (
@@ -154,10 +163,9 @@ class TestConvertIntegration:
         assert result.returncode == 0
 
         expected_class_names = get_class_names_for_section(section)
-        api_section_dir = output_dir / "api" / section
 
         for class_name in expected_class_names:
-            class_file = api_section_dir / class_name / f"{class_name}.md"
+            class_file = get_class_file(output_dir, section, class_name)
             content = class_file.read_text(encoding="utf-8")
             # Should have at least some MCP links
             assert "mcp://flutter/api/" in content, (
@@ -179,7 +187,7 @@ class TestConvertWithSnippets:
         result = run_convert(SAMPLES_DIR, "material", output_dir)
         assert result.returncode == 0
 
-        snippets_dir = output_dir / "api" / "material" / "ListTile" / "snippets"
+        snippets_dir = get_class_snippets_dir(output_dir, "material", "ListTile")
         assert snippets_dir.exists(), "Snippets directory not created"
         assert snippets_dir.is_dir()
 
@@ -188,7 +196,7 @@ class TestConvertWithSnippets:
         result = run_convert(SAMPLES_DIR, "material", output_dir)
         assert result.returncode == 0
 
-        snippets_dir = output_dir / "api" / "material" / "ListTile" / "snippets"
+        snippets_dir = get_class_snippets_dir(output_dir, "material", "ListTile")
         snippet_files = list(snippets_dir.glob("*.md"))
         assert len(snippet_files) > 0, "No snippet files created"
 
@@ -197,7 +205,7 @@ class TestConvertWithSnippets:
         result = run_convert(SAMPLES_DIR, "material", output_dir)
         assert result.returncode == 0
 
-        snippets_dir = output_dir / "api" / "material" / "ListTile" / "snippets"
+        snippets_dir = get_class_snippets_dir(output_dir, "material", "ListTile")
         for snippet_file in snippets_dir.glob("*.md"):
             content = snippet_file.read_text(encoding="utf-8")
             assert content.startswith("# Code Snippet for ListTile in material"), (
@@ -210,7 +218,7 @@ class TestConvertWithSnippets:
         result = run_convert(SAMPLES_DIR, "material", output_dir)
         assert result.returncode == 0
 
-        snippets_dir = output_dir / "api" / "material" / "ListTile" / "snippets"
+        snippets_dir = get_class_snippets_dir(output_dir, "material", "ListTile")
         snippet_files = list(snippets_dir.glob("*.md"))
 
         for snippet_file in snippet_files:
@@ -233,14 +241,14 @@ class TestInheritedMemberGeneration:
         result = run_convert(SAMPLES_DIR, "material", output_dir)
         assert result.returncode == 0
 
-        operator_file = (
-            output_dir
-            / "api"
-            / "material"
-            / "InkWell"
-            / "operators"
-            / "inherited"
-            / "widgets-Widget-operator_equals.md"
+        operator_file = get_class_inherited_member_file(
+            output_dir,
+            "material",
+            "InkWell",
+            "operators",
+            "widgets",
+            "Widget",
+            "operator_equals",
         )
         assert operator_file.exists(), (
             f"Missing inherited operator file: {operator_file}"
@@ -251,14 +259,14 @@ class TestInheritedMemberGeneration:
         result = run_convert(SAMPLES_DIR, "material", output_dir)
         assert result.returncode == 0
 
-        operator_file = (
-            output_dir
-            / "api"
-            / "material"
-            / "InkWell"
-            / "operators"
-            / "inherited"
-            / "widgets-Widget-operator_equals.md"
+        operator_file = get_class_inherited_member_file(
+            output_dir,
+            "material",
+            "InkWell",
+            "operators",
+            "widgets",
+            "Widget",
+            "operator_equals",
         )
         content = operator_file.read_text(encoding="utf-8")
 
@@ -280,8 +288,8 @@ class TestInheritedMemberGeneration:
         assert result.returncode == 0
 
         # InkWell inherits properties from InkResponse and Widget
-        inherited_props_dir = (
-            output_dir / "api" / "material" / "InkWell" / "properties" / "inherited"
+        inherited_props_dir = get_class_properties_inherited_dir(
+            output_dir, "material", "InkWell"
         )
         assert inherited_props_dir.exists()
 
@@ -290,7 +298,9 @@ class TestInheritedMemberGeneration:
         assert len(prop_files) > 0, "No inherited property files generated"
 
         # Verify one specific inherited property from Widget
-        hashcode_file = inherited_props_dir / "widgets-Widget-hashCode.md"
+        hashcode_file = get_inherited_member_file(
+            inherited_props_dir, "widgets", "Widget", "hashCode"
+        )
         assert hashcode_file.exists(), f"Missing inherited property: {hashcode_file}"
 
     def test_inherited_methods_generated(self, output_dir: Path) -> None:
@@ -299,8 +309,8 @@ class TestInheritedMemberGeneration:
         assert result.returncode == 0
 
         # InkWell inherits methods from InkResponse and StatelessWidget
-        inherited_methods_dir = (
-            output_dir / "api" / "material" / "InkWell" / "methods" / "inherited"
+        inherited_methods_dir = get_class_methods_inherited_dir(
+            output_dir, "material", "InkWell"
         )
         assert inherited_methods_dir.exists()
 
@@ -309,5 +319,7 @@ class TestInheritedMemberGeneration:
         assert len(method_files) > 0, "No inherited method files generated"
 
         # Verify one specific inherited method
-        build_file = inherited_methods_dir / "material-InkResponse-build.md"
+        build_file = get_inherited_member_file(
+            inherited_methods_dir, "material", "InkResponse", "build"
+        )
         assert build_file.exists(), f"Missing inherited method: {build_file}"

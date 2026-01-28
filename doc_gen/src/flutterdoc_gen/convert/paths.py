@@ -11,6 +11,18 @@ from pathlib import Path
 # --- Output Directory Builders ---
 
 
+def get_api_root_dir(output_dir: Path) -> Path:
+    """Get the API root output directory path.
+
+    Args:
+        output_dir: The root output directory.
+
+    Returns:
+        Path to the api/ directory.
+    """
+    return output_dir / "api"
+
+
 def get_api_section_dir(output_dir: Path, section: str) -> Path:
     """Get the API section output directory path.
 
@@ -210,7 +222,114 @@ def get_snippet_output_file(snippets_dir: Path, short_name: str) -> Path:
     return snippets_dir / f"{short_name}.md"
 
 
+# --- Convenience Functions (Compose Multiple Path Operations) ---
+
+
+def get_class_snippets_dir(output_dir: Path, section: str, class_name: str) -> Path:
+    """Get the snippets directory for a class.
+
+    Args:
+        output_dir: The root output directory.
+        section: The documentation section name.
+        class_name: The class name.
+
+    Returns:
+        Path to the api/{section}/{class_name}/snippets directory.
+    """
+    return get_snippets_output_dir(get_class_dir(output_dir, section, class_name))
+
+
+def get_class_properties_inherited_dir(
+    output_dir: Path, section: str, class_name: str
+) -> Path:
+    """Get the inherited properties directory for a class.
+
+    Args:
+        output_dir: The root output directory.
+        section: The documentation section name.
+        class_name: The class name.
+
+    Returns:
+        Path to the api/{section}/{class_name}/properties/inherited directory.
+    """
+    return get_properties_inherited_dir(get_class_dir(output_dir, section, class_name))
+
+
+def get_class_methods_inherited_dir(
+    output_dir: Path, section: str, class_name: str
+) -> Path:
+    """Get the inherited methods directory for a class.
+
+    Args:
+        output_dir: The root output directory.
+        section: The documentation section name.
+        class_name: The class name.
+
+    Returns:
+        Path to the api/{section}/{class_name}/methods/inherited directory.
+    """
+    return get_methods_inherited_dir(get_class_dir(output_dir, section, class_name))
+
+
+def get_class_operators_inherited_dir(
+    output_dir: Path, section: str, class_name: str
+) -> Path:
+    """Get the inherited operators directory for a class.
+
+    Args:
+        output_dir: The root output directory.
+        section: The documentation section name.
+        class_name: The class name.
+
+    Returns:
+        Path to the api/{section}/{class_name}/operators/inherited directory.
+    """
+    return get_operators_inherited_dir(get_class_dir(output_dir, section, class_name))
+
+
+def get_class_inherited_member_file(
+    output_dir: Path,
+    section: str,
+    class_name: str,
+    member_type: str,
+    source_section: str,
+    source_class: str,
+    member_name: str,
+) -> Path:
+    """Get the path for an inherited member file for a class.
+
+    Args:
+        output_dir: The root output directory.
+        section: The documentation section name.
+        class_name: The class name.
+        member_type: The member type ('properties', 'methods', or 'operators').
+        source_section: The section where the member is defined.
+        source_class: The class where the member is defined.
+        member_name: The member name.
+
+    Returns:
+        Path to the inherited member markdown file.
+    """
+    class_dir = get_class_dir(output_dir, section, class_name)
+    inherited_dir = class_dir / member_type / "inherited"
+    return get_inherited_member_file(
+        inherited_dir, source_section, source_class, member_name
+    )
+
+
 # --- Input Path Builders ---
+
+
+def get_input_flutter_dir(doc_dir: Path) -> Path:
+    """Get the input Flutter documentation root directory path.
+
+    Args:
+        doc_dir: The root documentation directory.
+
+    Returns:
+        Path to the flutter/ directory.
+    """
+    return doc_dir / "flutter"
 
 
 def get_input_section_dir(doc_dir: Path, section: str) -> Path:
