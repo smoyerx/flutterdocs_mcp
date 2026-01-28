@@ -323,3 +323,24 @@ class TestInheritedMemberGeneration:
             inherited_methods_dir, "material", "InkResponse", "build"
         )
         assert build_file.exists(), f"Missing inherited method: {build_file}"
+
+    def test_inherited_operators_generated(self, output_dir: Path) -> None:
+        """Inherited operator files should be generated."""
+        result = run_convert(SAMPLES_DIR, "material", output_dir)
+        assert result.returncode == 0
+
+        # InkWell inherits operators from Widget
+        inherited_operators_dir = get_class_operators_inherited_dir(
+            output_dir, "material", "InkWell"
+        )
+        assert inherited_operators_dir.exists()
+
+        # Check for at least some inherited operators
+        operator_files = list(inherited_operators_dir.glob("*.md"))
+        assert len(operator_files) > 0, "No inherited operator files generated"
+
+        # Verify one specific inherited operator from Widget
+        equals_file = get_inherited_member_file(
+            inherited_operators_dir, "widgets", "Widget", "operator_equals"
+        )
+        assert equals_file.exists(), f"Missing inherited operator: {equals_file}"

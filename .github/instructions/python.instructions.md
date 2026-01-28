@@ -1,5 +1,5 @@
 ---
-description: "Python coding standards and best practices"
+description: "Complete Python development workflow: coding standards, testing (uv run pytest), linting (uvx ruff), and formatting. Consult for ANY Python work."
 name: python_coding
 applyTo: "**/*.py"
 ---
