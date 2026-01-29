@@ -276,19 +276,19 @@ class TestTransformImageLinks:
         """Image link should be transformed to placeholder text."""
         content = "See ![example image](images/example.png) here."
         result = transform_image_links(content)
-        assert result == "See [Note: Image example image omitted] here."
+        assert result == "See [Omitted image: example image] here."
 
     def test_transforms_image_with_url(self) -> None:
         """Image with absolute URL should be transformed."""
         content = "![logo](https://example.com/logo.png)"
         result = transform_image_links(content)
-        assert result == "[Note: Image logo omitted]"
+        assert result == "[Omitted image: logo]"
 
     def test_transforms_multiple_images(self) -> None:
         """Multiple images should all be transformed."""
         content = "![img1](a.png) and ![img2](b.jpg)"
         result = transform_image_links(content)
-        assert result == "[Note: Image img1 omitted] and [Note: Image img2 omitted]"
+        assert result == "[Omitted image: img1] and [Omitted image: img2]"
 
     def test_preserves_regular_links(self) -> None:
         """Regular markdown links should be preserved."""
@@ -300,7 +300,7 @@ class TestTransformImageLinks:
         """Image with empty alt text should work."""
         content = "![](image.png)"
         result = transform_image_links(content)
-        assert result == "[Note: Image  omitted]"
+        assert result == "[Omitted image: ]"
 
     def test_handles_empty_string(self) -> None:
         """Empty string should return empty string."""
@@ -315,7 +315,7 @@ class TestTransformDartpadLinks:
         """DartPad link should be transformed to placeholder text."""
         content = "Try [this example](https://dartpad.dev/?id=123)."
         result = transform_dartpad_links(content)
-        assert result == "Try [Note: Interactive sample omitted]."
+        assert result == "Try [Omitted code: Interactive sample]."
 
     def test_transforms_multiple_dartpad_links(self) -> None:
         """Multiple DartPad links should all be transformed."""
@@ -323,7 +323,7 @@ class TestTransformDartpadLinks:
         result = transform_dartpad_links(content)
         assert (
             result
-            == "[Note: Interactive sample omitted] and [Note: Interactive sample omitted]"
+            == "[Omitted code: Interactive sample] and [Omitted code: Interactive sample]"
         )
 
     def test_preserves_non_dartpad_links(self) -> None:

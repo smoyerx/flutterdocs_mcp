@@ -92,18 +92,18 @@ LINK_PATTERNS: tuple[LinkPattern, ...] = (
     LinkPattern(
         name="image_link",
         pattern=r"!\[([^\]]*)\]\([^)]+\)",
-        replacement=r"[Note: Image \1 omitted]",
+        replacement=r"[Omitted image: \1]",
         description="![alt text](path) - image links",
         test_input="![diagram](assets/diagram.png)",
-        test_output="[Note: Image diagram omitted]",
+        test_output="[Omitted image: diagram]",
     ),
     LinkPattern(
         name="dartpad_link",
         pattern=r"\[[^\]]+\]\([^)]*dartpad\.dev[^)]*\)",
-        replacement="[Note: Interactive sample omitted]",
+        replacement="[Omitted code: Interactive sample]",
         description="[text](url with dartpad.dev) - DartPad links",
         test_input="[Open in DartPad](https://dartpad.dev/?id=abc123)",
-        test_output="[Note: Interactive sample omitted]",
+        test_output="[Omitted code: Interactive sample]",
     ),
 )
 
