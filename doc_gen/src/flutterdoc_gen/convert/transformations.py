@@ -151,10 +151,8 @@ def remove_tracking_urls(content: str) -> str:
 def transform_class_links(content: str) -> str:
     """Transform class links to MCP URI format.
 
-    Replaces links of the form:
-    - [CLASS_NAME](SECTION/CLASS_NAME-class.html)
-    - [TYPE](SECTION/TYPE.html)
-    with [NAME](mcp://flutter/api/SECTION/NAME).
+    Replaces links of the form [CLASS_NAME](SECTION/CLASS_NAME-class.html)
+    with [CLASS_NAME](mcp://flutter/api/SECTION/CLASS_NAME).
 
     Uses patterns from LINK_PATTERNS registry.
 
@@ -164,21 +162,15 @@ def transform_class_links(content: str) -> str:
     Returns:
         The content with class links transformed.
     """
-    # Apply class_link pattern
     class_pattern = next(p for p in LINK_PATTERNS if p.name == "class_link")
-    content = re.sub(class_pattern.pattern, class_pattern.replacement, content)
-
-    # Apply type_link pattern
-    type_pattern = next(p for p in LINK_PATTERNS if p.name == "type_link")
-    return re.sub(type_pattern.pattern, type_pattern.replacement, content)
+    return re.sub(class_pattern.pattern, class_pattern.replacement, content)
 
 
 def transform_member_links(content: str) -> str:
     """Transform member links to MCP URI format.
 
-    Replaces links of the form:
-    - [MEMBER](SECTION/CLASS/MEMBER.html) -> mcp://flutter/api/SECTION/CLASS/MEMBER
-    - [CLASS.MEMBER](SECTION/CLASS/CLASS.MEMBER.html) -> mcp://flutter/api/SECTION/CLASS/CLASS.MEMBER
+    Replaces links of the form [MEMBER](SECTION/CLASS/MEMBER.html)
+    with [MEMBER](mcp://flutter/api/SECTION/CLASS/MEMBER).
 
     Uses patterns from LINK_PATTERNS registry.
 
@@ -188,11 +180,6 @@ def transform_member_links(content: str) -> str:
     Returns:
         The content with member links transformed.
     """
-    # Apply dotted_member_link pattern first (more specific)
-    dotted_pattern = next(p for p in LINK_PATTERNS if p.name == "dotted_member_link")
-    content = re.sub(dotted_pattern.pattern, dotted_pattern.replacement, content)
-
-    # Apply member_link pattern
     member_pattern = next(p for p in LINK_PATTERNS if p.name == "member_link")
     return re.sub(member_pattern.pattern, member_pattern.replacement, content)
 

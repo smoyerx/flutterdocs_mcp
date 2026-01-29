@@ -79,23 +79,7 @@ LINK_PATTERNS: tuple[LinkPattern, ...] = (
         test_input="See [Widget](widgets/Widget-class.html) for details.",
         test_output="See [Widget](mcp://flutter/api/widgets/Widget) for details.",
     ),
-    LinkPattern(
-        name="type_link",
-        pattern=r"\[([^\]]+)\]\(([a-zA-Z0-9_-]+)/([a-zA-Z0-9_]+)\.html\)",
-        replacement=rf"[\1]({MCP_URI_PREFIX}\2/\3)",
-        description="[Type](section/Type.html) - types and references",
-        test_input="[int](dart-core/int.html) values",
-        test_output="[int](mcp://flutter/api/dart-core/int) values",
-    ),
-    # Member links (more specific patterns first)
-    LinkPattern(
-        name="dotted_member_link",
-        pattern=r"\[([^\]]+)\]\(([a-zA-Z0-9_-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+\.[a-zA-Z0-9_]+)\.html\)",
-        replacement=rf"[\1]({MCP_URI_PREFIX}\2/\3/\4)",
-        description="[Class.member](section/Class/Class.member.html) - named constructors/static methods",
-        test_input="[Widget.new](widgets/Widget/Widget.new.html) creates",
-        test_output="[Widget.new](mcp://flutter/api/widgets/Widget/Widget.new) creates",
-    ),
+    # Member links
     LinkPattern(
         name="member_link",
         pattern=r"\[([^\]]+)\]\(([a-zA-Z0-9_-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)\.html\)",
