@@ -17,6 +17,7 @@ MCP_URI_PREFIX = "mcp://flutter/api/"
 NOISE_STRINGS: tuple[tuple[str, str, str], ...] = (
     ("const", "# Heading\nconst\nBody content", "# Heading\nBody content"),
     ("final", "# Heading\nfinal\nBody content", "# Heading\nBody content"),
+    ("override", "# Heading\noverride\nBody content", "# Heading\nBody content"),
     (
         "no setterinherited",
         "# Heading\nno setterinherited\nBody content",

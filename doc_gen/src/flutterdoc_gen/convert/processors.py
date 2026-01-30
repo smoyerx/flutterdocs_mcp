@@ -6,7 +6,6 @@ static methods, and snippets).
 """
 
 import logging
-import sys
 from pathlib import Path
 
 from html_to_markdown import ConversionOptionsHandle
@@ -15,6 +14,7 @@ from flutterdoc_gen.convert.conversion import (
     convert_dart_snippet,
     convert_html_to_markdown,
 )
+from flutterdoc_gen.convert.errors import log_processing_error
 from flutterdoc_gen.convert.parsing import (
     extract_constructor_links,
     extract_member_definitions,
@@ -52,6 +52,7 @@ def process_constructors(
     doc_dir: Path,
     output_dir: Path,
     options_handle: ConversionOptionsHandle,
+    source_file: Path,
 ) -> None:
     """Process constructor files for a class.
 
@@ -64,6 +65,7 @@ def process_constructors(
         doc_dir: The root documentation directory.
         output_dir: The class output directory.
         options_handle: The ConversionOptionsHandle instance for conversion.
+        source_file: Path to the source HTML file being processed.
     """
     section_content = extract_section_content(class_markdown, "Constructors")
     if section_content is None:
@@ -83,18 +85,19 @@ def process_constructors(
             member["section"] != current_section
             or member["class_name"] != current_class
         ):
-            logging.error(
+            log_processing_error(
                 f"Constructor link has unexpected URI: "
-                f"mcp://flutter/api/{member['section']}/{member['class_name']}/{member['member']}"
+                f"mcp://flutter/api/{member['section']}/{member['class_name']}/{member['member']}",
+                source_file,
             )
-            sys.exit(1)
 
         html_path = get_input_member_file(
             doc_dir, current_section, current_class, member["member"]
         )
         if not html_path.exists():
-            logging.error(f"Constructor HTML file not found: {html_path}")
-            sys.exit(1)
+            log_processing_error(
+                f"Constructor HTML file not found: {html_path}", source_file
+            )
 
         ensure_dir_exists(constructors_dir)
         markdown_content = convert_html_to_markdown(options_handle, html_path)
@@ -109,6 +112,7 @@ def process_properties(
     doc_dir: Path,
     output_dir: Path,
     options_handle: ConversionOptionsHandle,
+    source_file: Path,
 ) -> None:
     """Process property files for a class.
 
@@ -122,6 +126,7 @@ def process_properties(
         doc_dir: The root documentation directory.
         output_dir: The class output directory.
         options_handle: The ConversionOptionsHandle instance for conversion.
+        source_file: Path to the source HTML file being processed.
     """
     section_content = extract_section_content(class_markdown, "Properties")
     if section_content is None:
@@ -147,8 +152,9 @@ def process_properties(
                 doc_dir, current_section, current_class, member["member"]
             )
             if not html_path.exists():
-                logging.error(f"Property HTML file not found: {html_path}")
-                sys.exit(1)
+                log_processing_error(
+                    f"Property HTML file not found: {html_path}", source_file
+                )
 
             ensure_dir_exists(native_dir)
             markdown_content = convert_html_to_markdown(options_handle, html_path)
@@ -157,11 +163,11 @@ def process_properties(
         else:
             # Inherited property
             if not member["result_type"] or not member["description"]:
-                logging.error(
+                log_processing_error(
                     f"Unable to capture result_type or description for inherited property "
-                    f"{member['member']} from {member['section']}/{member['class_name']}"
+                    f"{member['member']} from {member['section']}/{member['class_name']}",
+                    source_file,
                 )
-                sys.exit(1)
 
             ensure_dir_exists(inherited_dir)
             markdown_content = INHERITED_PROPERTY_TEMPLATE.format(
@@ -187,6 +193,7 @@ def process_methods(
     doc_dir: Path,
     output_dir: Path,
     options_handle: ConversionOptionsHandle,
+    source_file: Path,
 ) -> None:
     """Process method files for a class.
 
@@ -200,6 +207,7 @@ def process_methods(
         doc_dir: The root documentation directory.
         output_dir: The class output directory.
         options_handle: The ConversionOptionsHandle instance for conversion.
+        source_file: Path to the source HTML file being processed.
     """
     section_content = extract_section_content(class_markdown, "Methods")
     if section_content is None:
@@ -225,8 +233,9 @@ def process_methods(
                 doc_dir, current_section, current_class, member["member"]
             )
             if not html_path.exists():
-                logging.error(f"Method HTML file not found: {html_path}")
-                sys.exit(1)
+                log_processing_error(
+                    f"Method HTML file not found: {html_path}", source_file
+                )
 
             ensure_dir_exists(native_dir)
             markdown_content = convert_html_to_markdown(options_handle, html_path)
@@ -235,11 +244,11 @@ def process_methods(
         else:
             # Inherited method
             if not member["result_type"] or not member["description"]:
-                logging.error(
+                log_processing_error(
                     f"Unable to capture result_type or description for inherited method "
-                    f"{member['member']} from {member['section']}/{member['class_name']}"
+                    f"{member['member']} from {member['section']}/{member['class_name']}",
+                    source_file,
                 )
-                sys.exit(1)
 
             ensure_dir_exists(inherited_dir)
             markdown_content = INHERITED_METHOD_TEMPLATE.format(
@@ -265,6 +274,7 @@ def process_operators(
     doc_dir: Path,
     output_dir: Path,
     options_handle: ConversionOptionsHandle,
+    source_file: Path,
 ) -> None:
     """Process operator files for a class.
 
@@ -278,6 +288,7 @@ def process_operators(
         doc_dir: The root documentation directory.
         output_dir: The class output directory.
         options_handle: The ConversionOptionsHandle instance for conversion.
+        source_file: Path to the source HTML file being processed.
     """
     section_content = extract_section_content(class_markdown, "Operators")
     if section_content is None:
@@ -303,8 +314,9 @@ def process_operators(
                 doc_dir, current_section, current_class, member["member"]
             )
             if not html_path.exists():
-                logging.error(f"Operator HTML file not found: {html_path}")
-                sys.exit(1)
+                log_processing_error(
+                    f"Operator HTML file not found: {html_path}", source_file
+                )
 
             ensure_dir_exists(native_dir)
             markdown_content = convert_html_to_markdown(options_handle, html_path)
@@ -313,11 +325,11 @@ def process_operators(
         else:
             # Inherited operator
             if not member["result_type"] or not member["description"]:
-                logging.error(
+                log_processing_error(
                     f"Unable to capture result_type or description for inherited operator "
-                    f"{member['member']} from {member['section']}/{member['class_name']}"
+                    f"{member['member']} from {member['section']}/{member['class_name']}",
+                    source_file,
                 )
-                sys.exit(1)
 
             ensure_dir_exists(inherited_dir)
             markdown_content = INHERITED_OPERATOR_TEMPLATE.format(
@@ -344,6 +356,7 @@ def process_static_methods(
     doc_dir: Path,
     output_dir: Path,
     options_handle: ConversionOptionsHandle,
+    source_file: Path,
 ) -> None:
     """Process static method files for a class.
 
@@ -358,6 +371,7 @@ def process_static_methods(
         doc_dir: The root documentation directory.
         output_dir: The class output directory.
         options_handle: The ConversionOptionsHandle instance for conversion.
+        source_file: Path to the source HTML file being processed.
     """
     section_content = extract_section_content(class_markdown, "Static Methods")
     if section_content is None:
@@ -380,19 +394,20 @@ def process_static_methods(
 
         if not is_native:
             # Static methods should only reference the current class
-            logging.error(
+            log_processing_error(
                 f"Static method link has unexpected URI scheme: "
                 f"{member['section']}/{member['class_name']}/{member['member']} "
-                f"(expected {current_section}/{current_class})"
+                f"(expected {current_section}/{current_class})",
+                source_file,
             )
-            sys.exit(1)
 
         html_path = get_input_member_file(
             doc_dir, current_section, current_class, member["member"]
         )
         if not html_path.exists():
-            logging.error(f"Static method HTML file not found: {html_path}")
-            sys.exit(1)
+            log_processing_error(
+                f"Static method HTML file not found: {html_path}", source_file
+            )
 
         ensure_dir_exists(statics_dir)
         markdown_content = convert_html_to_markdown(options_handle, html_path)

@@ -16,6 +16,7 @@ from html_to_markdown import (
 )
 
 from flutterdoc_gen.convert.conversion import convert_html_to_markdown
+from flutterdoc_gen.convert.errors import log_processing_error
 from flutterdoc_gen.convert.paths import (
     ensure_dir_exists,
     get_api_section_dir,
@@ -104,31 +105,61 @@ def process_class(
     # Step 2: Process constructor files
     logging.info(f"  Processing constructors for {class_name}")
     process_constructors(
-        class_markdown, section, class_name, doc_dir, class_output_dir, options_handle
+        class_markdown,
+        section,
+        class_name,
+        doc_dir,
+        class_output_dir,
+        options_handle,
+        class_file,
     )
 
     # Step 3: Process property files
     logging.info(f"  Processing properties for {class_name}")
     process_properties(
-        class_markdown, section, class_name, doc_dir, class_output_dir, options_handle
+        class_markdown,
+        section,
+        class_name,
+        doc_dir,
+        class_output_dir,
+        options_handle,
+        class_file,
     )
 
     # Step 4: Process method files
     logging.info(f"  Processing methods for {class_name}")
     process_methods(
-        class_markdown, section, class_name, doc_dir, class_output_dir, options_handle
+        class_markdown,
+        section,
+        class_name,
+        doc_dir,
+        class_output_dir,
+        options_handle,
+        class_file,
     )
 
     # Step 5: Process operator files
     logging.info(f"  Processing operators for {class_name}")
     process_operators(
-        class_markdown, section, class_name, doc_dir, class_output_dir, options_handle
+        class_markdown,
+        section,
+        class_name,
+        doc_dir,
+        class_output_dir,
+        options_handle,
+        class_file,
     )
 
     # Step 6: Process static method files
     logging.info(f"  Processing static methods for {class_name}")
     process_static_methods(
-        class_markdown, section, class_name, doc_dir, class_output_dir, options_handle
+        class_markdown,
+        section,
+        class_name,
+        doc_dir,
+        class_output_dir,
+        options_handle,
+        class_file,
     )
 
     # Step 7: Process code snippet files
@@ -147,18 +178,15 @@ def validate_directories(doc_dir: Path, section: str) -> None:
         SystemExit: If any required directory does not exist.
     """
     if not doc_dir.exists() or not doc_dir.is_dir():
-        logging.error(f"Documentation directory does not exist: {doc_dir}")
-        sys.exit(1)
+        log_processing_error(f"Documentation directory does not exist: {doc_dir}")
 
     section_dir = get_input_section_dir(doc_dir, section)
     if not section_dir.exists() or not section_dir.is_dir():
-        logging.error(f"Section directory does not exist: {section_dir}")
-        sys.exit(1)
+        log_processing_error(f"Section directory does not exist: {section_dir}")
 
     snippets_dir = get_input_snippets_dir(doc_dir)
     if not snippets_dir.exists() or not snippets_dir.is_dir():
-        logging.error(f"Snippets directory does not exist: {snippets_dir}")
-        sys.exit(1)
+        log_processing_error(f"Snippets directory does not exist: {snippets_dir}")
 
 
 def create_output_directory(output_dir: Path, section: str) -> Path:
@@ -178,8 +206,7 @@ def create_output_directory(output_dir: Path, section: str) -> Path:
     try:
         ensure_dir_exists(section_output)
     except OSError as e:
-        logging.error(f"Cannot create output directory {section_output}: {e}")
-        sys.exit(1)
+        log_processing_error(f"Cannot create output directory {section_output}: {e}")
 
     return section_output
 
@@ -259,8 +286,9 @@ def main() -> None:
                 output_section_dir,
             )
         except OSError as e:
-            logging.error(f"Cannot write output file for {class_name}: {e}")
-            sys.exit(1)
+            log_processing_error(
+                f"Cannot write output file for {class_name}: {e}", class_file
+            )
 
     # Log summary of unmatched HTML link patterns
     log_unmatched_summary()
