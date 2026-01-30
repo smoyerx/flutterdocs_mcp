@@ -388,9 +388,11 @@ class TestExtractStaticMethodLinks:
         assert result[0]["member"] == "divideTiles"
 
     def test_extracts_multiple_static_methods(self) -> None:
-        """Should extract multiple static method links."""
+        """Should extract multiple static method links from separate paragraphs."""
+        # Per spec: each static method definition is a separate paragraph
         content = (
             f"[method1]({make_mcp_uri('section', 'Class', 'method1')})() → void\n"
+            "\n"  # Blank line separates paragraphs
             f"[method2]({make_mcp_uri('section', 'Class', 'method2')})() → int\n"
         )
         result = extract_static_method_links(content)
@@ -398,12 +400,26 @@ class TestExtractStaticMethodLinks:
         assert result[0]["member"] == "method1"
         assert result[1]["member"] == "method2"
 
-    def test_ignores_non_link_lines(self) -> None:
-        """Should ignore lines that don't start with MCP links."""
+    def test_ignores_non_first_line_links(self) -> None:
+        """Should ignore MCP links that appear on non-first lines of a paragraph.
+
+        Per spec: only the FIRST line of each paragraph should be checked for
+        static method links. Links in description text should be ignored.
+        """
         content = (
             "Some description text\n"
             f"[divideTiles]({make_mcp_uri('material', 'ListTile', 'divideTiles')})() → void\n"
             "More text here"
+        )
+        # This is all one paragraph, and the first line doesn't match the pattern
+        result = extract_static_method_links(content)
+        assert len(result) == 0
+
+    def test_extracts_from_first_line_of_paragraph(self) -> None:
+        """Should extract static method link from first line of a paragraph."""
+        content = (
+            f"[divideTiles]({make_mcp_uri('material', 'ListTile', 'divideTiles')})() → void\n"
+            "Some description text after"
         )
         result = extract_static_method_links(content)
         assert len(result) == 1

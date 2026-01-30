@@ -292,8 +292,13 @@ def extract_constructor_links(
 ) -> list[dict[str, str]]:
     """Extract constructor links from section content.
 
-    Parses lines that start with [CONSTRUCTOR](mcp://flutter/api/SECTION/CLASS/CONSTRUCTOR)
-    for constructors. Constructors are followed by parameter lists, not arrows.
+    Uses paragraph-based parsing per spec: only the **first line** of each paragraph
+    is checked for the constructor link pattern. This prevents false positives from
+    MCP links that appear in description text.
+
+    Parses paragraphs where the first line starts with
+    [CONSTRUCTOR](mcp://flutter/api/SECTION/CLASS/CONSTRUCTOR).
+    Constructors are followed by parameter lists, not arrows.
 
     Args:
         section_content: The markdown content of the Constructors section.
@@ -306,7 +311,7 @@ def extract_constructor_links(
         - member: The member name from the URI
     """
     members: list[dict[str, str]] = []
-    lines = section_content.split("\n")
+    paragraphs = split_into_paragraphs(section_content)
 
     # Pattern to match [text](mcp://flutter/api/section/class/member)
     # For constructors, we don't require the arrow - just the MCP link at line start
@@ -314,8 +319,14 @@ def extract_constructor_links(
         rf"^\s*\[([^\]]+)\]\({MCP_URI_PREFIX}([^/]+)/([^/]+)/([^)]+)\)"
     )
 
-    for line in lines:
-        match = link_pattern.match(line)
+    for paragraph in paragraphs:
+        lines = paragraph.split("\n")
+        if not lines:
+            continue
+
+        # Per spec: only check the FIRST line of each paragraph
+        first_line = lines[0]
+        match = link_pattern.match(first_line)
 
         if match:
             link_text = match.group(1)
@@ -430,9 +441,14 @@ def extract_static_method_links(
 ) -> list[dict[str, str]]:
     """Extract static method links from section content.
 
-    Parses lines that start with [METHOD](mcp://flutter/api/SECTION/CLASS/METHOD)
-    for static methods. Unlike properties/methods, static methods don't require
-    capturing result_type or description - we just need the link information.
+    Uses paragraph-based parsing per spec: only the **first line** of each paragraph
+    is checked for the static method link pattern. This prevents false positives from
+    MCP links that appear in description text (e.g., cross-references to other classes).
+
+    Parses paragraphs where the first line starts with
+    [METHOD](mcp://flutter/api/SECTION/CLASS/METHOD)( for static methods.
+    The opening parenthesis after the link is required as static methods always have
+    parameter lists.
 
     Args:
         section_content: The markdown content of the Static Methods section.
@@ -445,16 +461,23 @@ def extract_static_method_links(
         - member: The member name from the URI
     """
     members: list[dict[str, str]] = []
-    lines = section_content.split("\n")
+    paragraphs = split_into_paragraphs(section_content)
 
-    # Pattern to match [text](mcp://flutter/api/section/class/member)
-    # For static methods, we don't require the arrow - just the MCP link at line start
+    # Pattern to match [text](mcp://flutter/api/section/class/member)(
+    # The opening parenthesis after the link is required because static methods
+    # always have parameter lists following the link.
     link_pattern = re.compile(
-        rf"^\s*\[([^\]]+)\]\({MCP_URI_PREFIX}([^/]+)/([^/]+)/([^)]+)\)"
+        rf"^\s*\[([^\]]+)\]\({MCP_URI_PREFIX}([^/]+)/([^/]+)/([^)]+)\)\("
     )
 
-    for line in lines:
-        match = link_pattern.match(line)
+    for paragraph in paragraphs:
+        lines = paragraph.split("\n")
+        if not lines:
+            continue
+
+        # Per spec: only check the FIRST line of each paragraph
+        first_line = lines[0]
+        match = link_pattern.match(first_line)
 
         if match:
             link_text = match.group(1)
