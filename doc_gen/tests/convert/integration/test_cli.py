@@ -158,3 +158,43 @@ class TestConvertDirectoryStructure:
         # Verify the file starts with a heading
         content = dividetiles_file.read_text(encoding="utf-8")
         assert content.startswith("#"), "Static method file should start with heading"
+
+    def test_cli_uses_paths_module_exclusively(self, output_dir: Path) -> None:
+        """Verify CLI constructs all paths through paths.py functions.
+
+        This test validates the requirement that changing paths.py functions
+        should be sufficient to restructure output without modifying CLI or
+        processor code.
+        """
+        result = run_convert(SAMPLES_DIR, "material", output_dir)
+        assert result.returncode == 0
+
+        # Verify the structure matches paths.py expectations
+        api_root = get_api_root_dir(output_dir)
+        assert api_root.exists(), "API root directory should exist"
+
+        # Check section dir exists under api
+        section_dir = get_api_section_dir(output_dir, "material")
+        assert section_dir.exists(), "Section directory should exist"
+        assert section_dir.parent == api_root, "Section should be under API root"
+
+        # Check class dir structure includes 'classes' subdirectory
+        class_dir = get_class_dir(output_dir, "material", "ListTile")
+        assert class_dir.exists(), "Class directory should exist"
+        assert "classes" in class_dir.parts, "Class dir should include 'classes' subdir"
+
+        # Check class file location matches get_class_file()
+        class_file = get_class_file(output_dir, "material", "ListTile")
+        assert class_file.exists(), "Class file should exist at expected location"
+        assert class_file.parent == class_dir, (
+            "Class file parent should equal class dir"
+        )
+
+        # Verify InkWell class also follows the same structure
+        inkwell_class_dir = get_class_dir(output_dir, "material", "InkWell")
+        assert inkwell_class_dir.exists(), "InkWell class directory should exist"
+        assert "classes" in inkwell_class_dir.parts
+
+        inkwell_class_file = get_class_file(output_dir, "material", "InkWell")
+        assert inkwell_class_file.exists(), "InkWell class file should exist"
+        assert inkwell_class_file.parent == inkwell_class_dir

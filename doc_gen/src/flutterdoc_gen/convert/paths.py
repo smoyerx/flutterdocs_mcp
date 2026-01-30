@@ -45,9 +45,9 @@ def get_class_dir(output_dir: Path, section: str, class_name: str) -> Path:
         class_name: The class name.
 
     Returns:
-        Path to the api/{section}/{class_name} directory.
+        Path to the api/{section}/classes/{class_name} directory.
     """
-    return get_api_section_dir(output_dir, section) / class_name
+    return get_api_section_dir(output_dir, section) / "classes" / class_name
 
 
 def get_class_file(output_dir: Path, section: str, class_name: str) -> Path:

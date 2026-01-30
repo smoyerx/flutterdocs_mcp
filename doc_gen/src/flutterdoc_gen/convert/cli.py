@@ -20,6 +20,8 @@ from flutterdoc_gen.convert.errors import log_processing_error
 from flutterdoc_gen.convert.paths import (
     ensure_dir_exists,
     get_api_section_dir,
+    get_class_dir,
+    get_class_file,
     get_input_section_dir,
     get_input_snippets_dir,
 )
@@ -70,7 +72,7 @@ def process_class(
     class_file: Path,
     section: str,
     doc_dir: Path,
-    output_dir: Path,
+    root_output_dir: Path,
 ) -> None:
     """Process all documentation files for a class using the 7-step pipeline.
 
@@ -89,17 +91,16 @@ def process_class(
         class_file: Path to the main class HTML file.
         section: The documentation section name.
         doc_dir: The root documentation directory.
-        output_dir: The section output directory (api/{section}).
+        root_output_dir: The root output directory.
     """
-    # Create class output directory
-    # Note: output_dir is already api/{section}, so we just add class_name
-    class_output_dir = output_dir / class_name
+    # Create class output directory using paths.py function
+    class_output_dir = get_class_dir(root_output_dir, section, class_name)
     ensure_dir_exists(class_output_dir)
 
     # Step 1: Process the class file
     logging.info(f"  Processing class file: {class_file}")
     class_markdown = convert_html_to_markdown(options_handle, class_file)
-    class_output_file = class_output_dir / f"{class_name}.md"
+    class_output_file = get_class_file(root_output_dir, section, class_name)
     class_output_file.write_text(class_markdown, encoding="utf-8")
 
     # Step 2: Process constructor files
@@ -260,7 +261,7 @@ def main() -> None:
     validate_directories(args.documents, args.section)
 
     # Create output directory
-    output_section_dir = create_output_directory(args.output, args.section)
+    create_output_directory(args.output, args.section)
 
     # Initialize html_to_markdown
     options_handle = create_options_handle(ConversionOptions())
@@ -283,7 +284,7 @@ def main() -> None:
                 class_file,
                 args.section,
                 args.documents,
-                output_section_dir,
+                args.output,
             )
         except OSError as e:
             log_processing_error(
