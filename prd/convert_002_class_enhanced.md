@@ -55,14 +55,14 @@ convert.py must be UPDATED to implement the steps below for processing each clas
 #### Step 1: Process the Class File
 
 - Convert {DOC_DIR}/flutter/{SECTION}/{CLASS}-class.html to markdown
-- Save the converted markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/{CLASS}.md
+- Save the converted markdown file as {OUTPUT_DIR}/api/{SECTION}/classes/{CLASS}/{CLASS}.md
 - Retain the converted markdown content in memory for use in subsequent steps, which refer to this converted markdown content as {CLASS}.md content
 
 #### Step 2: Process Constructor Files
 
 Scan the constructors section (`## Constructors`) of the {CLASS}.md content for paragraphs with **first** lines that start with `[{CONSTRUCTOR}](mcp://flutter/api/{SECTION}/{CLASS}/{CONSTRUCTOR})`, where {CONSTRUCTOR} is the name of a constructor documented for the class. For each such line found:
 - Convert {DOC_DIR}/flutter/{SECTION}/{CLASS}/{CONSTRUCTOR}.html to markdown
-- Save the converted markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/constructors/{CONSTRUCTOR}.md
+- Save the converted markdown file as {OUTPUT_DIR}/api/{SECTION}/classes/{CLASS}/constructors/{CONSTRUCTOR}.md
 
 convert.py MUST print an informational message (when in verbose mode) and continue processing if it:
 - Does not find a constructors section in the {CLASS}.md content
@@ -79,12 +79,12 @@ Scan the properties section (`## Properties`) of the {CLASS}.md content for para
 For each such line found:
 - If {SOME_SECTION} is equal to {SECTION} and {SOME_CLASS} is equal to {CLASS} this is a **native** (not inherited) property of {CLASS}:
    - Convert {DOC_DIR}/flutter/{SECTION}/{CLASS}/{PROPERTY}.html to markdown
-   - Save the converted markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/properties/native/{PROPERTY}.md
+   - Save the converted markdown file as {OUTPUT_DIR}/api/{SECTION}/classes/{CLASS}/properties/native/{PROPERTY}.md
 - If {SOME_SECTION} is not equal to {SECTION} or {SOME_CLASS} is not equal to {CLASS} this is an **inherited** property of {CLASS}:
    - Capture the {RESULT_TYPE} for the property which is on the same **first** line as the property link, starts with the first non-whitespace character following the unicode rightwards arrow (U+2192), and is terminated by a whitespace character or the end of the line
    - Capture the {DESCRIPTION} for the property which runs from the **second** line of the paragraph to the end of the paragraph
    - Generate a markdown file for the inherited property using the template defined below
-   - Save the generated markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/properties/inherited/{SOME_SECTION}___{SOME_CLASS}___{PROPERTY}.md
+   - Save the generated markdown file as {OUTPUT_DIR}/api/{SECTION}/classes/{CLASS}/properties/inherited/{SOME_SECTION}___{SOME_CLASS}___{PROPERTY}.md
 
 convert.py MUST print an informational message (when in verbose mode) and continue processing if it:
 - Does not find a properties section in the {CLASS}.md content
@@ -114,12 +114,12 @@ Scan the methods section (`## Methods`) of the {CLASS}.md content for paragraphs
 For each such line found:
 - If {SOME_SECTION} is equal to {SECTION} and {SOME_CLASS} is equal to {CLASS} this is a **native** (not inherited) method of {CLASS}:
    - Convert {DOC_DIR}/flutter/{SECTION}/{CLASS}/{METHOD}.html to markdown
-   - Save the converted markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/methods/native/{METHOD}.md
+   - Save the converted markdown file as {OUTPUT_DIR}/api/{SECTION}/classes/{CLASS}/methods/native/{METHOD}.md
 - If {SOME_SECTION} is not equal to {SECTION} or {SOME_CLASS} is not equal to {CLASS} this is an **inherited** method of {CLASS}:
    - Capture the {RESULT_TYPE} for the method which is on the same **first** line as the method link, starts with the first non-whitespace character following the unicode rightwards arrow (U+2192), and is terminated by a whitespace character or the end of the line
    - Capture the {DESCRIPTION} for the method which runs from the **second** line of the paragraph to the end of the paragraph
    - Generate a markdown file for the inherited method using the template defined below
-   - Save the generated markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/methods/inherited/{SOME_SECTION}___{SOME_CLASS}___{METHOD}.md
+   - Save the generated markdown file as {OUTPUT_DIR}/api/{SECTION}/classes/{CLASS}/methods/inherited/{SOME_SECTION}___{SOME_CLASS}___{METHOD}.md
 
 convert.py MUST print an informational message (when in verbose mode) and continue processing if it:
 - Does not find a methods section in the {CLASS}.md content
@@ -154,12 +154,12 @@ Scan the operators section (`## Operators`) of the {CLASS}.md content for paragr
 For each such line found:
 - If {SOME_SECTION} is equal to {SECTION} and {SOME_CLASS} is equal to {CLASS} this is a **native** (not inherited) operator of {CLASS}:
    - Convert {DOC_DIR}/flutter/{SECTION}/{CLASS}/{OPERATOR}.html to markdown
-   - Save the converted markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/operators/native/{OPERATOR}.md
+   - Save the converted markdown file as {OUTPUT_DIR}/api/{SECTION}/classes/{CLASS}/operators/native/{OPERATOR}.md
 - If {SOME_SECTION} is not equal to {SECTION} or {SOME_CLASS} is not equal to {CLASS} this is an **inherited** operator of {CLASS}:
    - Capture the {RESULT_TYPE} for the operator which is on the same **first** line as the operator link, starts with the first non-whitespace character following the unicode rightwards arrow (U+2192), and is terminated by a whitespace character or the end of the line
    - Capture the {DESCRIPTION} for the operator which runs from the **second** line of the paragraph to the end of the paragraph
    - Generate a markdown file for the inherited operator using the template defined below
-   - Save the generated markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/operators/inherited/{SOME_SECTION}___{SOME_CLASS}___{OPERATOR}.md
+   - Save the generated markdown file as {OUTPUT_DIR}/api/{SECTION}/classes/{CLASS}/operators/inherited/{SOME_SECTION}___{SOME_CLASS}___{OPERATOR}.md
 
 convert.py MUST print an informational message (when in verbose mode) and continue processing if it:
 - Does not find a operators section in the {CLASS}.md content
@@ -190,7 +190,7 @@ See further details at [{OPERATOR_SYMBOL}](mcp://flutter/api/{SOME_SECTION}/{SOM
 
 Scan the static methods section (`## Static Methods`) of the {CLASS}.md content for paragraphs with **first** lines that start with `[{METHOD}](mcp://flutter/api/{SECTION}/{CLASS}/{METHOD})`, where {METHOD} is the name of a static method documented for {CLASS}. For each such line found:
 - Convert {DOC_DIR}/flutter/{SECTION}/{CLASS}/{METHOD}.html to markdown
-- Save the converted markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/statics/{METHOD}.md
+- Save the converted markdown file as {OUTPUT_DIR}/api/{SECTION}/classes/{CLASS}/statics/{METHOD}.md
 
 convert.py MUST continue processing without printing any messages if it:
 - Does not find a static methods section in the {CLASS}.md content
@@ -205,7 +205,7 @@ convert.py MUST always print an error message and exit with a non-zero status co
 
 For each Dart code snippet file matching the pattern {DOC_DIR}/snippets/{SECTION}.{CLASS}.*.dart:
 - Convert the Dart snippet file to markdown
-- Save the converted markdown file as {OUTPUT_DIR}/api/{SECTION}/{CLASS}/snippets/{SHORT_NAME}.md, where {SHORT_NAME} is the original Dart filename without the `{SECTION}.{CLASS}.` prefix and without the `.dart` extension
+- Save the converted markdown file as {OUTPUT_DIR}/api/{SECTION}/classes/{CLASS}/snippets/{SHORT_NAME}.md, where {SHORT_NAME} is the original Dart filename without the `{SECTION}.{CLASS}.` prefix and without the `.dart` extension
 
 convert.py MUST continue processing without printing any messages if no such files exist.
 
