@@ -34,6 +34,11 @@ NOISE_STRINGS: tuple[tuple[str, str, str], ...] = (
         '# Heading\n[*link*](# "Copy link to clipboard")\nBody content',
         "# Heading\nBody content",
     ),
+    (
+        "*content_copy*",
+        "# Heading\n*content_copy*\nBody content",
+        "# Heading\nBody content",
+    ),
 )
 
 # Analytics/tracking domains to filter from output
