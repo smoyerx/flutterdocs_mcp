@@ -8,6 +8,7 @@ This document specifies updates to the convert.py script for processing class do
 - {SECTION}: The specific documentation section to convert (e.g., "widgets", "foundation", etc.). Specified as a command line argument to convert.py.
 - {CLASS}: The name of the class whose documentation is being processed. Derived from the filename of the class HTML file being converted.
 - A **blank line** in markdown content is a line comprising only whitespace
+- A **header** in markdown content is a line starting with one or more `#` characters followed by a space (e.g., `# Header 1`, `## Header 2`, etc.)
 
 ## Current Transformations
 
@@ -21,27 +22,45 @@ This document defines a new function declaration cleanup transformation that mus
 
 ### Transformation Definition
 
-The markdown content to be transformed has the following characteristics:
-- It starts with the **first** non-blank line **after** the **first** header (i.e., a line starting with `# `)
-- It ends with the **first** line containing **only**:
-   - Whitespace and the character ')', excluding the quotes, or
-   - Whitespace and the characters '})', excluding the quotes
-- There *may* be lines containing only whitespace between the start and end lines defined above
+The markdown content to be transformed has the following characteristics.
 
-These lines represent the declaration for a constructor, method, or operator which are types of functions.
+#### Start Pattern
+
+- The content starts with the **first** non-blank line **after** the **first** header line
+- Only the first occurrence of a header line in the document is considered; any subsequent headers are ignored for the purpose of this transformation
+
+#### End Pattern
+The content ends with the **first** line containing **only**:
+- Whitespace and the character ')', excluding the quotes, with no other characters on the line excepting comments (i.e., lines that contain only whitespace and the character ')' possibly followed by whitespace and comments), or
+- Whitespace and the characters '})', excluding the quotes, with no other characters on the line excepting comments (i.e., lines that contain only whitespace and the characters '})' possibly followed by whitespace and comments)
+
+#### Transformation Rules
 
 The transformation MUST modify this markdown content as follows:
-- Remove all blank lines
-- Remove all markdown ordered list markers (i.e., lines starting with `1. `, `2. `, etc.) while **retaining** the text following the marker
-- Remove all markdown unordered list markers (i.e., lines starting with `- `, `* `, or `+ `) while **retaining** the text following the marker
+- Remove all blank lines between the start and end patterns
+- Remove all markdown ordered list markers at the start of a line (i.e., `1. `, `2. `, etc.) while **retaining** all text following the marker
+- Remove all markdown unordered list markers at the start of a line (i.e., `- `, `* `, or `+ `) while **retaining** all text following the marker
+- Preserve all other whitespace and formatting on non-blank lines
+
+**Important**: No markdown content outside the defined start and end patterns should be modified by this transformation.
+
+#### Transformation Edge Cases
+convert.py MUST always print an error message and exit with a non-zero status code if it encounters any of the following edge cases when applying this transformation:
+- Mixed list markers (i.e., both ordered and unordered list markers within the same function declaration markdown content)
+- Nested list markers (i.e., list markers that are indented or nested within other list markers)
+- List markers mid-line (i.e., list markers that do not appear at the start of a line)
+- A start pattern that is not followed by an end pattern before the end of the document
+
 
 ### Markdown Content Subject to the New Transformation
 
 This new transformation MUST be applied to the following markdown content when processing class documentation files:
-- Constructors: markdown generated from files {DOC_DIR}/flutter/{SECTION}/{CLASS}/{CONSTRUCTOR}.html
-- Native methods (not inherited): markdown generated from files {DOC_DIR}/flutter/{SECTION}/{CLASS}/{METHOD}.html
-- Native operators (not inherited): markdown generated from files {DOC_DIR}/flutter/{SECTION}/{CLASS}/{OPERATOR}.html
-- Static methods: markdown generated from files {DOC_DIR}/flutter/{SECTION}/{CLASS}/{STATIC_METHOD}.html
+- Constructor declarations: included in markdown generated from files {DOC_DIR}/flutter/{SECTION}/{CLASS}/{CONSTRUCTOR}.html
+- Native method declarations (not inherited): included in markdown generated from files {DOC_DIR}/flutter/{SECTION}/{CLASS}/{METHOD}.html
+- Native operator declarations (not inherited): included in markdown generated from files {DOC_DIR}/flutter/{SECTION}/{CLASS}/{OPERATOR}.html
+- Static method declarations: included in markdown generated from files {DOC_DIR}/flutter/{SECTION}/{CLASS}/{STATIC_METHOD}.html
+
+Constructor declarations, method declarations, and operator declarations are all considered function declarations for the purposes of this transformation.
 
 ### Transformation Example: Native Method
 
@@ -169,3 +188,24 @@ Creates an ink well.
 ## Testing Requirements
 
 Extend the existing test suite for convert.py to include tests for the new function declaration cleanup transformation.
+
+Required Test Cases:
+- Basic ordered list removal: Declaration with numbered parameters (as shown in examples above)
+- Basic unordered list removal: Declaration with unordered list markers
+- No blank lines or list markers present: Verify no-op on declarations without blank lines or list markers
+- Multiple blank lines: Verify all blank lines are removed from declaration
+- No header present: Verify no transformation when header is missing
+- No closing pattern: Verify error is reported when ) or }) line is missing
+- Multiple headers: Verify only the first header triggers transformation
+- Content after closing pattern: Verify content after ) or }) is not transformed
+- Empty declaration: Header immediately followed by ) or }) should report an error
+- Mixed whitespace: Declarations with tabs, spaces, and mixed whitespace
+- Mixed list markers: Both ordered and unordered markers in the same declaration should report an error
+- Nested/indented markers: Either nested or indented markers in a declaration should report an error
+- List markers mid-line: Should report an error
+- Invalid end pattern: Line with ) plus additional text other than comments should report an error
+- End pattern with comments: Line with ) or }) followed by comments should be accepted
+- Different header levels: Test with ##, ###, etc.
+- Whitespace preservation: Leading/trailing whitespace on non-blank lines should be preserved (excluding markers removed)
+
+Other test cases may be added as necessary to ensure comprehensive coverage of the new transformation.
