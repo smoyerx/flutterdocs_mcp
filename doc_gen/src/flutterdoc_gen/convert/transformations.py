@@ -297,39 +297,51 @@ _CLOSING_PAREN_PATTERN = re.compile(r"^\s*\)(\s*//.*)?$")
 _CLOSING_BRACE_PAREN_PATTERN = re.compile(r"^\s*\}\)(\s*//.*)?$")
 
 
+def _is_header_line(line: str) -> bool:
+    """Check if a line is a markdown header.
+
+    Args:
+        line: The line to check.
+
+    Returns:
+        True if the line starts with '#' followed by a space.
+    """
+    return line.startswith("#") and " " in line
+
+
 def cleanup_function_declaration(content: str, source_context: str = "") -> str:
-    """Clean up function declaration formatting in markdown content.
+    """Clean up multi-line function declaration formatting in markdown content.
 
     This transformation removes blank lines and list markers from function
     declarations (constructors, methods, operators, static methods).
 
     The transformation operates on content between:
-    - Start: First non-blank line after the first header
-    - End: First line containing only ')' or '})' (optionally with comments)
+    - Start: First non-blank line after the first header (halts on subsequent header)
+    - End: First line containing only ')' or '})' (optionally with comments),
+           searched after start line (halts on subsequent header)
 
     Args:
         content: The markdown content to transform.
-        source_context: Context string for error reporting (typically file path).
+        source_context: Context string for logging (typically file path).
 
     Returns:
-        The transformed content with clean function declarations.
+        The transformed content with clean function declarations, or the
+        original content unchanged if no transformation is applicable or
+        an edge case is encountered.
 
     Note:
-        Calls log_processing_error() and exits with status 1 for:
+        Logs an informational message and returns unchanged for edge cases:
         - Mixed list markers (ordered and unordered in same declaration)
         - Nested/indented list markers
         - List markers mid-line
-        - Missing closing pattern after start pattern
+        - Start pattern equals end pattern (empty declaration)
     """
-    from flutterdoc_gen.convert.errors import log_processing_error
-    from pathlib import Path
-
     lines = content.split("\n")
 
     # Find the first header line
     header_index = None
     for i, line in enumerate(lines):
-        if line.startswith("#") and " " in line:
+        if _is_header_line(line):
             header_index = i
             break
 
@@ -338,9 +350,14 @@ def cleanup_function_declaration(content: str, source_context: str = "") -> str:
         return content
 
     # Find the start pattern: first non-blank line after header
+    # Halt if a subsequent header is encountered
     start_index = None
     for i in range(header_index + 1, len(lines)):
-        if lines[i].strip():  # Non-blank line
+        line = lines[i]
+        if _is_header_line(line):
+            # Halt: encountered another header before finding start
+            break
+        if line.strip():  # Non-blank line
             start_index = i
             break
 
@@ -349,22 +366,21 @@ def cleanup_function_declaration(content: str, source_context: str = "") -> str:
         return content
 
     # Find the end pattern: first line with only ) or }) possibly with comments
+    # Search starts AFTER the start line and halts on header
     end_index = None
-    for i in range(start_index, len(lines)):
+    for i in range(start_index + 1, len(lines)):
         line = lines[i]
+        if _is_header_line(line):
+            # Halt: encountered header before finding end pattern
+            break
         if _CLOSING_PAREN_PATTERN.match(line) or _CLOSING_BRACE_PAREN_PATTERN.match(
             line
         ):
             end_index = i
             break
 
-    # If no end pattern found after start, the declaration is likely a single-line
-    # signature (e.g., "ClassName()") that doesn't need cleanup. Return unchanged.
+    # If no end pattern found, likely a single-line signature. Return unchanged.
     if end_index is None:
-        return content
-
-    # If start and end are the same line, nothing to transform
-    if start_index == end_index:
         return content
 
     # Process lines between start and end (inclusive)
@@ -381,21 +397,23 @@ def cleanup_function_declaration(content: str, source_context: str = "") -> str:
         # Check for ordered list marker
         if _ORDERED_LIST_MARKER.match(stripped):
             if indent > 0:
-                source_path = Path(source_context) if source_context else None
-                log_processing_error(
-                    "Nested/indented list marker found in function declaration",
-                    source_path,
+                logging.info(
+                    "Skipping transformation: nested/indented list marker found "
+                    "in function declaration (%s)",
+                    source_context or "unknown",
                 )
+                return content
             has_ordered = True
 
         # Check for unordered list marker
         if _UNORDERED_LIST_MARKER.match(stripped):
             if indent > 0:
-                source_path = Path(source_context) if source_context else None
-                log_processing_error(
-                    "Nested/indented list marker found in function declaration",
-                    source_path,
+                logging.info(
+                    "Skipping transformation: nested/indented list marker found "
+                    "in function declaration (%s)",
+                    source_context or "unknown",
                 )
+                return content
             has_unordered = True
 
         # Check for mid-line list markers (marker not at start of content)
@@ -407,19 +425,21 @@ def cleanup_function_declaration(content: str, source_context: str = "") -> str:
         ):
             # Look for list markers that appear after other content
             if re.search(r"\S\s+\d+\.\s", line) or re.search(r"\S\s+[-*+]\s", line):
-                source_path = Path(source_context) if source_context else None
-                log_processing_error(
-                    "List marker found mid-line in function declaration",
-                    source_path,
+                logging.info(
+                    "Skipping transformation: list marker found mid-line "
+                    "in function declaration (%s)",
+                    source_context or "unknown",
                 )
+                return content
 
     # Check for mixed markers
     if has_ordered and has_unordered:
-        source_path = Path(source_context) if source_context else None
-        log_processing_error(
-            "Mixed list markers (ordered and unordered) in function declaration",
-            source_path,
+        logging.info(
+            "Skipping transformation: mixed list markers (ordered and unordered) "
+            "in function declaration (%s)",
+            source_context or "unknown",
         )
+        return content
 
     # Transform declaration lines: remove blank lines and list markers
     transformed_declaration = []

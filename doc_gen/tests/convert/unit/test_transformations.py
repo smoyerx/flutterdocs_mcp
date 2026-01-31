@@ -626,8 +626,8 @@ int a
         result = cleanup_function_declaration(content)
         assert result == expected
 
-    def test_mixed_list_markers_exits(self) -> None:
-        """Mixed ordered and unordered markers should exit with error."""
+    def test_mixed_list_markers_returns_unchanged(self) -> None:
+        """Mixed ordered and unordered markers should return unchanged."""
         content = """\
 # mixed method
 
@@ -637,12 +637,11 @@ void method(
 )
 
 Description."""
-        with pytest.raises(SystemExit) as exc_info:
-            cleanup_function_declaration(content, source_context="test.html")
-        assert exc_info.value.code == 1
+        result = cleanup_function_declaration(content, source_context="test.html")
+        assert result == content
 
-    def test_nested_indented_markers_exits(self) -> None:
-        """Indented/nested list markers should exit with error."""
+    def test_nested_indented_markers_returns_unchanged(self) -> None:
+        """Indented/nested list markers should return unchanged."""
         content = """\
 # nested method
 
@@ -651,9 +650,8 @@ void method(
 )
 
 Description."""
-        with pytest.raises(SystemExit) as exc_info:
-            cleanup_function_declaration(content, source_context="test.html")
-        assert exc_info.value.code == 1
+        result = cleanup_function_declaration(content, source_context="test.html")
+        assert result == content
 
     def test_different_header_levels(self) -> None:
         """Different header levels should work (##, ###, etc.)."""
@@ -832,3 +830,47 @@ Creates a BigClass."""
         expected = "# method\n\nvoid method(\nint a\n)\n\nDescription."
         result = cleanup_function_declaration(content)
         assert result == expected
+
+    def test_start_pattern_halts_on_header(self) -> None:
+        """Start pattern search should halt on subsequent header."""
+        content = """\
+# first header
+
+## second header
+
+void method(
+1. int a
+)
+
+Description."""
+        result = cleanup_function_declaration(content)
+        assert result == content
+
+    def test_end_pattern_halts_on_header(self) -> None:
+        """End pattern search should halt on subsequent header."""
+        content = """\
+# method
+
+void method(
+1. int a
+
+## another header
+
+)
+
+Description."""
+        result = cleanup_function_declaration(content)
+        assert result == content
+
+    def test_mid_line_markers_returns_unchanged(self) -> None:
+        """List markers mid-line should return unchanged."""
+        content = """\
+# method
+
+void method(
+some text 1. int a
+)
+
+Description."""
+        result = cleanup_function_declaration(content, source_context="test.html")
+        assert result == content
