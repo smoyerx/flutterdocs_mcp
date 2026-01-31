@@ -220,6 +220,31 @@ def transform_dartpad_links(content: str) -> str:
     return re.sub(dartpad_pattern.pattern, dartpad_pattern.replacement, content)
 
 
+def fix_link_spacing(content: str) -> str:
+    """Add missing space after markdown links followed by text.
+
+    Fixes patterns where html-to-markdown produces links immediately followed
+    by text due to HTML span handling. This commonly occurs with Dart type
+    annotations where a type link is followed by an identifier.
+
+    Fixes patterns like:
+    - [Widget](url)foo -> [Widget](url) foo
+    - [Widget](url)?bar -> [Widget](url)? bar
+    - [Widget](url)_baz -> [Widget](url) _baz
+
+    Args:
+        content: The markdown content to transform.
+
+    Returns:
+        The content with proper spacing after links.
+    """
+    # Pattern: link closing paren, optional nullable marker, then identifier start
+    # Captures: 1=closing bracket and paren with URL, 2=optional ?, 3=identifier char
+    pattern = r"(\]\([^)]+\))(\??)([a-zA-Z_])"
+    replacement = r"\1\2 \3"
+    return re.sub(pattern, replacement, content)
+
+
 def _collect_unmatched_patterns(content: str, source_context: str = "") -> None:
     """Detect and collect any remaining relative HTML links that weren't transformed.
 
@@ -253,6 +278,7 @@ def apply_transformations(content: str, source_context: str = "") -> str:
     2. Transform member links to MCP URI format
     3. Transform image links to placeholder text
     4. Transform DartPad links to placeholder text
+    5. Fix link spacing issues after markdown links
 
     After transformations, any remaining relative HTML links are collected
     as unmatched patterns for summary reporting.
@@ -275,6 +301,7 @@ def apply_transformations(content: str, source_context: str = "") -> str:
     content = transform_member_links(content)
     content = transform_image_links(content)
     content = transform_dartpad_links(content)
+    content = fix_link_spacing(content)
 
     # Collect any remaining unmatched HTML links
     _collect_unmatched_patterns(content, source_context)

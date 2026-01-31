@@ -7,6 +7,7 @@ from flutterdoc_gen.convert.transformations import (
     FOOTER_MARKER,
     apply_transformations,
     cleanup_function_declaration,
+    fix_link_spacing,
     get_unmatched_patterns,
     remove_footer,
     remove_header,
@@ -337,6 +338,101 @@ class TestTransformDartpadLinks:
         """Empty string should return empty string."""
         result = transform_dartpad_links("")
         assert result == ""
+
+
+class TestFixLinkSpacing:
+    """Tests for fix_link_spacing transformation function."""
+
+    def test_adds_space_after_link_followed_by_text(self) -> None:
+        """Link immediately followed by text should get a space."""
+        content = "[Widget](url)foo"
+        result = fix_link_spacing(content)
+        assert result == "[Widget](url) foo"
+
+    def test_adds_space_after_link_followed_by_underscore(self) -> None:
+        """Link immediately followed by underscore identifier should get a space."""
+        content = "[Widget](url)_bar"
+        result = fix_link_spacing(content)
+        assert result == "[Widget](url) _bar"
+
+    def test_adds_space_after_nullable_link_followed_by_text(self) -> None:
+        """Nullable link immediately followed by text should get a space after ?."""
+        content = "[Widget](url)?foo"
+        result = fix_link_spacing(content)
+        assert result == "[Widget](url)? foo"
+
+    def test_adds_space_after_nullable_link_followed_by_underscore(self) -> None:
+        """Nullable link immediately followed by underscore should get a space."""
+        content = "[Widget](url)?_bar"
+        result = fix_link_spacing(content)
+        assert result == "[Widget](url)? _bar"
+
+    def test_preserves_already_spaced_link(self) -> None:
+        """Link already followed by space should be unchanged."""
+        content = "[Widget](url) foo"
+        result = fix_link_spacing(content)
+        assert result == "[Widget](url) foo"
+
+    def test_preserves_already_spaced_nullable_link(self) -> None:
+        """Nullable link already followed by space should be unchanged."""
+        content = "[Widget](url)? foo"
+        result = fix_link_spacing(content)
+        assert result == "[Widget](url)? foo"
+
+    def test_preserves_link_without_following_text(self) -> None:
+        """Link at end of line should be unchanged."""
+        content = "[Widget](url)"
+        result = fix_link_spacing(content)
+        assert result == "[Widget](url)"
+
+    def test_preserves_link_followed_by_punctuation(self) -> None:
+        """Link followed by punctuation should be unchanged."""
+        content = "[Widget](url)."
+        result = fix_link_spacing(content)
+        assert result == "[Widget](url)."
+
+    def test_preserves_link_followed_by_digit(self) -> None:
+        """Link followed by digit should be unchanged (not valid Dart identifier start)."""
+        content = "[Widget](url)123"
+        result = fix_link_spacing(content)
+        assert result == "[Widget](url)123"
+
+    def test_fixes_multiple_links_on_same_line(self) -> None:
+        """Multiple links with missing spaces should all be fixed."""
+        content = "[Widget](url1)foo and [Text](url2)bar"
+        result = fix_link_spacing(content)
+        assert result == "[Widget](url1) foo and [Text](url2) bar"
+
+    def test_fixes_multiple_nullable_links(self) -> None:
+        """Multiple nullable links with missing spaces should all be fixed."""
+        content = "[Widget](url1)?foo, [Text](url2)?bar"
+        result = fix_link_spacing(content)
+        assert result == "[Widget](url1)? foo, [Text](url2)? bar"
+
+    def test_handles_empty_string(self) -> None:
+        """Empty string should return empty string."""
+        result = fix_link_spacing("")
+        assert result == ""
+
+    def test_realistic_dart_type_annotation(self) -> None:
+        """Realistic Dart type annotation pattern should be fixed."""
+        content = "Returns [Future](dart-async/Future-class.html)<[Widget](widgets/Widget-class.html)?>"
+        result = fix_link_spacing(content)
+        # The < after ) is not a letter, so no change there
+        # The ? followed by > is not followed by a letter, so no change
+        assert result == content
+
+    def test_realistic_dart_parameter(self) -> None:
+        """Realistic Dart parameter pattern should be fixed."""
+        content = "[BuildContext](widgets/BuildContext-class.html)context"
+        result = fix_link_spacing(content)
+        assert result == "[BuildContext](widgets/BuildContext-class.html) context"
+
+    def test_realistic_nullable_parameter(self) -> None:
+        """Realistic nullable Dart parameter pattern should be fixed."""
+        content = "[Key](foundation/Key-class.html)?key"
+        result = fix_link_spacing(content)
+        assert result == "[Key](foundation/Key-class.html)? key"
 
 
 class TestUnmatchedPatternTracking:
