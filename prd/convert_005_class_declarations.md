@@ -1,6 +1,6 @@
 # convert.py Class Documentation Function Declaration Cleanup Transformations
 
-This document specifies updates to the convert.py script for processing class documentation files in Flutter and Dart documentation. Specifically, it details a new function declaration cleanup transformation.
+This document specifies updates to the convert.py script for processing class documentation files in Flutter and Dart documentation. Specifically, it details a new multi-line function declaration cleanup transformation.
 
 ## Definitions
 
@@ -16,9 +16,9 @@ convert.py CURRENTLY processes class documentation files by:
 - Converting HTML files to markdown using the html-to-markdown library
 - Calling the function flutterdoc_gen.convert.transformations.apply_transformations to clean up the resulting markdown content
 
-## New Function Declaration Cleanup Transformation
+## New Multi-Line Function Declaration Cleanup Transformation
 
-This document defines a new function declaration cleanup transformation that must be applied to specific markdown content, defined below, *after* the generic transformations currently applied. This new transformation should be implemented as a separate function in flutterdoc_gen.convert.transformations.py.
+This document defines a new multi-line function declaration cleanup transformation that must be applied to specific markdown content, defined below, *after* the generic transformations currently applied. This new transformation should be implemented as a separate function in flutterdoc_gen.convert.transformations.py.
 
 ### Transformation Definition
 
@@ -26,13 +26,17 @@ The markdown content to be transformed has the following characteristics.
 
 #### Start Pattern
 
-- The content starts with the **first** non-blank line **after** the **first** header line
-- Only the first occurrence of a header line in the document is considered; any subsequent headers are ignored for the purpose of this transformation
+The content starts with the **first** non-blank line **after** the **first** header line.
+
+**Important**: The search for the start pattern MUST halt if a subsequent header line is encountered.
 
 #### End Pattern
+
 The content ends with the **first** line containing **only**:
-- Whitespace and the character ')', excluding the quotes, with no other characters on the line excepting comments (i.e., lines that contain only whitespace and the character ')' possibly followed by whitespace and comments), or
-- Whitespace and the characters '})', excluding the quotes, with no other characters on the line excepting comments (i.e., lines that contain only whitespace and the characters '})' possibly followed by whitespace and comments)
+- Whitespace and the character `)`, excluding the quotes, with no other characters on the line excepting comments (i.e., lines that contain only whitespace and the character `)` possibly followed by whitespace and comments), or
+- Whitespace and the characters `})`, excluding the quotes, with no other characters on the line excepting comments (i.e., lines that contain only whitespace and the characters `})` possibly followed by whitespace and comments)
+
+**Important**: The search for the end pattern MUST begin **after** the identified start pattern line and halt if a subsequent header line is encountered before finding a valid end pattern.
 
 #### Transformation Rules
 
@@ -42,14 +46,19 @@ The transformation MUST modify this markdown content as follows:
 - Remove all markdown unordered list markers at the start of a line (i.e., `- `, `* `, or `+ `) while **retaining** all text following the marker
 - Preserve all other whitespace and formatting on non-blank lines
 
-**Important**: No markdown content outside the defined start and end patterns should be modified by this transformation.
+**Important**:
+- No markdown content outside the defined start and end patterns should be modified by this transformation.
+- If no start pattern is found then no transformation should be applied.
+- If a start pattern is found but no valid end pattern is found then no transformation should be applied. This is common in the case of single-line function declarations.
 
 #### Transformation Edge Cases
-convert.py MUST always print an error message and exit with a non-zero status code if it encounters any of the following edge cases when applying this transformation:
+
+convert.py MUST print an informational message (when in verbose mode) and continue processing **without** applying any transformation if one of the following edge cases is encountered:
 - Mixed list markers (i.e., both ordered and unordered list markers within the same function declaration markdown content)
 - Nested list markers (i.e., list markers that are indented or nested within other list markers)
 - List markers mid-line (i.e., list markers that do not appear at the start of a line)
-- A start pattern that is not followed by an end pattern before the end of the document
+- The start pattern is found and it also matches the end pattern (i.e., the header is immediately followed by a line with only `)` or `})` possibly with comments)
+- The end pattern line contains additional text beyond whitespace and comments (i.e., a line with `)` or `})` plus characters other than comments)
 
 
 ### Markdown Content Subject to the New Transformation
@@ -190,21 +199,17 @@ Creates an ink well.
 Extend the existing test suite for convert.py to include tests for the new function declaration cleanup transformation.
 
 Required Test Cases:
-- Basic ordered list removal: Declaration with numbered parameters (as shown in examples above)
-- Basic unordered list removal: Declaration with unordered list markers
-- No blank lines or list markers present: Verify no-op on declarations without blank lines or list markers
-- Multiple blank lines: Verify all blank lines are removed from declaration
+- Basic ordered list removal: Multi-line declaration with numbered parameters (as shown in examples above)
+- Basic unordered list removal: Multi-line declaration with unordered list markers
+- No blank lines or list markers present: Verify no-op on multi-line declarations without blank lines or list markers
+- Multiple blank lines: Verify all blank lines are removed from multi-line declaration
 - No header present: Verify no transformation when header is missing
-- No closing pattern: Verify error is reported when ) or }) line is missing
+- No end pattern: Verify no transformation is applied an no informational message is printed in verbose mode
 - Multiple headers: Verify only the first header triggers transformation
-- Content after closing pattern: Verify content after ) or }) is not transformed
-- Empty declaration: Header immediately followed by ) or }) should report an error
+- Content after the end pattern: Verify content after the end pattern is not transformed
+- Edge cases: Verify an informational message is printed in verbose mode and no transformation is applied for each of the edge cases in the section [Transformation Edge Cases](#transformation-edge-cases)
 - Mixed whitespace: Declarations with tabs, spaces, and mixed whitespace
-- Mixed list markers: Both ordered and unordered markers in the same declaration should report an error
-- Nested/indented markers: Either nested or indented markers in a declaration should report an error
-- List markers mid-line: Should report an error
-- Invalid end pattern: Line with ) plus additional text other than comments should report an error
-- End pattern with comments: Line with ) or }) followed by comments should be accepted
+- End pattern with comments: Line with `)` or `})` followed by comments must be accepted
 - Different header levels: Test with ##, ###, etc.
 - Whitespace preservation: Leading/trailing whitespace on non-blank lines should be preserved (excluding markers removed)
 
