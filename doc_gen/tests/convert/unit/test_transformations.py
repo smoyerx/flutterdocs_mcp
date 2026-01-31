@@ -6,6 +6,7 @@ from flutterdoc_gen.convert.patterns import NOISE_STRINGS, TRACKING_DOMAINS
 from flutterdoc_gen.convert.transformations import (
     FOOTER_MARKER,
     apply_transformations,
+    cleanup_function_declaration,
     get_unmatched_patterns,
     remove_footer,
     remove_header,
@@ -410,3 +411,424 @@ class TestUnmatchedPatternTracking:
         reset_unmatched_patterns()
         patterns = get_unmatched_patterns()
         assert len(patterns) == 0
+
+
+class TestCleanupFunctionDeclaration:
+    """Tests for cleanup_function_declaration transformation function."""
+
+    def test_basic_ordered_list_removal(self) -> None:
+        """Ordered list markers should be removed from function parameters."""
+        content = """\
+# build method
+
+1. @[override](dart-core/override-constant.html)
+
+[Widget](mcp://flutter/api/widgets/Widget)build(
+
+1. [BuildContext](mcp://flutter/api/widgets/BuildContext) context
+)
+
+
+Describes the part of the user interface represented by this widget."""
+        expected = """\
+# build method
+
+@[override](dart-core/override-constant.html)
+[Widget](mcp://flutter/api/widgets/Widget)build(
+[BuildContext](mcp://flutter/api/widgets/BuildContext) context
+)
+
+
+Describes the part of the user interface represented by this widget."""
+        result = cleanup_function_declaration(content)
+        assert result == expected
+
+    def test_basic_unordered_list_removal(self) -> None:
+        """Unordered list markers should be removed from function parameters."""
+        content = """\
+# MyClass constructor
+
+MyClass({
+- [int](mcp://flutter/api/dart-core/int) value,
+- [String](mcp://flutter/api/dart-core/String)? name,
+})
+
+Creates a new MyClass instance."""
+        expected = """\
+# MyClass constructor
+
+MyClass({
+[int](mcp://flutter/api/dart-core/int) value,
+[String](mcp://flutter/api/dart-core/String)? name,
+})
+
+Creates a new MyClass instance."""
+        result = cleanup_function_declaration(content)
+        assert result == expected
+
+    def test_asterisk_unordered_list_removal(self) -> None:
+        """Asterisk unordered list markers should be removed."""
+        content = """\
+# test method
+
+void test(
+* int a,
+* int b
+)
+
+Test method."""
+        expected = """\
+# test method
+
+void test(
+int a,
+int b
+)
+
+Test method."""
+        result = cleanup_function_declaration(content)
+        assert result == expected
+
+    def test_plus_unordered_list_removal(self) -> None:
+        """Plus unordered list markers should be removed."""
+        content = """\
+# test method
+
+void test(
++ int a,
++ int b
+)
+
+Test method."""
+        expected = """\
+# test method
+
+void test(
+int a,
+int b
+)
+
+Test method."""
+        result = cleanup_function_declaration(content)
+        assert result == expected
+
+    def test_no_blank_lines_or_markers_noop(self) -> None:
+        """Declaration without blank lines or markers should be unchanged."""
+        content = """\
+# simple method
+
+void simple(
+int x
+)
+
+Does something simple."""
+        result = cleanup_function_declaration(content)
+        assert result == content
+
+    def test_multiple_blank_lines_removed(self) -> None:
+        """Multiple blank lines within declaration should all be removed."""
+        content = """\
+# method with blanks
+
+void method(
+
+
+int a,
+
+
+int b
+
+
+)
+
+Description."""
+        expected = """\
+# method with blanks
+
+void method(
+int a,
+int b
+)
+
+Description."""
+        result = cleanup_function_declaration(content)
+        assert result == expected
+
+    def test_no_header_returns_unchanged(self) -> None:
+        """Content without a header should be returned unchanged."""
+        content = """\
+void method(
+1. int a
+)
+
+No header here."""
+        result = cleanup_function_declaration(content)
+        assert result == content
+
+    def test_missing_closing_pattern_returns_unchanged(self) -> None:
+        """Missing closing pattern means single-line signature, return unchanged."""
+        content = """\
+# simple method
+
+void method(int a, int b)
+
+Single line signature, no closing paren on its own line."""
+        result = cleanup_function_declaration(content, source_context="test.html")
+        assert result == content
+
+    def test_multiple_headers_only_first_triggers(self) -> None:
+        """Only the first header should trigger the transformation."""
+        content = """\
+# first header
+
+void method(
+1. int a
+)
+
+## second header
+
+This should not be transformed.
+1. This is a list item."""
+        expected = """\
+# first header
+
+void method(
+int a
+)
+
+## second header
+
+This should not be transformed.
+1. This is a list item."""
+        result = cleanup_function_declaration(content)
+        assert result == expected
+
+    def test_content_after_closing_pattern_unchanged(self) -> None:
+        """Content after closing pattern should not be modified."""
+        content = """\
+# method
+
+void method(
+1. int a
+)
+
+1. First item in description list
+2. Second item in description list"""
+        expected = """\
+# method
+
+void method(
+int a
+)
+
+1. First item in description list
+2. Second item in description list"""
+        result = cleanup_function_declaration(content)
+        assert result == expected
+
+    def test_mixed_list_markers_exits(self) -> None:
+        """Mixed ordered and unordered markers should exit with error."""
+        content = """\
+# mixed method
+
+void method(
+1. int a,
+- int b
+)
+
+Description."""
+        with pytest.raises(SystemExit) as exc_info:
+            cleanup_function_declaration(content, source_context="test.html")
+        assert exc_info.value.code == 1
+
+    def test_nested_indented_markers_exits(self) -> None:
+        """Indented/nested list markers should exit with error."""
+        content = """\
+# nested method
+
+void method(
+  1. int a
+)
+
+Description."""
+        with pytest.raises(SystemExit) as exc_info:
+            cleanup_function_declaration(content, source_context="test.html")
+        assert exc_info.value.code == 1
+
+    def test_different_header_levels(self) -> None:
+        """Different header levels should work (##, ###, etc.)."""
+        content = """\
+## h2 method
+
+void method(
+1. int a
+)
+
+Description."""
+        expected = """\
+## h2 method
+
+void method(
+int a
+)
+
+Description."""
+        result = cleanup_function_declaration(content)
+        assert result == expected
+
+    def test_h3_header_level(self) -> None:
+        """H3 header level should work."""
+        content = """\
+### h3 method
+
+void method(
+1. int a
+)
+
+Description."""
+        expected = """\
+### h3 method
+
+void method(
+int a
+)
+
+Description."""
+        result = cleanup_function_declaration(content)
+        assert result == expected
+
+    def test_whitespace_preservation(self) -> None:
+        """Leading/trailing whitespace on non-blank lines should be preserved."""
+        content = """\
+# method
+
+  void method(
+1.   int a,
+2.   int b
+  )
+
+Description."""
+        expected = """\
+# method
+
+  void method(
+  int a,
+  int b
+  )
+
+Description."""
+        result = cleanup_function_declaration(content)
+        assert result == expected
+
+    def test_end_pattern_with_paren_and_comment(self) -> None:
+        """Closing ) with trailing comment should be accepted."""
+        content = """\
+# method
+
+void method(
+1. int a
+) // end of parameters
+
+Description."""
+        expected = """\
+# method
+
+void method(
+int a
+) // end of parameters
+
+Description."""
+        result = cleanup_function_declaration(content)
+        assert result == expected
+
+    def test_end_pattern_with_brace_paren_and_comment(self) -> None:
+        """Closing }) with trailing comment should be accepted."""
+        content = """\
+# constructor
+
+MyClass({
+1. int a
+}) // end of constructor
+
+Description."""
+        expected = """\
+# constructor
+
+MyClass({
+int a
+}) // end of constructor
+
+Description."""
+        result = cleanup_function_declaration(content)
+        assert result == expected
+
+    def test_brace_paren_closing(self) -> None:
+        """}) closing pattern should work for named parameters."""
+        content = """\
+# InkWell constructor
+
+const InkWell({
+
+1. [Key](mcp://flutter/api/foundation/Key)? key,
+2. [Widget](mcp://flutter/api/widgets/Widget)? child,
+})
+
+Creates an ink well."""
+        expected = """\
+# InkWell constructor
+
+const InkWell({
+[Key](mcp://flutter/api/foundation/Key)? key,
+[Widget](mcp://flutter/api/widgets/Widget)? child,
+})
+
+Creates an ink well."""
+        result = cleanup_function_declaration(content)
+        assert result == expected
+
+    def test_constructor_with_many_parameters(self) -> None:
+        """Large constructor with many numbered parameters."""
+        content = """\
+# BigClass constructor
+
+BigClass({
+1. int a,
+2. int b,
+3. int c,
+4. int d,
+5. int e,
+6. int f,
+7. int g,
+8. int h,
+9. int i,
+10. int j,
+})
+
+Creates a BigClass."""
+        expected = """\
+# BigClass constructor
+
+BigClass({
+int a,
+int b,
+int c,
+int d,
+int e,
+int f,
+int g,
+int h,
+int i,
+int j,
+})
+
+Creates a BigClass."""
+        result = cleanup_function_declaration(content)
+        assert result == expected
+
+    def test_tabs_and_spaces_mixed_whitespace(self) -> None:
+        """Declarations with tabs and spaces should be handled."""
+        # Tab after marker is part of the marker separator and gets removed
+        content = "# method\n\nvoid method(\n1.\tint a\n)\n\nDescription."
+        expected = "# method\n\nvoid method(\nint a\n)\n\nDescription."
+        result = cleanup_function_declaration(content)
+        assert result == expected

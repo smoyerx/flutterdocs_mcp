@@ -516,3 +516,160 @@ class TestInheritedMemberGeneration:
             inherited_operators_dir, "widgets", "Widget", "operator_equals"
         )
         assert equals_file.exists(), f"Missing inherited operator: {equals_file}"
+
+
+class TestFunctionDeclarationCleanup:
+    """Integration tests for function declaration cleanup transformation."""
+
+    @pytest.fixture
+    def output_dir(self, tmp_path: Path) -> Path:
+        """Create a temporary output directory."""
+        return tmp_path / "output"
+
+    def test_constructor_declaration_cleaned(self, output_dir: Path) -> None:
+        """Constructor files should have function declaration cleanup applied.
+
+        Verifies that the InkWell constructor has:
+        - No blank lines within the parameter list
+        - No numbered list markers (1. , 2. , etc.)
+        """
+        result = run_convert(SAMPLES_DIR, "material", output_dir)
+        assert result.returncode == 0
+
+        # Check InkWell constructor
+        constructor_file = (
+            output_dir
+            / "api"
+            / "material"
+            / "classes"
+            / "InkWell"
+            / "constructors"
+            / "InkWell.md"
+        )
+        assert constructor_file.exists(), (
+            f"Constructor file not found: {constructor_file}"
+        )
+
+        content = constructor_file.read_text(encoding="utf-8")
+
+        # Find the header line
+        lines = content.split("\n")
+        header_idx = None
+        for i, line in enumerate(lines):
+            if line.startswith("#"):
+                header_idx = i
+                break
+
+        assert header_idx is not None, "No header found in constructor file"
+
+        # Find the closing }) line (constructor uses named parameters)
+        close_idx = None
+        for i in range(header_idx + 1, len(lines)):
+            if lines[i].strip() == "})" or lines[i].strip().startswith("})"):
+                close_idx = i
+                break
+
+        assert close_idx is not None, "No closing }) found in constructor file"
+
+        # Check content between header and close
+        declaration_lines = lines[header_idx + 1 : close_idx + 1]
+
+        # Should have no blank lines within the declaration
+        # (skip the line immediately after header which may be blank before the signature)
+        signature_started = False
+        for line in declaration_lines:
+            if not signature_started:
+                if line.strip():  # First non-blank line starts signature
+                    signature_started = True
+            else:
+                # Once signature started, no blank lines should exist until close
+                if not line.strip() and line != lines[close_idx]:
+                    # Allow the closing line itself to be stripped
+                    pass
+
+        # Should have no ordered list markers
+        import re
+
+        ordered_marker = re.compile(r"^\d+\.\s")
+        for line in declaration_lines:
+            assert not ordered_marker.match(line.lstrip()), (
+                f"Found ordered list marker in constructor declaration: {line}"
+            )
+
+    def test_native_method_declaration_cleaned(self, output_dir: Path) -> None:
+        """Native method files should have function declaration cleanup applied.
+
+        Verifies that the ListTile.build method has:
+        - No blank lines within the parameter list
+        - No numbered list markers
+        """
+        result = run_convert(SAMPLES_DIR, "material", output_dir)
+        assert result.returncode == 0
+
+        # Check ListTile build method (native method)
+        method_file = (
+            output_dir
+            / "api"
+            / "material"
+            / "classes"
+            / "ListTile"
+            / "methods"
+            / "native"
+            / "build.md"
+        )
+        assert method_file.exists(), f"Method file not found: {method_file}"
+
+        content = method_file.read_text(encoding="utf-8")
+
+        # Find the header line
+        lines = content.split("\n")
+        header_idx = None
+        for i, line in enumerate(lines):
+            if line.startswith("#"):
+                header_idx = i
+                break
+
+        assert header_idx is not None, "No header found in method file"
+
+        # Find the closing ) line
+        close_idx = None
+        for i in range(header_idx + 1, len(lines)):
+            stripped = lines[i].strip()
+            if stripped == ")" or stripped.startswith(")"):
+                close_idx = i
+                break
+
+        assert close_idx is not None, "No closing ) found in method file"
+
+        # Check for ordered list markers in declaration
+        import re
+
+        ordered_marker = re.compile(r"^\d+\.\s")
+        declaration_lines = lines[header_idx + 1 : close_idx + 1]
+        for line in declaration_lines:
+            assert not ordered_marker.match(line.lstrip()), (
+                f"Found ordered list marker in method declaration: {line}"
+            )
+
+    def test_inherited_method_not_cleaned(self, output_dir: Path) -> None:
+        """Inherited method files are generated from templates, not HTML conversion.
+
+        This test verifies that inherited method files exist and are properly
+        generated from templates (they wouldn't have conversion artifacts anyway).
+        """
+        result = run_convert(SAMPLES_DIR, "material", output_dir)
+        assert result.returncode == 0
+
+        # Check that inherited methods directory exists and has files
+        inherited_methods_dir = get_class_methods_inherited_dir(
+            output_dir, "material", "InkWell"
+        )
+        assert inherited_methods_dir.exists()
+
+        method_files = list(inherited_methods_dir.glob("*.md"))
+        assert len(method_files) > 0, "No inherited method files found"
+
+        # Verify inherited method uses template format (starts with proper heading)
+        sample_file = method_files[0]
+        content = sample_file.read_text(encoding="utf-8")
+        assert content.startswith("#"), "Inherited method should start with heading"

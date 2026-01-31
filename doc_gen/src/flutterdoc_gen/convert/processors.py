@@ -100,7 +100,9 @@ def process_constructors(
             )
 
         ensure_dir_exists(constructors_dir)
-        markdown_content = convert_html_to_markdown(options_handle, html_path)
+        markdown_content = convert_html_to_markdown(
+            options_handle, html_path, apply_function_declaration_cleanup=True
+        )
         output_file = get_native_member_file(constructors_dir, member["member"])
         output_file.write_text(markdown_content, encoding="utf-8")
 
@@ -238,7 +240,9 @@ def process_methods(
                 )
 
             ensure_dir_exists(native_dir)
-            markdown_content = convert_html_to_markdown(options_handle, html_path)
+            markdown_content = convert_html_to_markdown(
+                options_handle, html_path, apply_function_declaration_cleanup=True
+            )
             output_file = get_native_member_file(native_dir, member["member"])
             output_file.write_text(markdown_content, encoding="utf-8")
         else:
@@ -319,7 +323,9 @@ def process_operators(
                 )
 
             ensure_dir_exists(native_dir)
-            markdown_content = convert_html_to_markdown(options_handle, html_path)
+            markdown_content = convert_html_to_markdown(
+                options_handle, html_path, apply_function_declaration_cleanup=True
+            )
             output_file = get_native_member_file(native_dir, member["member"])
             output_file.write_text(markdown_content, encoding="utf-8")
         else:
@@ -410,7 +416,9 @@ def process_static_methods(
             )
 
         ensure_dir_exists(statics_dir)
-        markdown_content = convert_html_to_markdown(options_handle, html_path)
+        markdown_content = convert_html_to_markdown(
+            options_handle, html_path, apply_function_declaration_cleanup=True
+        )
         output_file = get_native_member_file(statics_dir, member["member"])
         output_file.write_text(markdown_content, encoding="utf-8")
 

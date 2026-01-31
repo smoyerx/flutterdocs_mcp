@@ -8,17 +8,25 @@ from pathlib import Path
 
 from html_to_markdown import ConversionOptionsHandle, convert_with_handle
 
-from flutterdoc_gen.convert.transformations import apply_transformations
+from flutterdoc_gen.convert.transformations import (
+    apply_transformations,
+    cleanup_function_declaration,
+)
 
 
 def convert_html_to_markdown(
-    options_handle: ConversionOptionsHandle, html_path: Path
+    options_handle: ConversionOptionsHandle,
+    html_path: Path,
+    apply_function_declaration_cleanup: bool = False,
 ) -> str:
     """Convert an HTML file to markdown and apply transformations.
 
     Args:
         options_handle: The ConversionOptionsHandle instance to use for conversion.
         html_path: Path to the HTML file to convert.
+        apply_function_declaration_cleanup: If True, apply function declaration
+            cleanup transformation after generic transformations. Use for
+            constructor, native method, native operator, and static method files.
 
     Returns:
         The transformed markdown content.
@@ -37,7 +45,12 @@ def convert_html_to_markdown(
     except Exception as e:
         raise RuntimeError(f"Error reading or converting HTML file {html_path}: {e}")
 
-    return apply_transformations(md_text, source_context=str(html_path))
+    content = apply_transformations(md_text, source_context=str(html_path))
+
+    if apply_function_declaration_cleanup:
+        content = cleanup_function_declaration(content, source_context=str(html_path))
+
+    return content
 
 
 def convert_dart_snippet(dart_path: Path, class_name: str, section: str) -> str:
