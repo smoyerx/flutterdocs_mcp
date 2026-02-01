@@ -8,6 +8,7 @@ extensions, extension types, functions, and typedefs).
 import logging
 from pathlib import Path
 
+from flutterdoc_gen.convert.constants import CategoryType
 from flutterdoc_gen.convert.paths import get_input_section_dir
 
 
@@ -34,15 +35,15 @@ def find_and_categorize_root_files(
 
     # Initialize category dictionary
     categories: dict[str, list[tuple[str, Path]]] = {
-        "class": [],
-        "mixin": [],
-        "constant": [],
-        "library": [],
-        "extension_type": [],
-        "enum": [],
-        "extension": [],
-        "function": [],
-        "typedef": [],
+        CategoryType.CLASS: [],
+        CategoryType.MIXIN: [],
+        CategoryType.CONSTANT: [],
+        CategoryType.LIBRARY: [],
+        CategoryType.EXTENSION_TYPE: [],
+        CategoryType.ENUM: [],
+        CategoryType.EXTENSION: [],
+        CategoryType.FUNCTION: [],
+        CategoryType.TYPEDEF: [],
     }
 
     # Get all HTML files in the section directory
@@ -66,23 +67,25 @@ def find_and_categorize_root_files(
         # Direct identification by suffix pattern
         if filename.endswith("-class.html"):
             class_name = name.replace("-class", "")
-            categories["class"].append((class_name, html_file))
+            categories[CategoryType.CLASS].append((class_name, html_file))
             categorized_files.add(filename)
         elif filename.endswith("-mixin.html"):
             mixin_name = name.replace("-mixin", "")
-            categories["mixin"].append((mixin_name, html_file))
+            categories[CategoryType.MIXIN].append((mixin_name, html_file))
             categorized_files.add(filename)
         elif filename.endswith("-constant.html"):
             constant_name = name.replace("-constant", "")
-            categories["constant"].append((constant_name, html_file))
+            categories[CategoryType.CONSTANT].append((constant_name, html_file))
             categorized_files.add(filename)
         elif filename.endswith("-library.html"):
             library_name = name.replace("-library", "")
-            categories["library"].append((library_name, html_file))
+            categories[CategoryType.LIBRARY].append((library_name, html_file))
             categorized_files.add(filename)
         elif filename.endswith("-extension-type.html"):
             extension_type_name = name.replace("-extension-type", "")
-            categories["extension_type"].append((extension_type_name, html_file))
+            categories[CategoryType.EXTENSION_TYPE].append(
+                (extension_type_name, html_file)
+            )
             categorized_files.add(filename)
 
     # Second pass: Indirect identification via sidebar files
@@ -98,14 +101,14 @@ def find_and_categorize_root_files(
         # Check for enum via sidebar
         enum_sidebar = f"{name}-enum-sidebar.html"
         if enum_sidebar in sidebar_files:
-            categories["enum"].append((name, html_file))
+            categories[CategoryType.ENUM].append((name, html_file))
             categorized_files.add(filename)
             continue
 
         # Check for extension via sidebar
         extension_sidebar = f"{name}-extension-sidebar.html"
         if extension_sidebar in sidebar_files:
-            categories["extension"].append((name, html_file))
+            categories[CategoryType.EXTENSION].append((name, html_file))
             categorized_files.add(filename)
             continue
 
@@ -123,11 +126,11 @@ def find_and_categorize_root_files(
         if name and name[0].isalpha():
             if name[0].islower():
                 # Function: starts with lowercase
-                categories["function"].append((name, html_file))
+                categories[CategoryType.FUNCTION].append((name, html_file))
                 categorized_files.add(filename)
             elif name[0].isupper():
                 # Typedef: starts with uppercase
-                categories["typedef"].append((name, html_file))
+                categories[CategoryType.TYPEDEF].append((name, html_file))
                 categorized_files.add(filename)
         else:
             # Uncategorizable file - log in verbose mode

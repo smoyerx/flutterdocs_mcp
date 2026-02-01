@@ -6,6 +6,7 @@ from typing import Any
 import pytest
 
 from flutterdoc_gen.convert.categorization import find_and_categorize_root_files
+from flutterdoc_gen.convert.constants import CategoryType
 
 
 @pytest.fixture
@@ -31,10 +32,14 @@ def test_categorize_class_files(tmp_path: Path, mock_section_dir: Path) -> None:
 
     result = find_and_categorize_root_files(tmp_path, "test_section")
 
-    assert len(result["class"]) == 3
-    assert ("Widget", mock_section_dir / "Widget-class.html") in result["class"]
-    assert ("State", mock_section_dir / "State-class.html") in result["class"]
-    assert ("Text", mock_section_dir / "Text-class.html") in result["class"]
+    assert len(result[CategoryType.CLASS]) == 3
+    assert ("Widget", mock_section_dir / "Widget-class.html") in result[
+        CategoryType.CLASS
+    ]
+    assert ("State", mock_section_dir / "State-class.html") in result[
+        CategoryType.CLASS
+    ]
+    assert ("Text", mock_section_dir / "Text-class.html") in result[CategoryType.CLASS]
 
 
 def test_categorize_mixin_files(tmp_path: Path, mock_section_dir: Path) -> None:
@@ -46,15 +51,15 @@ def test_categorize_mixin_files(tmp_path: Path, mock_section_dir: Path) -> None:
 
     result = find_and_categorize_root_files(tmp_path, "test_section")
 
-    assert len(result["mixin"]) == 2
+    assert len(result[CategoryType.MIXIN]) == 2
     assert (
         "BaseSliderTrackShape",
         mock_section_dir / "BaseSliderTrackShape-mixin.html",
-    ) in result["mixin"]
+    ) in result[CategoryType.MIXIN]
     assert (
         "MaterialStateMixin",
         mock_section_dir / "MaterialStateMixin-mixin.html",
-    ) in result["mixin"]
+    ) in result[CategoryType.MIXIN]
 
 
 def test_categorize_constant_files(tmp_path: Path, mock_section_dir: Path) -> None:
@@ -66,15 +71,15 @@ def test_categorize_constant_files(tmp_path: Path, mock_section_dir: Path) -> No
 
     result = find_and_categorize_root_files(tmp_path, "test_section")
 
-    assert len(result["constant"]) == 2
+    assert len(result[CategoryType.CONSTANT]) == 2
     assert (
         "accelerateEasing",
         mock_section_dir / "accelerateEasing-constant.html",
-    ) in result["constant"]
+    ) in result[CategoryType.CONSTANT]
     assert (
         "kBottomNavigationBarHeight",
         mock_section_dir / "kBottomNavigationBarHeight-constant.html",
-    ) in result["constant"]
+    ) in result[CategoryType.CONSTANT]
 
 
 def test_categorize_library_files(tmp_path: Path, mock_section_dir: Path) -> None:
@@ -85,9 +90,13 @@ def test_categorize_library_files(tmp_path: Path, mock_section_dir: Path) -> Non
 
     result = find_and_categorize_root_files(tmp_path, "test_section")
 
-    assert len(result["library"]) == 2
-    assert ("material", mock_section_dir / "material-library.html") in result["library"]
-    assert ("widgets", mock_section_dir / "widgets-library.html") in result["library"]
+    assert len(result[CategoryType.LIBRARY]) == 2
+    assert ("material", mock_section_dir / "material-library.html") in result[
+        CategoryType.LIBRARY
+    ]
+    assert ("widgets", mock_section_dir / "widgets-library.html") in result[
+        CategoryType.LIBRARY
+    ]
 
 
 def test_categorize_extension_type_files(
@@ -101,11 +110,11 @@ def test_categorize_extension_type_files(
 
     result = find_and_categorize_root_files(tmp_path, "test_section")
 
-    assert len(result["extension_type"]) == 1
+    assert len(result[CategoryType.EXTENSION_TYPE]) == 1
     assert (
         "OverlayChildLayoutInfo",
         mock_section_dir / "OverlayChildLayoutInfo-extension-type.html",
-    ) in result["extension_type"]
+    ) in result[CategoryType.EXTENSION_TYPE]
 
 
 def test_categorize_enum_files_with_sidebar(
@@ -124,9 +133,13 @@ def test_categorize_enum_files_with_sidebar(
 
     result = find_and_categorize_root_files(tmp_path, "test_section")
 
-    assert len(result["enum"]) == 2
-    assert ("HourFormat", mock_section_dir / "HourFormat.html") in result["enum"]
-    assert ("StretchMode", mock_section_dir / "StretchMode.html") in result["enum"]
+    assert len(result[CategoryType.ENUM]) == 2
+    assert ("HourFormat", mock_section_dir / "HourFormat.html") in result[
+        CategoryType.ENUM
+    ]
+    assert ("StretchMode", mock_section_dir / "StretchMode.html") in result[
+        CategoryType.ENUM
+    ]
 
 
 def test_categorize_extension_files_with_sidebar(
@@ -143,11 +156,11 @@ def test_categorize_extension_files_with_sidebar(
 
     result = find_and_categorize_root_files(tmp_path, "test_section")
 
-    assert len(result["extension"]) == 1
+    assert len(result[CategoryType.EXTENSION]) == 1
     assert (
         "WidgetStateOperators",
         mock_section_dir / "WidgetStateOperators.html",
-    ) in result["extension"]
+    ) in result[CategoryType.EXTENSION]
 
 
 def test_categorize_function_files_lowercase(
@@ -161,12 +174,14 @@ def test_categorize_function_files_lowercase(
 
     result = find_and_categorize_root_files(tmp_path, "test_section")
 
-    assert len(result["function"]) == 2
+    assert len(result[CategoryType.FUNCTION]) == 2
     assert (
         "showBottomSheet",
         mock_section_dir / "showBottomSheet.html",
-    ) in result["function"]
-    assert ("showMenu", mock_section_dir / "showMenu.html") in result["function"]
+    ) in result[CategoryType.FUNCTION]
+    assert ("showMenu", mock_section_dir / "showMenu.html") in result[
+        CategoryType.FUNCTION
+    ]
 
 
 def test_categorize_typedef_files_uppercase(
@@ -180,15 +195,15 @@ def test_categorize_typedef_files_uppercase(
 
     result = find_and_categorize_root_files(tmp_path, "test_section")
 
-    assert len(result["typedef"]) == 2
+    assert len(result[CategoryType.TYPEDEF]) == 2
     assert (
         "DrawerCallback",
         mock_section_dir / "DrawerCallback.html",
-    ) in result["typedef"]
+    ) in result[CategoryType.TYPEDEF]
     assert (
         "WidgetBuilder",
         mock_section_dir / "WidgetBuilder.html",
-    ) in result["typedef"]
+    ) in result[CategoryType.TYPEDEF]
 
 
 def test_sidebar_files_are_ignored(tmp_path: Path, mock_section_dir: Path) -> None:
@@ -205,11 +220,13 @@ def test_sidebar_files_are_ignored(tmp_path: Path, mock_section_dir: Path) -> No
     result = find_and_categorize_root_files(tmp_path, "test_section")
 
     # Should only have the class, not the sidebar files
-    assert len(result["class"]) == 1
-    assert ("Widget", mock_section_dir / "Widget-class.html") in result["class"]
+    assert len(result[CategoryType.CLASS]) == 1
+    assert ("Widget", mock_section_dir / "Widget-class.html") in result[
+        CategoryType.CLASS
+    ]
 
     # Enum should not be categorized without its main file
-    assert len(result["enum"]) == 0
+    assert len(result[CategoryType.ENUM]) == 0
 
 
 def test_enum_without_sidebar_not_categorized(
@@ -224,12 +241,12 @@ def test_enum_without_sidebar_not_categorized(
     result = find_and_categorize_root_files(tmp_path, "test_section")
 
     # Should be categorized as typedef (uppercase), not enum (no sidebar)
-    assert len(result["enum"]) == 0
-    assert len(result["typedef"]) == 1
+    assert len(result[CategoryType.ENUM]) == 0
+    assert len(result[CategoryType.TYPEDEF]) == 1
     assert (
         "PotentialEnum",
         mock_section_dir / "PotentialEnum.html",
-    ) in result["typedef"]
+    ) in result[CategoryType.TYPEDEF]
 
 
 def test_extension_without_sidebar_not_categorized(
@@ -244,8 +261,8 @@ def test_extension_without_sidebar_not_categorized(
     result = find_and_categorize_root_files(tmp_path, "test_section")
 
     # Should be categorized as typedef (uppercase), not extension (no sidebar)
-    assert len(result["extension"]) == 0
-    assert len(result["typedef"]) == 1
+    assert len(result[CategoryType.EXTENSION]) == 0
+    assert len(result[CategoryType.TYPEDEF]) == 1
 
 
 def test_empty_section_directory(tmp_path: Path, mock_section_dir: Path) -> None:
@@ -276,15 +293,15 @@ def test_mixed_categories(tmp_path: Path, mock_section_dir: Path) -> None:
 
     result = find_and_categorize_root_files(tmp_path, "test_section")
 
-    assert len(result["class"]) == 2
-    assert len(result["mixin"]) == 1
-    assert len(result["constant"]) == 1
-    assert len(result["library"]) == 1
-    assert len(result["enum"]) == 1
-    assert len(result["function"]) == 1
-    assert len(result["typedef"]) == 1
-    assert len(result["extension"]) == 0
-    assert len(result["extension_type"]) == 0
+    assert len(result[CategoryType.CLASS]) == 2
+    assert len(result[CategoryType.MIXIN]) == 1
+    assert len(result[CategoryType.CONSTANT]) == 1
+    assert len(result[CategoryType.LIBRARY]) == 1
+    assert len(result[CategoryType.ENUM]) == 1
+    assert len(result[CategoryType.FUNCTION]) == 1
+    assert len(result[CategoryType.TYPEDEF]) == 1
+    assert len(result[CategoryType.EXTENSION]) == 0
+    assert len(result[CategoryType.EXTENSION_TYPE]) == 0
 
 
 def test_uncategorizable_file_starting_with_number(
@@ -316,20 +333,20 @@ def test_case_sensitivity_function_vs_typedef(
 
     result = find_and_categorize_root_files(tmp_path, "test_section")
 
-    assert len(result["function"]) == 2
+    assert len(result[CategoryType.FUNCTION]) == 2
     assert ("lowerCaseStart", mock_section_dir / "lowerCaseStart.html") in result[
-        "function"
+        CategoryType.FUNCTION
     ]
     assert ("anotherFunction", mock_section_dir / "anotherFunction.html") in result[
-        "function"
+        CategoryType.FUNCTION
     ]
 
-    assert len(result["typedef"]) == 2
+    assert len(result[CategoryType.TYPEDEF]) == 2
     assert ("UpperCaseStart", mock_section_dir / "UpperCaseStart.html") in result[
-        "typedef"
+        CategoryType.TYPEDEF
     ]
     assert ("AnotherTypedef", mock_section_dir / "AnotherTypedef.html") in result[
-        "typedef"
+        CategoryType.TYPEDEF
     ]
 
 
@@ -348,9 +365,11 @@ def test_direct_identification_takes_precedence(
 
     result = find_and_categorize_root_files(tmp_path, "test_section")
 
-    assert len(result["class"]) == 1
-    assert len(result["typedef"]) == 0
-    assert ("Widget", mock_section_dir / "Widget-class.html") in result["class"]
+    assert len(result[CategoryType.CLASS]) == 1
+    assert len(result[CategoryType.TYPEDEF]) == 0
+    assert ("Widget", mock_section_dir / "Widget-class.html") in result[
+        CategoryType.CLASS
+    ]
 
 
 def test_alphabetical_sorting(tmp_path: Path, mock_section_dir: Path) -> None:
@@ -367,5 +386,5 @@ def test_alphabetical_sorting(tmp_path: Path, mock_section_dir: Path) -> None:
     result = find_and_categorize_root_files(tmp_path, "test_section")
 
     # Files should be in sorted order (by full filename)
-    class_names = [name for name, _ in result["class"]]
+    class_names = [name for name, _ in result[CategoryType.CLASS]]
     assert class_names == ["Apple", "Mango", "Zebra"]

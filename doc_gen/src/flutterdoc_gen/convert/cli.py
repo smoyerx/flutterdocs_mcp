@@ -15,6 +15,7 @@ from html_to_markdown import (
 )
 
 from flutterdoc_gen.convert.categorization import find_and_categorize_root_files
+from flutterdoc_gen.convert.constants import CategoryType
 from flutterdoc_gen.convert.errors import log_processing_error
 from flutterdoc_gen.convert.paths import (
     ensure_dir_exists,
@@ -148,7 +149,7 @@ def main() -> None:
         sys.exit(0)
 
     # Process classes (existing functionality)
-    for class_name, class_file in categorized_files["class"]:
+    for class_name, class_file in categorized_files[CategoryType.CLASS]:
         logging.info(f"Converting class: {class_name}")
 
         try:
@@ -167,7 +168,7 @@ def main() -> None:
             )
 
     # Process other categories with stub processors
-    for mixin_name, mixin_file in categorized_files["mixin"]:
+    for mixin_name, mixin_file in categorized_files[CategoryType.MIXIN]:
         logging.info(f"Converting mixin: {mixin_name}")
         try:
             process_mixin(
@@ -183,7 +184,7 @@ def main() -> None:
                 f"Cannot write output file for {mixin_name}: {e}", mixin_file
             )
 
-    for constant_name, constant_file in categorized_files["constant"]:
+    for constant_name, constant_file in categorized_files[CategoryType.CONSTANT]:
         logging.info(f"Converting constant: {constant_name}")
         try:
             process_constant(
@@ -199,7 +200,7 @@ def main() -> None:
                 f"Cannot write output file for {constant_name}: {e}", constant_file
             )
 
-    for library_name, library_file in categorized_files["library"]:
+    for library_name, library_file in categorized_files[CategoryType.LIBRARY]:
         logging.info(f"Converting library: {library_name}")
         try:
             process_library(
@@ -215,7 +216,9 @@ def main() -> None:
                 f"Cannot write output file for {library_name}: {e}", library_file
             )
 
-    for extension_type_name, extension_type_file in categorized_files["extension_type"]:
+    for extension_type_name, extension_type_file in categorized_files[
+        CategoryType.EXTENSION_TYPE
+    ]:
         logging.info(f"Converting extension type: {extension_type_name}")
         try:
             process_extension_type(
@@ -232,7 +235,7 @@ def main() -> None:
                 extension_type_file,
             )
 
-    for enum_name, enum_file in categorized_files["enum"]:
+    for enum_name, enum_file in categorized_files[CategoryType.ENUM]:
         logging.info(f"Converting enum: {enum_name}")
         try:
             process_enum(
@@ -248,7 +251,7 @@ def main() -> None:
                 f"Cannot write output file for {enum_name}: {e}", enum_file
             )
 
-    for extension_name, extension_file in categorized_files["extension"]:
+    for extension_name, extension_file in categorized_files[CategoryType.EXTENSION]:
         logging.info(f"Converting extension: {extension_name}")
         try:
             process_extension(
@@ -264,7 +267,7 @@ def main() -> None:
                 f"Cannot write output file for {extension_name}: {e}", extension_file
             )
 
-    for function_name, function_file in categorized_files["function"]:
+    for function_name, function_file in categorized_files[CategoryType.FUNCTION]:
         logging.info(f"Converting function: {function_name}")
         try:
             process_function(
@@ -280,7 +283,7 @@ def main() -> None:
                 f"Cannot write output file for {function_name}: {e}", function_file
             )
 
-    for typedef_name, typedef_file in categorized_files["typedef"]:
+    for typedef_name, typedef_file in categorized_files[CategoryType.TYPEDEF]:
         logging.info(f"Converting typedef: {typedef_name}")
         try:
             process_typedef(

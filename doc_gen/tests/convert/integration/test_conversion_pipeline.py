@@ -11,6 +11,7 @@ from convert.conftest import (
     run_convert,
     SAMPLES_DIR,
 )
+from flutterdoc_gen.convert.constants import CategoryType
 from flutterdoc_gen.convert.patterns import MCP_URI_PREFIX
 from flutterdoc_gen.convert.paths import (
     get_api_section_dir,
@@ -690,39 +691,39 @@ class TestFileCategorization:
         categorized = find_and_categorize_root_files(SAMPLES_DIR, "material")
 
         # Verify classes
-        class_names = [name for name, _ in categorized["class"]]
+        class_names = [name for name, _ in categorized[CategoryType.CLASS]]
         assert sorted(class_names) == ["InkWell", "ListTile"]
 
         # Verify mixins
-        mixin_names = [name for name, _ in categorized["mixin"]]
+        mixin_names = [name for name, _ in categorized[CategoryType.MIXIN]]
         assert sorted(mixin_names) == ["BaseSliderTrackShape", "MaterialStateMixin"]
 
         # Verify constants
-        constant_names = [name for name, _ in categorized["constant"]]
+        constant_names = [name for name, _ in categorized[CategoryType.CONSTANT]]
         assert sorted(constant_names) == [
             "accelerateEasing",
             "kBottomNavigationBarHeight",
         ]
 
         # Verify libraries
-        library_names = [name for name, _ in categorized["library"]]
+        library_names = [name for name, _ in categorized[CategoryType.LIBRARY]]
         assert library_names == ["material"]
 
         # Verify enums
-        enum_names = [name for name, _ in categorized["enum"]]
+        enum_names = [name for name, _ in categorized[CategoryType.ENUM]]
         assert sorted(enum_names) == ["HourFormat", "StretchMode"]
 
         # Verify functions
-        function_names = [name for name, _ in categorized["function"]]
+        function_names = [name for name, _ in categorized[CategoryType.FUNCTION]]
         assert sorted(function_names) == ["showBottomSheet", "showMenu"]
 
         # Verify typedefs
-        typedef_names = [name for name, _ in categorized["typedef"]]
+        typedef_names = [name for name, _ in categorized[CategoryType.TYPEDEF]]
         assert sorted(typedef_names) == ["DrawerCallback", "MaterialState"]
 
         # Verify no extension types or extensions in material section
-        assert len(categorized["extension_type"]) == 0
-        assert len(categorized["extension"]) == 0
+        assert len(categorized[CategoryType.EXTENSION_TYPE]) == 0
+        assert len(categorized[CategoryType.EXTENSION]) == 0
 
     def test_categorize_widgets_section(self, output_dir: Path) -> None:
         """Test correct categorization of widgets section sample files."""
@@ -731,23 +732,25 @@ class TestFileCategorization:
         categorized = find_and_categorize_root_files(SAMPLES_DIR, "widgets")
 
         # Verify classes
-        class_names = [name for name, _ in categorized["class"]]
+        class_names = [name for name, _ in categorized[CategoryType.CLASS]]
         assert sorted(class_names) == ["State", "Text"]
 
         # Verify extensions
-        extension_names = [name for name, _ in categorized["extension"]]
+        extension_names = [name for name, _ in categorized[CategoryType.EXTENSION]]
         assert extension_names == ["WidgetStateOperators"]
 
         # Verify extension types
-        extension_type_names = [name for name, _ in categorized["extension_type"]]
+        extension_type_names = [
+            name for name, _ in categorized[CategoryType.EXTENSION_TYPE]
+        ]
         assert extension_type_names == ["OverlayChildLayoutInfo"]
 
         # Verify no other types in widgets section
-        assert len(categorized["mixin"]) == 0
-        assert len(categorized["constant"]) == 0
-        assert len(categorized["library"]) == 0
-        assert len(categorized["enum"]) == 0
-        assert len(categorized["function"]) == 0
+        assert len(categorized[CategoryType.MIXIN]) == 0
+        assert len(categorized[CategoryType.CONSTANT]) == 0
+        assert len(categorized[CategoryType.LIBRARY]) == 0
+        assert len(categorized[CategoryType.ENUM]) == 0
+        assert len(categorized[CategoryType.FUNCTION]) == 0
         assert len(categorized["typedef"]) == 0
 
     def test_all_categories_processed(self, output_dir: Path) -> None:
