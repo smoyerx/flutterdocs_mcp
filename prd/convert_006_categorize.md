@@ -63,7 +63,7 @@ convert.py tests must be updated to confirm the correct categorization of root d
 
 Categorization of root documentation files in doc_gen/tests/convert/integration/samples/flutter/material:
 - Root class documentation files: InkWell-class.html, ListTile-class.html
-- Root mixin documentation files: BaseSliderTrackShape-mixin.html, MaterialStateMixins-mixin.html
+- Root mixin documentation files: BaseSliderTrackShape-mixin.html, MaterialStateMixin-mixin.html
 - Root constant documentation files: accelerateEasing-constant.html, kBottomNavigationBarHeight-constant.html
 - Root library documentation files: material-library.html
 - Root enum documentation files: HourFormat.html, StretchMode.html

@@ -11,161 +11,32 @@ from pathlib import Path
 
 from html_to_markdown import (
     ConversionOptions,
-    ConversionOptionsHandle,
     create_options_handle,
 )
 
-from flutterdoc_gen.convert.conversion import convert_html_to_markdown
+from flutterdoc_gen.convert.categorization import find_and_categorize_root_files
 from flutterdoc_gen.convert.errors import log_processing_error
 from flutterdoc_gen.convert.paths import (
     ensure_dir_exists,
     get_api_section_dir,
-    get_class_dir,
-    get_class_file,
     get_input_section_dir,
     get_input_snippets_dir,
 )
-from flutterdoc_gen.convert.processors import (
-    process_constructors,
-    process_methods,
-    process_operators,
-    process_properties,
-    process_snippets,
-    process_static_methods,
+from flutterdoc_gen.convert.rootdocs import (
+    process_class,
+    process_constant,
+    process_enum,
+    process_extension,
+    process_extension_type,
+    process_function,
+    process_library,
+    process_mixin,
+    process_typedef,
 )
 from flutterdoc_gen.convert.transformations import (
     log_unmatched_summary,
     reset_unmatched_patterns,
 )
-
-
-def find_class_files(doc_dir: Path, section: str) -> list[tuple[str, Path]]:
-    """Find all class documentation files for a section.
-
-    Args:
-        doc_dir: The root documentation directory.
-        section: The documentation section name.
-
-    Returns:
-        A list of tuples, each containing:
-        - class_name: The name of the class
-        - class_file: Path to the main class HTML file
-    """
-    section_dir = get_input_section_dir(doc_dir, section)
-
-    classes = []
-
-    # Find all *-class.html files
-    class_files = sorted(section_dir.glob("*-class.html"))
-
-    for class_file in class_files:
-        # Extract class name from filename (e.g., "ListTile" from "ListTile-class.html")
-        class_name = class_file.stem.replace("-class", "")
-        classes.append((class_name, class_file))
-
-    return classes
-
-
-def process_class(
-    options_handle: ConversionOptionsHandle,
-    class_name: str,
-    class_file: Path,
-    section: str,
-    doc_dir: Path,
-    root_output_dir: Path,
-) -> None:
-    """Process all documentation files for a class using the 7-step pipeline.
-
-    Steps:
-    1. Process the class file
-    2. Process constructor files
-    3. Process property files
-    4. Process method files
-    5. Process operator files
-    6. Process static method files
-    7. Process code snippet files
-
-    Args:
-        options_handle: The ConversionOptionsHandle instance to use for conversion.
-        class_name: The name of the class being processed.
-        class_file: Path to the main class HTML file.
-        section: The documentation section name.
-        doc_dir: The root documentation directory.
-        root_output_dir: The root output directory.
-    """
-    # Create class output directory using paths.py function
-    class_output_dir = get_class_dir(root_output_dir, section, class_name)
-    ensure_dir_exists(class_output_dir)
-
-    # Step 1: Process the class file
-    logging.info(f"  Processing class file: {class_file}")
-    class_markdown = convert_html_to_markdown(options_handle, class_file)
-    class_output_file = get_class_file(root_output_dir, section, class_name)
-    class_output_file.write_text(class_markdown, encoding="utf-8")
-
-    # Step 2: Process constructor files
-    logging.info(f"  Processing constructors for {class_name}")
-    process_constructors(
-        class_markdown,
-        section,
-        class_name,
-        doc_dir,
-        class_output_dir,
-        options_handle,
-        class_file,
-    )
-
-    # Step 3: Process property files
-    logging.info(f"  Processing properties for {class_name}")
-    process_properties(
-        class_markdown,
-        section,
-        class_name,
-        doc_dir,
-        class_output_dir,
-        options_handle,
-        class_file,
-    )
-
-    # Step 4: Process method files
-    logging.info(f"  Processing methods for {class_name}")
-    process_methods(
-        class_markdown,
-        section,
-        class_name,
-        doc_dir,
-        class_output_dir,
-        options_handle,
-        class_file,
-    )
-
-    # Step 5: Process operator files
-    logging.info(f"  Processing operators for {class_name}")
-    process_operators(
-        class_markdown,
-        section,
-        class_name,
-        doc_dir,
-        class_output_dir,
-        options_handle,
-        class_file,
-    )
-
-    # Step 6: Process static method files
-    logging.info(f"  Processing static methods for {class_name}")
-    process_static_methods(
-        class_markdown,
-        section,
-        class_name,
-        doc_dir,
-        class_output_dir,
-        options_handle,
-        class_file,
-    )
-
-    # Step 7: Process code snippet files
-    logging.info(f"  Processing snippets for {class_name}")
-    process_snippets(doc_dir, class_output_dir, section, class_name)
 
 
 def validate_directories(doc_dir: Path, section: str) -> None:
@@ -266,14 +137,18 @@ def main() -> None:
     # Initialize html_to_markdown
     options_handle = create_options_handle(ConversionOptions())
 
-    # Find and process class documentation files
-    classes = find_class_files(args.documents, args.section)
+    # Find and categorize all root documentation files
+    categorized_files = find_and_categorize_root_files(args.documents, args.section)
 
-    if not classes:
+    # Count total files
+    total_files = sum(len(files) for files in categorized_files.values())
+
+    if total_files == 0:
         print(f"No files found matching pattern in section '{args.section}'")
         sys.exit(0)
 
-    for class_name, class_file in classes:
+    # Process classes (existing functionality)
+    for class_name, class_file in categorized_files["class"]:
         logging.info(f"Converting class: {class_name}")
 
         try:
@@ -291,12 +166,140 @@ def main() -> None:
                 f"Cannot write output file for {class_name}: {e}", class_file
             )
 
+    # Process other categories with stub processors
+    for mixin_name, mixin_file in categorized_files["mixin"]:
+        logging.info(f"Converting mixin: {mixin_name}")
+        try:
+            process_mixin(
+                options_handle,
+                mixin_name,
+                mixin_file,
+                args.section,
+                args.documents,
+                args.output,
+            )
+        except OSError as e:
+            log_processing_error(
+                f"Cannot write output file for {mixin_name}: {e}", mixin_file
+            )
+
+    for constant_name, constant_file in categorized_files["constant"]:
+        logging.info(f"Converting constant: {constant_name}")
+        try:
+            process_constant(
+                options_handle,
+                constant_name,
+                constant_file,
+                args.section,
+                args.documents,
+                args.output,
+            )
+        except OSError as e:
+            log_processing_error(
+                f"Cannot write output file for {constant_name}: {e}", constant_file
+            )
+
+    for library_name, library_file in categorized_files["library"]:
+        logging.info(f"Converting library: {library_name}")
+        try:
+            process_library(
+                options_handle,
+                library_name,
+                library_file,
+                args.section,
+                args.documents,
+                args.output,
+            )
+        except OSError as e:
+            log_processing_error(
+                f"Cannot write output file for {library_name}: {e}", library_file
+            )
+
+    for extension_type_name, extension_type_file in categorized_files["extension_type"]:
+        logging.info(f"Converting extension type: {extension_type_name}")
+        try:
+            process_extension_type(
+                options_handle,
+                extension_type_name,
+                extension_type_file,
+                args.section,
+                args.documents,
+                args.output,
+            )
+        except OSError as e:
+            log_processing_error(
+                f"Cannot write output file for {extension_type_name}: {e}",
+                extension_type_file,
+            )
+
+    for enum_name, enum_file in categorized_files["enum"]:
+        logging.info(f"Converting enum: {enum_name}")
+        try:
+            process_enum(
+                options_handle,
+                enum_name,
+                enum_file,
+                args.section,
+                args.documents,
+                args.output,
+            )
+        except OSError as e:
+            log_processing_error(
+                f"Cannot write output file for {enum_name}: {e}", enum_file
+            )
+
+    for extension_name, extension_file in categorized_files["extension"]:
+        logging.info(f"Converting extension: {extension_name}")
+        try:
+            process_extension(
+                options_handle,
+                extension_name,
+                extension_file,
+                args.section,
+                args.documents,
+                args.output,
+            )
+        except OSError as e:
+            log_processing_error(
+                f"Cannot write output file for {extension_name}: {e}", extension_file
+            )
+
+    for function_name, function_file in categorized_files["function"]:
+        logging.info(f"Converting function: {function_name}")
+        try:
+            process_function(
+                options_handle,
+                function_name,
+                function_file,
+                args.section,
+                args.documents,
+                args.output,
+            )
+        except OSError as e:
+            log_processing_error(
+                f"Cannot write output file for {function_name}: {e}", function_file
+            )
+
+    for typedef_name, typedef_file in categorized_files["typedef"]:
+        logging.info(f"Converting typedef: {typedef_name}")
+        try:
+            process_typedef(
+                options_handle,
+                typedef_name,
+                typedef_file,
+                args.section,
+                args.documents,
+                args.output,
+            )
+        except OSError as e:
+            log_processing_error(
+                f"Cannot write output file for {typedef_name}: {e}", typedef_file
+            )
+
     # Log summary of unmatched HTML link patterns
     log_unmatched_summary()
 
-    print(
-        f"Successfully processed {len(classes)} classes from section '{args.section}'"
-    )
+    print(f"Successfully processed {total_files} files from section '{args.section}'")
 
 
 if __name__ == "__main__":

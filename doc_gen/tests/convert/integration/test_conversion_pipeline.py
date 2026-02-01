@@ -673,3 +673,97 @@ class TestFunctionDeclarationCleanup:
         sample_file = method_files[0]
         content = sample_file.read_text(encoding="utf-8")
         assert content.startswith("#"), "Inherited method should start with heading"
+
+
+class TestFileCategorization:
+    """Integration tests for root documentation file categorization."""
+
+    @pytest.fixture
+    def output_dir(self, tmp_path: Path) -> Path:
+        """Create a temporary output directory."""
+        return tmp_path / "output"
+
+    def test_categorize_material_section(self, output_dir: Path) -> None:
+        """Test correct categorization of material section sample files."""
+        from flutterdoc_gen.convert.categorization import find_and_categorize_root_files
+
+        categorized = find_and_categorize_root_files(SAMPLES_DIR, "material")
+
+        # Verify classes
+        class_names = [name for name, _ in categorized["class"]]
+        assert sorted(class_names) == ["InkWell", "ListTile"]
+
+        # Verify mixins
+        mixin_names = [name for name, _ in categorized["mixin"]]
+        assert sorted(mixin_names) == ["BaseSliderTrackShape", "MaterialStateMixin"]
+
+        # Verify constants
+        constant_names = [name for name, _ in categorized["constant"]]
+        assert sorted(constant_names) == [
+            "accelerateEasing",
+            "kBottomNavigationBarHeight",
+        ]
+
+        # Verify libraries
+        library_names = [name for name, _ in categorized["library"]]
+        assert library_names == ["material"]
+
+        # Verify enums
+        enum_names = [name for name, _ in categorized["enum"]]
+        assert sorted(enum_names) == ["HourFormat", "StretchMode"]
+
+        # Verify functions
+        function_names = [name for name, _ in categorized["function"]]
+        assert sorted(function_names) == ["showBottomSheet", "showMenu"]
+
+        # Verify typedefs
+        typedef_names = [name for name, _ in categorized["typedef"]]
+        assert sorted(typedef_names) == ["DrawerCallback", "MaterialState"]
+
+        # Verify no extension types or extensions in material section
+        assert len(categorized["extension_type"]) == 0
+        assert len(categorized["extension"]) == 0
+
+    def test_categorize_widgets_section(self, output_dir: Path) -> None:
+        """Test correct categorization of widgets section sample files."""
+        from flutterdoc_gen.convert.categorization import find_and_categorize_root_files
+
+        categorized = find_and_categorize_root_files(SAMPLES_DIR, "widgets")
+
+        # Verify classes
+        class_names = [name for name, _ in categorized["class"]]
+        assert sorted(class_names) == ["State", "Text"]
+
+        # Verify extensions
+        extension_names = [name for name, _ in categorized["extension"]]
+        assert extension_names == ["WidgetStateOperators"]
+
+        # Verify extension types
+        extension_type_names = [name for name, _ in categorized["extension_type"]]
+        assert extension_type_names == ["OverlayChildLayoutInfo"]
+
+        # Verify no other types in widgets section
+        assert len(categorized["mixin"]) == 0
+        assert len(categorized["constant"]) == 0
+        assert len(categorized["library"]) == 0
+        assert len(categorized["enum"]) == 0
+        assert len(categorized["function"]) == 0
+        assert len(categorized["typedef"]) == 0
+
+    def test_all_categories_processed(self, output_dir: Path) -> None:
+        """Test that convert processes all categorized files without error."""
+        result = run_convert(SAMPLES_DIR, "material", output_dir, verbose=True)
+
+        assert result.returncode == 0
+        assert "Successfully processed" in result.stdout
+
+        # Verify that the output mentions processing different types
+        # Classes are fully processed, others are just logged
+        # Note: verbose logging goes to stderr
+        assert "Converting class:" in result.stderr
+        assert "Converting mixin:" in result.stderr
+        assert "Converting constant:" in result.stderr
+        assert "Converting library:" in result.stderr
+        assert "Converting enum:" in result.stderr
+        assert "Converting function:" in result.stderr
+        assert "Converting typedef:" in result.stderr
