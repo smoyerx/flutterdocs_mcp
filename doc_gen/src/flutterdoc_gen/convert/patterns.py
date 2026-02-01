@@ -14,10 +14,14 @@ MCP_URI_PREFIX = "mcp://flutter/api/"
 # Noise strings to remove from converted markdown
 # These are artifacts from the HTML conversion that don't add value
 # Each entry: (noise_string, test_input_with_noise, expected_output_without_noise)
+#
+# An argument could be made that some of these belong in the converted markdown.
+# Will make adjustments based on user feedback.
 NOISE_STRINGS: tuple[tuple[str, str, str], ...] = (
     ("const", "# Heading\nconst\nBody content", "# Heading\nBody content"),
     ("final", "# Heading\nfinal\nBody content", "# Heading\nBody content"),
     ("override", "# Heading\noverride\nBody content", "# Heading\nBody content"),
+    ("no setter", "# Heading\nno setter\nBody content", "# Heading\nBody content"),
     (
         "no setterinherited",
         "# Heading\nno setterinherited\nBody content",
