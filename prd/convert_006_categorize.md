@@ -68,7 +68,7 @@ Categorization of root documentation files in doc_gen/tests/convert/integration/
 - Root library documentation files: material-library.html
 - Root enum documentation files: HourFormat.html, StretchMode.html
 - Root function documentation files: showBottomSheet.html, showMenu.html
-- Root typedef documentation files: DrawerCallback.html
+- Root typedef documentation files: DrawerCallback.html, MaterialState.html
 
 Categorization of root documentation files in doc_gen/tests/convert/integration/samples/flutter/widgets:
 - Root class documentation files: State-class.html, Text-class.html
