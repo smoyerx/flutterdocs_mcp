@@ -73,7 +73,7 @@ def extract_member_definitions(section_content: str) -> list[dict[str, str]]:
         A list of dictionaries, each containing:
         - link_text: The text of the link
         - section: The section from the URI
-        - class_name: The class from the URI
+        - entity_name: The entity from the URI
         - member: The member name from the URI
         - result_type: The result type (text after arrow on first line), stripped
         - description: Lines following the first line, or empty string
@@ -81,7 +81,7 @@ def extract_member_definitions(section_content: str) -> list[dict[str, str]]:
     members: list[dict[str, str]] = []
     paragraphs = split_into_paragraphs(section_content)
 
-    # Pattern to match [text](mcp://flutter/api/section/class/member)
+    # Pattern to match [text](mcp://flutter/api/section/entity/member)
     link_pattern = re.compile(
         rf"^\s*\[([^\]]+)\]\({MCP_URI_PREFIX}([^/]+)/([^/]+)/([^)]+)\)"
     )
@@ -111,7 +111,7 @@ def extract_member_definitions(section_content: str) -> list[dict[str, str]]:
         # Extract link components
         link_text = match.group(1)
         section = match.group(2)
-        class_name = match.group(3)
+        entity_name = match.group(3)
         member = match.group(4)
 
         # Extract result type: everything after arrow on first line, stripped
@@ -124,7 +124,7 @@ def extract_member_definitions(section_content: str) -> list[dict[str, str]]:
             {
                 "link_text": link_text,
                 "section": section,
-                "class_name": class_name,
+                "entity_name": entity_name,
                 "member": member,
                 "result_type": result_type,
                 "description": description,
@@ -209,9 +209,9 @@ def extract_member_links(
 ) -> list[dict[str, str]]:
     """Extract member links from section content.
 
-    Parses lines that start with [MEMBER](mcp://flutter/api/SECTION/CLASS/MEMBER)
+    Parses lines that start with [MEMBER](mcp://flutter/api/SECTION/ENTITY/MEMBER)
     followed by a type signature arrow (→, ->, etc.), and captures the link text,
-    section, class, member name, result type, and description.
+    section, entity, member name, result type, and description.
 
     Args:
         section_content: The markdown content of a section.
@@ -220,7 +220,7 @@ def extract_member_links(
         A list of dictionaries, each containing:
         - link_text: The text of the link
         - section: The section from the URI
-        - class_name: The class from the URI
+        - entity_name: The entity from the URI
         - member: The member name from the URI
         - result_type: The result type (text after arrow on the same line), or empty string
         - description: Lines following the link until a blank line, or empty string
@@ -232,7 +232,7 @@ def extract_member_links(
     # Supported: → (U+2192), -> , => , ➜ (U+279C), ➔ (U+2794)
     arrow_pattern = r"(?:\u2192|\u279C|\u2794|->|=>)"
 
-    # Pattern to match [text](mcp://flutter/api/section/class/member) followed by
+    # Pattern to match [text](mcp://flutter/api/section/entity/member) followed by
     # optional whitespace and an arrow (type signature).
     # This distinguishes property definitions from inline references
     link_pattern = re.compile(
@@ -248,7 +248,7 @@ def extract_member_links(
         if match:
             link_text = match.group(1)
             section = match.group(2)
-            class_name = match.group(3)
+            entity_name = match.group(3)
             member = match.group(4)
 
             # Extract result type (after arrow on same line)
@@ -275,7 +275,7 @@ def extract_member_links(
                 {
                     "link_text": link_text,
                     "section": section,
-                    "class_name": class_name,
+                    "entity_name": entity_name,
                     "member": member,
                     "result_type": result_type,
                     "description": "\n".join(description_lines),
@@ -297,7 +297,7 @@ def extract_constructor_links(
     MCP links that appear in description text.
 
     Parses paragraphs where the first line starts with
-    [CONSTRUCTOR](mcp://flutter/api/SECTION/CLASS/CONSTRUCTOR).
+    [CONSTRUCTOR](mcp://flutter/api/SECTION/ENTITY/CONSTRUCTOR).
     Constructors are followed by parameter lists, not arrows.
 
     Args:
@@ -307,13 +307,13 @@ def extract_constructor_links(
         A list of dictionaries, each containing:
         - link_text: The text of the link
         - section: The section from the URI
-        - class_name: The class from the URI
+        - entity_name: The entity from the URI
         - member: The member name from the URI
     """
     members: list[dict[str, str]] = []
     paragraphs = split_into_paragraphs(section_content)
 
-    # Pattern to match [text](mcp://flutter/api/section/class/member)
+    # Pattern to match [text](mcp://flutter/api/section/entity/member)
     # For constructors, we don't require the arrow - just the MCP link at line start
     link_pattern = re.compile(
         rf"^\s*\[([^\]]+)\]\({MCP_URI_PREFIX}([^/]+)/([^/]+)/([^)]+)\)"
@@ -331,14 +331,14 @@ def extract_constructor_links(
         if match:
             link_text = match.group(1)
             section = match.group(2)
-            class_name = match.group(3)
+            entity_name = match.group(3)
             member = match.group(4)
 
             members.append(
                 {
                     "link_text": link_text,
                     "section": section,
-                    "class_name": class_name,
+                    "entity_name": entity_name,
                     "member": member,
                 }
             )
@@ -351,7 +351,7 @@ def extract_method_links(
 ) -> list[dict[str, str]]:
     """Extract method links from section content.
 
-    Parses lines that start with [METHOD](mcp://flutter/api/SECTION/CLASS/METHOD)
+    Parses lines that start with [METHOD](mcp://flutter/api/SECTION/ENTITY/METHOD)
     for methods. Methods have parameters followed by an arrow and return type.
     The arrow may appear after the parameters, not immediately after the link.
 
@@ -367,7 +367,7 @@ def extract_method_links(
         A list of dictionaries, each containing:
         - link_text: The text of the link
         - section: The section from the URI
-        - class_name: The class from the URI
+        - entity_name: The entity from the URI
         - member: The member name from the URI
         - result_type: The result type (text after arrow), or empty string
         - description: Lines following the link until a blank line, or empty string
@@ -379,7 +379,7 @@ def extract_method_links(
     # Supported: → (U+2192), -> , => , ➜ (U+279C), ➔ (U+2794)
     arrow_pattern = r"(?:\u2192|\u279C|\u2794|->|=>)"
 
-    # Pattern to match [text](mcp://flutter/api/section/class/member)
+    # Pattern to match [text](mcp://flutter/api/section/entity/member)
     # For methods, the link is at the start of the line, but the arrow comes after parameters
     link_pattern = re.compile(
         rf"^\s*\[([^\]]+)\]\({MCP_URI_PREFIX}([^/]+)/([^/]+)/([^)]+)\)"
@@ -400,7 +400,7 @@ def extract_method_links(
 
             link_text = match.group(1)
             section = match.group(2)
-            class_name = match.group(3)
+            entity_name = match.group(3)
             member = match.group(4)
 
             # Extract result type (after arrow on same line)
@@ -424,7 +424,7 @@ def extract_method_links(
                 {
                     "link_text": link_text,
                     "section": section,
-                    "class_name": class_name,
+                    "entity_name": entity_name,
                     "member": member,
                     "result_type": result_type,
                     "description": "\n".join(description_lines),
@@ -443,10 +443,10 @@ def extract_static_method_links(
 
     Uses paragraph-based parsing per spec: only the **first line** of each paragraph
     is checked for the static method link pattern. This prevents false positives from
-    MCP links that appear in description text (e.g., cross-references to other classes).
+    MCP links that appear in description text (e.g., cross-references to other entities).
 
     Parses paragraphs where the first line starts with
-    [METHOD](mcp://flutter/api/SECTION/CLASS/METHOD)( for static methods.
+    [METHOD](mcp://flutter/api/SECTION/ENTITY/METHOD)( for static methods.
     The opening parenthesis after the link is required as static methods always have
     parameter lists.
 
@@ -457,13 +457,13 @@ def extract_static_method_links(
         A list of dictionaries, each containing:
         - link_text: The text of the link
         - section: The section from the URI
-        - class_name: The class from the URI
+        - entity_name: The entity from the URI
         - member: The member name from the URI
     """
     members: list[dict[str, str]] = []
     paragraphs = split_into_paragraphs(section_content)
 
-    # Pattern to match [text](mcp://flutter/api/section/class/member)(
+    # Pattern to match [text](mcp://flutter/api/section/entity/member)(
     # The opening parenthesis after the link is required because static methods
     # always have parameter lists following the link.
     link_pattern = re.compile(
@@ -482,14 +482,14 @@ def extract_static_method_links(
         if match:
             link_text = match.group(1)
             section = match.group(2)
-            class_name = match.group(3)
+            entity_name = match.group(3)
             member = match.group(4)
 
             members.append(
                 {
                     "link_text": link_text,
                     "section": section,
-                    "class_name": class_name,
+                    "entity_name": entity_name,
                     "member": member,
                 }
             )

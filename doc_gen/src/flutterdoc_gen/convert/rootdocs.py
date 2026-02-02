@@ -22,8 +22,8 @@ from html_to_markdown import ConversionOptionsHandle
 from flutterdoc_gen.convert.conversion import convert_html_to_markdown
 from flutterdoc_gen.convert.paths import (
     ensure_dir_exists,
-    get_class_dir,
-    get_class_file,
+    get_entity_dir,
+    get_entity_file,
 )
 from flutterdoc_gen.convert.processors import (
     process_constructors,
@@ -63,13 +63,13 @@ def process_class(
         root_output_dir: The root output directory.
     """
     # Create class output directory using paths.py function
-    class_output_dir = get_class_dir(root_output_dir, section, class_name)
+    class_output_dir = get_entity_dir(root_output_dir, section, class_name)
     ensure_dir_exists(class_output_dir)
 
     # Step 1: Process the class file
     logging.info(f"  Processing class file: {class_file}")
     class_markdown = convert_html_to_markdown(options_handle, class_file)
-    class_output_file = get_class_file(root_output_dir, section, class_name)
+    class_output_file = get_entity_file(root_output_dir, section, class_name)
     class_output_file.write_text(class_markdown, encoding="utf-8")
 
     # Step 2: Process constructor files

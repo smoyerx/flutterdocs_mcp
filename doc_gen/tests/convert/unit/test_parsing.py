@@ -159,7 +159,7 @@ class TestExtractMemberDefinitions:
         assert len(result) == 1
         assert result[0]["link_text"] == "hashCode"
         assert result[0]["section"] == "dart-core"
-        assert result[0]["class_name"] == "Object"
+        assert result[0]["entity_name"] == "Object"
         assert result[0]["member"] == "hashCode"
         assert result[0]["result_type"] == "int"
         assert result[0]["description"] == "The hash code."
@@ -175,7 +175,7 @@ class TestExtractMemberDefinitions:
         assert len(result) == 1
         assert result[0]["link_text"] == "build"
         assert result[0]["section"] == "widgets"
-        assert result[0]["class_name"] == "StatelessWidget"
+        assert result[0]["entity_name"] == "StatelessWidget"
         assert result[0]["member"] == "build"
         assert result[0]["result_type"] == "Widget"
         assert result[0]["description"] == "Describes the part of the user interface."
@@ -192,7 +192,7 @@ class TestExtractMemberDefinitions:
         assert len(result) == 1
         assert result[0]["link_text"] == "operator =="
         assert result[0]["section"] == "widgets"
-        assert result[0]["class_name"] == "Widget"
+        assert result[0]["entity_name"] == "Widget"
         assert result[0]["member"] == "operator_equals"
         assert (
             result[0]["result_type"] == f"[bool]({make_mcp_uri('dart-core', 'bool')})"
@@ -277,7 +277,7 @@ class TestExtractMemberLinks:
         assert len(result) == 1
         assert result[0]["link_text"] == "hashCode"
         assert result[0]["section"] == "dart-core"
-        assert result[0]["class_name"] == "Object"
+        assert result[0]["entity_name"] == "Object"
         assert result[0]["member"] == "hashCode"
         assert result[0]["result_type"] == "int"
         assert result[0]["description"] == "The hash code."
@@ -384,7 +384,7 @@ class TestExtractStaticMethodLinks:
         assert len(result) == 1
         assert result[0]["link_text"] == "divideTiles"
         assert result[0]["section"] == "material"
-        assert result[0]["class_name"] == "ListTile"
+        assert result[0]["entity_name"] == "ListTile"
         assert result[0]["member"] == "divideTiles"
 
     def test_extracts_multiple_static_methods(self) -> None:
@@ -454,7 +454,7 @@ class TestExtractMethodLinks:
         assert len(result) == 1
         assert result[0]["link_text"] == "build"
         assert result[0]["section"] == "widgets"
-        assert result[0]["class_name"] == "StatelessWidget"
+        assert result[0]["entity_name"] == "StatelessWidget"
         assert result[0]["member"] == "build"
         assert result[0]["result_type"] == "Widget"
         assert result[0]["description"] == "Desc"
@@ -466,7 +466,7 @@ class TestExtractMethodLinks:
         assert len(result) == 1
         assert result[0]["link_text"] == "operator =="
         assert result[0]["section"] == "widgets"
-        assert result[0]["class_name"] == "Widget"
+        assert result[0]["entity_name"] == "Widget"
         assert result[0]["member"] == "operator_equals"
         assert (
             result[0]["result_type"] == f"[bool]({make_mcp_uri('dart-core', 'bool')})"

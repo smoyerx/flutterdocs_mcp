@@ -94,7 +94,7 @@ LINK_PATTERNS: tuple[LinkPattern, ...] = (
         name="member_link",
         pattern=r"\[([^\]]+)\]\(([a-zA-Z0-9_-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)\.html\)",
         replacement=rf"[\1]({MCP_URI_PREFIX}\2/\3/\4)",
-        description="[member](section/Class/member.html)",
+        description="[member](section/entity/member.html)",
         test_input="[build](widgets/Widget/build.html) method",
         test_output="[build](mcp://flutter/api/widgets/Widget/build) method",
     ),

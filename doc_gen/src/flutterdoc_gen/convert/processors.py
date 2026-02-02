@@ -1,6 +1,6 @@
-"""Processing functions for class documentation files.
+"""Processing functions for entity documentation files.
 
-This module contains functions for processing different types of class
+This module contains functions for processing different types of entity
 documentation members (constructors, properties, methods, operators,
 static methods, and snippets).
 """
@@ -46,53 +46,53 @@ from flutterdoc_gen.convert.templates import (
 
 
 def process_constructors(
-    class_markdown: str,
+    entity_markdown: str,
     current_section: str,
-    current_class: str,
+    current_entity: str,
     doc_dir: Path,
     output_dir: Path,
     options_handle: ConversionOptionsHandle,
     source_file: Path,
 ) -> None:
-    """Process constructor files for a class.
+    """Process constructor files for an entity.
 
     Scans the Constructors section and converts each constructor HTML file.
 
     Args:
-        class_markdown: The converted markdown content of the main class file.
+        entity_markdown: The converted markdown content of the root entity file.
         current_section: The current documentation section name.
-        current_class: The current class name.
+        current_entity: The current entity name.
         doc_dir: The root documentation directory.
-        output_dir: The class output directory.
+        output_dir: The entity output directory.
         options_handle: The ConversionOptionsHandle instance for conversion.
         source_file: Path to the source HTML file being processed.
     """
-    section_content = extract_section_content(class_markdown, "Constructors")
+    section_content = extract_section_content(entity_markdown, "Constructors")
     if section_content is None:
-        logging.info(f"No Constructors section found in {current_class}")
+        logging.info(f"No Constructors section found in {current_entity}")
         return
 
     members = extract_constructor_links(section_content)
     if not members:
-        logging.info(f"No constructor links found in {current_class}")
+        logging.info(f"No constructor links found in {current_entity}")
         return
 
     constructors_dir = get_constructors_dir(output_dir)
 
     for member in members:
-        # Constructors must be in the same section/class
+        # Constructors must be in the same section/entity
         if (
             member["section"] != current_section
-            or member["class_name"] != current_class
+            or member["entity_name"] != current_entity
         ):
             log_processing_error(
                 f"Constructor link has unexpected URI: "
-                f"mcp://flutter/api/{member['section']}/{member['class_name']}/{member['member']}",
+                f"mcp://flutter/api/{member['section']}/{member['entity_name']}/{member['member']}",
                 source_file,
             )
 
         html_path = get_input_member_file(
-            doc_dir, current_section, current_class, member["member"]
+            doc_dir, current_section, current_entity, member["member"]
         )
         if not html_path.exists():
             log_processing_error(
@@ -108,36 +108,36 @@ def process_constructors(
 
 
 def process_properties(
-    class_markdown: str,
+    entity_markdown: str,
     current_section: str,
-    current_class: str,
+    current_entity: str,
     doc_dir: Path,
     output_dir: Path,
     options_handle: ConversionOptionsHandle,
     source_file: Path,
 ) -> None:
-    """Process property files for a class.
+    """Process property files for an entity.
 
     Scans the Properties section and either converts native property HTML files
     or generates inherited property markdown files.
 
     Args:
-        class_markdown: The converted markdown content of the main class file.
+        entity_markdown: The converted markdown content of the root entity file.
         current_section: The current documentation section name.
-        current_class: The current class name.
+        current_entity: The current entity name.
         doc_dir: The root documentation directory.
-        output_dir: The class output directory.
+        output_dir: The entity output directory.
         options_handle: The ConversionOptionsHandle instance for conversion.
         source_file: Path to the source HTML file being processed.
     """
-    section_content = extract_section_content(class_markdown, "Properties")
+    section_content = extract_section_content(entity_markdown, "Properties")
     if section_content is None:
-        logging.info(f"No Properties section found in {current_class}")
+        logging.info(f"No Properties section found in {current_entity}")
         return
 
     members = extract_member_definitions(section_content)
     if not members:
-        logging.info(f"No property links found in {current_class}")
+        logging.info(f"No property links found in {current_entity}")
         return
 
     native_dir = get_properties_native_dir(output_dir)
@@ -146,12 +146,12 @@ def process_properties(
     for member in members:
         is_native = (
             member["section"] == current_section
-            and member["class_name"] == current_class
+            and member["entity_name"] == current_entity
         )
 
         if is_native:
             html_path = get_input_member_file(
-                doc_dir, current_section, current_class, member["member"]
+                doc_dir, current_section, current_entity, member["member"]
             )
             if not html_path.exists():
                 log_processing_error(
@@ -167,7 +167,7 @@ def process_properties(
             if not member["result_type"] or not member["description"]:
                 log_processing_error(
                     f"Unable to capture result_type or description for inherited property "
-                    f"{member['member']} from {member['section']}/{member['class_name']}",
+                    f"{member['member']} from {member['section']}/{member['entity_name']}",
                     source_file,
                 )
 
@@ -177,48 +177,48 @@ def process_properties(
                 result_type=member["result_type"],
                 description=member["description"],
                 some_section=member["section"],
-                some_class=member["class_name"],
+                some_entity=member["entity_name"],
             )
             output_file = get_inherited_member_file(
                 inherited_dir,
                 member["section"],
-                member["class_name"],
+                member["entity_name"],
                 member["member"],
             )
             output_file.write_text(markdown_content, encoding="utf-8")
 
 
 def process_methods(
-    class_markdown: str,
+    entity_markdown: str,
     current_section: str,
-    current_class: str,
+    current_entity: str,
     doc_dir: Path,
     output_dir: Path,
     options_handle: ConversionOptionsHandle,
     source_file: Path,
 ) -> None:
-    """Process method files for a class.
+    """Process method files for an entity.
 
     Scans the Methods section and either converts native method HTML files
     or generates inherited method markdown files.
 
     Args:
-        class_markdown: The converted markdown content of the main class file.
+        entity_markdown: The converted markdown content of the root entity file.
         current_section: The current documentation section name.
-        current_class: The current class name.
+        current_entity: The current entity name.
         doc_dir: The root documentation directory.
-        output_dir: The class output directory.
+        output_dir: The entity output directory.
         options_handle: The ConversionOptionsHandle instance for conversion.
         source_file: Path to the source HTML file being processed.
     """
-    section_content = extract_section_content(class_markdown, "Methods")
+    section_content = extract_section_content(entity_markdown, "Methods")
     if section_content is None:
-        logging.info(f"No Methods section found in {current_class}")
+        logging.info(f"No Methods section found in {current_entity}")
         return
 
     members = extract_member_definitions(section_content)
     if not members:
-        logging.info(f"No method links found in {current_class}")
+        logging.info(f"No method links found in {current_entity}")
         return
 
     native_dir = get_methods_native_dir(output_dir)
@@ -227,12 +227,12 @@ def process_methods(
     for member in members:
         is_native = (
             member["section"] == current_section
-            and member["class_name"] == current_class
+            and member["entity_name"] == current_entity
         )
 
         if is_native:
             html_path = get_input_member_file(
-                doc_dir, current_section, current_class, member["member"]
+                doc_dir, current_section, current_entity, member["member"]
             )
             if not html_path.exists():
                 log_processing_error(
@@ -250,7 +250,7 @@ def process_methods(
             if not member["result_type"] or not member["description"]:
                 log_processing_error(
                     f"Unable to capture result_type or description for inherited method "
-                    f"{member['member']} from {member['section']}/{member['class_name']}",
+                    f"{member['member']} from {member['section']}/{member['entity_name']}",
                     source_file,
                 )
 
@@ -260,48 +260,48 @@ def process_methods(
                 result_type=member["result_type"],
                 description=member["description"],
                 some_section=member["section"],
-                some_class=member["class_name"],
+                some_entity=member["entity_name"],
             )
             output_file = get_inherited_member_file(
                 inherited_dir,
                 member["section"],
-                member["class_name"],
+                member["entity_name"],
                 member["member"],
             )
             output_file.write_text(markdown_content, encoding="utf-8")
 
 
 def process_operators(
-    class_markdown: str,
+    entity_markdown: str,
     current_section: str,
-    current_class: str,
+    current_entity: str,
     doc_dir: Path,
     output_dir: Path,
     options_handle: ConversionOptionsHandle,
     source_file: Path,
 ) -> None:
-    """Process operator files for a class.
+    """Process operator files for an entity.
 
     Scans the Operators section and either converts native operator HTML files
     or generates inherited operator markdown files.
 
     Args:
-        class_markdown: The converted markdown content of the main class file.
+        entity_markdown: The converted markdown content of the root entity file.
         current_section: The current documentation section name.
-        current_class: The current class name.
+        current_entity: The current entity name.
         doc_dir: The root documentation directory.
-        output_dir: The class output directory.
+        output_dir: The entity output directory.
         options_handle: The ConversionOptionsHandle instance for conversion.
         source_file: Path to the source HTML file being processed.
     """
-    section_content = extract_section_content(class_markdown, "Operators")
+    section_content = extract_section_content(entity_markdown, "Operators")
     if section_content is None:
-        logging.info(f"No Operators section found in {current_class}")
+        logging.info(f"No Operators section found in {current_entity}")
         return
 
     members = extract_member_definitions(section_content)
     if not members:
-        logging.info(f"No operator links found in {current_class}")
+        logging.info(f"No operator links found in {current_entity}")
         return
 
     native_dir = get_operators_native_dir(output_dir)
@@ -310,12 +310,12 @@ def process_operators(
     for member in members:
         is_native = (
             member["section"] == current_section
-            and member["class_name"] == current_class
+            and member["entity_name"] == current_entity
         )
 
         if is_native:
             html_path = get_input_member_file(
-                doc_dir, current_section, current_class, member["member"]
+                doc_dir, current_section, current_entity, member["member"]
             )
             if not html_path.exists():
                 log_processing_error(
@@ -333,7 +333,7 @@ def process_operators(
             if not member["result_type"] or not member["description"]:
                 log_processing_error(
                     f"Unable to capture result_type or description for inherited operator "
-                    f"{member['member']} from {member['section']}/{member['class_name']}",
+                    f"{member['member']} from {member['section']}/{member['entity_name']}",
                     source_file,
                 )
 
@@ -344,42 +344,42 @@ def process_operators(
                 result_type=member["result_type"],
                 description=member["description"],
                 some_section=member["section"],
-                some_class=member["class_name"],
+                some_entity=member["entity_name"],
             )
             output_file = get_inherited_member_file(
                 inherited_dir,
                 member["section"],
-                member["class_name"],
+                member["entity_name"],
                 member["member"],
             )
             output_file.write_text(markdown_content, encoding="utf-8")
 
 
 def process_static_methods(
-    class_markdown: str,
+    entity_markdown: str,
     current_section: str,
-    current_class: str,
+    current_entity: str,
     doc_dir: Path,
     output_dir: Path,
     options_handle: ConversionOptionsHandle,
     source_file: Path,
 ) -> None:
-    """Process static method files for a class.
+    """Process static method files for an entity.
 
     Scans the Static Methods section and converts native static method HTML files.
     Static methods have no inherited variant since static members belong to the
-    declaring class only.
+    declaring entity only.
 
     Args:
-        class_markdown: The converted markdown content of the main class file.
+        entity_markdown: The converted markdown content of the root entity file.
         current_section: The current documentation section name.
-        current_class: The current class name.
+        current_entity: The current entity name.
         doc_dir: The root documentation directory.
-        output_dir: The class output directory.
+        output_dir: The entity output directory.
         options_handle: The ConversionOptionsHandle instance for conversion.
         source_file: Path to the source HTML file being processed.
     """
-    section_content = extract_section_content(class_markdown, "Static Methods")
+    section_content = extract_section_content(entity_markdown, "Static Methods")
     if section_content is None:
         # Silent handling per spec - no message if section not found
         return
@@ -392,23 +392,23 @@ def process_static_methods(
     statics_dir = get_statics_dir(output_dir)
 
     for member in members:
-        # Validate that static method belongs to current class
+        # Validate that static method belongs to current entity
         is_native = (
             member["section"] == current_section
-            and member["class_name"] == current_class
+            and member["entity_name"] == current_entity
         )
 
         if not is_native:
-            # Static methods should only reference the current class
+            # Static methods should only reference the current entity
             log_processing_error(
                 f"Static method link has unexpected URI scheme: "
-                f"{member['section']}/{member['class_name']}/{member['member']} "
-                f"(expected {current_section}/{current_class})",
+                f"{member['section']}/{member['entity_name']}/{member['member']} "
+                f"(expected {current_section}/{current_entity})",
                 source_file,
             )
 
         html_path = get_input_member_file(
-            doc_dir, current_section, current_class, member["member"]
+            doc_dir, current_section, current_entity, member["member"]
         )
         if not html_path.exists():
             log_processing_error(
@@ -427,20 +427,20 @@ def process_snippets(
     doc_dir: Path,
     output_dir: Path,
     section: str,
-    class_name: str,
+    entity_name: str,
 ) -> None:
-    """Process code snippet files for a class.
+    """Process code snippet files for an entity.
 
     Converts Dart snippet files to markdown and saves them.
 
     Args:
         doc_dir: The root documentation directory.
-        output_dir: The class output directory.
+        output_dir: The entity output directory.
         section: The documentation section name.
-        class_name: The class name.
+        entity_name: The entity name.
     """
     snippets_dir = get_input_snippets_dir(doc_dir)
-    snippet_pattern = f"{section}.{class_name}.*.dart"
+    snippet_pattern = f"{section}.{entity_name}.*.dart"
     snippet_files = sorted(snippets_dir.glob(snippet_pattern))
 
     if not snippet_files:
@@ -450,10 +450,10 @@ def process_snippets(
     ensure_dir_exists(output_snippets_dir)
 
     for snippet_file in snippet_files:
-        # Extract SHORT_NAME: remove {section}.{class_name}. prefix and .dart suffix
-        prefix = f"{section}.{class_name}."
+        # Extract SHORT_NAME: remove {section}.{entity_name}. prefix and .dart suffix
+        prefix = f"{section}.{entity_name}."
         short_name = snippet_file.name[len(prefix) : -len(".dart")]
 
-        markdown_content = convert_dart_snippet(snippet_file, class_name, section)
+        markdown_content = convert_dart_snippet(snippet_file, entity_name, section)
         output_file = get_snippet_output_file(output_snippets_dir, short_name)
         output_file.write_text(markdown_content, encoding="utf-8")

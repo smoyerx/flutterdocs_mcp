@@ -36,143 +36,143 @@ def get_api_section_dir(output_dir: Path, section: str) -> Path:
     return output_dir / "api" / section
 
 
-def get_class_dir(output_dir: Path, section: str, class_name: str) -> Path:
-    """Get the class output directory path.
+def get_entity_dir(output_dir: Path, section: str, entity_name: str) -> Path:
+    """Get the entity output directory path.
 
     Args:
         output_dir: The root output directory.
         section: The documentation section name.
-        class_name: The class name.
+        entity_name: The entity name.
 
     Returns:
-        Path to the api/{section}/classes/{class_name} directory.
+        Path to the api/{section}/entity/{entity_name} directory.
     """
-    return get_api_section_dir(output_dir, section) / "classes" / class_name
+    return get_api_section_dir(output_dir, section) / "classes" / entity_name
 
 
-def get_class_file(output_dir: Path, section: str, class_name: str) -> Path:
-    """Get the main class markdown file path.
+def get_entity_file(output_dir: Path, section: str, entity_name: str) -> Path:
+    """Get the main entity markdown file path.
 
     Args:
         output_dir: The root output directory.
         section: The documentation section name.
-        class_name: The class name.
+        entity_name: The entity name.
 
     Returns:
-        Path to the api/{section}/{class_name}/{class_name}.md file.
+        Path to the api/{section}/{entity_name}/{entity_name}.md file.
     """
-    return get_class_dir(output_dir, section, class_name) / f"{class_name}.md"
+    return get_entity_dir(output_dir, section, entity_name) / f"{entity_name}.md"
 
 
 # --- Member Directory Builders ---
 
 
-def get_constructors_dir(class_dir: Path) -> Path:
+def get_constructors_dir(entity_dir: Path) -> Path:
     """Get the constructors subdirectory path.
 
     Args:
-        class_dir: The class output directory.
+        entity_dir: The entity output directory.
 
     Returns:
         Path to the constructors subdirectory.
     """
-    return class_dir / "constructors"
+    return entity_dir / "constructors"
 
 
-def get_properties_native_dir(class_dir: Path) -> Path:
+def get_properties_native_dir(entity_dir: Path) -> Path:
     """Get the native properties subdirectory path.
 
     Args:
-        class_dir: The class output directory.
+        entity_dir: The entity output directory.
 
     Returns:
         Path to the properties/native subdirectory.
     """
-    return class_dir / "properties" / "native"
+    return entity_dir / "properties" / "native"
 
 
-def get_properties_inherited_dir(class_dir: Path) -> Path:
+def get_properties_inherited_dir(entity_dir: Path) -> Path:
     """Get the inherited properties subdirectory path.
 
     Args:
-        class_dir: The class output directory.
+        entity_dir: The entity output directory.
 
     Returns:
         Path to the properties/inherited subdirectory.
     """
-    return class_dir / "properties" / "inherited"
+    return entity_dir / "properties" / "inherited"
 
 
-def get_methods_native_dir(class_dir: Path) -> Path:
+def get_methods_native_dir(entity_dir: Path) -> Path:
     """Get the native methods subdirectory path.
 
     Args:
-        class_dir: The class output directory.
+        entity_dir: The entity output directory.
 
     Returns:
         Path to the methods/native subdirectory.
     """
-    return class_dir / "methods" / "native"
+    return entity_dir / "methods" / "native"
 
 
-def get_methods_inherited_dir(class_dir: Path) -> Path:
+def get_methods_inherited_dir(entity_dir: Path) -> Path:
     """Get the inherited methods subdirectory path.
 
     Args:
-        class_dir: The class output directory.
+        entity_dir: The entity output directory.
 
     Returns:
         Path to the methods/inherited subdirectory.
     """
-    return class_dir / "methods" / "inherited"
+    return entity_dir / "methods" / "inherited"
 
 
-def get_operators_native_dir(class_dir: Path) -> Path:
+def get_operators_native_dir(entity_dir: Path) -> Path:
     """Get the native operators subdirectory path.
 
     Args:
-        class_dir: The class output directory.
+        entity_dir: The entity output directory.
 
     Returns:
         Path to the operators/native subdirectory.
     """
-    return class_dir / "operators" / "native"
+    return entity_dir / "operators" / "native"
 
 
-def get_operators_inherited_dir(class_dir: Path) -> Path:
+def get_operators_inherited_dir(entity_dir: Path) -> Path:
     """Get the inherited operators subdirectory path.
 
     Args:
-        class_dir: The class output directory.
+        entity_dir: The entity output directory.
 
     Returns:
         Path to the operators/inherited subdirectory.
     """
-    return class_dir / "operators" / "inherited"
+    return entity_dir / "operators" / "inherited"
 
 
-def get_statics_dir(class_dir: Path) -> Path:
+def get_statics_dir(entity_dir: Path) -> Path:
     """Get the static methods subdirectory path.
 
     Args:
-        class_dir: The class output directory.
+        entity_dir: The entity output directory.
 
     Returns:
         Path to the statics subdirectory.
     """
-    return class_dir / "statics"
+    return entity_dir / "statics"
 
 
-def get_snippets_output_dir(class_dir: Path) -> Path:
+def get_snippets_output_dir(entity_dir: Path) -> Path:
     """Get the snippets subdirectory path.
 
     Args:
-        class_dir: The class output directory.
+        entity_dir: The entity output directory.
 
     Returns:
         Path to the snippets subdirectory.
     """
-    return class_dir / "snippets"
+    return entity_dir / "snippets"
 
 
 # --- Output File Builders ---
@@ -192,20 +192,20 @@ def get_native_member_file(member_dir: Path, member_name: str) -> Path:
 
 
 def get_inherited_member_file(
-    inherited_dir: Path, source_section: str, source_class: str, member_name: str
+    inherited_dir: Path, source_section: str, source_entity: str, member_name: str
 ) -> Path:
     """Get the path for an inherited member markdown file.
 
     Args:
         inherited_dir: The inherited member directory.
         source_section: The section where the member is defined.
-        source_class: The class where the member is defined.
+        source_entity: The entity where the member is defined.
         member_name: The member name.
 
     Returns:
-        Path to the {section}___{class}___{member}.md file.
+        Path to the {section}___{entity}___{member}.md file.
     """
-    filename = f"{source_section}___{source_class}___{member_name}.md"
+    filename = f"{source_section}___{source_entity}___{member_name}.md"
     return inherited_dir / filename
 
 
@@ -214,7 +214,7 @@ def get_snippet_output_file(snippets_dir: Path, short_name: str) -> Path:
 
     Args:
         snippets_dir: The snippets output directory.
-        short_name: The short name of the snippet (without section/class prefix).
+        short_name: The short name of the snippet (without section/entity prefix).
 
     Returns:
         Path to the {short_name}.md file.
@@ -225,95 +225,97 @@ def get_snippet_output_file(snippets_dir: Path, short_name: str) -> Path:
 # --- Convenience Functions (Compose Multiple Path Operations) ---
 
 
-def get_class_snippets_dir(output_dir: Path, section: str, class_name: str) -> Path:
-    """Get the snippets directory for a class.
+def get_entity_snippets_dir(output_dir: Path, section: str, entity_name: str) -> Path:
+    """Get the snippets directory for an entity.
 
     Args:
         output_dir: The root output directory.
         section: The documentation section name.
-        class_name: The class name.
+        entity_name: The entity name.
 
     Returns:
-        Path to the api/{section}/{class_name}/snippets directory.
+        Path to the api/{section}/{entity_name}/snippets directory.
     """
-    return get_snippets_output_dir(get_class_dir(output_dir, section, class_name))
+    return get_snippets_output_dir(get_entity_dir(output_dir, section, entity_name))
 
 
-def get_class_properties_inherited_dir(
-    output_dir: Path, section: str, class_name: str
+def get_entity_properties_inherited_dir(
+    output_dir: Path, section: str, entity_name: str
 ) -> Path:
-    """Get the inherited properties directory for a class.
+    """Get the inherited properties directory for an entity.
 
     Args:
         output_dir: The root output directory.
         section: The documentation section name.
-        class_name: The class name.
+        entity_name: The entity name.
 
     Returns:
-        Path to the api/{section}/{class_name}/properties/inherited directory.
+        Path to the api/{section}/{entity_name}/properties/inherited directory.
     """
-    return get_properties_inherited_dir(get_class_dir(output_dir, section, class_name))
+    return get_properties_inherited_dir(
+        get_entity_dir(output_dir, section, entity_name)
+    )
 
 
-def get_class_methods_inherited_dir(
-    output_dir: Path, section: str, class_name: str
+def get_entity_methods_inherited_dir(
+    output_dir: Path, section: str, entity_name: str
 ) -> Path:
-    """Get the inherited methods directory for a class.
+    """Get the inherited methods directory for an entity.
 
     Args:
         output_dir: The root output directory.
         section: The documentation section name.
-        class_name: The class name.
+        entity_name: The entity name.
 
     Returns:
-        Path to the api/{section}/{class_name}/methods/inherited directory.
+        Path to the api/{section}/{entity_name}/methods/inherited directory.
     """
-    return get_methods_inherited_dir(get_class_dir(output_dir, section, class_name))
+    return get_methods_inherited_dir(get_entity_dir(output_dir, section, entity_name))
 
 
-def get_class_operators_inherited_dir(
-    output_dir: Path, section: str, class_name: str
+def get_entity_operators_inherited_dir(
+    output_dir: Path, section: str, entity_name: str
 ) -> Path:
-    """Get the inherited operators directory for a class.
+    """Get the inherited operators directory for an entity.
 
     Args:
         output_dir: The root output directory.
         section: The documentation section name.
-        class_name: The class name.
+        entity_name: The entity name.
 
     Returns:
-        Path to the api/{section}/{class_name}/operators/inherited directory.
+        Path to the api/{section}/{entity_name}/operators/inherited directory.
     """
-    return get_operators_inherited_dir(get_class_dir(output_dir, section, class_name))
+    return get_operators_inherited_dir(get_entity_dir(output_dir, section, entity_name))
 
 
-def get_class_inherited_member_file(
+def get_entity_inherited_member_file(
     output_dir: Path,
     section: str,
-    class_name: str,
+    entity_name: str,
     member_type: str,
     source_section: str,
-    source_class: str,
+    source_entity: str,
     member_name: str,
 ) -> Path:
-    """Get the path for an inherited member file for a class.
+    """Get the path for an inherited member file for an entity.
 
     Args:
         output_dir: The root output directory.
         section: The documentation section name.
-        class_name: The class name.
+        entity_name: The entity name.
         member_type: The member type ('properties', 'methods', or 'operators').
         source_section: The section where the member is defined.
-        source_class: The class where the member is defined.
+        source_entity: The entity where the member is defined.
         member_name: The member name.
 
     Returns:
         Path to the inherited member markdown file.
     """
-    class_dir = get_class_dir(output_dir, section, class_name)
-    inherited_dir = class_dir / member_type / "inherited"
+    entity_dir = get_entity_dir(output_dir, section, entity_name)
+    inherited_dir = entity_dir / member_type / "inherited"
     return get_inherited_member_file(
-        inherited_dir, source_section, source_class, member_name
+        inherited_dir, source_section, source_entity, member_name
     )
 
 
@@ -360,20 +362,20 @@ def get_input_class_file(doc_dir: Path, section: str, class_name: str) -> Path:
 
 
 def get_input_member_file(
-    doc_dir: Path, section: str, class_name: str, member_name: str
+    doc_dir: Path, section: str, entity_name: str, member_name: str
 ) -> Path:
     """Get the input member HTML file path.
 
     Args:
         doc_dir: The root documentation directory.
         section: The documentation section name.
-        class_name: The class name.
+        entity_name: The entity name.
         member_name: The member name.
 
     Returns:
-        Path to the flutter/{section}/{class_name}/{member_name}.html file.
+        Path to the flutter/{section}/{entity_name}/{member_name}.html file.
     """
-    return get_input_section_dir(doc_dir, section) / class_name / f"{member_name}.html"
+    return get_input_section_dir(doc_dir, section) / entity_name / f"{member_name}.html"
 
 
 def get_input_snippets_dir(doc_dir: Path) -> Path:

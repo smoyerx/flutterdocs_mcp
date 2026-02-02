@@ -169,8 +169,8 @@ def transform_class_links(content: str) -> str:
 def transform_member_links(content: str) -> str:
     """Transform member links to MCP URI format.
 
-    Replaces links of the form [MEMBER](SECTION/CLASS/MEMBER.html)
-    with [MEMBER](mcp://flutter/api/SECTION/CLASS/MEMBER).
+    Replaces links of the form [MEMBER](SECTION/ENTITY/MEMBER.html)
+    with [MEMBER](mcp://flutter/api/SECTION/ENTITY/MEMBER).
 
     Uses patterns from LINK_PATTERNS registry.
 

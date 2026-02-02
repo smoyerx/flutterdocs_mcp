@@ -12,26 +12,26 @@ INHERITED_PROPERTY_TEMPLATE = f"""# {{property}} property
 
 {{description}}
 
-This property is inherited from [{{some_class}}]({MCP_URI_PREFIX}{{some_section}}/{{some_class}}).
-See further details at [{{property}}]({MCP_URI_PREFIX}{{some_section}}/{{some_class}}/{{property}}).
+This property is inherited from [{{some_entity}}]({MCP_URI_PREFIX}{{some_section}}/{{some_entity}}).
+See further details at [{{property}}]({MCP_URI_PREFIX}{{some_section}}/{{some_entity}}/{{property}}).
 """
 
 INHERITED_METHOD_TEMPLATE = f"""# {{method}} method
 
-{{result_type}} {{method}}(/* See {{some_class}} documentation for parameters */)
+{{result_type}} {{method}}(/* See {{some_entity}} documentation for parameters */)
 
 {{description}}
 
-This method is inherited from [{{some_class}}]({MCP_URI_PREFIX}{{some_section}}/{{some_class}}).
-See further details at [{{method}}]({MCP_URI_PREFIX}{{some_section}}/{{some_class}}/{{method}}).
+This method is inherited from [{{some_entity}}]({MCP_URI_PREFIX}{{some_section}}/{{some_entity}}).
+See further details at [{{method}}]({MCP_URI_PREFIX}{{some_section}}/{{some_entity}}/{{method}}).
 """
 
 INHERITED_OPERATOR_TEMPLATE = f"""# {{operator_symbol}} ({{operator}}) method
 
-{{result_type}} {{operator_symbol}}(/* See {{some_class}} documentation for parameters */)
+{{result_type}} {{operator_symbol}}(/* See {{some_entity}} documentation for parameters */)
 
 {{description}}
 
-This operator is inherited from [{{some_class}}]({MCP_URI_PREFIX}{{some_section}}/{{some_class}}).
-See further details at [{{operator_symbol}}]({MCP_URI_PREFIX}{{some_section}}/{{some_class}}/{{operator}}).
+This operator is inherited from [{{some_entity}}]({MCP_URI_PREFIX}{{some_section}}/{{some_entity}}).
+See further details at [{{operator_symbol}}]({MCP_URI_PREFIX}{{some_section}}/{{some_entity}}/{{operator}}).
 """
