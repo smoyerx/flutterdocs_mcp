@@ -86,14 +86,30 @@ class PathBuilder:
         Returns:
             Path like entity_dir/properties/native or entity_dir/constructors
         """
+        # Map enum to filesystem directory name
+        match member_type:
+            case MemberType.CONSTRUCTORS:
+                base = "constructors"
+            case MemberType.PROPERTIES:
+                base = "properties"
+            case MemberType.METHODS:
+                base = "methods"
+            case MemberType.OPERATORS:
+                base = "operators"
+            case MemberType.STATICS:
+                base = "statics"
+            case MemberType.SNIPPETS:
+                base = "snippets"
+
+        # Add inherited/native split for relevant types
         if member_type in (
             MemberType.PROPERTIES,
             MemberType.METHODS,
             MemberType.OPERATORS,
         ):
-            subdir = f"{member_type}/{'inherited' if inherited else 'native'}"
+            subdir = f"{base}/{'inherited' if inherited else 'native'}"
         else:
-            subdir = str(member_type)
+            subdir = base
 
         return self._entity_dir / subdir
 
@@ -448,7 +464,7 @@ def get_entity_inherited_member_file(
     section: str,
     entity_name: str,
     entity_type: CategoryType,
-    member_type_name: str,
+    member_type: MemberType,
     inherited_from_section: str,
     inherited_from_entity: str,
     member_name: str,
@@ -456,7 +472,7 @@ def get_entity_inherited_member_file(
     """Get entity inherited member file path.
 
     Standalone helper that constructs the full path for an inherited member file.
-    member_type_name should be one of: 'properties', 'methods', 'operators'.
+    member_type should be one of: MemberType.PROPERTIES, MemberType.METHODS, MemberType.OPERATORS.
     """
     builder = PathBuilder(
         section=section,
@@ -467,17 +483,18 @@ def get_entity_inherited_member_file(
     )
 
     # Call the appropriate method based on member type
-    if member_type_name == "properties":
-        return builder.get_inherited_property_file(
-            inherited_from_section, inherited_from_entity, member_name
-        )
-    elif member_type_name == "methods":
-        return builder.get_inherited_method_file(
-            inherited_from_section, inherited_from_entity, member_name
-        )
-    elif member_type_name == "operators":
-        return builder.get_inherited_operator_file(
-            inherited_from_section, inherited_from_entity, member_name
-        )
-    else:
-        raise ValueError(f"Invalid member_type_name: {member_type_name}")
+    match member_type:
+        case MemberType.PROPERTIES:
+            return builder.get_inherited_property_file(
+                inherited_from_section, inherited_from_entity, member_name
+            )
+        case MemberType.METHODS:
+            return builder.get_inherited_method_file(
+                inherited_from_section, inherited_from_entity, member_name
+            )
+        case MemberType.OPERATORS:
+            return builder.get_inherited_operator_file(
+                inherited_from_section, inherited_from_entity, member_name
+            )
+        case _:
+            raise ValueError(f"Invalid member_type: {member_type}")

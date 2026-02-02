@@ -1,9 +1,9 @@
 """Constants for categorization in the convert module."""
 
-from enum import Enum, StrEnum
+from enum import StrEnum
 
 
-class CategoryType(str, Enum):
+class CategoryType(StrEnum):
     """Category types for Flutter/Dart documentation files.
 
     Each category corresponds to a specific documentation file pattern:
