@@ -11,9 +11,9 @@ from convert.conftest import run_convert, SAMPLES_DIR
 from flutterdoc_gen.convert.paths import (
     get_api_root_dir,
     get_api_section_dir,
+    get_constructors_dir,
     get_entity_dir,
     get_entity_file,
-    get_constructors_dir,
     get_input_section_dir,
     get_input_snippets_dir,
     get_native_member_file,

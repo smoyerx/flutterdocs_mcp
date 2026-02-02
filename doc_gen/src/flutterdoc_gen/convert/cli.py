@@ -17,12 +17,7 @@ from html_to_markdown import (
 from flutterdoc_gen.convert.categorization import find_and_categorize_root_files
 from flutterdoc_gen.convert.constants import CategoryType
 from flutterdoc_gen.convert.errors import log_processing_error
-from flutterdoc_gen.convert.paths import (
-    ensure_dir_exists,
-    get_api_section_dir,
-    get_input_section_dir,
-    get_input_snippets_dir,
-)
+from flutterdoc_gen.convert.paths import PathBuilder, ensure_dir_exists
 from flutterdoc_gen.convert.rootdocs import (
     process_class,
     process_constant,
@@ -53,11 +48,20 @@ def validate_directories(doc_dir: Path, section: str) -> None:
     if not doc_dir.exists() or not doc_dir.is_dir():
         log_processing_error(f"Documentation directory does not exist: {doc_dir}")
 
-    section_dir = get_input_section_dir(doc_dir, section)
+    # Use temporary PathBuilder to construct paths for validation
+    temp_builder = PathBuilder(
+        section=section,
+        entity_name="",
+        entity_type=CategoryType.CLASS,
+        doc_dir=doc_dir,
+        output_dir=Path(),
+    )
+
+    section_dir = temp_builder.get_input_section_dir()
     if not section_dir.exists() or not section_dir.is_dir():
         log_processing_error(f"Section directory does not exist: {section_dir}")
 
-    snippets_dir = get_input_snippets_dir(doc_dir)
+    snippets_dir = temp_builder.get_input_snippets_dir()
     if not snippets_dir.exists() or not snippets_dir.is_dir():
         log_processing_error(f"Snippets directory does not exist: {snippets_dir}")
 
@@ -75,7 +79,16 @@ def create_output_directory(output_dir: Path, section: str) -> Path:
     Raises:
         SystemExit: If the directory cannot be created.
     """
-    section_output = get_api_section_dir(output_dir, section)
+    # Use temporary PathBuilder to construct path
+    temp_builder = PathBuilder(
+        section=section,
+        entity_name="",
+        entity_type=CategoryType.CLASS,
+        doc_dir=Path(),
+        output_dir=output_dir,
+    )
+
+    section_output = temp_builder.get_api_section_dir()
     try:
         ensure_dir_exists(section_output)
     except OSError as e:

@@ -1,6 +1,6 @@
 """Constants for categorization in the convert module."""
 
-from enum import Enum
+from enum import Enum, StrEnum
 
 
 class CategoryType(str, Enum):
@@ -41,3 +41,17 @@ ALL_CATEGORIES = [
     CategoryType.FUNCTION,
     CategoryType.TYPEDEF,
 ]
+
+
+class MemberType(StrEnum):
+    """Logical member types for entity documentation.
+
+    Maps to filesystem subdirectories via PathBuilder.
+    """
+
+    CONSTRUCTORS = "constructors"
+    PROPERTIES = "properties"
+    METHODS = "methods"
+    OPERATORS = "operators"
+    STATICS = "statics"
+    SNIPPETS = "snippets"

@@ -9,7 +9,7 @@ import logging
 from pathlib import Path
 
 from flutterdoc_gen.convert.constants import CategoryType
-from flutterdoc_gen.convert.paths import get_input_section_dir
+from flutterdoc_gen.convert.paths import PathBuilder
 
 
 def find_and_categorize_root_files(
@@ -31,7 +31,15 @@ def find_and_categorize_root_files(
         Categories: 'class', 'mixin', 'constant', 'library', 'extension_type',
                    'enum', 'extension', 'function', 'typedef'
     """
-    section_dir = get_input_section_dir(doc_dir, section)
+    # Use temporary PathBuilder to construct path
+    temp_builder = PathBuilder(
+        section=section,
+        entity_name="",
+        entity_type=CategoryType.CLASS,
+        doc_dir=doc_dir,
+        output_dir=Path(),
+    )
+    section_dir = temp_builder.get_input_section_dir()
 
     # Initialize category dictionary
     categories: dict[str, list[tuple[str, Path]]] = {

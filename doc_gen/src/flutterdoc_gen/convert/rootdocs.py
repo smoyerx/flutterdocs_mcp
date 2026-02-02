@@ -21,11 +21,7 @@ from html_to_markdown import ConversionOptionsHandle
 
 from flutterdoc_gen.convert.constants import CategoryType
 from flutterdoc_gen.convert.conversion import convert_html_to_markdown
-from flutterdoc_gen.convert.paths import (
-    ensure_dir_exists,
-    get_entity_dir,
-    get_entity_file,
-)
+from flutterdoc_gen.convert.paths import PathBuilder, ensure_dir_exists
 from flutterdoc_gen.convert.processors import (
     process_constructors,
     process_methods,
@@ -63,83 +59,48 @@ def process_class(
         doc_dir: The root documentation directory.
         root_output_dir: The root output directory.
     """
-    # Create class output directory using paths.py function
-    class_output_dir = get_entity_dir(
-        root_output_dir, section, class_name, CategoryType.CLASS
+    # Create PathBuilder with entity context
+    builder = PathBuilder(
+        section=section,
+        entity_name=class_name,
+        entity_type=CategoryType.CLASS,
+        doc_dir=doc_dir,
+        output_dir=root_output_dir,
     )
+
+    # Create class output directory
+    class_output_dir = builder.get_entity_dir()
     ensure_dir_exists(class_output_dir)
 
     # Step 1: Process the class file
     logging.info(f"  Processing class file: {class_file}")
     class_markdown = convert_html_to_markdown(options_handle, class_file)
-    class_output_file = get_entity_file(
-        root_output_dir, section, class_name, CategoryType.CLASS
-    )
+    class_output_file = builder.get_entity_file()
     class_output_file.write_text(class_markdown, encoding="utf-8")
 
     # Step 2: Process constructor files
     logging.info(f"  Processing constructors for {class_name}")
-    process_constructors(
-        class_markdown,
-        section,
-        class_name,
-        doc_dir,
-        class_output_dir,
-        options_handle,
-        class_file,
-    )
+    process_constructors(class_markdown, builder, options_handle)
 
     # Step 3: Process property files
     logging.info(f"  Processing properties for {class_name}")
-    process_properties(
-        class_markdown,
-        section,
-        class_name,
-        doc_dir,
-        class_output_dir,
-        options_handle,
-        class_file,
-    )
+    process_properties(class_markdown, builder, options_handle)
 
     # Step 4: Process method files
     logging.info(f"  Processing methods for {class_name}")
-    process_methods(
-        class_markdown,
-        section,
-        class_name,
-        doc_dir,
-        class_output_dir,
-        options_handle,
-        class_file,
-    )
+    process_methods(class_markdown, builder, options_handle)
 
     # Step 5: Process operator files
     logging.info(f"  Processing operators for {class_name}")
-    process_operators(
-        class_markdown,
-        section,
-        class_name,
-        doc_dir,
-        class_output_dir,
-        options_handle,
-        class_file,
-    )
+    process_operators(class_markdown, builder, options_handle)
 
     # Step 6: Process static method files
     logging.info(f"  Processing static methods for {class_name}")
-    process_static_methods(
-        class_markdown,
-        section,
-        class_name,
-        doc_dir,
-        class_output_dir,
-        options_handle,
-        class_file,
-    )
+    process_static_methods(class_markdown, builder, options_handle)
 
     # Step 7: Process code snippet files
     logging.info(f"  Processing snippets for {class_name}")
-    process_snippets(doc_dir, class_output_dir, section, class_name)
+    process_snippets(builder)
 
 
 def process_mixin(
