@@ -4,7 +4,7 @@ This module provides PathBuilder, an immutable dataclass that centralizes
 all path construction logic for input and output files.
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from flutterdoc_gen.convert.constants import CategoryType, MemberType
 
@@ -31,6 +31,7 @@ class PathBuilder:
     entity_type: CategoryType
     doc_dir: Path
     output_dir: Path
+    _entity_dir: Path = field(init=False)
 
     def __post_init__(self):
         """Pre-compute entity directory for efficiency."""
@@ -227,27 +228,27 @@ class PathBuilder:
     def get_input_entity_file(self) -> Path:
         match self.entity_type:
             case CategoryType.CLASS:
-                suffix = "class"
+                suffix = "-class"
             case CategoryType.MIXIN:
-                suffix = "mixin"
+                suffix = "-mixin"
             case CategoryType.ENUM:
-                suffix = "enum"
+                suffix = ""
             case CategoryType.CONSTANT:
-                suffix = "constant"
+                suffix = "-constant"
             case CategoryType.LIBRARY:
-                suffix = "library"
+                suffix = "-library"
             case CategoryType.EXTENSION_TYPE:
-                suffix = "extension-type"
+                suffix = "-extension-type"
             case CategoryType.EXTENSION:
-                suffix = "extension"
+                suffix = ""
             case CategoryType.FUNCTION:
-                suffix = "function"
+                suffix = ""
             case CategoryType.TYPEDEF:
-                suffix = "typedef"
+                suffix = ""
             case _:
-                suffix = "html"
+                suffix = ""
 
-        return self.get_input_section_dir() / f"{self.entity_name}-{suffix}.html"
+        return self.get_input_section_dir() / f"{self.entity_name}{suffix}.html"
 
     def get_input_member_file(self, member_name: str) -> Path:
         return self.get_input_section_dir() / self.entity_name / f"{member_name}.html"
