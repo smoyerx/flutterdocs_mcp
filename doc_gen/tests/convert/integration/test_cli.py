@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pytest
 
+from flutterdoc_gen.convert.constants import CategoryType
 from convert.conftest import run_convert, SAMPLES_DIR
 from flutterdoc_gen.convert.paths import (
     get_api_root_dir,
@@ -78,7 +79,9 @@ class TestConvertOverwrite:
         result1 = run_convert(SAMPLES_DIR, "material", output_dir)
         assert result1.returncode == 0
 
-        listtile_md = get_entity_file(output_dir, "material", "ListTile")
+        listtile_md = get_entity_file(
+            output_dir, "material", "ListTile", CategoryType.CLASS
+        )
         original_content = listtile_md.read_text(encoding="utf-8")
 
         # Second run
@@ -120,18 +123,24 @@ class TestConvertDirectoryStructure:
         result = run_convert(SAMPLES_DIR, "material", output_dir)
         assert result.returncode == 0
 
-        class_dir = get_entity_dir(output_dir, "material", "ListTile")
+        class_dir = get_entity_dir(
+            output_dir, "material", "ListTile", CategoryType.CLASS
+        )
         assert class_dir.exists()
 
         # Main class file should exist
-        assert get_entity_file(output_dir, "material", "ListTile").exists()
+        assert get_entity_file(
+            output_dir, "material", "ListTile", CategoryType.CLASS
+        ).exists()
 
     def test_constructors_directory(self, output_dir: Path) -> None:
         """Constructors directory should be created if constructors exist."""
         result = run_convert(SAMPLES_DIR, "material", output_dir)
         assert result.returncode == 0
 
-        class_dir = get_entity_dir(output_dir, "material", "ListTile")
+        class_dir = get_entity_dir(
+            output_dir, "material", "ListTile", CategoryType.CLASS
+        )
         constructors_dir = get_constructors_dir(class_dir)
         # Directory may or may not exist depending on sample data
         if constructors_dir.exists():
@@ -145,7 +154,9 @@ class TestConvertDirectoryStructure:
         result = run_convert(SAMPLES_DIR, "material", output_dir)
         assert result.returncode == 0
 
-        class_dir = get_entity_dir(output_dir, "material", "ListTile")
+        class_dir = get_entity_dir(
+            output_dir, "material", "ListTile", CategoryType.CLASS
+        )
         statics_dir = get_statics_dir(class_dir)
         # ListTile has a divideTiles static method
         assert statics_dir.exists(), "statics directory should exist for ListTile"
@@ -179,22 +190,30 @@ class TestConvertDirectoryStructure:
         assert section_dir.parent == api_root, "Section should be under API root"
 
         # Check class dir structure includes 'classes' subdirectory
-        class_dir = get_entity_dir(output_dir, "material", "ListTile")
+        class_dir = get_entity_dir(
+            output_dir, "material", "ListTile", CategoryType.CLASS
+        )
         assert class_dir.exists(), "Class directory should exist"
         assert "classes" in class_dir.parts, "Class dir should include 'classes' subdir"
 
         # Check class file location matches get_entity_file()
-        class_file = get_entity_file(output_dir, "material", "ListTile")
+        class_file = get_entity_file(
+            output_dir, "material", "ListTile", CategoryType.CLASS
+        )
         assert class_file.exists(), "Class file should exist at expected location"
         assert class_file.parent == class_dir, (
             "Class file parent should equal class dir"
         )
 
         # Verify InkWell class also follows the same structure
-        inkwell_class_dir = get_entity_dir(output_dir, "material", "InkWell")
+        inkwell_class_dir = get_entity_dir(
+            output_dir, "material", "InkWell", CategoryType.CLASS
+        )
         assert inkwell_class_dir.exists(), "InkWell class directory should exist"
         assert "classes" in inkwell_class_dir.parts
 
-        inkwell_class_file = get_entity_file(output_dir, "material", "InkWell")
+        inkwell_class_file = get_entity_file(
+            output_dir, "material", "InkWell", CategoryType.CLASS
+        )
         assert inkwell_class_file.exists(), "InkWell class file should exist"
         assert inkwell_class_file.parent == inkwell_class_dir

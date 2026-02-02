@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-
+from flutterdoc_gen.convert.constants import CategoryType
 from flutterdoc_gen.convert.paths import (
     ensure_dir_exists,
     get_api_root_dir,
@@ -57,7 +57,7 @@ class TestOutputDirectoryBuilders:
     def test_get_entity_dir(self):
         """Verify class dir includes 'classes' subdirectory."""
         output_dir = Path("/output")
-        result = get_entity_dir(output_dir, "material", "ListTile")
+        result = get_entity_dir(output_dir, "material", "ListTile", CategoryType.CLASS)
         assert result == Path("/output/api/material/classes/ListTile")
         assert "classes" in result.parts
         assert result.name == "ListTile"
@@ -65,7 +65,7 @@ class TestOutputDirectoryBuilders:
     def test_get_entity_dir_nested_structure(self):
         """Verify class dir maintains proper nesting."""
         output_dir = Path("/root/output")
-        result = get_entity_dir(output_dir, "widgets", "Text")
+        result = get_entity_dir(output_dir, "widgets", "Text", CategoryType.CLASS)
         assert result == Path("/root/output/api/widgets/classes/Text")
         assert result.parent.name == "classes"
         assert result.parent.parent.name == "widgets"
@@ -73,7 +73,7 @@ class TestOutputDirectoryBuilders:
     def test_get_entity_file(self):
         """Verify class file path structure."""
         output_dir = Path("/output")
-        result = get_entity_file(output_dir, "widgets", "Text")
+        result = get_entity_file(output_dir, "widgets", "Text", CategoryType.CLASS)
         assert result == Path("/output/api/widgets/classes/Text/Text.md")
         assert result.name == "Text.md"
         assert result.suffix == ".md"
@@ -84,8 +84,10 @@ class TestOutputDirectoryBuilders:
         section = "material"
         class_name = "Button"
 
-        class_dir = get_entity_dir(output_dir, section, class_name)
-        class_file = get_entity_file(output_dir, section, class_name)
+        class_dir = get_entity_dir(output_dir, section, class_name, CategoryType.CLASS)
+        class_file = get_entity_file(
+            output_dir, section, class_name, CategoryType.CLASS
+        )
 
         assert class_file.parent == class_dir
 
@@ -213,8 +215,10 @@ class TestStructureChangePropagation:
         section = "material"
         class_name = "Button"
 
-        class_dir = get_entity_dir(output_dir, section, class_name)
-        class_file = get_entity_file(output_dir, section, class_name)
+        class_dir = get_entity_dir(output_dir, section, class_name, CategoryType.CLASS)
+        class_file = get_entity_file(
+            output_dir, section, class_name, CategoryType.CLASS
+        )
 
         # Both should include the 'classes' subdirectory
         assert "classes" in class_dir.parts
@@ -229,7 +233,7 @@ class TestStructureChangePropagation:
 
         api_root = get_api_root_dir(output_dir)
         api_section = get_api_section_dir(output_dir, "widgets")
-        class_dir = get_entity_dir(output_dir, "widgets", "Text")
+        class_dir = get_entity_dir(output_dir, "widgets", "Text", CategoryType.CLASS)
 
         # All should start with the same api root
         assert api_section.parts[: len(api_root.parts)] == api_root.parts
@@ -347,8 +351,12 @@ class TestPathConsistency:
 
         for output_dir, section, class_name in test_cases:
             output_path = Path(output_dir)
-            class_dir = get_entity_dir(output_path, section, class_name)
-            class_file = get_entity_file(output_path, section, class_name)
+            class_dir = get_entity_dir(
+                output_path, section, class_name, CategoryType.CLASS
+            )
+            class_file = get_entity_file(
+                output_path, section, class_name, CategoryType.CLASS
+            )
 
             assert class_file.parent == class_dir, (
                 f"class_file parent {class_file.parent} != class_dir {class_dir}"
@@ -372,7 +380,7 @@ class TestPathConsistency:
         class_name = "Card"
 
         section_dir = get_api_section_dir(output_dir, section)
-        class_dir = get_entity_dir(output_dir, section, class_name)
+        class_dir = get_entity_dir(output_dir, section, class_name, CategoryType.CLASS)
 
         # class_dir should be descendant of section_dir
         assert section_dir in class_dir.parents

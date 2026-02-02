@@ -6,6 +6,7 @@ conversion process.
 """
 
 from pathlib import Path
+from flutterdoc_gen.convert.constants import CategoryType
 
 
 # --- Output Directory Builders ---
@@ -36,32 +37,66 @@ def get_api_section_dir(output_dir: Path, section: str) -> Path:
     return output_dir / "api" / section
 
 
-def get_entity_dir(output_dir: Path, section: str, entity_name: str) -> Path:
+def get_entity_dir(
+    output_dir: Path,
+    section: str,
+    entity_name: str,
+    entity_type: CategoryType,
+) -> Path:
     """Get the entity output directory path.
 
     Args:
         output_dir: The root output directory.
         section: The documentation section name.
         entity_name: The entity name.
+        entity_type: The category type of the entity.
 
     Returns:
-        Path to the api/{section}/entity/{entity_name} directory.
+        Path to the api/{section}/{entity_type}/{entity_name} directory.
     """
-    return get_api_section_dir(output_dir, section) / "classes" / entity_name
+    # Not using str(entity_type) to keep output directory structure indepdendent of enum value
+    match entity_type:
+        case CategoryType.CLASS:
+            subdir = "classes"
+        case CategoryType.MIXIN:
+            subdir = "mixins"
+        case CategoryType.ENUM:
+            subdir = "enums"
+        case CategoryType.CONSTANT:
+            subdir = "constants"
+        case CategoryType.LIBRARY:
+            subdir = "libraries"
+        case CategoryType.EXTENSION_TYPE:
+            subdir = "extension_types"
+        case CategoryType.EXTENSION:
+            subdir = "extensions"
+        case CategoryType.FUNCTION:
+            subdir = "functions"
+        case CategoryType.TYPEDEF:
+            subdir = "typedefs"
+        case _:
+            subdir = "entities"
+    return get_api_section_dir(output_dir, section) / subdir / entity_name
 
 
-def get_entity_file(output_dir: Path, section: str, entity_name: str) -> Path:
+def get_entity_file(
+    output_dir: Path, section: str, entity_name: str, entity_type: CategoryType
+) -> Path:
     """Get the main entity markdown file path.
 
     Args:
         output_dir: The root output directory.
         section: The documentation section name.
         entity_name: The entity name.
+        entity_type: The category type of the entity.
 
     Returns:
         Path to the api/{section}/{entity_name}/{entity_name}.md file.
     """
-    return get_entity_dir(output_dir, section, entity_name) / f"{entity_name}.md"
+    return (
+        get_entity_dir(output_dir, section, entity_name, entity_type)
+        / f"{entity_name}.md"
+    )
 
 
 # --- Member Directory Builders ---
@@ -225,22 +260,27 @@ def get_snippet_output_file(snippets_dir: Path, short_name: str) -> Path:
 # --- Convenience Functions (Compose Multiple Path Operations) ---
 
 
-def get_entity_snippets_dir(output_dir: Path, section: str, entity_name: str) -> Path:
+def get_entity_snippets_dir(
+    output_dir: Path, section: str, entity_name: str, entity_type: CategoryType
+) -> Path:
     """Get the snippets directory for an entity.
 
     Args:
         output_dir: The root output directory.
         section: The documentation section name.
         entity_name: The entity name.
+        entity_type: The category type of the entity.
 
     Returns:
         Path to the api/{section}/{entity_name}/snippets directory.
     """
-    return get_snippets_output_dir(get_entity_dir(output_dir, section, entity_name))
+    return get_snippets_output_dir(
+        get_entity_dir(output_dir, section, entity_name, entity_type)
+    )
 
 
 def get_entity_properties_inherited_dir(
-    output_dir: Path, section: str, entity_name: str
+    output_dir: Path, section: str, entity_name: str, entity_type: CategoryType
 ) -> Path:
     """Get the inherited properties directory for an entity.
 
@@ -248,17 +288,18 @@ def get_entity_properties_inherited_dir(
         output_dir: The root output directory.
         section: The documentation section name.
         entity_name: The entity name.
+        entity_type: The category type of the entity.
 
     Returns:
         Path to the api/{section}/{entity_name}/properties/inherited directory.
     """
     return get_properties_inherited_dir(
-        get_entity_dir(output_dir, section, entity_name)
+        get_entity_dir(output_dir, section, entity_name, entity_type)
     )
 
 
 def get_entity_methods_inherited_dir(
-    output_dir: Path, section: str, entity_name: str
+    output_dir: Path, section: str, entity_name: str, entity_type: CategoryType
 ) -> Path:
     """Get the inherited methods directory for an entity.
 
@@ -266,15 +307,18 @@ def get_entity_methods_inherited_dir(
         output_dir: The root output directory.
         section: The documentation section name.
         entity_name: The entity name.
+        entity_type: The category type of the entity.
 
     Returns:
         Path to the api/{section}/{entity_name}/methods/inherited directory.
     """
-    return get_methods_inherited_dir(get_entity_dir(output_dir, section, entity_name))
+    return get_methods_inherited_dir(
+        get_entity_dir(output_dir, section, entity_name, entity_type)
+    )
 
 
 def get_entity_operators_inherited_dir(
-    output_dir: Path, section: str, entity_name: str
+    output_dir: Path, section: str, entity_name: str, entity_type: CategoryType
 ) -> Path:
     """Get the inherited operators directory for an entity.
 
@@ -282,17 +326,21 @@ def get_entity_operators_inherited_dir(
         output_dir: The root output directory.
         section: The documentation section name.
         entity_name: The entity name.
+        entity_type: The category type of the entity.
 
     Returns:
         Path to the api/{section}/{entity_name}/operators/inherited directory.
     """
-    return get_operators_inherited_dir(get_entity_dir(output_dir, section, entity_name))
+    return get_operators_inherited_dir(
+        get_entity_dir(output_dir, section, entity_name, entity_type)
+    )
 
 
 def get_entity_inherited_member_file(
     output_dir: Path,
     section: str,
     entity_name: str,
+    entity_type: CategoryType,
     member_type: str,
     source_section: str,
     source_entity: str,
@@ -304,6 +352,7 @@ def get_entity_inherited_member_file(
         output_dir: The root output directory.
         section: The documentation section name.
         entity_name: The entity name.
+        entity_type: The category type of the entity.
         member_type: The member type ('properties', 'methods', or 'operators').
         source_section: The section where the member is defined.
         source_entity: The entity where the member is defined.
@@ -312,7 +361,7 @@ def get_entity_inherited_member_file(
     Returns:
         Path to the inherited member markdown file.
     """
-    entity_dir = get_entity_dir(output_dir, section, entity_name)
+    entity_dir = get_entity_dir(output_dir, section, entity_name, entity_type)
     inherited_dir = entity_dir / member_type / "inherited"
     return get_inherited_member_file(
         inherited_dir, source_section, source_entity, member_name
