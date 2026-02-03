@@ -8,17 +8,32 @@ import pytest
 
 from flutterdoc_gen.convert.constants import CategoryType
 from convert.conftest import run_convert, SAMPLES_DIR
-from flutterdoc_gen.convert.paths import (
-    get_api_root_dir,
-    get_api_section_dir,
-    get_constructors_dir,
-    get_entity_dir,
-    get_entity_file,
-    get_input_section_dir,
-    get_input_snippets_dir,
-    get_native_member_file,
-    get_statics_dir,
-)
+from flutterdoc_gen.convert.paths import PathBuilder
+
+
+def build_output_path_builder(
+    output_dir: Path,
+    section: str,
+    entity_name: str,
+    entity_type: CategoryType = CategoryType.CLASS,
+) -> PathBuilder:
+    return PathBuilder(
+        section=section,
+        entity_name=entity_name,
+        entity_type=entity_type,
+        doc_dir=Path(),
+        output_dir=output_dir,
+    )
+
+
+def build_input_path_builder(doc_dir: Path, section: str) -> PathBuilder:
+    return PathBuilder(
+        section=section,
+        entity_name="",
+        entity_type=CategoryType.CLASS,
+        doc_dir=doc_dir,
+        output_dir=Path(),
+    )
 
 
 class TestConvertErrorHandling:
@@ -57,8 +72,9 @@ class TestConvertErrorHandling:
         """Empty section (no class files) should exit with zero status."""
         # Create empty directory structure
         doc_dir = tmp_path / "empty_docs"
-        get_input_section_dir(doc_dir, "empty_section").mkdir(parents=True)
-        get_input_snippets_dir(doc_dir).mkdir(parents=True)
+        input_builder = build_input_path_builder(doc_dir, "empty_section")
+        input_builder.get_input_section_dir().mkdir(parents=True)
+        input_builder.get_input_snippets_dir().mkdir(parents=True)
 
         result = run_convert(doc_dir, "empty_section", output_dir)
         assert result.returncode == 0
@@ -79,9 +95,10 @@ class TestConvertOverwrite:
         result1 = run_convert(SAMPLES_DIR, "material", output_dir)
         assert result1.returncode == 0
 
-        listtile_md = get_entity_file(
+        listtile_builder = build_output_path_builder(
             output_dir, "material", "ListTile", CategoryType.CLASS
         )
+        listtile_md = listtile_builder.get_entity_file()
         original_content = listtile_md.read_text(encoding="utf-8")
 
         # Second run
@@ -105,7 +122,10 @@ class TestConvertDirectoryStructure:
         result = run_convert(SAMPLES_DIR, "material", output_dir)
         assert result.returncode == 0
 
-        api_dir = get_api_root_dir(output_dir)
+        builder = build_output_path_builder(
+            output_dir, "material", "ListTile", CategoryType.CLASS
+        )
+        api_dir = builder.get_api_root_dir()
         assert api_dir.exists()
         assert api_dir.is_dir()
 
@@ -114,7 +134,10 @@ class TestConvertDirectoryStructure:
         result = run_convert(SAMPLES_DIR, "material", output_dir)
         assert result.returncode == 0
 
-        section_dir = get_api_section_dir(output_dir, "material")
+        builder = build_output_path_builder(
+            output_dir, "material", "ListTile", CategoryType.CLASS
+        )
+        section_dir = builder.get_api_section_dir()
         assert section_dir.exists()
         assert section_dir.is_dir()
 
@@ -123,25 +146,24 @@ class TestConvertDirectoryStructure:
         result = run_convert(SAMPLES_DIR, "material", output_dir)
         assert result.returncode == 0
 
-        class_dir = get_entity_dir(
+        listtile_builder = build_output_path_builder(
             output_dir, "material", "ListTile", CategoryType.CLASS
         )
+        class_dir = listtile_builder.get_entity_dir()
         assert class_dir.exists()
 
         # Main class file should exist
-        assert get_entity_file(
-            output_dir, "material", "ListTile", CategoryType.CLASS
-        ).exists()
+        assert listtile_builder.get_entity_file().exists()
 
     def test_constructors_directory(self, output_dir: Path) -> None:
         """Constructors directory should be created if constructors exist."""
         result = run_convert(SAMPLES_DIR, "material", output_dir)
         assert result.returncode == 0
 
-        class_dir = get_entity_dir(
+        listtile_builder = build_output_path_builder(
             output_dir, "material", "ListTile", CategoryType.CLASS
         )
-        constructors_dir = get_constructors_dir(class_dir)
+        constructors_dir = listtile_builder.get_constructors_dir()
         # Directory may or may not exist depending on sample data
         if constructors_dir.exists():
             assert constructors_dir.is_dir()
@@ -154,16 +176,16 @@ class TestConvertDirectoryStructure:
         result = run_convert(SAMPLES_DIR, "material", output_dir)
         assert result.returncode == 0
 
-        class_dir = get_entity_dir(
+        listtile_builder = build_output_path_builder(
             output_dir, "material", "ListTile", CategoryType.CLASS
         )
-        statics_dir = get_statics_dir(class_dir)
+        statics_dir = listtile_builder.get_statics_dir()
         # ListTile has a divideTiles static method
         assert statics_dir.exists(), "statics directory should exist for ListTile"
         assert statics_dir.is_dir()
 
         # divideTiles.md should be present
-        dividetiles_file = get_native_member_file(statics_dir, "divideTiles")
+        dividetiles_file = listtile_builder.get_static_file("divideTiles")
         assert dividetiles_file.exists(), "divideTiles.md should exist"
 
         # Verify the file starts with a heading
@@ -181,39 +203,40 @@ class TestConvertDirectoryStructure:
         assert result.returncode == 0
 
         # Verify the structure matches paths.py expectations
-        api_root = get_api_root_dir(output_dir)
+        listtile_builder = build_output_path_builder(
+            output_dir, "material", "ListTile", CategoryType.CLASS
+        )
+        api_root = listtile_builder.get_api_root_dir()
         assert api_root.exists(), "API root directory should exist"
 
         # Check section dir exists under api
-        section_dir = get_api_section_dir(output_dir, "material")
+        section_builder = build_output_path_builder(
+            output_dir, "material", "ListTile", CategoryType.CLASS
+        )
+        section_dir = section_builder.get_api_section_dir()
         assert section_dir.exists(), "Section directory should exist"
         assert section_dir.parent == api_root, "Section should be under API root"
 
         # Check class dir structure includes 'classes' subdirectory
-        class_dir = get_entity_dir(
-            output_dir, "material", "ListTile", CategoryType.CLASS
-        )
+        class_dir = listtile_builder.get_entity_dir()
         assert class_dir.exists(), "Class directory should exist"
         assert "classes" in class_dir.parts, "Class dir should include 'classes' subdir"
 
         # Check class file location matches get_entity_file()
-        class_file = get_entity_file(
-            output_dir, "material", "ListTile", CategoryType.CLASS
-        )
+        class_file = listtile_builder.get_entity_file()
         assert class_file.exists(), "Class file should exist at expected location"
         assert class_file.parent == class_dir, (
             "Class file parent should equal class dir"
         )
 
         # Verify InkWell class also follows the same structure
-        inkwell_class_dir = get_entity_dir(
+        inkwell_builder = build_output_path_builder(
             output_dir, "material", "InkWell", CategoryType.CLASS
         )
+        inkwell_class_dir = inkwell_builder.get_entity_dir()
         assert inkwell_class_dir.exists(), "InkWell class directory should exist"
         assert "classes" in inkwell_class_dir.parts
 
-        inkwell_class_file = get_entity_file(
-            output_dir, "material", "InkWell", CategoryType.CLASS
-        )
+        inkwell_class_file = inkwell_builder.get_entity_file()
         assert inkwell_class_file.exists(), "InkWell class file should exist"
         assert inkwell_class_file.parent == inkwell_class_dir
