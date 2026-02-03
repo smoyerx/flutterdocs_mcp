@@ -186,3 +186,94 @@ class TestPathBuilder:
         )
         entity_dir = builder.get_entity_dir()
         assert "enums" in entity_dir.parts
+
+    def test_directory_only_pathbuilder(self):
+        """Test PathBuilder without entity context for directory operations."""
+        builder = PathBuilder(
+            section="widgets",
+            doc_dir=Path("/doc"),
+            output_dir=Path("/output"),
+        )
+
+        # These should work without entity context
+        assert builder.get_api_root_dir() == Path("/output/api")
+        assert builder.get_api_section_dir() == Path("/output/api/widgets")
+        assert builder.get_input_flutter_dir() == Path("/doc/flutter")
+        assert builder.get_input_section_dir() == Path("/doc/flutter/widgets")
+        assert builder.get_input_snippets_dir() == Path("/doc/snippets")
+
+    def test_entity_methods_require_context(self):
+        """Test that entity-dependent methods raise ValueError without context."""
+        import pytest
+
+        builder = PathBuilder(
+            section="widgets",
+            doc_dir=Path("/doc"),
+            output_dir=Path("/output"),
+        )
+
+        # All these should raise ValueError
+        with pytest.raises(ValueError, match="requires entity context"):
+            builder.get_entity_dir()
+
+        with pytest.raises(ValueError, match="requires entity context"):
+            builder.get_entity_file()
+
+        with pytest.raises(ValueError, match="requires entity context"):
+            builder.get_constructors_dir()
+
+        with pytest.raises(ValueError, match="requires entity context"):
+            builder.get_properties_dir()
+
+        with pytest.raises(ValueError, match="requires entity context"):
+            builder.get_native_property_file("selected")
+
+        with pytest.raises(ValueError, match="requires entity context"):
+            builder.get_input_entity_file()
+
+        with pytest.raises(ValueError, match="requires entity context"):
+            builder.get_input_member_file("build")
+
+    def test_partial_entity_context_validation(self):
+        """Test that providing only entity_name or only entity_type raises ValueError."""
+        import pytest
+
+        # Only entity_name provided
+        with pytest.raises(ValueError, match="must both be provided or both be None"):
+            PathBuilder(
+                section="widgets",
+                doc_dir=Path("/doc"),
+                output_dir=Path("/output"),
+                entity_name="Text",
+            )
+
+        # Only entity_type provided
+        with pytest.raises(ValueError, match="must both be provided or both be None"):
+            PathBuilder(
+                section="widgets",
+                doc_dir=Path("/doc"),
+                output_dir=Path("/output"),
+                entity_type=CategoryType.CLASS,
+            )
+
+    def test_full_entity_context_works(self):
+        """Test that all methods work when full entity context provided."""
+        builder = PathBuilder(
+            section="material",
+            entity_name="ListTile",
+            entity_type=CategoryType.CLASS,
+            doc_dir=Path("/doc"),
+            output_dir=Path("/output"),
+        )
+
+        # Directory methods still work
+        assert builder.get_api_root_dir() == Path("/output/api")
+
+        # Entity methods work
+        assert builder.get_entity_dir() == Path("/output/api/material/classes/ListTile")
+        assert builder.get_entity_file() == Path(
+            "/output/api/material/classes/ListTile/ListTile.md"
+        )
+        assert builder.get_properties_dir() == Path(
+            "/output/api/material/classes/ListTile/properties/native"
+        )

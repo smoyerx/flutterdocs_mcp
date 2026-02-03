@@ -1,7 +1,17 @@
-"""Path construction utilities for the convert tool.
+"""PathBuilder centralizes all path construction for documentation workflows.
 
-This module provides PathBuilder, an immutable dataclass that centralizes
-all path construction logic for input and output files.
+- With only section/doc_dir/output_dir, it builds directory-level paths (e.g., API root,
+  section directories, input roots).
+- With entity_name and entity_type, it also builds entity/member-specific paths (e.g.,
+  class directories, member files).
+
+All filesystem path logic is centralized in:
+- _compute_entity_dir: Maps CategoryType to output subdirectories
+- _get_member_dir: Maps MemberType to member subdirectories
+- _get_member_file: Handles native vs inherited file naming
+
+Convenience aliases (get_properties_dir, get_native_method_file, etc.) wrap the generic
+methods for readability at call sites.
 """
 
 from dataclasses import dataclass, field
@@ -11,31 +21,51 @@ from flutterdoc_gen.convert.constants import CategoryType, MemberType
 
 @dataclass(frozen=True)
 class PathBuilder:
-    """Immutable path builder for entity documentation processing.
+    """
+    Immutable builder for documentation paths.
 
-    Captures entity context (section, name, type, directories) and provides
-    methods for constructing all input and output paths. Maintains separation
-    between logical names (CategoryType, MemberType) and filesystem structure.
-
-    All filesystem path decisions are centralized in the generic methods:
-    - _compute_entity_dir: Maps CategoryType to output subdirectories
-    - _get_member_dir: Maps MemberType to member subdirectories
-    - _get_member_file: Handles native vs inherited file naming
-
-    Convenience aliases (get_properties_dir, get_native_method_file, etc.)
-    wrap the generic methods for readability at call sites.
+    - Directory-level methods require only section/doc_dir/output_dir.
+    - Entity/member methods require both entity_name and entity_type.
     """
 
     section: str
-    entity_name: str
-    entity_type: CategoryType
     doc_dir: Path
     output_dir: Path
-    _entity_dir: Path = field(init=False)
+    entity_name: str | None = None
+    entity_type: CategoryType | None = None
+    _entity_dir: Path | None = field(init=False, default=None)
 
     def __post_init__(self):
-        """Pre-compute entity directory for efficiency."""
-        object.__setattr__(self, "_entity_dir", self._compute_entity_dir())
+        """Validate entity context and pre-compute entity directory.
+
+        Raises:
+            ValueError: If only one of entity_name or entity_type is provided.
+        """
+        # Validate that both or neither entity fields are provided
+        has_name = self.entity_name is not None
+        has_type = self.entity_type is not None
+
+        if has_name != has_type:
+            raise ValueError(
+                "entity_name and entity_type must both be provided or both be None. "
+                f"Got entity_name={self.entity_name!r}, entity_type={self.entity_type!r}"
+            )
+
+        # Pre-compute entity directory if entity context provided
+        if has_name and has_type:
+            object.__setattr__(self, "_entity_dir", self._compute_entity_dir())
+
+    def _require_entity_context(self) -> None:
+        """Raise error if entity context is missing.
+
+        Raises:
+            ValueError: If entity_name or entity_type is None.
+        """
+        if self.entity_name is None or self.entity_type is None:
+            raise ValueError(
+                "This operation requires entity context (entity_name and entity_type), "
+                "but PathBuilder was created without entity context."
+            )
 
     # --- Generic Implementation Methods (Documented) ---
 
@@ -48,6 +78,8 @@ class PathBuilder:
         Returns:
             Path like output_dir/api/{section}/{type_subdir}/{entity_name}
         """
+        self._require_entity_context()
+        assert self.entity_name is not None  # Type hint for mypy / Pylance
         match self.entity_type:
             case CategoryType.CLASS:
                 subdir = "classes"
@@ -86,6 +118,8 @@ class PathBuilder:
         Returns:
             Path like entity_dir/properties/native or entity_dir/constructors
         """
+        self._require_entity_context()
+        assert self._entity_dir is not None  # Type hint for mypy / Pylance
         # Map enum to filesystem directory name
         match member_type:
             case MemberType.CONSTRUCTORS:
@@ -137,6 +171,7 @@ class PathBuilder:
         Returns:
             Path to member markdown file
         """
+        self._require_entity_context()
         member_dir = self._get_member_dir(member_type, inherited)
 
         if inherited:
@@ -155,9 +190,13 @@ class PathBuilder:
         return self.output_dir / "api" / self.section
 
     def get_entity_dir(self) -> Path:
+        self._require_entity_context()
+        assert self._entity_dir is not None  # Type hint for mypy / Pylance
         return self._entity_dir
 
     def get_entity_file(self) -> Path:
+        self._require_entity_context()
+        assert self._entity_dir is not None and self.entity_name is not None
         return self._entity_dir / f"{self.entity_name}.md"
 
     def get_constructors_dir(self) -> Path:
@@ -242,6 +281,7 @@ class PathBuilder:
         return self.doc_dir / "flutter" / self.section
 
     def get_input_entity_file(self) -> Path:
+        self._require_entity_context()
         match self.entity_type:
             case CategoryType.CLASS:
                 suffix = "-class"
@@ -267,6 +307,8 @@ class PathBuilder:
         return self.get_input_section_dir() / f"{self.entity_name}{suffix}.html"
 
     def get_input_member_file(self, member_name: str) -> Path:
+        self._require_entity_context()
+        assert self.entity_name is not None
         return self.get_input_section_dir() / self.entity_name / f"{member_name}.html"
 
     def get_input_snippets_dir(self) -> Path:

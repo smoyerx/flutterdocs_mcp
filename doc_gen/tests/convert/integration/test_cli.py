@@ -29,8 +29,6 @@ def build_output_path_builder(
 def build_input_path_builder(doc_dir: Path, section: str) -> PathBuilder:
     return PathBuilder(
         section=section,
-        entity_name="",
-        entity_type=CategoryType.CLASS,
         doc_dir=doc_dir,
         output_dir=Path(),
     )
@@ -210,19 +208,17 @@ class TestConvertDirectoryStructure:
         assert api_root.exists(), "API root directory should exist"
 
         # Check section dir exists under api
-        section_builder = build_output_path_builder(
-            output_dir, "material", "ListTile", CategoryType.CLASS
-        )
-        section_dir = section_builder.get_api_section_dir()
+        section_dir = listtile_builder.get_api_section_dir()
         assert section_dir.exists(), "Section directory should exist"
         assert section_dir.parent == api_root, "Section should be under API root"
 
-        # Check class dir structure includes 'classes' subdirectory
+        # Check class dir exists where PathBuilder says it should
         class_dir = listtile_builder.get_entity_dir()
-        assert class_dir.exists(), "Class directory should exist"
-        assert "classes" in class_dir.parts, "Class dir should include 'classes' subdir"
+        assert class_dir.exists(), (
+            "Class directory should exist at PathBuilder location"
+        )
 
-        # Check class file location matches get_entity_file()
+        # Check class file exists where PathBuilder says it should
         class_file = listtile_builder.get_entity_file()
         assert class_file.exists(), "Class file should exist at expected location"
         assert class_file.parent == class_dir, (
@@ -235,7 +231,6 @@ class TestConvertDirectoryStructure:
         )
         inkwell_class_dir = inkwell_builder.get_entity_dir()
         assert inkwell_class_dir.exists(), "InkWell class directory should exist"
-        assert "classes" in inkwell_class_dir.parts
 
         inkwell_class_file = inkwell_builder.get_entity_file()
         assert inkwell_class_file.exists(), "InkWell class file should exist"

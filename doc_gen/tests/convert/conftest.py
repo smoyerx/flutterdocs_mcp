@@ -6,7 +6,6 @@ from pathlib import Path
 
 import pytest
 
-from flutterdoc_gen.convert.constants import CategoryType
 from flutterdoc_gen.convert.patterns import MCP_URI_PREFIX
 from flutterdoc_gen.convert.paths import PathBuilder
 
@@ -92,8 +91,6 @@ def get_available_sections() -> list[str]:
     # Use temporary PathBuilder to construct path
     temp_builder = PathBuilder(
         section="",
-        entity_name="",
-        entity_type=CategoryType.CLASS,
         doc_dir=SAMPLES_DIR,
         output_dir=Path(),
     )
@@ -115,8 +112,6 @@ def get_class_names_for_section(section: str) -> list[str]:
     # Use temporary PathBuilder to construct path
     temp_builder = PathBuilder(
         section=section,
-        entity_name="",
-        entity_type=CategoryType.CLASS,
         doc_dir=SAMPLES_DIR,
         output_dir=Path(),
     )

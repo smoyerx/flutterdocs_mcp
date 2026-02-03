@@ -34,8 +34,6 @@ def find_and_categorize_root_files(
     # Use temporary PathBuilder to construct path
     temp_builder = PathBuilder(
         section=section,
-        entity_name="",
-        entity_type=CategoryType.CLASS,
         doc_dir=doc_dir,
         output_dir=Path(),
     )

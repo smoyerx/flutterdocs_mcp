@@ -20,8 +20,6 @@ from flutterdoc_gen.convert.transformations import FOOTER_MARKER
 def build_section_path_builder(output_dir: Path, section: str) -> PathBuilder:
     return PathBuilder(
         section=section,
-        entity_name="",
-        entity_type=CategoryType.CLASS,
         doc_dir=Path(),
         output_dir=output_dir,
     )

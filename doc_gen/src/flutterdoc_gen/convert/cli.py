@@ -51,8 +51,6 @@ def validate_directories(doc_dir: Path, section: str) -> None:
     # Use temporary PathBuilder to construct paths for validation
     temp_builder = PathBuilder(
         section=section,
-        entity_name="",
-        entity_type=CategoryType.CLASS,
         doc_dir=doc_dir,
         output_dir=Path(),
     )
@@ -82,8 +80,6 @@ def create_output_directory(output_dir: Path, section: str) -> Path:
     # Use temporary PathBuilder to construct path
     temp_builder = PathBuilder(
         section=section,
-        entity_name="",
-        entity_type=CategoryType.CLASS,
         doc_dir=Path(),
         output_dir=output_dir,
     )
