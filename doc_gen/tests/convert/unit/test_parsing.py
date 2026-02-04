@@ -260,6 +260,27 @@ class TestExtractMemberDefinitions:
         result = extract_member_definitions(content)
         assert result[0]["result_type"] == "int"
 
+    def test_handles_left_right_arrow(self) -> None:
+        """Should handle Unicode left-right arrow (U+2194) format."""
+        content = f"[prop]({make_mcp_uri('s', 'C', 'prop')})↔ int\nDesc"
+        result = extract_member_definitions(content)
+        assert len(result) == 1
+        assert result[0]["result_type"] == "int"
+
+    def test_handles_ascii_left_right_arrow(self) -> None:
+        """Should handle ASCII left-right arrow (<->) format."""
+        content = f"[prop]({make_mcp_uri('s', 'C', 'prop')})<-> int\nDesc"
+        result = extract_member_definitions(content)
+        assert len(result) == 1
+        assert result[0]["result_type"] == "int"
+
+    def test_handles_ascii_fat_left_right_arrow(self) -> None:
+        """Should handle ASCII fat left-right arrow (<=>) format."""
+        content = f"[prop]({make_mcp_uri('s', 'C', 'prop')})<=> int\nDesc"
+        result = extract_member_definitions(content)
+        assert len(result) == 1
+        assert result[0]["result_type"] == "int"
+
     def test_returns_empty_for_no_definitions(self) -> None:
         """Should return empty list if no matching definitions."""
         content = "No member definitions here."
@@ -339,6 +360,20 @@ class TestExtractMemberLinks:
     def test_handles_multiple_whitespace_before_arrow(self) -> None:
         """Should handle multiple whitespace characters before arrow."""
         content = f"[prop]({make_mcp_uri('s', 'C', 'prop')})   →   int\nDesc"
+        result = extract_member_links(content)
+        assert len(result) == 1
+        assert result[0]["result_type"] == "int"
+
+    def test_handles_left_right_arrow(self) -> None:
+        """Should handle Unicode left-right arrow (U+2194) format."""
+        content = f"[prop]({make_mcp_uri('s', 'C', 'prop')})↔ int\nDesc"
+        result = extract_member_links(content)
+        assert len(result) == 1
+        assert result[0]["result_type"] == "int"
+
+    def test_handles_ascii_left_right_arrow(self) -> None:
+        """Should handle ASCII left-right arrow (<->) format."""
+        content = f"[prop]({make_mcp_uri('s', 'C', 'prop')})<-> int\nDesc"
         result = extract_member_links(content)
         assert len(result) == 1
         assert result[0]["result_type"] == "int"
@@ -510,6 +545,20 @@ class TestExtractMethodLinks:
         result = extract_method_links(content)
         assert len(result) == 1
         assert result[0]["member"] == "method"
+
+    def test_handles_left_right_arrow(self) -> None:
+        """Should handle Unicode left-right arrow (U+2194) format."""
+        content = f"[method]({make_mcp_uri('s', 'C', 'method')})() ↔ void\nDesc"
+        result = extract_method_links(content)
+        assert len(result) == 1
+        assert result[0]["result_type"] == "void"
+
+    def test_handles_ascii_left_right_arrow(self) -> None:
+        """Should handle ASCII left-right arrow (<->) format."""
+        content = f"[method]({make_mcp_uri('s', 'C', 'method')})() <-> void\nDesc"
+        result = extract_method_links(content)
+        assert len(result) == 1
+        assert result[0]["result_type"] == "void"
 
     def test_returns_empty_for_no_links(self) -> None:
         """Should return empty list if no matching links."""

@@ -86,9 +86,9 @@ def extract_member_definitions(section_content: str) -> list[dict[str, str]]:
         rf"^\s*\[([^\]]+)\]\({MCP_URI_PREFIX}([^/]+)/([^/]+)/([^)]+)\)"
     )
 
-    # Arrow pattern: Unicode rightwards arrow, ASCII arrow variants
-    # Supported: → (U+2192), -> , => , ➜ (U+279C), ➔ (U+2794)
-    arrow_pattern = re.compile(r"(?:\u2192|\u279C|\u2794|->|=>)")
+    # Arrow pattern: Unicode rightwards arrow, left-right arrow, ASCII arrow variants
+    # Supported: → (U+2192), ↔ (U+2194), -> , => , <-> , <=> , ➜ (U+279C), ➔ (U+2794)
+    arrow_pattern = re.compile(r"(?:\u2192|\u2194|\u279C|\u2794|<->|<=>|->|=>)")
 
     for paragraph in paragraphs:
         lines = paragraph.split("\n")
@@ -228,9 +228,9 @@ def extract_member_links(
     members: list[dict[str, str]] = []
     lines = section_content.split("\n")
 
-    # Arrow patterns: Unicode rightwards arrow, ASCII arrow variants
-    # Supported: → (U+2192), -> , => , ➜ (U+279C), ➔ (U+2794)
-    arrow_pattern = r"(?:\u2192|\u279C|\u2794|->|=>)"
+    # Arrow patterns: Unicode rightwards arrow, left-right arrow, ASCII arrow variants
+    # Supported: → (U+2192), ↔ (U+2194), -> , => , <-> , <=> , ➜ (U+279C), ➔ (U+2794)
+    arrow_pattern = r"(?:\u2192|\u2194|\u279C|\u2794|<->|<=>|->|=>)"
 
     # Pattern to match [text](mcp://flutter/api/section/entity/member) followed by
     # optional whitespace and an arrow (type signature).
@@ -375,9 +375,9 @@ def extract_method_links(
     members: list[dict[str, str]] = []
     lines = section_content.split("\n")
 
-    # Arrow patterns: Unicode rightwards arrow, ASCII arrow variants
-    # Supported: → (U+2192), -> , => , ➜ (U+279C), ➔ (U+2794)
-    arrow_pattern = r"(?:\u2192|\u279C|\u2794|->|=>)"
+    # Arrow patterns: Unicode rightwards arrow, left-right arrow, ASCII arrow variants
+    # Supported: → (U+2192), ↔ (U+2194), -> , => , <-> , <=> , ➜ (U+279C), ➔ (U+2794)
+    arrow_pattern = r"(?:\u2192|\u2194|\u279C|\u2794|<->|<=>|->|=>)"
 
     # Pattern to match [text](mcp://flutter/api/section/entity/member)
     # For methods, the link is at the start of the line, but the arrow comes after parameters
