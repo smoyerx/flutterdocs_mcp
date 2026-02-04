@@ -40,7 +40,7 @@ def process_class(
     doc_dir: Path,
     root_output_dir: Path,
 ) -> None:
-    """Process all documentation files for a class using the 7-step pipeline.
+    """Process class documentation files.
 
     Steps:
     1. Process the class file
@@ -111,7 +111,15 @@ def process_mixin(
     doc_dir: Path,
     root_output_dir: Path,
 ) -> None:
-    """Process mixin documentation files (placeholder).
+    """Process mixin documentation files.
+
+    Steps:
+    1. Process the mixin file
+    2. Process property files
+    3. Process method files
+    4. Process operator files
+    5. Process static method files
+    6. Process code snippet files
 
     This function is a placeholder for future mixin documentation processing.
     Currently, it returns without performing any processing.
@@ -124,7 +132,44 @@ def process_mixin(
         doc_dir: The root documentation directory.
         root_output_dir: The root output directory.
     """
-    pass
+    # Create PathBuilder with entity context
+    builder = PathBuilder(
+        section=section,
+        entity_name=mixin_name,
+        entity_type=CategoryType.MIXIN,
+        doc_dir=doc_dir,
+        output_dir=root_output_dir,
+    )
+
+    # Create mixin output directory
+    mixin_output_dir = builder.get_entity_dir()
+    ensure_dir_exists(mixin_output_dir)
+
+    # Step 1: Process the mixin file
+    logging.info(f"  Processing mixin file: {mixin_file}")
+    mixin_markdown = convert_html_to_markdown(options_handle, mixin_file)
+    mixin_output_file = builder.get_entity_file()
+    mixin_output_file.write_text(mixin_markdown, encoding="utf-8")
+
+    # Step 2: Process property files
+    logging.info(f"  Processing properties for {mixin_name}")
+    process_properties(mixin_markdown, builder, options_handle)
+
+    # Step 3: Process method files
+    logging.info(f"  Processing methods for {mixin_name}")
+    process_methods(mixin_markdown, builder, options_handle)
+
+    # Step 4: Process operator files
+    logging.info(f"  Processing operators for {mixin_name}")
+    process_operators(mixin_markdown, builder, options_handle)
+
+    # Step 5: Process static method files
+    logging.info(f"  Processing static methods for {mixin_name}")
+    process_static_methods(mixin_markdown, builder, options_handle)
+
+    # Step 6: Process code snippet files
+    logging.info(f"  Processing snippets for {mixin_name}")
+    process_snippets(builder)
 
 
 def process_constant(
