@@ -127,6 +127,208 @@ class TestPathBuilder:
         )
         assert "___" in result.name
 
+    def test_get_constructors_dir(self):
+        """Verify constructors directory construction (no native/inherited split)."""
+        builder = PathBuilder(
+            section="material",
+            entity_name="ListTile",
+            entity_type=CategoryType.CLASS,
+            doc_dir=Path("/doc"),
+            output_dir=Path("/output"),
+        )
+        result = builder.get_constructors_dir()
+        assert result == Path("/output/api/material/classes/ListTile/constructors")
+        assert "constructors" in result.parts
+
+    def test_get_methods_dir_native(self):
+        """Verify native methods directory construction."""
+        builder = PathBuilder(
+            section="material",
+            entity_name="ListTile",
+            entity_type=CategoryType.CLASS,
+            doc_dir=Path("/doc"),
+            output_dir=Path("/output"),
+        )
+        result = builder.get_methods_dir(inherited=False)
+        assert result == Path("/output/api/material/classes/ListTile/methods/native")
+        assert "methods" in result.parts
+        assert "native" in result.parts
+
+    def test_get_methods_dir_inherited(self):
+        """Verify inherited methods directory construction."""
+        builder = PathBuilder(
+            section="material",
+            entity_name="ListTile",
+            entity_type=CategoryType.CLASS,
+            doc_dir=Path("/doc"),
+            output_dir=Path("/output"),
+        )
+        result = builder.get_methods_dir(inherited=True)
+        assert result == Path("/output/api/material/classes/ListTile/methods/inherited")
+        assert "methods" in result.parts
+        assert "inherited" in result.parts
+
+    def test_get_operators_dir_native(self):
+        """Verify native operators directory construction."""
+        builder = PathBuilder(
+            section="material",
+            entity_name="InkWell",
+            entity_type=CategoryType.CLASS,
+            doc_dir=Path("/doc"),
+            output_dir=Path("/output"),
+        )
+        result = builder.get_operators_dir(inherited=False)
+        assert result == Path("/output/api/material/classes/InkWell/operators/native")
+        assert "operators" in result.parts
+        assert "native" in result.parts
+
+    def test_get_operators_dir_inherited(self):
+        """Verify inherited operators directory construction."""
+        builder = PathBuilder(
+            section="material",
+            entity_name="InkWell",
+            entity_type=CategoryType.CLASS,
+            doc_dir=Path("/doc"),
+            output_dir=Path("/output"),
+        )
+        result = builder.get_operators_dir(inherited=True)
+        assert result == Path(
+            "/output/api/material/classes/InkWell/operators/inherited"
+        )
+        assert "operators" in result.parts
+        assert "inherited" in result.parts
+
+    def test_get_statics_dir(self):
+        """Verify statics directory construction (no native/inherited split)."""
+        builder = PathBuilder(
+            section="material",
+            entity_name="ListTile",
+            entity_type=CategoryType.CLASS,
+            doc_dir=Path("/doc"),
+            output_dir=Path("/output"),
+        )
+        result = builder.get_statics_dir()
+        assert result == Path("/output/api/material/classes/ListTile/statics")
+        assert "statics" in result.parts
+
+    def test_get_snippets_dir(self):
+        """Verify snippets directory construction (no native/inherited split)."""
+        builder = PathBuilder(
+            section="material",
+            entity_name="ListTile",
+            entity_type=CategoryType.CLASS,
+            doc_dir=Path("/doc"),
+            output_dir=Path("/output"),
+        )
+        result = builder.get_snippets_dir()
+        assert result == Path("/output/api/material/classes/ListTile/snippets")
+        assert "snippets" in result.parts
+
+    def test_get_constructor_file(self):
+        """Verify constructor file path construction."""
+        builder = PathBuilder(
+            section="material",
+            entity_name="InkWell",
+            entity_type=CategoryType.CLASS,
+            doc_dir=Path("/doc"),
+            output_dir=Path("/output"),
+        )
+        result = builder.get_constructor_file("InkWell")
+        assert result == Path(
+            "/output/api/material/classes/InkWell/constructors/InkWell.md"
+        )
+        assert result.suffix == ".md"
+
+    def test_get_native_method_file(self):
+        """Verify native method file path construction."""
+        builder = PathBuilder(
+            section="material",
+            entity_name="ListTile",
+            entity_type=CategoryType.CLASS,
+            doc_dir=Path("/doc"),
+            output_dir=Path("/output"),
+        )
+        result = builder.get_native_method_file("build")
+        assert result == Path(
+            "/output/api/material/classes/ListTile/methods/native/build.md"
+        )
+        assert result.suffix == ".md"
+
+    def test_get_native_operator_file(self):
+        """Verify native operator file path construction."""
+        builder = PathBuilder(
+            section="material",
+            entity_name="InkWell",
+            entity_type=CategoryType.CLASS,
+            doc_dir=Path("/doc"),
+            output_dir=Path("/output"),
+        )
+        result = builder.get_native_operator_file("operator_equals")
+        assert result == Path(
+            "/output/api/material/classes/InkWell/operators/native/operator_equals.md"
+        )
+        assert result.suffix == ".md"
+
+    def test_get_inherited_method_file(self):
+        """Verify inherited method file path construction."""
+        builder = PathBuilder(
+            section="material",
+            entity_name="InkWell",
+            entity_type=CategoryType.CLASS,
+            doc_dir=Path("/doc"),
+            output_dir=Path("/output"),
+        )
+        result = builder.get_inherited_method_file("material", "InkResponse", "build")
+        assert result == Path(
+            "/output/api/material/classes/InkWell/methods/inherited/material___InkResponse___build.md"
+        )
+        assert "___" in result.name
+
+    def test_get_inherited_operator_file(self):
+        """Verify inherited operator file path construction."""
+        builder = PathBuilder(
+            section="material",
+            entity_name="InkWell",
+            entity_type=CategoryType.CLASS,
+            doc_dir=Path("/doc"),
+            output_dir=Path("/output"),
+        )
+        result = builder.get_inherited_operator_file(
+            "widgets", "Widget", "operator_equals"
+        )
+        assert result == Path(
+            "/output/api/material/classes/InkWell/operators/inherited/widgets___Widget___operator_equals.md"
+        )
+        assert "___" in result.name
+
+    def test_get_static_file(self):
+        """Verify static file path construction."""
+        builder = PathBuilder(
+            section="material",
+            entity_name="ListTile",
+            entity_type=CategoryType.CLASS,
+            doc_dir=Path("/doc"),
+            output_dir=Path("/output"),
+        )
+        result = builder.get_static_file("staticMethod")
+        assert result == Path(
+            "/output/api/material/classes/ListTile/statics/staticMethod.md"
+        )
+        assert result.suffix == ".md"
+
+    def test_get_snippet_file(self):
+        """Verify snippet file path construction."""
+        builder = PathBuilder(
+            section="material",
+            entity_name="ListTile",
+            entity_type=CategoryType.CLASS,
+            doc_dir=Path("/doc"),
+            output_dir=Path("/output"),
+        )
+        result = builder.get_snippet_file("2")
+        assert result == Path("/output/api/material/classes/ListTile/snippets/2.md")
+        assert result.suffix == ".md"
+
     def test_get_input_section_dir(self):
         """Verify input section directory construction."""
         builder = PathBuilder(
@@ -186,6 +388,78 @@ class TestPathBuilder:
         )
         entity_dir = builder.get_entity_dir()
         assert "enums" in entity_dir.parts
+
+    def test_entity_type_mapping_constant(self):
+        """Verify CONSTANT type maps to 'constants' directory."""
+        builder = PathBuilder(
+            section="material",
+            entity_name="kBottomNavigationBarHeight",
+            entity_type=CategoryType.CONSTANT,
+            doc_dir=Path("/doc"),
+            output_dir=Path("/output"),
+        )
+        entity_dir = builder.get_entity_dir()
+        assert "constants" in entity_dir.parts
+
+    def test_entity_type_mapping_library(self):
+        """Verify LIBRARY type maps to 'libraries' directory."""
+        builder = PathBuilder(
+            section="material",
+            entity_name="material",
+            entity_type=CategoryType.LIBRARY,
+            doc_dir=Path("/doc"),
+            output_dir=Path("/output"),
+        )
+        entity_dir = builder.get_entity_dir()
+        assert "libraries" in entity_dir.parts
+
+    def test_entity_type_mapping_extension_type(self):
+        """Verify EXTENSION_TYPE type maps to 'extension_types' directory."""
+        builder = PathBuilder(
+            section="widgets",
+            entity_name="OverlayChildLayoutInfo",
+            entity_type=CategoryType.EXTENSION_TYPE,
+            doc_dir=Path("/doc"),
+            output_dir=Path("/output"),
+        )
+        entity_dir = builder.get_entity_dir()
+        assert "extension_types" in entity_dir.parts
+
+    def test_entity_type_mapping_extension(self):
+        """Verify EXTENSION type maps to 'extensions' directory."""
+        builder = PathBuilder(
+            section="widgets",
+            entity_name="WidgetStateOperators",
+            entity_type=CategoryType.EXTENSION,
+            doc_dir=Path("/doc"),
+            output_dir=Path("/output"),
+        )
+        entity_dir = builder.get_entity_dir()
+        assert "extensions" in entity_dir.parts
+
+    def test_entity_type_mapping_function(self):
+        """Verify FUNCTION type maps to 'functions' directory."""
+        builder = PathBuilder(
+            section="material",
+            entity_name="showBottomSheet",
+            entity_type=CategoryType.FUNCTION,
+            doc_dir=Path("/doc"),
+            output_dir=Path("/output"),
+        )
+        entity_dir = builder.get_entity_dir()
+        assert "functions" in entity_dir.parts
+
+    def test_entity_type_mapping_typedef(self):
+        """Verify TYPEDEF type maps to 'typedefs' directory."""
+        builder = PathBuilder(
+            section="material",
+            entity_name="DrawerCallback",
+            entity_type=CategoryType.TYPEDEF,
+            doc_dir=Path("/doc"),
+            output_dir=Path("/output"),
+        )
+        entity_dir = builder.get_entity_dir()
+        assert "typedefs" in entity_dir.parts
 
     def test_directory_only_pathbuilder(self):
         """Test PathBuilder without entity context for directory operations."""

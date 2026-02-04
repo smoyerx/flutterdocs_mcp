@@ -580,15 +580,10 @@ class TestFunctionDeclarationCleanup:
         assert result.returncode == 0
 
         # Check InkWell constructor
-        constructor_file = (
-            output_dir
-            / "api"
-            / "material"
-            / "classes"
-            / "InkWell"
-            / "constructors"
-            / "InkWell.md"
+        inkwell_builder = build_entity_path_builder(
+            output_dir, "material", "InkWell", CategoryType.CLASS
         )
+        constructor_file = inkwell_builder.get_constructor_file("InkWell")
         assert constructor_file.exists(), (
             f"Constructor file not found: {constructor_file}"
         )
@@ -650,16 +645,10 @@ class TestFunctionDeclarationCleanup:
         assert result.returncode == 0
 
         # Check ListTile build method (native method)
-        method_file = (
-            output_dir
-            / "api"
-            / "material"
-            / "classes"
-            / "ListTile"
-            / "methods"
-            / "native"
-            / "build.md"
+        listtile_builder = build_entity_path_builder(
+            output_dir, "material", "ListTile", CategoryType.CLASS
         )
+        method_file = listtile_builder.get_native_method_file("build")
         assert method_file.exists(), f"Method file not found: {method_file}"
 
         content = method_file.read_text(encoding="utf-8")

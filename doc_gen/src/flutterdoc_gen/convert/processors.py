@@ -349,7 +349,7 @@ def process_snippets(builder: PathBuilder) -> None:
     snippets_dir = builder.get_input_snippets_dir()
     snippet_pattern = f"{builder.section}.{builder.entity_name}.*.dart"
     snippet_files = sorted(snippets_dir.glob(snippet_pattern))
-    assert builder.entity_name is not None # Type hint for mypy / Pylance
+    assert builder.entity_name is not None  # Type hint for mypy / Pylance
 
     if not snippet_files:
         return
