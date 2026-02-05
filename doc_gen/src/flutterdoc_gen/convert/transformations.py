@@ -145,6 +145,40 @@ def remove_tracking_urls(content: str) -> str:
     return "\n".join(result_lines)
 
 
+def fix_arrow_spacing(content: str) -> str:
+    """Ensure arrow patterns have proper spacing.
+
+    Ensures that arrow patterns (→, ↔, ->, =>, <->, <=>, ➜, ➔) are:
+    - Preceded by a space, unless at the start of a line
+    - Followed by a space, unless at the end of a line
+
+    Args:
+        content: The markdown content to transform.
+
+    Returns:
+        The content with proper spacing around arrow patterns.
+    """
+    # Arrow patterns in order: longer patterns first to avoid partial matches
+    # Supported: <-> , <=> , -> , => , → (U+2192), ↔ (U+2194), ➜ (U+279C), ➔ (U+2794)
+    arrow_pattern = r"(<->|<=>|->|=>|\u2192|\u2194|\u279C|\u2794)"
+
+    def fix_line(line: str) -> str:
+        """Fix arrow spacing for a single line."""
+        # Pattern to find arrows that need space before (not at line start, not preceded by space)
+        # Negative lookbehind for start-of-string or space
+        line = re.sub(r"(?<!^)(?<! )" + arrow_pattern, r" \1", line)
+
+        # Pattern to find arrows that need space after (not at line end, not followed by space)
+        # Negative lookahead for end-of-string or space
+        line = re.sub(arrow_pattern + r"(?! )(?!$)", r"\1 ", line)
+
+        return line
+
+    lines = content.split("\n")
+    result_lines = [fix_line(line) for line in lines]
+    return "\n".join(result_lines)
+
+
 # --- Link Transformation Functions ---
 
 
@@ -322,6 +356,7 @@ def apply_transformations(content: str, source_context: str = "") -> str:
     content = remove_footer(content)
     content = remove_noise_lines(content)
     content = remove_tracking_urls(content)
+    content = fix_arrow_spacing(content)
 
     # Link transformations
     # Note: enum_constant_links must come BEFORE member_links since
