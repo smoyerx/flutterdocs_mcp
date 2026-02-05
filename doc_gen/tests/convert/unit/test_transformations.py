@@ -16,6 +16,7 @@ from flutterdoc_gen.convert.transformations import (
     reset_unmatched_patterns,
     transform_class_links,
     transform_dartpad_links,
+    transform_enum_constant_links,
     transform_image_links,
     transform_member_links,
 )
@@ -271,6 +272,49 @@ class TestTransformMemberLinks:
         assert result == ""
 
 
+class TestTransformEnumConstantLinks:
+    """Tests for transform_enum_constant_links transformation function."""
+
+    def test_transforms_enum_constant_link(self) -> None:
+        """Enum constant link should be transformed to MCP URI."""
+        content = "See [values](material/HourFormat/values-constant.html) for list."
+        result = transform_enum_constant_links(content)
+        assert (
+            result
+            == "See [values](mcp://flutter/api/material/HourFormat/values) for list."
+        )
+
+    def test_transforms_multiple_enum_constant_links(self) -> None:
+        """Multiple enum constant links should all be transformed."""
+        content = (
+            "[values](material/HourFormat/values-constant.html) and "
+            "[values](widgets/SomeEnum/values-constant.html)"
+        )
+        result = transform_enum_constant_links(content)
+        assert result == (
+            "[values](mcp://flutter/api/material/HourFormat/values) and "
+            "[values](mcp://flutter/api/widgets/SomeEnum/values)"
+        )
+
+    def test_preserves_non_constant_member_links(self) -> None:
+        """Links without -constant.html suffix should be preserved."""
+        content = "[build](widgets/Widget/build.html)"
+        result = transform_enum_constant_links(content)
+        assert result == content
+
+    def test_preserves_root_constant_links(self) -> None:
+        """2-part constant links (root constants) should be preserved."""
+        # These are CategoryType.CONSTANT entities, not enum member constants
+        content = "[kBottomNavigationBarHeight](material/kBottomNavigationBarHeight-constant.html)"
+        result = transform_enum_constant_links(content)
+        assert result == content  # 2-part, not 3-part, so not matched
+
+    def test_handles_empty_string(self) -> None:
+        """Empty string should return empty string."""
+        result = transform_enum_constant_links("")
+        assert result == ""
+
+
 class TestTransformImageLinks:
     """Tests for transform_image_links transformation function."""
 
@@ -461,13 +505,13 @@ class TestUnmatchedPatternTracking:
         assert len(patterns) == 1
         assert "optionalTypeArgs-constant.html" in patterns[0][1]
 
-    def test_collects_constant_patterns_3_part(self) -> None:
-        """Three-part constant link patterns should be collected as unmatched."""
+    def test_does_not_collect_transformed_enum_constant_links(self) -> None:
+        """Three-part constant link patterns are now transformed and not collected."""
         content = "Color is [transparent](material/Colors/transparent-constant.html)."
         apply_transformations(content, source_context="test.html")
         patterns = get_unmatched_patterns()
-        assert len(patterns) == 1
-        assert "transparent-constant.html" in patterns[0][1]
+        # 3-part -constant.html links are now transformed by enum_constant_link pattern
+        assert len(patterns) == 0
 
     def test_does_not_collect_transformed_class_links(self) -> None:
         """Transformed class links should not be collected."""

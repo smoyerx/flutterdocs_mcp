@@ -78,7 +78,9 @@ class LinkPattern:
 
 
 # Centralized registry of link transformation patterns
-# Order matters: more specific patterns should come before less specific ones
+# Order matters: more specific patterns should come before less specific ones.
+# In particular, enum_constant_link (3-part with -constant.html) must come
+# BEFORE member_link (3-part with .html) to avoid incorrect matches.
 LINK_PATTERNS: tuple[LinkPattern, ...] = (
     # Class links
     LinkPattern(
@@ -88,6 +90,16 @@ LINK_PATTERNS: tuple[LinkPattern, ...] = (
         description="[ClassName](section/ClassName-class.html)",
         test_input="See [Widget](widgets/Widget-class.html) for details.",
         test_output="See [Widget](mcp://flutter/api/widgets/Widget) for details.",
+    ),
+    # Enum constant links (3-part with -constant.html suffix)
+    # Must come BEFORE member_link to match the more specific pattern first.
+    LinkPattern(
+        name="enum_constant_link",
+        pattern=r"\[([^\]]+)\]\(([a-zA-Z0-9_-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)-constant\.html\)",
+        replacement=rf"[\1]({MCP_URI_PREFIX}\2/\3/\4)",
+        description="[constant](section/Enum/constant-constant.html)",
+        test_input="See [values](material/HourFormat/values-constant.html) for list.",
+        test_output="See [values](mcp://flutter/api/material/HourFormat/values) for list.",
     ),
     # Member links
     LinkPattern(

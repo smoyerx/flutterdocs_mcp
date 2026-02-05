@@ -50,6 +50,7 @@ class MemberType(StrEnum):
     """
 
     CONSTRUCTORS = "constructors"
+    CONSTANTS = "constants"
     PROPERTIES = "properties"
     METHODS = "methods"
     OPERATORS = "operators"

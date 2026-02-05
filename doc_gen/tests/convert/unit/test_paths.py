@@ -211,6 +211,19 @@ class TestPathBuilder:
         assert result == Path("/output/api/material/classes/ListTile/statics")
         assert "statics" in result.parts
 
+    def test_get_constants_dir(self):
+        """Verify constants directory construction (no native/inherited split)."""
+        builder = PathBuilder(
+            section="material",
+            entity_name="HourFormat",
+            entity_type=CategoryType.ENUM,
+            doc_dir=Path("/doc"),
+            output_dir=Path("/output"),
+        )
+        result = builder.get_constants_dir()
+        assert result == Path("/output/api/material/enums/HourFormat/constants")
+        assert "constants" in result.parts
+
     def test_get_snippets_dir(self):
         """Verify snippets directory construction (no native/inherited split)."""
         builder = PathBuilder(
@@ -316,6 +329,21 @@ class TestPathBuilder:
         )
         assert result.suffix == ".md"
 
+    def test_get_constant_file(self):
+        """Verify constant file path construction."""
+        builder = PathBuilder(
+            section="material",
+            entity_name="HourFormat",
+            entity_type=CategoryType.ENUM,
+            doc_dir=Path("/doc"),
+            output_dir=Path("/output"),
+        )
+        result = builder.get_constant_file("values")
+        assert result == Path(
+            "/output/api/material/enums/HourFormat/constants/values.md"
+        )
+        assert result.suffix == ".md"
+
     def test_get_snippet_file(self):
         """Verify snippet file path construction."""
         builder = PathBuilder(
@@ -352,6 +380,18 @@ class TestPathBuilder:
         )
         result = builder.get_input_member_file("build")
         assert result == Path("/doc/flutter/material/ListTile/build.html")
+
+    def test_get_input_constant_file(self):
+        """Verify input constant file path construction with -constant.html suffix."""
+        builder = PathBuilder(
+            section="material",
+            entity_name="HourFormat",
+            entity_type=CategoryType.ENUM,
+            doc_dir=Path("/doc"),
+            output_dir=Path("/output"),
+        )
+        result = builder.get_input_constant_file("values")
+        assert result == Path("/doc/flutter/material/HourFormat/values-constant.html")
 
     def test_entity_type_mapping_class(self):
         """Verify CLASS type maps to 'classes' directory."""

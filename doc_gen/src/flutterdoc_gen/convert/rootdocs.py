@@ -7,11 +7,6 @@ functions, and typedefs).
 Root documentation files are the main entry point files for each documented entity,
 as opposed to member documentation files (constructors, methods, properties, etc.)
 which are processed by the functions in the processors module.
-
-The process_class() function is fully implemented and uses the member processors
-from the processors module to handle class members (constructors, methods, etc.).
-The other process_*() functions are placeholders for future implementation and will
-each implement a subset of the work that process_class() currently does.
 """
 
 import logging
@@ -23,6 +18,7 @@ from flutterdoc_gen.convert.constants import CategoryType
 from flutterdoc_gen.convert.conversion import convert_html_to_markdown
 from flutterdoc_gen.convert.paths import PathBuilder, ensure_dir_exists
 from flutterdoc_gen.convert.processors import (
+    process_constants,
     process_constructors,
     process_methods,
     process_operators,
@@ -120,9 +116,6 @@ def process_mixin(
     4. Process operator files
     5. Process static method files
     6. Process code snippet files
-
-    This function is a placeholder for future mixin documentation processing.
-    Currently, it returns without performing any processing.
 
     Args:
         options_handle: The ConversionOptionsHandle instance to use for conversion.
@@ -252,10 +245,17 @@ def process_enum(
     doc_dir: Path,
     root_output_dir: Path,
 ) -> None:
-    """Process enum documentation files (placeholder).
+    """Process enum documentation files.
 
-    This function is a placeholder for future enum documentation processing.
-    Currently, it returns without performing any processing.
+    Steps:
+    1. Process the enum file
+    2. Process constructor files
+    3. Process property files
+    4. Process method files
+    5. Process operator files
+    6. Process constant files (enum-specific, e.g., `values`)
+    7. Process static method files
+    8. Process code snippet files
 
     Args:
         options_handle: The ConversionOptionsHandle instance to use for conversion.
@@ -265,7 +265,53 @@ def process_enum(
         doc_dir: The root documentation directory.
         root_output_dir: The root output directory.
     """
-    pass
+
+    # Create PathBuilder with entity context
+    builder = PathBuilder(
+        section=section,
+        entity_name=enum_name,
+        entity_type=CategoryType.ENUM,
+        doc_dir=doc_dir,
+        output_dir=root_output_dir,
+    )
+
+    # Create enum output directory
+    enum_output_dir = builder.get_entity_dir()
+    ensure_dir_exists(enum_output_dir)
+
+    # Step 1: Process the enum file
+    logging.info(f"  Processing enum file: {enum_file}")
+    enum_markdown = convert_html_to_markdown(options_handle, enum_file)
+    enum_output_file = builder.get_entity_file()
+    enum_output_file.write_text(enum_markdown, encoding="utf-8")
+
+    # Step 2: Process constructor files
+    logging.info(f"  Processing constructors for {enum_name}")
+    process_constructors(enum_markdown, builder, options_handle)
+
+    # Step 3: Process property files
+    logging.info(f"  Processing properties for {enum_name}")
+    process_properties(enum_markdown, builder, options_handle)
+
+    # Step 4: Process method files
+    logging.info(f"  Processing methods for {enum_name}")
+    process_methods(enum_markdown, builder, options_handle)
+
+    # Step 5: Process operator files
+    logging.info(f"  Processing operators for {enum_name}")
+    process_operators(enum_markdown, builder, options_handle)
+
+    # Step 6: Process constant files (enum-specific)
+    logging.info(f"  Processing constants for {enum_name}")
+    process_constants(enum_markdown, builder, options_handle)
+
+    # Step 7: Process static method files
+    logging.info(f"  Processing static methods for {enum_name}")
+    process_static_methods(enum_markdown, builder, options_handle)
+
+    # Step 8: Process code snippet files
+    logging.info(f"  Processing snippets for {enum_name}")
+    process_snippets(builder)
 
 
 def process_extension(

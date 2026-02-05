@@ -166,6 +166,32 @@ def transform_class_links(content: str) -> str:
     return re.sub(class_pattern.pattern, class_pattern.replacement, content)
 
 
+def transform_enum_constant_links(content: str) -> str:
+    """Transform enum constant links to MCP URI format.
+
+    Replaces links of the form [CONSTANT](SECTION/ENUM/CONSTANT-constant.html)
+    with [CONSTANT](mcp://flutter/api/SECTION/ENUM/CONSTANT).
+
+    This handles 3-part paths with -constant.html suffix, which are enum member
+    constants (like the `values` constant on enums). This is distinct from
+    2-part paths for root-level CategoryType.CONSTANT entities.
+
+    Uses patterns from LINK_PATTERNS registry.
+
+    Args:
+        content: The markdown content to transform.
+
+    Returns:
+        The content with enum constant links transformed.
+    """
+    enum_constant_pattern = next(
+        p for p in LINK_PATTERNS if p.name == "enum_constant_link"
+    )
+    return re.sub(
+        enum_constant_pattern.pattern, enum_constant_pattern.replacement, content
+    )
+
+
 def transform_member_links(content: str) -> str:
     """Transform member links to MCP URI format.
 
@@ -275,10 +301,11 @@ def apply_transformations(content: str, source_context: str = "") -> str:
 
     Link transformations (applied second):
     1. Transform class links to MCP URI format
-    2. Transform member links to MCP URI format
-    3. Transform image links to placeholder text
-    4. Transform DartPad links to placeholder text
-    5. Fix link spacing issues after markdown links
+    2. Transform enum constant links to MCP URI format (before member links)
+    3. Transform member links to MCP URI format
+    4. Transform image links to placeholder text
+    5. Transform DartPad links to placeholder text
+    6. Fix link spacing issues after markdown links
 
     After transformations, any remaining relative HTML links are collected
     as unmatched patterns for summary reporting.
@@ -297,7 +324,10 @@ def apply_transformations(content: str, source_context: str = "") -> str:
     content = remove_tracking_urls(content)
 
     # Link transformations
+    # Note: enum_constant_links must come BEFORE member_links since
+    # -constant.html is more specific than .html
     content = transform_class_links(content)
+    content = transform_enum_constant_links(content)
     content = transform_member_links(content)
     content = transform_image_links(content)
     content = transform_dartpad_links(content)

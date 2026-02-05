@@ -802,3 +802,69 @@ class TestFileCategorization:
         assert "Converting enum:" in result.stderr
         assert "Converting function:" in result.stderr
         assert "Converting typedef:" in result.stderr
+
+
+class TestEnumConstantsProcessing:
+    """Integration tests for enum Constants section processing."""
+
+    @pytest.fixture
+    def output_dir(self, tmp_path: Path) -> Path:
+        """Create a temporary output directory."""
+        return tmp_path / "output"
+
+    def test_creates_enum_constants_directory(self, output_dir: Path) -> None:
+        """Enum constants directory should be created during conversion."""
+        result = run_convert(SAMPLES_DIR, "material", output_dir)
+        assert result.returncode == 0
+
+        # HourFormat enum should have a constants directory
+        hourformat_builder = build_entity_path_builder(
+            output_dir, "material", "HourFormat", CategoryType.ENUM
+        )
+        constants_dir = hourformat_builder.get_constants_dir()
+        assert constants_dir.exists(), f"Constants directory not found: {constants_dir}"
+        assert constants_dir.is_dir()
+
+    def test_creates_enum_constant_files(self, output_dir: Path) -> None:
+        """Enum constant markdown files should be created."""
+        result = run_convert(SAMPLES_DIR, "material", output_dir)
+        assert result.returncode == 0
+
+        # HourFormat enum should have values constant file
+        hourformat_builder = build_entity_path_builder(
+            output_dir, "material", "HourFormat", CategoryType.ENUM
+        )
+        values_file = hourformat_builder.get_constant_file("values")
+        assert values_file.exists(), f"Constant file not found: {values_file}"
+
+    def test_enum_constant_file_starts_with_heading(self, output_dir: Path) -> None:
+        """Enum constant file should start with markdown heading."""
+        result = run_convert(SAMPLES_DIR, "material", output_dir)
+        assert result.returncode == 0
+
+        hourformat_builder = build_entity_path_builder(
+            output_dir, "material", "HourFormat", CategoryType.ENUM
+        )
+        values_file = hourformat_builder.get_constant_file("values")
+        content = values_file.read_text(encoding="utf-8")
+        assert content.startswith("#"), "Constant file should start with heading"
+
+    def test_enum_constant_link_transformed(self, output_dir: Path) -> None:
+        """Enum constant links should be transformed to MCP URI in root enum file."""
+        result = run_convert(SAMPLES_DIR, "material", output_dir)
+        assert result.returncode == 0
+
+        hourformat_builder = build_entity_path_builder(
+            output_dir, "material", "HourFormat", CategoryType.ENUM
+        )
+        enum_file = hourformat_builder.get_entity_file()
+        content = enum_file.read_text(encoding="utf-8")
+
+        # The original link [values](material/HourFormat/values-constant.html)
+        # should be transformed to [values](mcp://flutter/api/material/HourFormat/values)
+        assert "values-constant.html" not in content, (
+            "Enum constant link should be transformed"
+        )
+        assert f"{MCP_URI_PREFIX}material/HourFormat/values" in content, (
+            "Enum constant should have MCP URI"
+        )

@@ -108,8 +108,8 @@ class PathBuilder:
         """Get member type output directory.
 
         Maps MemberType to subdirectory structure. Properties, methods, and
-        operators have native/inherited splits; constructors, statics, and
-        snippets do not.
+        operators have native/inherited splits; constructors, constants, statics,
+        and snippets do not.
 
         Args:
             member_type: The type of member
@@ -124,6 +124,8 @@ class PathBuilder:
         match member_type:
             case MemberType.CONSTRUCTORS:
                 base = "constructors"
+            case MemberType.CONSTANTS:
+                base = "constants"
             case MemberType.PROPERTIES:
                 base = "properties"
             case MemberType.METHODS:
@@ -202,6 +204,9 @@ class PathBuilder:
     def get_constructors_dir(self) -> Path:
         return self._get_member_dir(MemberType.CONSTRUCTORS, inherited=False)
 
+    def get_constants_dir(self) -> Path:
+        return self._get_member_dir(MemberType.CONSTANTS, inherited=False)
+
     def get_properties_dir(self, inherited: bool = False) -> Path:
         return self._get_member_dir(MemberType.PROPERTIES, inherited)
 
@@ -221,6 +226,9 @@ class PathBuilder:
         return self._get_member_file(
             MemberType.CONSTRUCTORS, member_name, inherited=False
         )
+
+    def get_constant_file(self, member_name: str) -> Path:
+        return self._get_member_file(MemberType.CONSTANTS, member_name, inherited=False)
 
     def get_native_property_file(self, member_name: str) -> Path:
         return self._get_member_file(
@@ -310,6 +318,26 @@ class PathBuilder:
         self._require_entity_context()
         assert self.entity_name is not None
         return self.get_input_section_dir() / self.entity_name / f"{member_name}.html"
+
+    def get_input_constant_file(self, member_name: str) -> Path:
+        """Get input path for enum constant HTML file.
+
+        Enum constants have a -constant.html suffix, unlike regular members.
+        E.g., material/HourFormat/values-constant.html
+
+        Args:
+            member_name: The constant name (e.g., "values").
+
+        Returns:
+            Path like doc_dir/flutter/section/entity/member-constant.html
+        """
+        self._require_entity_context()
+        assert self.entity_name is not None
+        return (
+            self.get_input_section_dir()
+            / self.entity_name
+            / f"{member_name}-constant.html"
+        )
 
     def get_input_snippets_dir(self) -> Path:
         return self.doc_dir / "snippets"

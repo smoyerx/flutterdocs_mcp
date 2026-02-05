@@ -33,6 +33,7 @@ class TestLinkPatternRegistry:
         """Expected patterns should be present in registry."""
         expected_names = {
             "class_link",
+            "enum_constant_link",
             "member_link",
             "image_link",
             "dartpad_link",
@@ -40,4 +41,18 @@ class TestLinkPatternRegistry:
         actual_names = {p.name for p in LINK_PATTERNS}
         assert expected_names == actual_names, (
             f"Missing patterns: {expected_names - actual_names}"
+        )
+
+    def test_enum_constant_link_pattern_before_member_link(self) -> None:
+        """enum_constant_link must come before member_link in registry.
+
+        This is critical because enum_constant_link is more specific
+        (-constant.html vs .html). If member_link comes first, it would
+        incorrectly match enum constant links.
+        """
+        names = [p.name for p in LINK_PATTERNS]
+        enum_constant_idx = names.index("enum_constant_link")
+        member_idx = names.index("member_link")
+        assert enum_constant_idx < member_idx, (
+            "enum_constant_link must come before member_link in LINK_PATTERNS"
         )

@@ -283,6 +283,62 @@ def process_operators(
             output_file.write_text(markdown_content, encoding="utf-8")
 
 
+def process_constants(
+    entity_markdown: str,
+    builder: PathBuilder,
+    options_handle: ConversionOptionsHandle,
+) -> None:
+    """Process constant files for an entity (typically enums).
+
+    Scans the Constants section and converts native constant HTML files.
+    Constants have no inherited variant - they belong to the declaring entity only.
+    Enum constants (like `values`) use -constant.html suffix in the input.
+
+    Silently returns if the Constants section is not found.
+
+    Args:
+        entity_markdown: The converted markdown content of the root entity file.
+        builder: PathBuilder instance with entity context.
+        options_handle: The ConversionOptionsHandle instance for conversion.
+    """
+    section_content = extract_section_content(entity_markdown, "Constants")
+    if section_content is None:
+        # Silent handling - not all entities have Constants sections
+        return
+
+    members = extract_member_definitions(section_content)
+    if not members:
+        # Silent handling - no matches found
+        return
+
+    constants_dir = builder.get_constants_dir()
+
+    for member in members:
+        # Validate that constant belongs to current entity
+        is_native = (
+            member["section"] == builder.section
+            and member["entity_name"] == builder.entity_name
+        )
+
+        if not is_native:
+            # Constants should only reference the current entity
+            log_processing_error(
+                f"Constant link has unexpected URI: "
+                f"{member['section']}/{member['entity_name']}/{member['member']} "
+                f"(expected {builder.section}/{builder.entity_name})"
+            )
+
+        # Enum constants use -constant.html suffix
+        html_path = builder.get_input_constant_file(member["member"])
+        if not html_path.exists():
+            log_processing_error(f"Constant HTML file not found: {html_path}")
+
+        ensure_dir_exists(constants_dir)
+        markdown_content = convert_html_to_markdown(options_handle, html_path)
+        output_file = builder.get_constant_file(member["member"])
+        output_file.write_text(markdown_content, encoding="utf-8")
+
+
 def process_static_methods(
     entity_markdown: str,
     builder: PathBuilder,
