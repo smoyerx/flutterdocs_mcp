@@ -154,21 +154,15 @@ class PathBuilder:
         member_type: MemberType,
         member_name: str,
         inherited: bool,
-        source_section: str | None = None,
-        source_entity: str | None = None,
     ) -> Path:
         """Get member output file path.
 
-        Handles both native and inherited member file naming conventions:
-        - Native: {member_name}.md
-        - Inherited: {section}___{entity}___{member_name}.md
+        Handles both native and inherited member output file path naming conventions.
 
         Args:
             member_type: The type of member
             member_name: The member name
             inherited: True for inherited member file format
-            source_section: Required for inherited - section defining the member
-            source_entity: Required for inherited - entity defining the member
 
         Returns:
             Path to member markdown file
@@ -176,12 +170,7 @@ class PathBuilder:
         self._require_entity_context()
         member_dir = self._get_member_dir(member_type, inherited)
 
-        if inherited:
-            filename = f"{source_section}___{source_entity}___{member_name}.md"
-        else:
-            filename = f"{member_name}.md"
-
-        return member_dir / filename
+        return member_dir / f"{member_name}.md"
 
     # --- Output Path Convenience Aliases ---
 
@@ -247,38 +236,14 @@ class PathBuilder:
     def get_snippet_file(self, short_name: str) -> Path:
         return self._get_member_file(MemberType.SNIPPETS, short_name, inherited=False)
 
-    def get_inherited_property_file(
-        self, source_section: str, source_entity: str, member_name: str
-    ) -> Path:
-        return self._get_member_file(
-            MemberType.PROPERTIES,
-            member_name,
-            inherited=True,
-            source_section=source_section,
-            source_entity=source_entity,
-        )
+    def get_inherited_property_file(self, member_name: str) -> Path:
+        return self._get_member_file(MemberType.PROPERTIES, member_name, inherited=True)
 
-    def get_inherited_method_file(
-        self, source_section: str, source_entity: str, member_name: str
-    ) -> Path:
-        return self._get_member_file(
-            MemberType.METHODS,
-            member_name,
-            inherited=True,
-            source_section=source_section,
-            source_entity=source_entity,
-        )
+    def get_inherited_method_file(self, member_name: str) -> Path:
+        return self._get_member_file(MemberType.METHODS, member_name, inherited=True)
 
-    def get_inherited_operator_file(
-        self, source_section: str, source_entity: str, member_name: str
-    ) -> Path:
-        return self._get_member_file(
-            MemberType.OPERATORS,
-            member_name,
-            inherited=True,
-            source_section=source_section,
-            source_entity=source_entity,
-        )
+    def get_inherited_operator_file(self, member_name: str) -> Path:
+        return self._get_member_file(MemberType.OPERATORS, member_name, inherited=True)
 
     # --- Input Path Convenience Aliases ---
 

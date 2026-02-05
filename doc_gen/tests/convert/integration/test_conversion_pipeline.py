@@ -461,9 +461,7 @@ class TestInheritedMemberGeneration:
         inkwell_builder = build_entity_path_builder(
             output_dir, "material", "InkWell", CategoryType.CLASS
         )
-        operator_file = inkwell_builder.get_inherited_operator_file(
-            "widgets", "Widget", "operator_equals"
-        )
+        operator_file = inkwell_builder.get_inherited_operator_file("operator_equals")
         assert operator_file.exists(), (
             f"Missing inherited operator file: {operator_file}"
         )
@@ -476,9 +474,7 @@ class TestInheritedMemberGeneration:
         inkwell_builder = build_entity_path_builder(
             output_dir, "material", "InkWell", CategoryType.CLASS
         )
-        operator_file = inkwell_builder.get_inherited_operator_file(
-            "widgets", "Widget", "operator_equals"
-        )
+        operator_file = inkwell_builder.get_inherited_operator_file("operator_equals")
         content = operator_file.read_text(encoding="utf-8")
 
         # Should have title with operator symbol and member name
@@ -511,9 +507,7 @@ class TestInheritedMemberGeneration:
         assert len(prop_files) > 0, "No inherited property files generated"
 
         # Verify one specific inherited property from Widget
-        hashcode_file = inkwell_builder.get_inherited_property_file(
-            "widgets", "Widget", "hashCode"
-        )
+        hashcode_file = inkwell_builder.get_inherited_property_file("hashCode")
         assert hashcode_file.exists(), f"Missing inherited property: {hashcode_file}"
 
     def test_inherited_methods_generated(self, output_dir: Path) -> None:
@@ -533,9 +527,7 @@ class TestInheritedMemberGeneration:
         assert len(method_files) > 0, "No inherited method files generated"
 
         # Verify one specific inherited method
-        build_file = inkwell_builder.get_inherited_method_file(
-            "material", "InkResponse", "build"
-        )
+        build_file = inkwell_builder.get_inherited_method_file("build")
         assert build_file.exists(), f"Missing inherited method: {build_file}"
 
     def test_inherited_operators_generated(self, output_dir: Path) -> None:
@@ -555,9 +547,7 @@ class TestInheritedMemberGeneration:
         assert len(operator_files) > 0, "No inherited operator files generated"
 
         # Verify one specific inherited operator from Widget
-        equals_file = inkwell_builder.get_inherited_operator_file(
-            "widgets", "Widget", "operator_equals"
-        )
+        equals_file = inkwell_builder.get_inherited_operator_file("operator_equals")
         assert equals_file.exists(), f"Missing inherited operator: {equals_file}"
 
 

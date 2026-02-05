@@ -136,11 +136,7 @@ def process_properties(
                 some_section=member["section"],
                 some_entity=member["entity_name"],
             )
-            output_file = builder.get_inherited_property_file(
-                member["section"],
-                member["entity_name"],
-                member["member"],
-            )
+            output_file = builder.get_inherited_property_file(member["member"])
             output_file.write_text(markdown_content, encoding="utf-8")
 
 
@@ -205,11 +201,7 @@ def process_methods(
                 some_section=member["section"],
                 some_entity=member["entity_name"],
             )
-            output_file = builder.get_inherited_method_file(
-                member["section"],
-                member["entity_name"],
-                member["member"],
-            )
+            output_file = builder.get_inherited_method_file(member["member"])
             output_file.write_text(markdown_content, encoding="utf-8")
 
 
@@ -275,11 +267,7 @@ def process_operators(
                 some_section=member["section"],
                 some_entity=member["entity_name"],
             )
-            output_file = builder.get_inherited_operator_file(
-                member["section"],
-                member["entity_name"],
-                member["member"],
-            )
+            output_file = builder.get_inherited_operator_file(member["member"])
             output_file.write_text(markdown_content, encoding="utf-8")
 
 

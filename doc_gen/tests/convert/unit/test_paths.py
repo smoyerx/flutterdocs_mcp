@@ -121,11 +121,10 @@ class TestPathBuilder:
             doc_dir=Path("/doc"),
             output_dir=Path("/output"),
         )
-        result = builder.get_inherited_property_file("widgets", "Widget", "key")
+        result = builder.get_inherited_property_file("key")
         assert result == Path(
-            "/output/api/material/classes/ListTile/properties/inherited/widgets___Widget___key.md"
+            "/output/api/material/classes/ListTile/properties/inherited/key.md"
         )
-        assert "___" in result.name
 
     def test_get_constructors_dir(self):
         """Verify constructors directory construction (no native/inherited split)."""
@@ -291,11 +290,10 @@ class TestPathBuilder:
             doc_dir=Path("/doc"),
             output_dir=Path("/output"),
         )
-        result = builder.get_inherited_method_file("material", "InkResponse", "build")
+        result = builder.get_inherited_method_file("build")
         assert result == Path(
-            "/output/api/material/classes/InkWell/methods/inherited/material___InkResponse___build.md"
+            "/output/api/material/classes/InkWell/methods/inherited/build.md"
         )
-        assert "___" in result.name
 
     def test_get_inherited_operator_file(self):
         """Verify inherited operator file path construction."""
@@ -306,13 +304,10 @@ class TestPathBuilder:
             doc_dir=Path("/doc"),
             output_dir=Path("/output"),
         )
-        result = builder.get_inherited_operator_file(
-            "widgets", "Widget", "operator_equals"
-        )
+        result = builder.get_inherited_operator_file("operator_equals")
         assert result == Path(
-            "/output/api/material/classes/InkWell/operators/inherited/widgets___Widget___operator_equals.md"
+            "/output/api/material/classes/InkWell/operators/inherited/operator_equals.md"
         )
-        assert "___" in result.name
 
     def test_get_static_file(self):
         """Verify static file path construction."""
