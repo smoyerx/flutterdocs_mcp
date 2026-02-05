@@ -28,6 +28,46 @@ from flutterdoc_gen.convert.processors import (
 )
 
 
+def _process_all_sections(
+    entity_markdown: str,
+    builder: PathBuilder,
+    options_handle: ConversionOptionsHandle,
+) -> None:
+    """Process all possible sections for a given root entity documentation file.
+
+    Scans each possible section (constructors, properties, methods, etc.) and converts
+    member documentation files referenced in those sections as well as any code snippets.
+
+    Used for class, mixin, and enum processing where all sections are applicable with a
+    few exceptions (e.g., mixins do not have constructors).
+
+    Args:
+        entity_markdown: The markdown content of the root entity documentation file.
+        builder: The PathBuilder instance for constructing paths.
+        options_handle: The ConversionOptionsHandle instance to use for conversion.
+    """
+    # Process constructor files (if applicable)
+    process_constructors(entity_markdown, builder, options_handle)
+
+    # Process property files
+    process_properties(entity_markdown, builder, options_handle)
+
+    # Process method files
+    process_methods(entity_markdown, builder, options_handle)
+
+    # Process operator files
+    process_operators(entity_markdown, builder, options_handle)
+
+    # Process static method files
+    process_static_methods(entity_markdown, builder, options_handle)
+
+    # Process constant files (if applicable, e.g., for enums)
+    process_constants(entity_markdown, builder, options_handle)
+
+    # Process code snippet files
+    process_snippets(builder)
+
+
 def process_class(
     options_handle: ConversionOptionsHandle,
     class_name: str,
@@ -38,14 +78,7 @@ def process_class(
 ) -> None:
     """Process class documentation files.
 
-    Steps:
-    1. Process the class file
-    2. Process constructor files
-    3. Process property files
-    4. Process method files
-    5. Process operator files
-    6. Process static method files
-    7. Process code snippet files
+    Process the root class documentation file and all associated member documentation files.
 
     Args:
         options_handle: The ConversionOptionsHandle instance to use for conversion.
@@ -68,35 +101,14 @@ def process_class(
     class_output_dir = builder.get_entity_dir()
     ensure_dir_exists(class_output_dir)
 
-    # Step 1: Process the class file
+    # Process the root class file
     logging.info(f"  Processing class file: {class_file}")
     class_markdown = convert_html_to_markdown(options_handle, class_file)
     class_output_file = builder.get_entity_file()
     class_output_file.write_text(class_markdown, encoding="utf-8")
 
-    # Step 2: Process constructor files
-    logging.info(f"  Processing constructors for {class_name}")
-    process_constructors(class_markdown, builder, options_handle)
-
-    # Step 3: Process property files
-    logging.info(f"  Processing properties for {class_name}")
-    process_properties(class_markdown, builder, options_handle)
-
-    # Step 4: Process method files
-    logging.info(f"  Processing methods for {class_name}")
-    process_methods(class_markdown, builder, options_handle)
-
-    # Step 5: Process operator files
-    logging.info(f"  Processing operators for {class_name}")
-    process_operators(class_markdown, builder, options_handle)
-
-    # Step 6: Process static method files
-    logging.info(f"  Processing static methods for {class_name}")
-    process_static_methods(class_markdown, builder, options_handle)
-
-    # Step 7: Process code snippet files
-    logging.info(f"  Processing snippets for {class_name}")
-    process_snippets(builder)
+    # Process all sections for the class documentation file
+    _process_all_sections(class_markdown, builder, options_handle)
 
 
 def process_mixin(
@@ -109,13 +121,7 @@ def process_mixin(
 ) -> None:
     """Process mixin documentation files.
 
-    Steps:
-    1. Process the mixin file
-    2. Process property files
-    3. Process method files
-    4. Process operator files
-    5. Process static method files
-    6. Process code snippet files
+    Process the root mixin documentation file and all associated member documentation files.
 
     Args:
         options_handle: The ConversionOptionsHandle instance to use for conversion.
@@ -138,31 +144,14 @@ def process_mixin(
     mixin_output_dir = builder.get_entity_dir()
     ensure_dir_exists(mixin_output_dir)
 
-    # Step 1: Process the mixin file
+    # Process the root mixin file
     logging.info(f"  Processing mixin file: {mixin_file}")
     mixin_markdown = convert_html_to_markdown(options_handle, mixin_file)
     mixin_output_file = builder.get_entity_file()
     mixin_output_file.write_text(mixin_markdown, encoding="utf-8")
 
-    # Step 2: Process property files
-    logging.info(f"  Processing properties for {mixin_name}")
-    process_properties(mixin_markdown, builder, options_handle)
-
-    # Step 3: Process method files
-    logging.info(f"  Processing methods for {mixin_name}")
-    process_methods(mixin_markdown, builder, options_handle)
-
-    # Step 4: Process operator files
-    logging.info(f"  Processing operators for {mixin_name}")
-    process_operators(mixin_markdown, builder, options_handle)
-
-    # Step 5: Process static method files
-    logging.info(f"  Processing static methods for {mixin_name}")
-    process_static_methods(mixin_markdown, builder, options_handle)
-
-    # Step 6: Process code snippet files
-    logging.info(f"  Processing snippets for {mixin_name}")
-    process_snippets(builder)
+    # Process all sections for the mixin documentation file
+    _process_all_sections(mixin_markdown, builder, options_handle)
 
 
 def process_constant(
@@ -247,15 +236,7 @@ def process_enum(
 ) -> None:
     """Process enum documentation files.
 
-    Steps:
-    1. Process the enum file
-    2. Process constructor files
-    3. Process property files
-    4. Process method files
-    5. Process operator files
-    6. Process constant files (enum-specific, e.g., `values`)
-    7. Process static method files
-    8. Process code snippet files
+        Process the root enum documentation file and all associated member documentation files.
 
     Args:
         options_handle: The ConversionOptionsHandle instance to use for conversion.
@@ -279,39 +260,14 @@ def process_enum(
     enum_output_dir = builder.get_entity_dir()
     ensure_dir_exists(enum_output_dir)
 
-    # Step 1: Process the enum file
+    # Process the root enum file
     logging.info(f"  Processing enum file: {enum_file}")
     enum_markdown = convert_html_to_markdown(options_handle, enum_file)
     enum_output_file = builder.get_entity_file()
     enum_output_file.write_text(enum_markdown, encoding="utf-8")
 
-    # Step 2: Process constructor files
-    logging.info(f"  Processing constructors for {enum_name}")
-    process_constructors(enum_markdown, builder, options_handle)
-
-    # Step 3: Process property files
-    logging.info(f"  Processing properties for {enum_name}")
-    process_properties(enum_markdown, builder, options_handle)
-
-    # Step 4: Process method files
-    logging.info(f"  Processing methods for {enum_name}")
-    process_methods(enum_markdown, builder, options_handle)
-
-    # Step 5: Process operator files
-    logging.info(f"  Processing operators for {enum_name}")
-    process_operators(enum_markdown, builder, options_handle)
-
-    # Step 6: Process constant files (enum-specific)
-    logging.info(f"  Processing constants for {enum_name}")
-    process_constants(enum_markdown, builder, options_handle)
-
-    # Step 7: Process static method files
-    logging.info(f"  Processing static methods for {enum_name}")
-    process_static_methods(enum_markdown, builder, options_handle)
-
-    # Step 8: Process code snippet files
-    logging.info(f"  Processing snippets for {enum_name}")
-    process_snippets(builder)
+    # Process all sections for the enum documentation file
+    _process_all_sections(enum_markdown, builder, options_handle)
 
 
 def process_extension(
