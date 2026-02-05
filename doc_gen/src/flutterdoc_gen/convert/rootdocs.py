@@ -38,14 +38,15 @@ def _process_all_sections(
     Scans each possible section (constructors, properties, methods, etc.) and converts
     member documentation files referenced in those sections as well as any code snippets.
 
-    Used for class, mixin, and enum processing where all sections are applicable with a
-    few exceptions (e.g., mixins do not have constructors).
+    Used for class, mixin, enum, and extension type processing where all sections are
+    applicable with a ew exceptions (e.g., mixins do not have constructors).
 
     Args:
         entity_markdown: The markdown content of the root entity documentation file.
         builder: The PathBuilder instance for constructing paths.
         options_handle: The ConversionOptionsHandle instance to use for conversion.
     """
+
     # Process constructor files (if applicable)
     process_constructors(entity_markdown, builder, options_handle)
 
@@ -88,6 +89,7 @@ def process_class(
         doc_dir: The root documentation directory.
         root_output_dir: The root output directory.
     """
+
     # Create PathBuilder with entity context
     builder = PathBuilder(
         section=section,
@@ -131,6 +133,7 @@ def process_mixin(
         doc_dir: The root documentation directory.
         root_output_dir: The root output directory.
     """
+
     # Create PathBuilder with entity context
     builder = PathBuilder(
         section=section,
@@ -162,10 +165,9 @@ def process_constant(
     doc_dir: Path,
     root_output_dir: Path,
 ) -> None:
-    """Process constant documentation files (placeholder).
+    """Process constant documentation files.
 
-    This function is a placeholder for future constant documentation processing.
-    Currently, it returns without performing any processing.
+    Process the root constant documentation file; does not have associated member documentation files.
 
     Args:
         options_handle: The ConversionOptionsHandle instance to use for conversion.
@@ -175,7 +177,25 @@ def process_constant(
         doc_dir: The root documentation directory.
         root_output_dir: The root output directory.
     """
-    pass
+
+    # Create PathBuilder with entity context
+    builder = PathBuilder(
+        section=section,
+        entity_name=constant_name,
+        entity_type=CategoryType.CONSTANT,
+        doc_dir=doc_dir,
+        output_dir=root_output_dir,
+    )
+
+    # Create constant output directory
+    constant_output_dir = builder.get_entity_dir()
+    ensure_dir_exists(constant_output_dir)
+
+    # Process the root constant file
+    logging.info(f"  Processing constant file: {constant_file}")
+    constant_markdown = convert_html_to_markdown(options_handle, constant_file)
+    constant_output_file = builder.get_entity_file()
+    constant_output_file.write_text(constant_markdown, encoding="utf-8")
 
 
 def process_library(
@@ -210,10 +230,9 @@ def process_extension_type(
     doc_dir: Path,
     root_output_dir: Path,
 ) -> None:
-    """Process extension type documentation files (placeholder).
+    """Process extension type documentation files.
 
-    This function is a placeholder for future extension type documentation processing.
-    Currently, it returns without performing any processing.
+    Process the root extension type documentation file and all associated member documentation files.
 
     Args:
         options_handle: The ConversionOptionsHandle instance to use for conversion.
@@ -223,7 +242,30 @@ def process_extension_type(
         doc_dir: The root documentation directory.
         root_output_dir: The root output directory.
     """
-    pass
+
+    # Create PathBuilder with entity context
+    builder = PathBuilder(
+        section=section,
+        entity_name=extension_type_name,
+        entity_type=CategoryType.EXTENSION_TYPE,
+        doc_dir=doc_dir,
+        output_dir=root_output_dir,
+    )
+
+    # Create extension type output directory
+    extension_type_output_dir = builder.get_entity_dir()
+    ensure_dir_exists(extension_type_output_dir)
+
+    # Process the root extension type file
+    logging.info(f"  Processing extension type file: {extension_type_file}")
+    extension_type_markdown = convert_html_to_markdown(
+        options_handle, extension_type_file, apply_function_declaration_cleanup=True
+    )
+    extension_type_output_file = builder.get_entity_file()
+    extension_type_output_file.write_text(extension_type_markdown, encoding="utf-8")
+
+    # Process all sections for the extension type documentation file
+    _process_all_sections(extension_type_markdown, builder, options_handle)
 
 
 def process_enum(
