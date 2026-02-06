@@ -22,7 +22,6 @@ Some root documentation files are identified directly by their filenames, while 
 - Root class documentation files: files named {CLASS}-class.html in the {DOC_DIR}/flutter/{SECTION} directory.
 - Root mixin documentation files: files named {MIXIN}-mixin.html in the {DOC_DIR}/flutter/{SECTION} directory.
 - Root constant documentation files: files named {CONSTANT}-constant.html in the {DOC_DIR}/flutter/{SECTION} directory.
-- Root library documentation files: files named {LIBRARY}-library.html in the {DOC_DIR}/flutter/{SECTION} directory.
 - Root extension type documentation files: files named {EXTENSION_TYPE}-extension-type.html in the {DOC_DIR}/flutter/{SECTION} directory.
 
 ### Indirectly Identified Root Documentation Files
@@ -30,6 +29,8 @@ Some root documentation files are identified directly by their filenames, while 
 #### Simple Indirect Identification
 - Root enum documentation files: files named {ENUM}.html in the {DOC_DIR}/flutter/{SECTION} directory where there also exists a file named {ENUM}-enum-sidebar.html in the same directory.
 - Root extension documentation files: files named {EXTENSION}.html in the {DOC_DIR}/flutter/{SECTION} directory where there also exists a file named {EXTENSION}-extension-sidebar.html in the same directory.
+- Root library documentation files: files named index.html in the {DOC_DIR}/flutter/{SECTION} directory where there also exists a file named {SECTION}-library.html.
+
 
 #### Complex Indirect Identification
 

@@ -37,9 +37,10 @@ def _process_all_sections(
 
     Scans each possible section (constructors, properties, methods, etc.) and converts
     member documentation files referenced in those sections as well as any code snippets.
+    Missing or empty sections are skipped without error.
 
-    Used for class, mixin, enum, and extension type processing where all sections are
-    applicable with a ew exceptions (e.g., mixins do not have constructors).
+    Used for all class-like entities (classes, mixins, enums, etc.) where all sections are
+    applicable with few exceptions (e.g., mixins do not have constructors).
 
     Args:
         entity_markdown: The markdown content of the root entity documentation file.
@@ -320,10 +321,9 @@ def process_extension(
     doc_dir: Path,
     root_output_dir: Path,
 ) -> None:
-    """Process extension documentation files (placeholder).
+    """Process extension documentation files.
 
-    This function is a placeholder for future extension documentation processing.
-    Currently, it returns without performing any processing.
+    Process the root extension documentation file and all associated member documentation files.
 
     Args:
         options_handle: The ConversionOptionsHandle instance to use for conversion.
@@ -333,7 +333,28 @@ def process_extension(
         doc_dir: The root documentation directory.
         root_output_dir: The root output directory.
     """
-    pass
+
+    # Create PathBuilder with entity context
+    builder = PathBuilder(
+        section=section,
+        entity_name=extension_name,
+        entity_type=CategoryType.EXTENSION,
+        doc_dir=doc_dir,
+        output_dir=root_output_dir,
+    )
+
+    # Create extension output directory
+    extension_output_dir = builder.get_entity_dir()
+    ensure_dir_exists(extension_output_dir)
+
+    # Process the root extension file
+    logging.info(f"  Processing extension file: {extension_file}")
+    extension_markdown = convert_html_to_markdown(options_handle, extension_file)
+    extension_output_file = builder.get_entity_file()
+    extension_output_file.write_text(extension_markdown, encoding="utf-8")
+
+    # Process all sections for the extension documentation file
+    _process_all_sections(extension_markdown, builder, options_handle)
 
 
 def process_function(
@@ -344,10 +365,9 @@ def process_function(
     doc_dir: Path,
     root_output_dir: Path,
 ) -> None:
-    """Process function documentation files (placeholder).
+    """Process function documentation files.
 
-    This function is a placeholder for future function documentation processing.
-    Currently, it returns without performing any processing.
+    Process the root function documentation file; does not have associated member documentation files.
 
     Args:
         options_handle: The ConversionOptionsHandle instance to use for conversion.
@@ -357,7 +377,27 @@ def process_function(
         doc_dir: The root documentation directory.
         root_output_dir: The root output directory.
     """
-    pass
+
+    # Create PathBuilder with entity context
+    builder = PathBuilder(
+        section=section,
+        entity_name=function_name,
+        entity_type=CategoryType.FUNCTION,
+        doc_dir=doc_dir,
+        output_dir=root_output_dir,
+    )
+
+    # Create function output directory
+    function_output_dir = builder.get_entity_dir()
+    ensure_dir_exists(function_output_dir)
+
+    # Process the root function file
+    logging.info(f"  Processing function file: {function_file}")
+    function_markdown = convert_html_to_markdown(
+        options_handle, function_file, apply_function_declaration_cleanup=True
+    )
+    function_output_file = builder.get_entity_file()
+    function_output_file.write_text(function_markdown, encoding="utf-8")
 
 
 def process_typedef(
@@ -368,10 +408,9 @@ def process_typedef(
     doc_dir: Path,
     root_output_dir: Path,
 ) -> None:
-    """Process typedef documentation files (placeholder).
+    """Process typedef documentation files.
 
-    This function is a placeholder for future typedef documentation processing.
-    Currently, it returns without performing any processing.
+    Process the root typedef documentation file; does not have associated member documentation files.
 
     Args:
         options_handle: The ConversionOptionsHandle instance to use for conversion.
@@ -382,3 +421,21 @@ def process_typedef(
         root_output_dir: The root output directory.
     """
     pass
+    # Create PathBuilder with entity context
+    builder = PathBuilder(
+        section=section,
+        entity_name=typedef_name,
+        entity_type=CategoryType.TYPEDEF,
+        doc_dir=doc_dir,
+        output_dir=root_output_dir,
+    )
+
+    # Create typedef output directory
+    typedef_output_dir = builder.get_entity_dir()
+    ensure_dir_exists(typedef_output_dir)
+
+    # Process the root typedef file
+    logging.info(f"  Processing typedef file: {typedef_file}")
+    typedef_markdown = convert_html_to_markdown(options_handle, typedef_file)
+    typedef_output_file = builder.get_entity_file()
+    typedef_output_file.write_text(typedef_markdown, encoding="utf-8")
