@@ -84,17 +84,13 @@ def test_categorize_constant_files(tmp_path: Path, mock_section_dir: Path) -> No
 
 def test_categorize_library_files(tmp_path: Path, mock_section_dir: Path) -> None:
     """Test categorization of library documentation files."""
-    create_test_files(
-        mock_section_dir, ["material-library.html", "widgets-library.html"]
-    )
+    # Library identification requires both index.html and test_section-library.html
+    create_test_files(mock_section_dir, ["index.html", "test_section-library.html"])
 
     result = find_and_categorize_root_files(tmp_path, "test_section")
 
-    assert len(result[CategoryType.LIBRARY]) == 2
-    assert ("material", mock_section_dir / "material-library.html") in result[
-        CategoryType.LIBRARY
-    ]
-    assert ("widgets", mock_section_dir / "widgets-library.html") in result[
+    assert len(result[CategoryType.LIBRARY]) == 1
+    assert ("test_section", mock_section_dir / "index.html") in result[
         CategoryType.LIBRARY
     ]
 
@@ -283,7 +279,8 @@ def test_mixed_categories(tmp_path: Path, mock_section_dir: Path) -> None:
             "ListTile-class.html",
             "BaseSliderTrackShape-mixin.html",
             "accelerateEasing-constant.html",
-            "material-library.html",
+            "index.html",
+            "test_section-library.html",
             "HourFormat.html",
             "HourFormat-enum-sidebar.html",
             "showBottomSheet.html",

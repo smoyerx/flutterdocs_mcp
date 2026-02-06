@@ -83,10 +83,6 @@ def find_and_categorize_root_files(
             constant_name = name.replace("-constant", "")
             categories[CategoryType.CONSTANT].append((constant_name, html_file))
             categorized_files.add(filename)
-        elif filename.endswith("-library.html"):
-            library_name = name.replace("-library", "")
-            categories[CategoryType.LIBRARY].append((library_name, html_file))
-            categorized_files.add(filename)
         elif filename.endswith("-extension-type.html"):
             extension_type_name = name.replace("-extension-type", "")
             categories[CategoryType.EXTENSION_TYPE].append(
@@ -94,7 +90,15 @@ def find_and_categorize_root_files(
             )
             categorized_files.add(filename)
 
-    # Second pass: Indirect identification via sidebar files
+    # Second pass: Indirect identification via sidebar files and library check
+    # Check for library: index.html exists and {section}-library.html exists
+    library_marker = f"{section}-library.html"
+    index_file = section_dir / "index.html"
+    if index_file.exists() and library_marker in {f.name for f in all_html_files}:
+        categories[CategoryType.LIBRARY].append((section, index_file))
+        categorized_files.add("index.html")
+        categorized_files.add(library_marker)  # Mark marker file as categorized too
+
     for html_file in all_html_files:
         filename = html_file.name
 

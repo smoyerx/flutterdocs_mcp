@@ -730,6 +730,10 @@ class TestFileCategorization:
         # Verify libraries
         library_names = [name for name, _ in categorized[CategoryType.LIBRARY]]
         assert library_names == ["material"]
+        # Verify library file path is index.html
+        library_paths = [path for _, path in categorized[CategoryType.LIBRARY]]
+        assert len(library_paths) == 1
+        assert library_paths[0].name == "index.html"
 
         # Verify enums
         enum_names = [name for name, _ in categorized[CategoryType.ENUM]]
@@ -767,10 +771,17 @@ class TestFileCategorization:
         ]
         assert extension_type_names == ["OverlayChildLayoutInfo"]
 
+        # Verify libraries
+        library_names = [name for name, _ in categorized[CategoryType.LIBRARY]]
+        assert library_names == ["widgets"]
+        # Verify library file path is index.html
+        library_paths = [path for _, path in categorized[CategoryType.LIBRARY]]
+        assert len(library_paths) == 1
+        assert library_paths[0].name == "index.html"
+
         # Verify no other types in widgets section
         assert len(categorized[CategoryType.MIXIN]) == 0
         assert len(categorized[CategoryType.CONSTANT]) == 0
-        assert len(categorized[CategoryType.LIBRARY]) == 0
         assert len(categorized[CategoryType.ENUM]) == 0
         assert len(categorized[CategoryType.FUNCTION]) == 0
         assert len(categorized["typedef"]) == 0

@@ -255,6 +255,10 @@ class PathBuilder:
 
     def get_input_entity_file(self) -> Path:
         self._require_entity_context()
+        # Special case: library files are always named index.html
+        if self.entity_type == CategoryType.LIBRARY:
+            return self.get_input_section_dir() / "index.html"
+
         match self.entity_type:
             case CategoryType.CLASS:
                 suffix = "-class"
@@ -264,8 +268,6 @@ class PathBuilder:
                 suffix = ""
             case CategoryType.CONSTANT:
                 suffix = "-constant"
-            case CategoryType.LIBRARY:
-                suffix = "-library"
             case CategoryType.EXTENSION_TYPE:
                 suffix = "-extension-type"
             case CategoryType.EXTENSION:
