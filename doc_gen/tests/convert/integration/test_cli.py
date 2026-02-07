@@ -6,9 +6,9 @@ from pathlib import Path
 
 import pytest
 
-from flutterdoc_gen.convert.constants import CategoryType
+from flutterdoc_gen._shared.constants import CategoryType
 from convert.conftest import run_convert, SAMPLES_DIR
-from flutterdoc_gen.convert.paths import PathBuilder
+from flutterdoc_gen._shared.paths import PathBuilder
 
 
 def build_output_path_builder(

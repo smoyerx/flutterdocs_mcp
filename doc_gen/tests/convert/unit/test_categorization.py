@@ -6,7 +6,7 @@ from typing import Any
 import pytest
 
 from flutterdoc_gen.convert.categorization import find_and_categorize_root_files
-from flutterdoc_gen.convert.constants import CategoryType
+from flutterdoc_gen._shared.constants import CategoryType
 
 
 @pytest.fixture

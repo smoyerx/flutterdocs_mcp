@@ -16,7 +16,7 @@ from convert.conftest import (
     SAMPLES_DIR,
     build_entity_path_builder,
 )
-from flutterdoc_gen.convert.constants import CategoryType
+from flutterdoc_gen._shared.constants import CategoryType
 from flutterdoc_gen.convert.patterns import MCP_URI_PREFIX
 
 

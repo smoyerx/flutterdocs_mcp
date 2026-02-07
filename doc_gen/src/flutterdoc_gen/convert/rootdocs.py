@@ -14,9 +14,9 @@ from pathlib import Path
 
 from html_to_markdown import ConversionOptionsHandle
 
-from flutterdoc_gen.convert.constants import CategoryType
+from flutterdoc_gen._shared.constants import CategoryType
 from flutterdoc_gen.convert.conversion import convert_html_to_markdown
-from flutterdoc_gen.convert.paths import PathBuilder, ensure_dir_exists
+from flutterdoc_gen._shared.paths import PathBuilder, ensure_dir_exists
 from flutterdoc_gen.convert.processors import (
     process_constants,
     process_constructors,

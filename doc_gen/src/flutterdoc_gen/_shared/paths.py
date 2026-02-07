@@ -1,5 +1,8 @@
 """PathBuilder centralizes all path construction for documentation workflows.
 
+Shared across multiple flutterdoc_gen tools (convert, load) to ensure consistent
+path construction for reading/writing documentation files.
+
 - With only section/doc_dir/output_dir, it builds directory-level paths (e.g., API root,
   section directories, input roots).
 - With entity_name and entity_type, it also builds entity/member-specific paths (e.g.,
@@ -16,7 +19,7 @@ methods for readability at call sites.
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from flutterdoc_gen.convert.constants import CategoryType, MemberType
+from flutterdoc_gen._shared.constants import CategoryType, MemberType
 
 
 @dataclass(frozen=True)

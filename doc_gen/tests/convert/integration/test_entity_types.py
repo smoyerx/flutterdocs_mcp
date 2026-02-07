@@ -12,7 +12,7 @@ from convert.conftest import (
     run_convert,
     SAMPLES_DIR,
 )
-from flutterdoc_gen.convert.constants import CategoryType
+from flutterdoc_gen._shared.constants import CategoryType
 from flutterdoc_gen.convert.transformations import FOOTER_MARKER
 
 

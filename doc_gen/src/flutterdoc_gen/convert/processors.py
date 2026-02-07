@@ -20,7 +20,7 @@ from flutterdoc_gen.convert.parsing import (
     extract_section_content,
     extract_static_method_links,
 )
-from flutterdoc_gen.convert.paths import PathBuilder, ensure_dir_exists
+from flutterdoc_gen._shared.paths import PathBuilder, ensure_dir_exists
 from flutterdoc_gen.convert.templates import (
     INHERITED_METHOD_TEMPLATE,
     INHERITED_OPERATOR_TEMPLATE,

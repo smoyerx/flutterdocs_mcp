@@ -6,9 +6,9 @@ from pathlib import Path
 
 import pytest
 
-from flutterdoc_gen.convert.constants import CategoryType
+from flutterdoc_gen._shared.constants import CategoryType
 from flutterdoc_gen.convert.patterns import MCP_URI_PREFIX
-from flutterdoc_gen.convert.paths import PathBuilder
+from flutterdoc_gen._shared.paths import PathBuilder
 
 
 # Path to convert sample documentation files

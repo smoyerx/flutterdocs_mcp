@@ -2,8 +2,8 @@
 
 from pathlib import Path
 
-from flutterdoc_gen.convert.constants import CategoryType
-from flutterdoc_gen.convert.paths import PathBuilder
+from flutterdoc_gen._shared.constants import CategoryType
+from flutterdoc_gen._shared.paths import PathBuilder
 
 
 class TestPathBuilder:

@@ -1,4 +1,8 @@
-"""Constants for categorization in the convert module."""
+"""Shared constants for Flutter/Dart documentation workflows.
+
+This module defines domain enums used across multiple flutterdoc_gen tools (convert, load).
+CategoryType and MemberType represent the logical structure of Flutter/Dart documentation.
+"""
 
 from enum import StrEnum
 

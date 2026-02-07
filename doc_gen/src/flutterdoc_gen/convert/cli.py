@@ -15,9 +15,9 @@ from html_to_markdown import (
 )
 
 from flutterdoc_gen.convert.categorization import find_and_categorize_root_files
-from flutterdoc_gen.convert.constants import CategoryType
+from flutterdoc_gen._shared.constants import CategoryType
 from flutterdoc_gen.convert.errors import log_processing_error
-from flutterdoc_gen.convert.paths import PathBuilder, ensure_dir_exists
+from flutterdoc_gen._shared.paths import PathBuilder, ensure_dir_exists
 from flutterdoc_gen.convert.rootdocs import (
     process_class,
     process_constant,
