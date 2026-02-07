@@ -3,7 +3,7 @@
 from pathlib import Path
 
 from flutterdoc_gen._shared.constants import CategoryType
-from flutterdoc_gen._shared.paths import PathBuilder
+from flutterdoc_gen._shared.paths import PathBuilder, list_entity_names
 
 
 class TestPathBuilder:
@@ -497,16 +497,45 @@ class TestPathBuilder:
         assert "typedefs" in entity_dir.parts
 
     def test_directory_only_pathbuilder(self):
-        """Test PathBuilder without entity context for directory operations."""
+        """Test PathBuilder without entity context for output operations."""
         builder = PathBuilder(
             section="widgets",
-            doc_dir=Path("/doc"),
             output_dir=Path("/output"),
         )
 
-        # These should work without entity context
+        # Output methods should work without entity context or doc_dir
         assert builder.get_api_root_dir() == Path("/output/api")
         assert builder.get_api_section_dir() == Path("/output/api/widgets")
+
+    def test_input_methods_require_doc_dir(self):
+        """Test that input methods raise ValueError without doc_dir."""
+        import pytest
+
+        # Create builder without doc_dir
+        builder = PathBuilder(
+            section="widgets",
+            output_dir=Path("/output"),
+        )
+
+        # All input methods should raise ValueError
+        with pytest.raises(ValueError, match="requires doc_dir"):
+            builder.get_input_flutter_dir()
+
+        with pytest.raises(ValueError, match="requires doc_dir"):
+            builder.get_input_section_dir()
+
+        with pytest.raises(ValueError, match="requires doc_dir"):
+            builder.get_input_snippets_dir()
+
+    def test_input_methods_work_with_doc_dir(self):
+        """Test that input methods work when doc_dir is provided."""
+        builder = PathBuilder(
+            section="widgets",
+            output_dir=Path("/output"),
+            doc_dir=Path("/doc"),
+        )
+
+        # Input methods should work with doc_dir
         assert builder.get_input_flutter_dir() == Path("/doc/flutter")
         assert builder.get_input_section_dir() == Path("/doc/flutter/widgets")
         assert builder.get_input_snippets_dir() == Path("/doc/snippets")
@@ -586,3 +615,71 @@ class TestPathBuilder:
         assert builder.get_properties_dir() == Path(
             "/output/api/material/classes/ListTile/properties/native"
         )
+
+
+class TestStandaloneHelpers:
+    """Test standalone helper functions."""
+
+    def test_list_entity_names_empty(self, tmp_path: Path):
+        """Test list_entity_names returns empty list when directory doesn't exist."""
+        output_dir = tmp_path / "output"
+
+        result = list_entity_names(output_dir, "material", CategoryType.CLASS)
+        assert result == []
+
+    def test_list_entity_names_with_entities(self, tmp_path: Path):
+        """Test list_entity_names returns sorted list of entity directories."""
+        output_dir = tmp_path / "output"
+
+        # Create entity directories
+        classes_dir = output_dir / "api" / "material" / "classes"
+        classes_dir.mkdir(parents=True, exist_ok=True)
+        (classes_dir / "ListTile").mkdir()
+        (classes_dir / "AppBar").mkdir()
+        (classes_dir / "Scaffold").mkdir()
+
+        result = list_entity_names(output_dir, "material", CategoryType.CLASS)
+        assert result == ["AppBar", "ListTile", "Scaffold"]
+
+    def test_list_entity_names_ignores_files(self, tmp_path: Path):
+        """Test list_entity_names ignores files, only returns directories."""
+        output_dir = tmp_path / "output"
+
+        # Create mix of directories and files
+        enums_dir = output_dir / "api" / "widgets" / "enums"
+        enums_dir.mkdir(parents=True, exist_ok=True)
+        (enums_dir / "HourFormat").mkdir()
+        (enums_dir / "TextDirection").mkdir()
+        (enums_dir / "README.md").write_text("test")
+        (enums_dir / ".DS_Store").write_text("test")
+
+        result = list_entity_names(output_dir, "widgets", CategoryType.ENUM)
+        assert result == ["HourFormat", "TextDirection"]
+
+    def test_list_entity_names_sorted(self, tmp_path: Path):
+        """Test list_entity_names returns alphabetically sorted results."""
+        output_dir = tmp_path / "output"
+
+        # Create directories in non-alphabetical order
+        mixins_dir = output_dir / "api" / "material" / "mixins"
+        mixins_dir.mkdir(parents=True, exist_ok=True)
+        (mixins_dir / "Zebra").mkdir()
+        (mixins_dir / "Apple").mkdir()
+        (mixins_dir / "Mango").mkdir()
+        (mixins_dir / "Banana").mkdir()
+
+        result = list_entity_names(output_dir, "material", CategoryType.MIXIN)
+        assert result == ["Apple", "Banana", "Mango", "Zebra"]
+
+    def test_list_entity_names_without_pathbuilder(self, tmp_path: Path):
+        """Test list_entity_names works without needing PathBuilder instance."""
+        output_dir = tmp_path / "output"
+
+        # Create some entities - no PathBuilder needed
+        classes_dir = output_dir / "api" / "widgets" / "classes"
+        classes_dir.mkdir(parents=True, exist_ok=True)
+        (classes_dir / "Text").mkdir()
+        (classes_dir / "Container").mkdir()
+
+        result = list_entity_names(output_dir, "widgets", CategoryType.CLASS)
+        assert result == ["Container", "Text"]

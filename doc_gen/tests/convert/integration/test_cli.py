@@ -19,10 +19,9 @@ def build_output_path_builder(
 ) -> PathBuilder:
     return PathBuilder(
         section=section,
+        output_dir=output_dir,
         entity_name=entity_name,
         entity_type=entity_type,
-        doc_dir=Path(),
-        output_dir=output_dir,
     )
 
 

@@ -149,7 +149,6 @@ def build_section_path_builder(output_dir: Path, section: str) -> PathBuilder:
     """
     return PathBuilder(
         section=section,
-        doc_dir=Path(),
         output_dir=output_dir,
     )
 
@@ -173,8 +172,7 @@ def build_entity_path_builder(
     """
     return PathBuilder(
         section=section,
+        output_dir=output_dir,
         entity_name=entity_name,
         entity_type=entity_type,
-        doc_dir=Path(),
-        output_dir=output_dir,
     )

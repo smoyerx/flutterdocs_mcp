@@ -27,13 +27,14 @@ class PathBuilder:
     """
     Immutable builder for documentation paths.
 
-    - Directory-level methods require only section/doc_dir/output_dir.
+    - Directory-level methods require only section/output_dir.
     - Entity/member methods require both entity_name and entity_type.
+    - Input methods (get_input_*) require doc_dir.
     """
 
     section: str
-    doc_dir: Path
     output_dir: Path
+    doc_dir: Path | None = None
     entity_name: str | None = None
     entity_type: CategoryType | None = None
     _entity_dir: Path | None = field(init=False, default=None)
@@ -70,7 +71,53 @@ class PathBuilder:
                 "but PathBuilder was created without entity context."
             )
 
+    def _require_doc_dir(self) -> None:
+        """Raise error if doc_dir is missing.
+
+        Raises:
+            ValueError: If doc_dir is None.
+        """
+        if self.doc_dir is None:
+            raise ValueError(
+                "This operation requires doc_dir (input documentation directory), "
+                "but PathBuilder was created without doc_dir."
+            )
+
     # --- Generic Implementation Methods (Documented) ---
+
+    @staticmethod
+    def _get_category_subdir(category_type: CategoryType) -> str:
+        """Map CategoryType to filesystem subdirectory name.
+
+        Single source of truth for category structure mapping.
+
+        Args:
+            category_type: The category type to map.
+
+        Returns:
+            Subdirectory name (e.g., "classes", "mixins", "enums").
+        """
+        match category_type:
+            case CategoryType.CLASS:
+                return "classes"
+            case CategoryType.MIXIN:
+                return "mixins"
+            case CategoryType.ENUM:
+                return "enums"
+            case CategoryType.CONSTANT:
+                return "constants"
+            case CategoryType.LIBRARY:
+                return "library"
+            case CategoryType.EXTENSION_TYPE:
+                return "extension_types"
+            case CategoryType.EXTENSION:
+                return "extensions"
+            case CategoryType.FUNCTION:
+                return "functions"
+            case CategoryType.TYPEDEF:
+                return "typedefs"
+            case _:
+                return "entities"
 
     def _compute_entity_dir(self) -> Path:
         """Compute entity output directory from CategoryType.
@@ -83,28 +130,8 @@ class PathBuilder:
         """
         self._require_entity_context()
         assert self.entity_name is not None  # Type hint for mypy / Pylance
-        match self.entity_type:
-            case CategoryType.CLASS:
-                subdir = "classes"
-            case CategoryType.MIXIN:
-                subdir = "mixins"
-            case CategoryType.ENUM:
-                subdir = "enums"
-            case CategoryType.CONSTANT:
-                subdir = "constants"
-            case CategoryType.LIBRARY:
-                subdir = "library"
-            case CategoryType.EXTENSION_TYPE:
-                subdir = "extension_types"
-            case CategoryType.EXTENSION:
-                subdir = "extensions"
-            case CategoryType.FUNCTION:
-                subdir = "functions"
-            case CategoryType.TYPEDEF:
-                subdir = "typedefs"
-            case _:
-                subdir = "entities"
-
+        assert self.entity_type is not None  # Type hint for mypy / Pylance
+        subdir = PathBuilder._get_category_subdir(self.entity_type)
         return self.output_dir / "api" / self.section / subdir / self.entity_name
 
     def _get_member_dir(self, member_type: MemberType, inherited: bool) -> Path:
@@ -251,9 +278,13 @@ class PathBuilder:
     # --- Input Path Convenience Aliases ---
 
     def get_input_flutter_dir(self) -> Path:
+        self._require_doc_dir()
+        assert self.doc_dir is not None  # Type hint for mypy / Pylance
         return self.doc_dir / "flutter"
 
     def get_input_section_dir(self) -> Path:
+        self._require_doc_dir()
+        assert self.doc_dir is not None  # Type hint for mypy / Pylance
         return self.doc_dir / "flutter" / self.section
 
     def get_input_entity_file(self) -> Path:
@@ -310,6 +341,8 @@ class PathBuilder:
         )
 
     def get_input_snippets_dir(self) -> Path:
+        self._require_doc_dir()
+        assert self.doc_dir is not None  # Type hint for mypy / Pylance
         return self.doc_dir / "snippets"
 
 
@@ -327,3 +360,27 @@ def ensure_dir_exists(dir_path: Path) -> Path:
     """
     dir_path.mkdir(parents=True, exist_ok=True)
     return dir_path
+
+
+def list_entity_names(
+    base_dir: Path, section: str, category_type: CategoryType
+) -> list[str]:
+    """List all entity names for a category type.
+
+    Discovers entities by listing directories in the output category directory.
+    Returns empty list if directory doesn't exist. Useful for discovering
+    what entities exist without needing to create a PathBuilder instance.
+
+    Args:
+        base_dir: Output directory containing api/ subdirectory (convert.py's output_dir).
+        section: Documentation section name (e.g., "material", "widgets").
+        category_type: The category type to list entities for.
+
+    Returns:
+        Sorted list of entity names (directory names) for the category.
+    """
+    category_subdir = PathBuilder._get_category_subdir(category_type)
+    category_dir = base_dir / "api" / section / category_subdir
+    if not category_dir.exists():
+        return []
+    return sorted([d.name for d in category_dir.iterdir() if d.is_dir()])
