@@ -546,6 +546,11 @@ def cleanup_function_declaration(content: str, source_context: str = "") -> str:
         # Remove unordered list markers
         new_line = _UNORDERED_LIST_MARKER.sub("", new_line)
 
+        # Add indentation if a list marker was removed to preserve readability
+        if new_line != line:
+            new_line = new_line.lstrip()  # Remove leading whitespace before marker
+            new_line = "  " + new_line  # Add two spaces to match other conversions
+
         transformed_declaration.append(new_line)
 
     # Reconstruct the content

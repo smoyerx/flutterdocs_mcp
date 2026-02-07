@@ -90,7 +90,7 @@ class PathBuilder:
             case CategoryType.CONSTANT:
                 subdir = "constants"
             case CategoryType.LIBRARY:
-                subdir = "libraries"
+                subdir = "library"
             case CategoryType.EXTENSION_TYPE:
                 subdir = "extension_types"
             case CategoryType.EXTENSION:

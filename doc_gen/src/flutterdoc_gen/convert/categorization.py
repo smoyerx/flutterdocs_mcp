@@ -18,8 +18,8 @@ def find_and_categorize_root_files(
     """Find and categorize all root documentation files for a section.
 
     Categorizes files according to the following logic:
-    1. Directly identified by filename pattern (class, mixin, constant, library, extension-type)
-    2. Indirectly identified via sidebar files (enum, extension)
+    1. Directly identified by filename pattern (class, mixin, constant, extension-type)
+    2. Indirectly identified via sidebar files (enum, extension) or index check (library)
     3. Complex identification by name case (function, typedef)
 
     Args:
@@ -95,7 +95,9 @@ def find_and_categorize_root_files(
     library_marker = f"{section}-library.html"
     index_file = section_dir / "index.html"
     if index_file.exists() and library_marker in {f.name for f in all_html_files}:
-        categories[CategoryType.LIBRARY].append((section, index_file))
+        categories[CategoryType.LIBRARY].append(
+            (section, index_file)
+        )  # Use section name as library name
         categorized_files.add("index.html")
         categorized_files.add(library_marker)  # Mark marker file as categorized too
 

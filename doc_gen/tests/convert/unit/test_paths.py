@@ -437,7 +437,7 @@ class TestPathBuilder:
         assert "constants" in entity_dir.parts
 
     def test_entity_type_mapping_library(self):
-        """Verify LIBRARY type maps to 'libraries' directory."""
+        """Verify LIBRARY type maps to 'library' directory."""
         builder = PathBuilder(
             section="material",
             entity_name="material",
@@ -446,7 +446,7 @@ class TestPathBuilder:
             output_dir=Path("/output"),
         )
         entity_dir = builder.get_entity_dir()
-        assert "libraries" in entity_dir.parts
+        assert "library" in entity_dir.parts
 
     def test_entity_type_mapping_extension_type(self):
         """Verify EXTENSION_TYPE type maps to 'extension_types' directory."""
