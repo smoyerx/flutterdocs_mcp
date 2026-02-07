@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pytest
 
+from flutterdoc_gen.convert.constants import CategoryType
 from flutterdoc_gen.convert.patterns import MCP_URI_PREFIX
 from flutterdoc_gen.convert.paths import PathBuilder
 
@@ -124,3 +125,56 @@ def get_class_names_for_section(section: str) -> list[str]:
         class_name = f.stem.replace("-class", "")
         class_names.append(class_name)
     return sorted(class_names)
+
+
+@pytest.fixture
+def output_dir(tmp_path: Path) -> Path:
+    """Create a temporary output directory.
+
+    Returns:
+        Path to a temporary output directory for test conversions.
+    """
+    return tmp_path / "output"
+
+
+def build_section_path_builder(output_dir: Path, section: str) -> PathBuilder:
+    """Build a PathBuilder for section-level operations.
+
+    Args:
+        output_dir: Output directory path.
+        section: Documentation section name.
+
+    Returns:
+        PathBuilder configured for the section.
+    """
+    return PathBuilder(
+        section=section,
+        doc_dir=Path(),
+        output_dir=output_dir,
+    )
+
+
+def build_entity_path_builder(
+    output_dir: Path,
+    section: str,
+    entity_name: str,
+    entity_type: CategoryType = CategoryType.CLASS,
+) -> PathBuilder:
+    """Build a PathBuilder for entity-level operations.
+
+    Args:
+        output_dir: Output directory path.
+        section: Documentation section name.
+        entity_name: Name of the entity (class, enum, etc.).
+        entity_type: Type of the entity (default: CLASS).
+
+    Returns:
+        PathBuilder configured for the entity.
+    """
+    return PathBuilder(
+        section=section,
+        entity_name=entity_name,
+        entity_type=entity_type,
+        doc_dir=Path(),
+        output_dir=output_dir,
+    )
