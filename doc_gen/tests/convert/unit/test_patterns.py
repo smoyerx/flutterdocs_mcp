@@ -33,6 +33,10 @@ class TestLinkPatternRegistry:
         """Expected patterns should be present in registry."""
         expected_names = {
             "class_link",
+            "mixin_link",
+            "constant_link",
+            "extension_type_link",
+            "other_root_link",
             "enum_constant_link",
             "member_link",
             "image_link",

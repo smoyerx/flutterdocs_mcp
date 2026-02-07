@@ -15,10 +15,14 @@ from flutterdoc_gen.convert.transformations import (
     remove_tracking_urls,
     reset_unmatched_patterns,
     transform_class_links,
+    transform_constant_links,
     transform_dartpad_links,
     transform_enum_constant_links,
+    transform_extension_type_links,
     transform_image_links,
     transform_member_links,
+    transform_mixin_links,
+    transform_other_root_links,
 )
 
 
@@ -237,6 +241,203 @@ class TestTransformClassLinks:
     def test_handles_empty_string(self) -> None:
         """Empty string should return empty string."""
         result = transform_class_links("")
+        assert result == ""
+
+
+class TestTransformMixinLinks:
+    """Tests for transform_mixin_links transformation function."""
+
+    def test_transforms_mixin_link(self) -> None:
+        """Mixin link should be transformed to MCP URI."""
+        content = "See [BaseSliderTrackShape](material/BaseSliderTrackShape-mixin.html) for details."
+        result = transform_mixin_links(content)
+        assert (
+            result
+            == "See [BaseSliderTrackShape](mcp://flutter/api/material/BaseSliderTrackShape) for details."
+        )
+
+    def test_transforms_multiple_mixin_links(self) -> None:
+        """Multiple mixin links should all be transformed."""
+        content = "[Mixin1](widgets/Mixin1-mixin.html) and [Mixin2](material/Mixin2-mixin.html)"
+        result = transform_mixin_links(content)
+        assert (
+            result
+            == "[Mixin1](mcp://flutter/api/widgets/Mixin1) and [Mixin2](mcp://flutter/api/material/Mixin2)"
+        )
+
+    def test_preserves_non_mixin_links(self) -> None:
+        """Links that don't match mixin pattern should be preserved."""
+        content = "[Widget](widgets/Widget-class.html)"
+        result = transform_mixin_links(content)
+        assert result == content
+
+    def test_preserves_links_with_path_separators(self) -> None:
+        """Links with path separators in names should not be transformed."""
+        content = "[Mixin](section/sub/path/Mixin-mixin.html)"
+        result = transform_mixin_links(content)
+        assert result == content  # Should not match due to path separators
+
+    def test_handles_empty_string(self) -> None:
+        """Empty string should return empty string."""
+        result = transform_mixin_links("")
+        assert result == ""
+
+
+class TestTransformConstantLinks:
+    """Tests for transform_constant_links transformation function."""
+
+    def test_transforms_constant_link(self) -> None:
+        """Constant link should be transformed to MCP URI."""
+        content = "See [kBottomNavigationBarHeight](material/kBottomNavigationBarHeight-constant.html) for value."
+        result = transform_constant_links(content)
+        assert (
+            result
+            == "See [kBottomNavigationBarHeight](mcp://flutter/api/material/kBottomNavigationBarHeight) for value."
+        )
+
+    def test_transforms_multiple_constant_links(self) -> None:
+        """Multiple constant links should all be transformed."""
+        content = (
+            "[kHeight](material/kHeight-constant.html) and "
+            "[kWidth](widgets/kWidth-constant.html)"
+        )
+        result = transform_constant_links(content)
+        assert result == (
+            "[kHeight](mcp://flutter/api/material/kHeight) and "
+            "[kWidth](mcp://flutter/api/widgets/kWidth)"
+        )
+
+    def test_preserves_enum_constant_links(self) -> None:
+        """3-part enum constant links should be preserved for other transformer."""
+        content = "[values](material/HourFormat/values-constant.html)"
+        result = transform_constant_links(content)
+        assert result == content  # 3-part, not 2-part, so not matched
+
+    def test_preserves_non_constant_links(self) -> None:
+        """Links that don't match constant pattern should be preserved."""
+        content = "[Widget](widgets/Widget-class.html)"
+        result = transform_constant_links(content)
+        assert result == content
+
+    def test_preserves_links_with_path_separators(self) -> None:
+        """Links with path separators in names should not be transformed."""
+        content = "[kConstant](section/sub/path/kConstant-constant.html)"
+        result = transform_constant_links(content)
+        assert result == content  # Should not match due to path separators
+
+    def test_handles_empty_string(self) -> None:
+        """Empty string should return empty string."""
+        result = transform_constant_links("")
+        assert result == ""
+
+
+class TestTransformExtensionTypeLinks:
+    """Tests for transform_extension_type_links transformation function."""
+
+    def test_transforms_extension_type_link(self) -> None:
+        """Extension type link should be transformed to MCP URI."""
+        content = "See [OverlayChildLayoutInfo](widgets/OverlayChildLayoutInfo-extension-type.html) for info."
+        result = transform_extension_type_links(content)
+        assert (
+            result
+            == "See [OverlayChildLayoutInfo](mcp://flutter/api/widgets/OverlayChildLayoutInfo) for info."
+        )
+
+    def test_transforms_multiple_extension_type_links(self) -> None:
+        """Multiple extension type links should all be transformed."""
+        content = (
+            "[ExtType1](widgets/ExtType1-extension-type.html) and "
+            "[ExtType2](material/ExtType2-extension-type.html)"
+        )
+        result = transform_extension_type_links(content)
+        assert result == (
+            "[ExtType1](mcp://flutter/api/widgets/ExtType1) and "
+            "[ExtType2](mcp://flutter/api/material/ExtType2)"
+        )
+
+    def test_preserves_non_extension_type_links(self) -> None:
+        """Links that don't match extension type pattern should be preserved."""
+        content = "[Widget](widgets/Widget-class.html)"
+        result = transform_extension_type_links(content)
+        assert result == content
+
+    def test_preserves_links_with_path_separators(self) -> None:
+        """Links with path separators in names should not be transformed."""
+        content = "[ExtType](section/sub/path/ExtType-extension-type.html)"
+        result = transform_extension_type_links(content)
+        assert result == content  # Should not match due to path separators
+
+    def test_handles_empty_string(self) -> None:
+        """Empty string should return empty string."""
+        result = transform_extension_type_links("")
+        assert result == ""
+
+
+class TestTransformOtherRootLinks:
+    """Tests for transform_other_root_links transformation function."""
+
+    def test_transforms_other_root_link(self) -> None:
+        """Other root documentation link should be transformed to MCP URI."""
+        content = "See [MyFunction](dart-core/MyFunction.html) for details."
+        result = transform_other_root_links(content)
+        assert (
+            result
+            == "See [MyFunction](mcp://flutter/api/dart-core/MyFunction) for details."
+        )
+
+    def test_transforms_multiple_other_root_links(self) -> None:
+        """Multiple other root links should all be transformed."""
+        content = (
+            "[Function1](dart-core/Function1.html) and "
+            "[Function2](widgets/Function2.html)"
+        )
+        result = transform_other_root_links(content)
+        assert result == (
+            "[Function1](mcp://flutter/api/dart-core/Function1) and "
+            "[Function2](mcp://flutter/api/widgets/Function2)"
+        )
+
+    def test_preserves_member_links(self) -> None:
+        """3-part member links should be preserved for other transformer."""
+        content = "[build](widgets/Widget/build.html)"
+        result = transform_other_root_links(content)
+        assert result == content  # 3-part, not 2-part, so not matched
+
+    def test_preserves_class_links_already_transformed(self) -> None:
+        """Class links with -class.html suffix should not be matched."""
+        # This tests that other_root_links doesn't interfere with class links
+        # In actual pipeline, class links are transformed first
+        content = "[Widget](widgets/Widget-class.html)"
+        result = transform_other_root_links(content)
+        assert result == content  # Suffix doesn't match plain .html
+
+    def test_preserves_mixin_links_already_transformed(self) -> None:
+        """Mixin links with -mixin.html suffix should not be matched."""
+        content = "[Mixin](material/Mixin-mixin.html)"
+        result = transform_other_root_links(content)
+        assert result == content  # Suffix doesn't match plain .html
+
+    def test_preserves_constant_links_already_transformed(self) -> None:
+        """Constant links with -constant.html suffix should not be matched."""
+        content = "[kConstant](material/kConstant-constant.html)"
+        result = transform_other_root_links(content)
+        assert result == content  # Suffix doesn't match plain .html
+
+    def test_preserves_extension_type_links_already_transformed(self) -> None:
+        """Extension type links with -extension-type.html suffix should not be matched."""
+        content = "[ExtType](widgets/ExtType-extension-type.html)"
+        result = transform_other_root_links(content)
+        assert result == content  # Suffix doesn't match plain .html
+
+    def test_preserves_links_with_path_separators(self) -> None:
+        """Links with path separators in names should not be transformed."""
+        content = "[Function](section/sub/path/Function.html)"
+        result = transform_other_root_links(content)
+        assert result == content  # Should not match due to path separators
+
+    def test_handles_empty_string(self) -> None:
+        """Empty string should return empty string."""
+        result = transform_other_root_links("")
         assert result == ""
 
 
@@ -486,24 +687,21 @@ class TestUnmatchedPatternTracking:
         """Reset unmatched patterns before each test."""
         reset_unmatched_patterns()
 
-    def test_collects_mixin_patterns(self) -> None:
-        """Mixin link patterns should be collected as unmatched."""
+    def test_does_not_collect_transformed_mixin_links(self) -> None:
+        """Transformed mixin links should not be collected."""
         content = (
             "See [Diagnosticable](foundation/Diagnosticable-mixin.html) for details."
         )
         apply_transformations(content, source_context="test.html")
         patterns = get_unmatched_patterns()
-        assert len(patterns) == 1
-        assert "Diagnosticable-mixin.html" in patterns[0][1]
-        assert patterns[0][0] == "test.html"
+        assert len(patterns) == 0
 
-    def test_collects_constant_patterns_2_part(self) -> None:
-        """Two-part constant link patterns should be collected as unmatched."""
+    def test_does_not_collect_transformed_constant_links(self) -> None:
+        """Transformed two-part constant links should not be collected."""
         content = "Use [optionalTypeArgs](meta/optionalTypeArgs-constant.html)."
         apply_transformations(content, source_context="test.html")
         patterns = get_unmatched_patterns()
-        assert len(patterns) == 1
-        assert "optionalTypeArgs-constant.html" in patterns[0][1]
+        assert len(patterns) == 0
 
     def test_does_not_collect_transformed_enum_constant_links(self) -> None:
         """Three-part constant link patterns are now transformed and not collected."""
@@ -536,9 +734,10 @@ class TestUnmatchedPatternTracking:
 
     def test_collects_multiple_patterns(self) -> None:
         """Multiple unmatched patterns should all be collected."""
+        # Use patterns that aren't matched by any transformer
         content = (
-            "[Diagnosticable](foundation/Diagnosticable-mixin.html) and "
-            "[optionalTypeArgs](meta/optionalTypeArgs-constant.html)"
+            "[Unknown](foundation/some/nested/Unknown.html) and "
+            "[Other](meta/path/to/Other.html)"
         )
         apply_transformations(content, source_context="test.html")
         patterns = get_unmatched_patterns()
@@ -546,7 +745,8 @@ class TestUnmatchedPatternTracking:
 
     def test_reset_clears_patterns(self) -> None:
         """Reset should clear all collected patterns."""
-        content = "[Diagnosticable](foundation/Diagnosticable-mixin.html)"
+        # Use a pattern that isn't matched by any transformer
+        content = "[Unknown](foundation/some/nested/Unknown.html)"
         apply_transformations(content)
         reset_unmatched_patterns()
         patterns = get_unmatched_patterns()

@@ -200,6 +200,90 @@ def transform_class_links(content: str) -> str:
     return re.sub(class_pattern.pattern, class_pattern.replacement, content)
 
 
+def transform_mixin_links(content: str) -> str:
+    """Transform mixin links to MCP URI format.
+
+    Replaces links of the form [MIXIN_NAME](SECTION/MIXIN_NAME-mixin.html)
+    with [MIXIN_NAME](mcp://flutter/api/SECTION/MIXIN_NAME).
+
+    Uses patterns from LINK_PATTERNS registry.
+
+    Args:
+        content: The markdown content to transform.
+
+    Returns:
+        The content with mixin links transformed.
+    """
+    mixin_pattern = next(p for p in LINK_PATTERNS if p.name == "mixin_link")
+    return re.sub(mixin_pattern.pattern, mixin_pattern.replacement, content)
+
+
+def transform_constant_links(content: str) -> str:
+    """Transform constant links to MCP URI format.
+
+    Replaces links of the form [CONSTANT_NAME](SECTION/CONSTANT_NAME-constant.html)
+    with [CONSTANT_NAME](mcp://flutter/api/SECTION/CONSTANT_NAME).
+
+    This handles 2-part paths for root-level constant entities. This is distinct
+    from 3-part paths for enum member constants (handled by transform_enum_constant_links).
+
+    Uses patterns from LINK_PATTERNS registry.
+
+    Args:
+        content: The markdown content to transform.
+
+    Returns:
+        The content with constant links transformed.
+    """
+    constant_pattern = next(p for p in LINK_PATTERNS if p.name == "constant_link")
+    return re.sub(constant_pattern.pattern, constant_pattern.replacement, content)
+
+
+def transform_extension_type_links(content: str) -> str:
+    """Transform extension type links to MCP URI format.
+
+    Replaces links of the form [EXTENSION_TYPE_NAME](SECTION/EXTENSION_TYPE_NAME-extension-type.html)
+    with [EXTENSION_TYPE_NAME](mcp://flutter/api/SECTION/EXTENSION_TYPE_NAME).
+
+    Uses patterns from LINK_PATTERNS registry.
+
+    Args:
+        content: The markdown content to transform.
+
+    Returns:
+        The content with extension type links transformed.
+    """
+    extension_type_pattern = next(
+        p for p in LINK_PATTERNS if p.name == "extension_type_link"
+    )
+    return re.sub(
+        extension_type_pattern.pattern, extension_type_pattern.replacement, content
+    )
+
+
+def transform_other_root_links(content: str) -> str:
+    """Transform other root documentation links to MCP URI format.
+
+    Replaces links of the form [ROOT_DOC_NAME](SECTION/ROOT_DOC_NAME.html)
+    with [ROOT_DOC_NAME](mcp://flutter/api/SECTION/ROOT_DOC_NAME).
+
+    This handles all root documentation files EXCEPT those with specific suffixes
+    (-class, -mixin, -constant, -extension-type) which are handled by other
+    transformation functions. This must be called after those more specific
+    transformations to avoid premature matching.
+
+    Uses patterns from LINK_PATTERNS registry.
+
+    Args:
+        content: The markdown content to transform.
+
+    Returns:
+        The content with other root links transformed.
+    """
+    other_root_pattern = next(p for p in LINK_PATTERNS if p.name == "other_root_link")
+    return re.sub(other_root_pattern.pattern, other_root_pattern.replacement, content)
+
+
 def transform_enum_constant_links(content: str) -> str:
     """Transform enum constant links to MCP URI format.
 
@@ -335,11 +419,19 @@ def apply_transformations(content: str, source_context: str = "") -> str:
 
     Link transformations (applied second):
     1. Transform class links to MCP URI format
-    2. Transform enum constant links to MCP URI format (before member links)
-    3. Transform member links to MCP URI format
-    4. Transform image links to placeholder text
-    5. Transform DartPad links to placeholder text
-    6. Fix link spacing issues after markdown links
+    2. Transform mixin links to MCP URI format
+    3. Transform constant links to MCP URI format (2-part root constants)
+    4. Transform extension type links to MCP URI format
+    5. Transform other root links to MCP URI format (catch-all for remaining 2-part)
+    6. Transform enum constant links to MCP URI format (3-part enum members)
+    7. Transform member links to MCP URI format (3-part entity members)
+    8. Transform image links to placeholder text
+    9. Transform DartPad links to placeholder text
+    10. Fix link spacing issues after markdown links
+
+    Note: More specific 2-part patterns (class, mixin, constant, extension-type)
+    must come before the catch-all other_root pattern. The 3-part patterns
+    (enum_constant, member) follow after all 2-part patterns.
 
     After transformations, any remaining relative HTML links are collected
     as unmatched patterns for summary reporting.
@@ -359,11 +451,16 @@ def apply_transformations(content: str, source_context: str = "") -> str:
     content = fix_arrow_spacing(content)
 
     # Link transformations
-    # Note: enum_constant_links must come BEFORE member_links since
-    # -constant.html is more specific than .html
+    # 2-part root documentation patterns (most specific first, catch-all last)
     content = transform_class_links(content)
+    content = transform_mixin_links(content)
+    content = transform_constant_links(content)
+    content = transform_extension_type_links(content)
+    content = transform_other_root_links(content)
+    # 3-part member patterns (more specific -constant.html before general .html)
     content = transform_enum_constant_links(content)
     content = transform_member_links(content)
+    # Special link handling
     content = transform_image_links(content)
     content = transform_dartpad_links(content)
     content = fix_link_spacing(content)

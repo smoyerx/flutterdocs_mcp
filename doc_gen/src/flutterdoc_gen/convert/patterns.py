@@ -96,6 +96,43 @@ LINK_PATTERNS: tuple[LinkPattern, ...] = (
         test_input="See [Widget](widgets/Widget-class.html) for details.",
         test_output="See [Widget](mcp://flutter/api/widgets/Widget) for details.",
     ),
+    # Mixin links
+    LinkPattern(
+        name="mixin_link",
+        pattern=r"\[([^\]]+)\]\(([a-zA-Z0-9_-]+)/([a-zA-Z0-9_]+)-mixin\.html\)",
+        replacement=rf"[\1]({MCP_URI_PREFIX}\2/\3)",
+        description="[MixinName](section/MixinName-mixin.html)",
+        test_input="See [BaseSliderTrackShape](material/BaseSliderTrackShape-mixin.html) for details.",
+        test_output="See [BaseSliderTrackShape](mcp://flutter/api/material/BaseSliderTrackShape) for details.",
+    ),
+    # Constant links (2-part root constants, not enum member constants)
+    LinkPattern(
+        name="constant_link",
+        pattern=r"\[([^\]]+)\]\(([a-zA-Z0-9_-]+)/([a-zA-Z0-9_]+)-constant\.html\)",
+        replacement=rf"[\1]({MCP_URI_PREFIX}\2/\3)",
+        description="[constantName](section/constantName-constant.html)",
+        test_input="See [kBottomNavigationBarHeight](material/kBottomNavigationBarHeight-constant.html) for value.",
+        test_output="See [kBottomNavigationBarHeight](mcp://flutter/api/material/kBottomNavigationBarHeight) for value.",
+    ),
+    # Extension type links
+    LinkPattern(
+        name="extension_type_link",
+        pattern=r"\[([^\]]+)\]\(([a-zA-Z0-9_-]+)/([a-zA-Z0-9_]+)-extension-type\.html\)",
+        replacement=rf"[\1]({MCP_URI_PREFIX}\2/\3)",
+        description="[ExtensionTypeName](section/ExtensionTypeName-extension-type.html)",
+        test_input="See [OverlayChildLayoutInfo](widgets/OverlayChildLayoutInfo-extension-type.html) for info.",
+        test_output="See [OverlayChildLayoutInfo](mcp://flutter/api/widgets/OverlayChildLayoutInfo) for info.",
+    ),
+    # Other root documentation links (catch-all for remaining root docs)
+    # Must come AFTER more specific 2-part patterns (class, mixin, constant, extension-type)
+    LinkPattern(
+        name="other_root_link",
+        pattern=r"\[([^\]]+)\]\(([a-zA-Z0-9_-]+)/([a-zA-Z0-9_]+)\.html\)",
+        replacement=rf"[\1]({MCP_URI_PREFIX}\2/\3)",
+        description="[EntityName](section/EntityName.html)",
+        test_input="See [MyFunction](dart-core/MyFunction.html) for details.",
+        test_output="See [MyFunction](mcp://flutter/api/dart-core/MyFunction) for details.",
+    ),
     # Enum constant links (3-part with -constant.html suffix)
     # Must come BEFORE member_link to match the more specific pattern first.
     LinkPattern(
