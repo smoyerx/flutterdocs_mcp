@@ -483,7 +483,7 @@ class TestTransformNamedConstructorLinks:
         result = transform_named_constructor_links(content)
         assert (
             result
-            == "See [Text.rich](mcp://flutter/api/widgets/Text/rich) constructor."
+            == "See [Text.rich](mcp://flutter/api/widgets/Text/Text.rich) constructor."
         )
 
     def test_transforms_multiple_named_constructor_links(self) -> None:
@@ -494,8 +494,8 @@ class TestTransformNamedConstructorLinks:
         )
         result = transform_named_constructor_links(content)
         assert result == (
-            "Use [ThemeData.from](mcp://flutter/api/material/ThemeData/from) or "
-            "[IconButton.filled](mcp://flutter/api/material/IconButton/filled)"
+            "Use [ThemeData.from](mcp://flutter/api/material/ThemeData/ThemeData.from) or "
+            "[IconButton.filled](mcp://flutter/api/material/IconButton/IconButton.filled)"
         )
 
     def test_preserves_regular_member_links(self) -> None:
@@ -530,9 +530,9 @@ class TestTransformNamedConstructorLinks:
         )
         result = transform_named_constructor_links(content)
         assert result == (
-            "[ColorScheme.fromSeed](mcp://flutter/api/material/ColorScheme/fromSeed) and "
-            "[Transform.rotate](mcp://flutter/api/widgets/Transform/rotate) and "
-            "[FloatingActionButton.extended](mcp://flutter/api/material/FloatingActionButton/extended)"
+            "[ColorScheme.fromSeed](mcp://flutter/api/material/ColorScheme/ColorScheme.fromSeed) and "
+            "[Transform.rotate](mcp://flutter/api/widgets/Transform/Transform.rotate) and "
+            "[FloatingActionButton.extended](mcp://flutter/api/material/FloatingActionButton/FloatingActionButton.extended)"
         )
 
 

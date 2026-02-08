@@ -48,7 +48,7 @@ Replace all links of the form `[{ROOT_DOC_NAME}]({SECTION}/{ROOT_DOC_NAME}.html)
 
 ### Link Transformation: transform_named_constructor_links()
 
-Replace all links of the form `[{ENTITY_NAME}.{MEMBER_NAME}]({SECTION}/{ENTITY_NAME}/{ENTITY_NAME}.{MEMBER_NAME}.html)` with `[{ENTITY_NAME}.{MEMBER_NAME}](mcp://flutter/api/{SECTION}/{ENTITY_NAME}/{MEMBER_NAME})`, where `{SECTION}/{ENTITY_NAME}/{ENTITY_NAME}.{MEMBER_NAME}.html` MUST be a relative URI.
+Replace all links of the form `[{ENTITY_NAME}.{MEMBER_NAME}]({SECTION}/{ENTITY_NAME}/{ENTITY_NAME}.{MEMBER_NAME}.html)` with `[{ENTITY_NAME}.{MEMBER_NAME}](mcp://flutter/api/{SECTION}/{ENTITY_NAME}/{ENTITY_NAME}.{MEMBER_NAME})`, where `{SECTION}/{ENTITY_NAME}/{ENTITY_NAME}.{MEMBER_NAME}.html` MUST be a relative URI.
 
 **Important**:
 - {ENTITY_NAME} must not include a path separator, otherwise it is not a match.

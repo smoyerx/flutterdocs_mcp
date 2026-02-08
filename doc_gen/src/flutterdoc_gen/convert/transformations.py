@@ -288,7 +288,7 @@ def transform_named_constructor_links(content: str) -> str:
     """Transform named constructor links to MCP URI format.
 
     Replaces links of the form [ENTITY_NAME.MEMBER_NAME](SECTION/ENTITY_NAME/ENTITY_NAME.MEMBER_NAME.html)
-    with [ENTITY_NAME.MEMBER_NAME](mcp://flutter/api/SECTION/ENTITY_NAME/MEMBER_NAME).
+    with [ENTITY_NAME.MEMBER_NAME](mcp://flutter/api/SECTION/ENTITY_NAME/ENTITY_NAME.MEMBER_NAME).
 
     This handles 3-part paths where the entity name is repeated in the filename,
     which is the pattern used for named constructors and static factory methods
