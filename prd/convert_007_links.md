@@ -46,19 +46,30 @@ Replace all links of the form `[{ROOT_DOC_NAME}]({SECTION}/{ROOT_DOC_NAME}.html)
 - {SECTION} must not include a path separator, otherwise it is not a match.
 - This transformation handles links to all **root** documentation files EXCEPT for classes, mixins, constants, and extension types which are handled by the other transformations specified above or already implemented (classes). This transformation must be applied **AFTER** those since it is more general and would otherwise transform links that should be transformed by the other functions.
 
+### Link Transformation: transform_named_constructor_links()
+
+Replace all links of the form `[{ENTITY_NAME}.{MEMBER_NAME}]({SECTION}/{ENTITY_NAME}/{ENTITY_NAME}.{MEMBER_NAME}.html)` with `[{ENTITY_NAME}.{MEMBER_NAME}](mcp://flutter/api/{SECTION}/{ENTITY_NAME}/{MEMBER_NAME})`, where `{SECTION}/{ENTITY_NAME}/{ENTITY_NAME}.{MEMBER_NAME}.html` MUST be a relative URI.
+
+**Important**:
+- {ENTITY_NAME} must not include a path separator, otherwise it is not a match.
+- {MEMBER_NAME} must not include a path separator, otherwise it is not a match.
+- {SECTION} must not include a path separator, otherwise it is not a match.
+- This transformation handles links to member documentation files that use the pattern `{ENTITY_NAME}.{MEMBER_NAME}.html`. This is different from the existing transform_member_links() function which transforms links to member documentation files that use the pattern `{MEMBER_NAME}.html`.
+
 ## Ordering of Link Transformations
 
 Within apply_transformations(), the link transformation functions MUST be called in the following order:
-1. transform_class_links() - already implemented
-2. transform_mixin_links() - new function specified above
-3. transform_constant_links() - new function specified above
-4. transform_extension_type_links() - new function specified above
-5. transform_other_root_links() - new function specified above
-6. transform_enum_constant_links() - already implemented
-7. transform_member_links() - already implemented
-8. transform_image_links() - already implemented
-9. transform_dartpad_links() - already implemented
-10. fix_link_spacing() - already implemented
+1. transform_class_links()
+2. transform_mixin_links()
+3. transform_constant_links()
+4. transform_extension_type_links()
+5. transform_other_root_links()
+6. transform_named_constructor_links()
+7. transform_enum_constant_links()
+8. transform_member_links()
+9. transform_image_links()
+10. transform_dartpad_links()
+11. fix_link_spacing()
 
 **Important**: As part of the implementation of these new transformations you MUST confirm there are no conflicts in the ordering; i.e., more specific transformations precede more general transformations such that all transformations are applied correctly.
 

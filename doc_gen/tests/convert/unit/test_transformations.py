@@ -22,6 +22,7 @@ from flutterdoc_gen.convert.transformations import (
     transform_image_links,
     transform_member_links,
     transform_mixin_links,
+    transform_named_constructor_links,
     transform_other_root_links,
 )
 
@@ -471,6 +472,68 @@ class TestTransformMemberLinks:
         """Empty string should return empty string."""
         result = transform_member_links("")
         assert result == ""
+
+
+class TestTransformNamedConstructorLinks:
+    """Tests for transform_named_constructor_links transformation function."""
+
+    def test_transforms_named_constructor_link(self) -> None:
+        """Named constructor link should be transformed to MCP URI."""
+        content = "See [Text.rich](widgets/Text/Text.rich.html) constructor."
+        result = transform_named_constructor_links(content)
+        assert (
+            result
+            == "See [Text.rich](mcp://flutter/api/widgets/Text/rich) constructor."
+        )
+
+    def test_transforms_multiple_named_constructor_links(self) -> None:
+        """Multiple named constructor links should all be transformed."""
+        content = (
+            "Use [ThemeData.from](material/ThemeData/ThemeData.from.html) or "
+            "[IconButton.filled](material/IconButton/IconButton.filled.html)"
+        )
+        result = transform_named_constructor_links(content)
+        assert result == (
+            "Use [ThemeData.from](mcp://flutter/api/material/ThemeData/from) or "
+            "[IconButton.filled](mcp://flutter/api/material/IconButton/filled)"
+        )
+
+    def test_preserves_regular_member_links(self) -> None:
+        """Regular member links without entity repetition should be preserved."""
+        content = "[build](widgets/Widget/build.html)"
+        result = transform_named_constructor_links(content)
+        assert result == content  # No entity repetition, so not matched
+
+    def test_preserves_links_with_path_separators(self) -> None:
+        """Links with path separators in names should not be transformed."""
+        content = "[Text.rich](section/sub/Text/Text.rich.html)"
+        result = transform_named_constructor_links(content)
+        assert result == content  # Should not match due to path separators
+
+    def test_preserves_absolute_urls(self) -> None:
+        """Absolute URLs should be preserved."""
+        content = "[Text.rich](https://example.com/Text/Text.rich.html)"
+        result = transform_named_constructor_links(content)
+        assert result == content  # Absolute URL, not transformed
+
+    def test_handles_empty_string(self) -> None:
+        """Empty string should return empty string."""
+        result = transform_named_constructor_links("")
+        assert result == ""
+
+    def test_transforms_various_named_constructors(self) -> None:
+        """Various real-world named constructor patterns should be transformed."""
+        content = (
+            "[ColorScheme.fromSeed](material/ColorScheme/ColorScheme.fromSeed.html) and "
+            "[Transform.rotate](widgets/Transform/Transform.rotate.html) and "
+            "[FloatingActionButton.extended](material/FloatingActionButton/FloatingActionButton.extended.html)"
+        )
+        result = transform_named_constructor_links(content)
+        assert result == (
+            "[ColorScheme.fromSeed](mcp://flutter/api/material/ColorScheme/fromSeed) and "
+            "[Transform.rotate](mcp://flutter/api/widgets/Transform/rotate) and "
+            "[FloatingActionButton.extended](mcp://flutter/api/material/FloatingActionButton/extended)"
+        )
 
 
 class TestTransformEnumConstantLinks:

@@ -284,6 +284,35 @@ def transform_other_root_links(content: str) -> str:
     return re.sub(other_root_pattern.pattern, other_root_pattern.replacement, content)
 
 
+def transform_named_constructor_links(content: str) -> str:
+    """Transform named constructor links to MCP URI format.
+
+    Replaces links of the form [ENTITY_NAME.MEMBER_NAME](SECTION/ENTITY_NAME/ENTITY_NAME.MEMBER_NAME.html)
+    with [ENTITY_NAME.MEMBER_NAME](mcp://flutter/api/SECTION/ENTITY_NAME/MEMBER_NAME).
+
+    This handles 3-part paths where the entity name is repeated in the filename,
+    which is the pattern used for named constructors and static factory methods
+    (e.g., ThemeData.from, Text.rich, IconButton.filled). This is distinct from
+    regular member links which use the pattern ENTITY/MEMBER.html without repetition.
+
+    Uses patterns from LINK_PATTERNS registry.
+
+    Args:
+        content: The markdown content to transform.
+
+    Returns:
+        The content with named constructor links transformed.
+    """
+    named_constructor_pattern = next(
+        p for p in LINK_PATTERNS if p.name == "named_constructor_link"
+    )
+    return re.sub(
+        named_constructor_pattern.pattern,
+        named_constructor_pattern.replacement,
+        content,
+    )
+
+
 def transform_enum_constant_links(content: str) -> str:
     """Transform enum constant links to MCP URI format.
 
@@ -423,15 +452,18 @@ def apply_transformations(content: str, source_context: str = "") -> str:
     3. Transform constant links to MCP URI format (2-part root constants)
     4. Transform extension type links to MCP URI format
     5. Transform other root links to MCP URI format (catch-all for remaining 2-part)
-    6. Transform enum constant links to MCP URI format (3-part enum members)
-    7. Transform member links to MCP URI format (3-part entity members)
-    8. Transform image links to placeholder text
-    9. Transform DartPad links to placeholder text
-    10. Fix link spacing issues after markdown links
+    6. Transform named constructor links to MCP URI format (3-part with entity.member pattern)
+    7. Transform enum constant links to MCP URI format (3-part enum members)
+    8. Transform member links to MCP URI format (3-part entity members)
+    9. Transform image links to placeholder text
+    10. Transform DartPad links to placeholder text
+    11. Fix link spacing issues after markdown links
 
     Note: More specific 2-part patterns (class, mixin, constant, extension-type)
     must come before the catch-all other_root pattern. The 3-part patterns
-    (enum_constant, member) follow after all 2-part patterns.
+    (named_constructor, enum_constant, member) follow after all 2-part patterns,
+    with more specific patterns (named_constructor, enum_constant) before the
+    general member pattern.
 
     After transformations, any remaining relative HTML links are collected
     as unmatched patterns for summary reporting.
@@ -457,7 +489,8 @@ def apply_transformations(content: str, source_context: str = "") -> str:
     content = transform_constant_links(content)
     content = transform_extension_type_links(content)
     content = transform_other_root_links(content)
-    # 3-part member patterns (more specific -constant.html before general .html)
+    # 3-part member patterns (more specific patterns before general member pattern)
+    content = transform_named_constructor_links(content)
     content = transform_enum_constant_links(content)
     content = transform_member_links(content)
     # Special link handling

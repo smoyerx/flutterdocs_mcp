@@ -320,6 +320,26 @@ class PathBuilder:
         assert self.entity_name is not None
         return self.get_input_section_dir() / self.entity_name / f"{member_name}.html"
 
+    def get_input_named_constructor_file(self, member_name: str) -> Path:
+        """Get input path for named constructor HTML file.
+
+        Named constructors have the entity name repeated in the filename.
+        E.g., widgets/Text/Text.rich.html
+
+        Args:
+            member_name: The constructor name (e.g., "rich").
+
+        Returns:
+            Path like doc_dir/flutter/section/entity/entity.member.html
+        """
+        self._require_entity_context()
+        assert self.entity_name is not None
+        return (
+            self.get_input_section_dir()
+            / self.entity_name
+            / f"{self.entity_name}.{member_name}.html"
+        )
+
     def get_input_constant_file(self, member_name: str) -> Path:
         """Get input path for enum constant HTML file.
 

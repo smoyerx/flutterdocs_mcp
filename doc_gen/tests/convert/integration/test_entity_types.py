@@ -27,7 +27,7 @@ class TestFileCategorization:
 
         # Verify classes
         class_names = [name for name, _ in categorized[CategoryType.CLASS]]
-        assert sorted(class_names) == ["InkWell", "ListTile"]
+        assert sorted(class_names) == ["InkWell", "ListTile", "ThemeData"]
 
         # Verify mixins
         mixin_names = [name for name, _ in categorized[CategoryType.MIXIN]]

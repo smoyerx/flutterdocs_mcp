@@ -65,9 +65,14 @@ def process_constructors(
                 f"mcp://flutter/api/{member['section']}/{member['entity_name']}/{member['member']}"
             )
 
+        # Try regular member file first (e.g., Widget/Widget.html for default constructor)
         html_path = builder.get_input_member_file(member["member"])
         if not html_path.exists():
-            log_processing_error(f"Constructor HTML file not found: {html_path}")
+            # Try named constructor pattern (e.g., Text/Text.rich.html)
+            html_path = builder.get_input_named_constructor_file(member["member"])
+            if not html_path.exists():
+                log_processing_error(f"Constructor HTML file not found: {html_path}")
+                continue
 
         ensure_dir_exists(constructors_dir)
         markdown_content = convert_html_to_markdown(

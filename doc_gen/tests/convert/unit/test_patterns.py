@@ -37,6 +37,7 @@ class TestLinkPatternRegistry:
             "constant_link",
             "extension_type_link",
             "other_root_link",
+            "named_constructor_link",
             "enum_constant_link",
             "member_link",
             "image_link",

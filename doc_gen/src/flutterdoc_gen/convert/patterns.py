@@ -133,6 +133,15 @@ LINK_PATTERNS: tuple[LinkPattern, ...] = (
         test_input="See [MyFunction](dart-core/MyFunction.html) for details.",
         test_output="See [MyFunction](mcp://flutter/api/dart-core/MyFunction) for details.",
     ),
+    # Named constructor links (3-part with entity name repeated in filename)
+    LinkPattern(
+        name="named_constructor_link",
+        pattern=r"\[([^\]]+)\]\(([a-zA-Z0-9_-]+)/([a-zA-Z0-9_]+)/\3\.([a-zA-Z0-9_]+)\.html\)",
+        replacement=rf"[\1]({MCP_URI_PREFIX}\2/\3/\4)",
+        description="[EntityName.memberName](section/EntityName/EntityName.memberName.html)",
+        test_input="See [Text.rich](widgets/Text/Text.rich.html) constructor.",
+        test_output="See [Text.rich](mcp://flutter/api/widgets/Text/rich) constructor.",
+    ),
     # Enum constant links (3-part with -constant.html suffix)
     # Must come BEFORE member_link to match the more specific pattern first.
     LinkPattern(
