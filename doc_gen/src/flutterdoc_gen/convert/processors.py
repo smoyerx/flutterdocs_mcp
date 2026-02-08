@@ -5,15 +5,13 @@ documentation members (constructors, properties, methods, operators,
 static methods, and snippets).
 """
 
-# import logging
-
 from html_to_markdown import ConversionOptionsHandle
 
 from flutterdoc_gen.convert.conversion import (
     convert_dart_snippet,
     convert_html_to_markdown,
 )
-from flutterdoc_gen.convert.errors import log_processing_error
+from flutterdoc_gen._shared.logging import log_processing_error
 from flutterdoc_gen.convert.parsing import (
     extract_constructor_links,
     extract_member_definitions,
@@ -44,12 +42,10 @@ def process_constructors(
     """
     section_content = extract_section_content(entity_markdown, "Constructors")
     if section_content is None:
-        # logging.info(f"No Constructors section found in {builder.entity_name}")
         return
 
     members = extract_constructor_links(section_content)
     if not members:
-        # logging.info(f"No constructor links found in {builder.entity_name}")
         return
 
     constructors_dir = builder.get_constructors_dir()
@@ -99,12 +95,10 @@ def process_properties(
     """
     section_content = extract_section_content(entity_markdown, "Properties")
     if section_content is None:
-        # logging.info(f"No Properties section found in {builder.entity_name}")
         return
 
     members = extract_member_definitions(section_content)
     if not members:
-        # logging.info(f"No property links found in {builder.entity_name}")
         return
 
     native_dir = builder.get_properties_dir(inherited=False)
@@ -162,12 +156,10 @@ def process_methods(
     """
     section_content = extract_section_content(entity_markdown, "Methods")
     if section_content is None:
-        # logging.info(f"No Methods section found in {builder.entity_name}")
         return
 
     members = extract_member_definitions(section_content)
     if not members:
-        # logging.info(f"No method links found in {builder.entity_name}")
         return
 
     native_dir = builder.get_methods_dir(inherited=False)
@@ -227,12 +219,10 @@ def process_operators(
     """
     section_content = extract_section_content(entity_markdown, "Operators")
     if section_content is None:
-        # logging.info(f"No Operators section found in {builder.entity_name}")
         return
 
     members = extract_member_definitions(section_content)
     if not members:
-        # logging.info(f"No operator links found in {builder.entity_name}")
         return
 
     native_dir = builder.get_operators_dir(inherited=False)

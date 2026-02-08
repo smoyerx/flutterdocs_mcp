@@ -4,9 +4,9 @@ This module contains functions for cleaning up and transforming markdown
 content during the HTML to markdown conversion process.
 """
 
-import logging
 import re
 
+from flutterdoc_gen._shared.logging import get_notification_logger
 from flutterdoc_gen.convert.patterns import (
     LINK_PATTERNS,
     NOISE_STRINGS,
@@ -39,15 +39,16 @@ def get_unmatched_patterns() -> list[tuple[str, str]]:
 def log_unmatched_summary() -> None:
     """Log a summary of all unmatched HTML link patterns found."""
     if _unmatched_patterns:
+        notification_logger = get_notification_logger()
         unique_patterns = set(pattern for _, pattern in _unmatched_patterns)
-        logging.info(
+        notification_logger.info(
             "Found %d unmatched HTML link patterns (%d unique)",
             len(_unmatched_patterns),
             len(unique_patterns),
         )
         for pattern in sorted(unique_patterns):
             count = sum(1 for _, p in _unmatched_patterns if p == pattern)
-            logging.info("  %dx: %s", count, pattern)
+            notification_logger.info("  %dx: %s", count, pattern)
 
 
 # --- Cleanup Transformation Functions ---
@@ -619,7 +620,8 @@ def cleanup_function_declaration(content: str, source_context: str = "") -> str:
         # Check for ordered list marker
         if _ORDERED_LIST_MARKER.match(stripped):
             if indent > 0:
-                logging.info(
+                notification_logger = get_notification_logger()
+                notification_logger.info(
                     "Skipping transformation: nested/indented list marker found "
                     "in function declaration (%s)",
                     source_context or "unknown",
@@ -630,7 +632,8 @@ def cleanup_function_declaration(content: str, source_context: str = "") -> str:
         # Check for unordered list marker
         if _UNORDERED_LIST_MARKER.match(stripped):
             if indent > 0:
-                logging.info(
+                notification_logger = get_notification_logger()
+                notification_logger.info(
                     "Skipping transformation: nested/indented list marker found "
                     "in function declaration (%s)",
                     source_context or "unknown",
@@ -647,7 +650,8 @@ def cleanup_function_declaration(content: str, source_context: str = "") -> str:
         ):
             # Look for list markers that appear after other content
             if re.search(r"\S\s+\d+\.\s", line) or re.search(r"\S\s+[-*+]\s", line):
-                logging.info(
+                notification_logger = get_notification_logger()
+                notification_logger.info(
                     "Skipping transformation: list marker found mid-line "
                     "in function declaration (%s)",
                     source_context or "unknown",
@@ -656,7 +660,8 @@ def cleanup_function_declaration(content: str, source_context: str = "") -> str:
 
     # Check for mixed markers
     if has_ordered and has_unordered:
-        logging.info(
+        notification_logger = get_notification_logger()
+        notification_logger.info(
             "Skipping transformation: mixed list markers (ordered and unordered) "
             "in function declaration (%s)",
             source_context or "unknown",

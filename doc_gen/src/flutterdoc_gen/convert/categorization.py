@@ -5,10 +5,10 @@ of root documentation files (classes, mixins, constants, libraries, enums,
 extensions, extension types, functions, and typedefs).
 """
 
-import logging
 from pathlib import Path
 
 from flutterdoc_gen._shared.constants import CategoryType
+from flutterdoc_gen._shared.logging import get_notification_logger
 from flutterdoc_gen._shared.paths import PathBuilder
 
 
@@ -146,6 +146,7 @@ def find_and_categorize_root_files(
                 categorized_files.add(filename)
         else:
             # Uncategorizable file - log in verbose mode
-            logging.info(f"Uncategorizable file (skipping): {filename}")
+            notification_logger = get_notification_logger()
+            notification_logger.info(f"Uncategorizable file (skipping): {filename}")
 
     return categories

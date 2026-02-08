@@ -5,7 +5,6 @@ running the Flutter documentation conversion tool.
 """
 
 import argparse
-import logging
 import sys
 from pathlib import Path
 
@@ -16,7 +15,11 @@ from html_to_markdown import (
 
 from flutterdoc_gen.convert.categorization import find_and_categorize_root_files
 from flutterdoc_gen._shared.constants import CategoryType
-from flutterdoc_gen.convert.errors import log_processing_error
+from flutterdoc_gen._shared.logging import (
+    configure_logging,
+    get_progress_logger,
+    log_processing_error,
+)
 from flutterdoc_gen._shared.paths import PathBuilder, ensure_dir_exists
 from flutterdoc_gen.convert.rootdocs import (
     process_class,
@@ -129,11 +132,10 @@ def main() -> None:
     args = parser.parse_args()
 
     # Configure logging
-    log_level = logging.INFO if args.verbose else logging.WARNING
-    logging.basicConfig(
-        level=log_level,
-        format="%(message)s",
-    )
+    configure_logging(args.verbose)
+
+    # Get logger for progress messages
+    progress_logger = get_progress_logger()
 
     # Reset unmatched pattern tracking
     reset_unmatched_patterns()
@@ -159,7 +161,7 @@ def main() -> None:
 
     # Process classes (existing functionality)
     for class_name, class_file in categorized_files[CategoryType.CLASS]:
-        logging.info(f"Converting class: {class_name}")
+        progress_logger.info(f"Converting class: {class_name}")
 
         try:
             # Process documentation files for the class
@@ -178,7 +180,7 @@ def main() -> None:
 
     # Process other categories with stub processors
     for mixin_name, mixin_file in categorized_files[CategoryType.MIXIN]:
-        logging.info(f"Converting mixin: {mixin_name}")
+        progress_logger.info(f"Converting mixin: {mixin_name}")
         try:
             process_mixin(
                 options_handle,
@@ -194,7 +196,7 @@ def main() -> None:
             )
 
     for constant_name, constant_file in categorized_files[CategoryType.CONSTANT]:
-        logging.info(f"Converting constant: {constant_name}")
+        progress_logger.info(f"Converting constant: {constant_name}")
         try:
             process_constant(
                 options_handle,
@@ -210,7 +212,7 @@ def main() -> None:
             )
 
     for library_name, library_file in categorized_files[CategoryType.LIBRARY]:
-        logging.info(f"Converting library: {library_name}")
+        progress_logger.info(f"Converting library: {library_name}")
         try:
             process_library(
                 options_handle,
@@ -228,7 +230,7 @@ def main() -> None:
     for extension_type_name, extension_type_file in categorized_files[
         CategoryType.EXTENSION_TYPE
     ]:
-        logging.info(f"Converting extension type: {extension_type_name}")
+        progress_logger.info(f"Converting extension type: {extension_type_name}")
         try:
             process_extension_type(
                 options_handle,
@@ -245,7 +247,7 @@ def main() -> None:
             )
 
     for enum_name, enum_file in categorized_files[CategoryType.ENUM]:
-        logging.info(f"Converting enum: {enum_name}")
+        progress_logger.info(f"Converting enum: {enum_name}")
         try:
             process_enum(
                 options_handle,
@@ -261,7 +263,7 @@ def main() -> None:
             )
 
     for extension_name, extension_file in categorized_files[CategoryType.EXTENSION]:
-        logging.info(f"Converting extension: {extension_name}")
+        progress_logger.info(f"Converting extension: {extension_name}")
         try:
             process_extension(
                 options_handle,
@@ -277,7 +279,7 @@ def main() -> None:
             )
 
     for function_name, function_file in categorized_files[CategoryType.FUNCTION]:
-        logging.info(f"Converting function: {function_name}")
+        progress_logger.info(f"Converting function: {function_name}")
         try:
             process_function(
                 options_handle,
@@ -293,7 +295,7 @@ def main() -> None:
             )
 
     for typedef_name, typedef_file in categorized_files[CategoryType.TYPEDEF]:
-        logging.info(f"Converting typedef: {typedef_name}")
+        progress_logger.info(f"Converting typedef: {typedef_name}")
         try:
             process_typedef(
                 options_handle,

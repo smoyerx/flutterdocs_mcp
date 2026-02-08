@@ -9,13 +9,13 @@ as opposed to member documentation files (constructors, methods, properties, etc
 which are processed by the functions in the processors module.
 """
 
-import logging
 from pathlib import Path
 
 from html_to_markdown import ConversionOptionsHandle
 
 from flutterdoc_gen._shared.constants import CategoryType
 from flutterdoc_gen.convert.conversion import convert_html_to_markdown
+from flutterdoc_gen._shared.logging import get_progress_logger
 from flutterdoc_gen._shared.paths import PathBuilder, ensure_dir_exists
 from flutterdoc_gen.convert.processors import (
     process_constants,
@@ -104,8 +104,11 @@ def process_class(
     class_output_dir = builder.get_entity_dir()
     ensure_dir_exists(class_output_dir)
 
+    # Get logger for progress messages
+    progress_logger = get_progress_logger()
+
     # Process the root class file
-    logging.info(f"  Processing class file: {class_file}")
+    progress_logger.info(f"  Processing class file: {class_file}")
     class_markdown = convert_html_to_markdown(options_handle, class_file)
     class_output_file = builder.get_entity_file()
     class_output_file.write_text(class_markdown, encoding="utf-8")
@@ -148,8 +151,11 @@ def process_mixin(
     mixin_output_dir = builder.get_entity_dir()
     ensure_dir_exists(mixin_output_dir)
 
+    # Get logger for progress messages
+    progress_logger = get_progress_logger()
+
     # Process the root mixin file
-    logging.info(f"  Processing mixin file: {mixin_file}")
+    progress_logger.info(f"  Processing mixin file: {mixin_file}")
     mixin_markdown = convert_html_to_markdown(options_handle, mixin_file)
     mixin_output_file = builder.get_entity_file()
     mixin_output_file.write_text(mixin_markdown, encoding="utf-8")
@@ -192,8 +198,11 @@ def process_constant(
     constant_output_dir = builder.get_entity_dir()
     ensure_dir_exists(constant_output_dir)
 
+    # Get logger for progress messages
+    progress_logger = get_progress_logger()
+
     # Process the root constant file
-    logging.info(f"  Processing constant file: {constant_file}")
+    progress_logger.info(f"  Processing constant file: {constant_file}")
     constant_markdown = convert_html_to_markdown(options_handle, constant_file)
     constant_output_file = builder.get_entity_file()
     constant_output_file.write_text(constant_markdown, encoding="utf-8")
@@ -233,8 +242,11 @@ def process_extension_type(
     extension_type_output_dir = builder.get_entity_dir()
     ensure_dir_exists(extension_type_output_dir)
 
+    # Get logger for progress messages
+    progress_logger = get_progress_logger()
+
     # Process the root extension type file
-    logging.info(f"  Processing extension type file: {extension_type_file}")
+    progress_logger.info(f"  Processing extension type file: {extension_type_file}")
     extension_type_markdown = convert_html_to_markdown(
         options_handle, extension_type_file, apply_function_declaration_cleanup=True
     )
@@ -279,8 +291,11 @@ def process_enum(
     enum_output_dir = builder.get_entity_dir()
     ensure_dir_exists(enum_output_dir)
 
+    # Get logger for progress messages
+    progress_logger = get_progress_logger()
+
     # Process the root enum file
-    logging.info(f"  Processing enum file: {enum_file}")
+    progress_logger.info(f"  Processing enum file: {enum_file}")
     enum_markdown = convert_html_to_markdown(options_handle, enum_file)
     enum_output_file = builder.get_entity_file()
     enum_output_file.write_text(enum_markdown, encoding="utf-8")
@@ -323,8 +338,11 @@ def process_extension(
     extension_output_dir = builder.get_entity_dir()
     ensure_dir_exists(extension_output_dir)
 
+    # Get logger for progress messages
+    progress_logger = get_progress_logger()
+
     # Process the root extension file
-    logging.info(f"  Processing extension file: {extension_file}")
+    progress_logger.info(f"  Processing extension file: {extension_file}")
     extension_markdown = convert_html_to_markdown(options_handle, extension_file)
     extension_output_file = builder.get_entity_file()
     extension_output_file.write_text(extension_markdown, encoding="utf-8")
@@ -367,8 +385,11 @@ def process_function(
     function_output_dir = builder.get_entity_dir()
     ensure_dir_exists(function_output_dir)
 
+    # Get logger for progress messages
+    progress_logger = get_progress_logger()
+
     # Process the root function file
-    logging.info(f"  Processing function file: {function_file}")
+    progress_logger.info(f"  Processing function file: {function_file}")
     function_markdown = convert_html_to_markdown(
         options_handle, function_file, apply_function_declaration_cleanup=True
     )
@@ -410,8 +431,11 @@ def process_typedef(
     typedef_output_dir = builder.get_entity_dir()
     ensure_dir_exists(typedef_output_dir)
 
+    # Get logger for progress messages
+    progress_logger = get_progress_logger()
+
     # Process the root typedef file
-    logging.info(f"  Processing typedef file: {typedef_file}")
+    progress_logger.info(f"  Processing typedef file: {typedef_file}")
     typedef_markdown = convert_html_to_markdown(options_handle, typedef_file)
     typedef_output_file = builder.get_entity_file()
     typedef_output_file.write_text(typedef_markdown, encoding="utf-8")
@@ -451,8 +475,11 @@ def process_library(
     library_output_dir = builder.get_entity_dir()
     ensure_dir_exists(library_output_dir)
 
+    # Get logger for progress messages
+    progress_logger = get_progress_logger()
+
     # Process the root library file
-    logging.info(f"  Processing library file: {library_file}")
+    progress_logger.info(f"  Processing library file: {library_file}")
     library_markdown = convert_html_to_markdown(options_handle, library_file)
     library_output_file = builder.get_entity_file()
     library_output_file.write_text(library_markdown, encoding="utf-8")
