@@ -22,6 +22,7 @@ NOISE_STRINGS: tuple[tuple[str, str, str], ...] = (
     ("final", "# Heading\nfinal\nBody content", "# Heading\nBody content"),
     ("override", "# Heading\noverride\nBody content", "# Heading\nBody content"),
     ("no setter", "# Heading\nno setter\nBody content", "# Heading\nBody content"),
+    ("factory", "# Heading\nfactory\nBody content", "# Heading\nBody content"),
     (
         "getter/setter pair",
         "# Heading\ngetter/setter pair\nBody content",
