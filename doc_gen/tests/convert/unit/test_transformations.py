@@ -836,9 +836,9 @@ Describes the part of the user interface represented by this widget."""
         expected = """\
 # build method
 
-  @[override](dart-core/override-constant.html)
+@[override](dart-core/override-constant.html)
 [Widget](mcp://flutter/api/widgets/Widget)build(
-  [BuildContext](mcp://flutter/api/widgets/BuildContext) context
+[BuildContext](mcp://flutter/api/widgets/BuildContext) context
 )
 
 
@@ -861,8 +861,8 @@ Creates a new MyClass instance."""
 # MyClass constructor
 
 MyClass({
-  [int](mcp://flutter/api/dart-core/int) value,
-  [String](mcp://flutter/api/dart-core/String)? name,
+[int](mcp://flutter/api/dart-core/int) value,
+[String](mcp://flutter/api/dart-core/String)? name,
 })
 
 Creates a new MyClass instance."""
@@ -884,8 +884,8 @@ Test method."""
 # test method
 
 void test(
-  int a,
-  int b
+int a,
+int b
 )
 
 Test method."""
@@ -907,8 +907,8 @@ Test method."""
 # test method
 
 void test(
-  int a,
-  int b
+int a,
+int b
 )
 
 Test method."""
@@ -996,7 +996,7 @@ This should not be transformed.
 # first header
 
 void method(
-  int a
+int a
 )
 
 ## second header
@@ -1021,7 +1021,7 @@ void method(
 # method
 
 void method(
-  int a
+int a
 )
 
 1. First item in description list
@@ -1029,8 +1029,8 @@ void method(
         result = cleanup_function_declaration(content)
         assert result == expected
 
-    def test_mixed_list_markers_returns_unchanged(self) -> None:
-        """Mixed ordered and unordered markers should return unchanged."""
+    def test_mixed_list_markers_transforms(self) -> None:
+        """Mixed ordered and unordered markers should be transformed."""
         content = """\
 # mixed method
 
@@ -1040,11 +1040,20 @@ void method(
 )
 
 Description."""
-        result = cleanup_function_declaration(content, source_context="test.html")
-        assert result == content
+        expected = """\
+# mixed method
 
-    def test_nested_indented_markers_returns_unchanged(self) -> None:
-        """Indented/nested list markers should return unchanged."""
+void method(
+int a,
+int b
+)
+
+Description."""
+        result = cleanup_function_declaration(content, source_context="test.html")
+        assert result == expected
+
+    def test_nested_indented_markers_transforms(self) -> None:
+        """Indented/nested list markers should be transformed with indent preserved."""
         content = """\
 # nested method
 
@@ -1053,8 +1062,16 @@ void method(
 )
 
 Description."""
+        expected = """\
+# nested method
+
+void method(
+  int a
+)
+
+Description."""
         result = cleanup_function_declaration(content, source_context="test.html")
-        assert result == content
+        assert result == expected
 
     def test_different_header_levels(self) -> None:
         """Different header levels should work (##, ###, etc.)."""
@@ -1070,7 +1087,7 @@ Description."""
 ## h2 method
 
 void method(
-  int a
+int a
 )
 
 Description."""
@@ -1091,7 +1108,7 @@ Description."""
 ### h3 method
 
 void method(
-  int a
+int a
 )
 
 Description."""
@@ -1135,7 +1152,7 @@ Description."""
 # method
 
 void method(
-  int a
+int a
 ) // end of parameters
 
 Description."""
@@ -1156,7 +1173,7 @@ Description."""
 # constructor
 
 MyClass({
-  int a
+int a
 }) // end of constructor
 
 Description."""
@@ -1179,8 +1196,8 @@ Creates an ink well."""
 # InkWell constructor
 
 const InkWell({
-  [Key](mcp://flutter/api/foundation/Key)? key,
-  [Widget](mcp://flutter/api/widgets/Widget)? child,
+[Key](mcp://flutter/api/foundation/Key)? key,
+[Widget](mcp://flutter/api/widgets/Widget)? child,
 })
 
 Creates an ink well."""
@@ -1210,16 +1227,16 @@ Creates a BigClass."""
 # BigClass constructor
 
 BigClass({
-  int a,
-  int b,
-  int c,
-  int d,
-  int e,
-  int f,
-  int g,
-  int h,
-  int i,
-  int j,
+int a,
+int b,
+int c,
+int d,
+int e,
+int f,
+int g,
+int h,
+int i,
+int j,
 })
 
 Creates a BigClass."""
@@ -1230,7 +1247,7 @@ Creates a BigClass."""
         """Declarations with tabs and spaces should be handled."""
         # Tab after marker is part of the marker separator and gets removed
         content = "# method\n\nvoid method(\n1.\tint a\n)\n\nDescription."
-        expected = "# method\n\nvoid method(\n  int a\n)\n\nDescription."
+        expected = "# method\n\nvoid method(\nint a\n)\n\nDescription."
         result = cleanup_function_declaration(content)
         assert result == expected
 

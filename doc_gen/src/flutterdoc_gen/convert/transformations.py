@@ -554,10 +554,7 @@ def cleanup_function_declaration(content: str, source_context: str = "") -> str:
 
     Note:
         Logs an informational message and returns unchanged for edge cases:
-        - Mixed list markers (ordered and unordered in same declaration)
-        - Nested/indented list markers
         - List markers mid-line
-        - Start pattern equals end pattern (empty declaration)
     """
     lines = content.split("\n")
 
@@ -609,37 +606,8 @@ def cleanup_function_declaration(content: str, source_context: str = "") -> str:
     # Process lines between start and end (inclusive)
     declaration_lines = lines[start_index : end_index + 1]
 
-    # Validate and detect list marker types
-    has_ordered = False
-    has_unordered = False
-
     for line in declaration_lines:
         stripped = line.lstrip()
-        indent = len(line) - len(stripped)
-
-        # Check for ordered list marker
-        if _ORDERED_LIST_MARKER.match(stripped):
-            if indent > 0:
-                notification_logger = get_notification_logger()
-                notification_logger.info(
-                    "Skipping transformation: nested/indented list marker found "
-                    "in function declaration (%s)",
-                    source_context or "unknown",
-                )
-                return content
-            has_ordered = True
-
-        # Check for unordered list marker
-        if _UNORDERED_LIST_MARKER.match(stripped):
-            if indent > 0:
-                notification_logger = get_notification_logger()
-                notification_logger.info(
-                    "Skipping transformation: nested/indented list marker found "
-                    "in function declaration (%s)",
-                    source_context or "unknown",
-                )
-                return content
-            has_unordered = True
 
         # Check for mid-line list markers (marker not at start of content)
         # Only check non-blank lines that aren't entirely a list marker line
@@ -658,33 +626,23 @@ def cleanup_function_declaration(content: str, source_context: str = "") -> str:
                 )
                 return content
 
-    # Check for mixed markers
-    if has_ordered and has_unordered:
-        notification_logger = get_notification_logger()
-        notification_logger.info(
-            "Skipping transformation: mixed list markers (ordered and unordered) "
-            "in function declaration (%s)",
-            source_context or "unknown",
-        )
-        return content
-
     # Transform declaration lines: remove blank lines and list markers
     transformed_declaration = []
     for line in declaration_lines:
-        # Skip blank lines
-        if not line.strip():
+        stripped = line.lstrip()
+        # Skip blank lines. Capture indent for non-blank lines.
+        if not stripped:
             continue
+        indent = len(line) - len(stripped)
 
         # Remove ordered list markers
-        new_line = _ORDERED_LIST_MARKER.sub("", line)
+        new_line = _ORDERED_LIST_MARKER.sub("", stripped)
 
         # Remove unordered list markers
         new_line = _UNORDERED_LIST_MARKER.sub("", new_line)
 
-        # Add indentation if a list marker was removed to preserve readability
-        if new_line != line:
-            new_line = new_line.lstrip()  # Remove leading whitespace before marker
-            new_line = "  " + new_line  # Add two spaces to match other conversions
+        # Add indentation back to preserve readability
+        new_line = " " * indent + new_line
 
         transformed_declaration.append(new_line)
 

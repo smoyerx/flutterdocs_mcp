@@ -42,8 +42,8 @@ The content ends with the **first** line containing **only**:
 
 The transformation MUST modify this markdown content as follows:
 - Remove all blank lines between the start and end patterns
-- Remove all markdown ordered list markers at the start of a line (i.e., `1. `, `2. `, etc.) while **retaining** all text following the marker
-- Remove all markdown unordered list markers at the start of a line (i.e., `- `, `* `, or `+ `) while **retaining** all text following the marker
+- Remove all markdown ordered list markers that are the first non-whitespace at the start of a line (i.e., `1. `, `2. `, etc.) while **retaining** all text following the marker
+- Remove all markdown unordered list markers that are the first non-whitespace at the start of a line (i.e., `- `, `* `, or `+ `) while **retaining** all text following the marker
 - Preserve all other whitespace and formatting on non-blank lines
 
 **Important**:
@@ -54,11 +54,11 @@ The transformation MUST modify this markdown content as follows:
 #### Transformation Edge Cases
 
 convert.py MUST print an informational message (when in verbose mode) and continue processing **without** applying any transformation if one of the following edge cases is encountered:
-- Mixed list markers (i.e., both ordered and unordered list markers within the same function declaration markdown content)
-- Nested list markers (i.e., list markers that are indented or nested within other list markers)
 - List markers mid-line (i.e., list markers that do not appear at the start of a line)
 - The start pattern is found and it also matches the end pattern (i.e., the header is immediately followed by a line with only `)` or `})` possibly with comments)
 - The end pattern line contains additional text beyond whitespace and comments (i.e., a line with `)` or `})` plus characters other than comments)
+
+No other edge cases are expected.
 
 
 ### Markdown Content Subject to the New Transformation
