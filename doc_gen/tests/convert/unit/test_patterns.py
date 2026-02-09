@@ -42,6 +42,7 @@ class TestLinkPatternRegistry:
             "member_link",
             "image_link",
             "dartpad_link",
+            "unmapped_link",
         }
         actual_names = {p.name for p in LINK_PATTERNS}
         assert expected_names == actual_names, (

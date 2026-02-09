@@ -56,6 +56,15 @@ Replace all links of the form `[{ENTITY_NAME}.{MEMBER_NAME}]({SECTION}/{ENTITY_N
 - {SECTION} must not include a path separator, otherwise it is not a match.
 - This transformation handles links to member documentation files that use the pattern `{ENTITY_NAME}.{MEMBER_NAME}.html`. This is different from the existing transform_member_links() function which transforms links to member documentation files that use the pattern `{MEMBER_NAME}.html`.
 
+### Link Transformation: transform_unmapped_links()
+
+Replace all links of the form `[{LINK_TEXT}]({URI})` with `[Omitted link: {LINK_TEXT}]` where {URI} does not start with `http://`, `https://`, `mcp://`, or `#`.
+
+This transformation handles any links that are **not**:
+- transformed by the other transformations
+- links to external websites
+- links to anchors within the same document
+
 ## Ordering of Link Transformations
 
 Within apply_transformations(), the link transformation functions MUST be called in the following order:
@@ -69,7 +78,8 @@ Within apply_transformations(), the link transformation functions MUST be called
 8. transform_member_links()
 9. transform_image_links()
 10. transform_dartpad_links()
-11. fix_link_spacing()
+11. transform_unmapped_links()
+12. fix_link_spacing()
 
 **Important**: As part of the implementation of these new transformations you MUST confirm there are no conflicts in the ordering; i.e., more specific transformations precede more general transformations such that all transformations are applied correctly.
 

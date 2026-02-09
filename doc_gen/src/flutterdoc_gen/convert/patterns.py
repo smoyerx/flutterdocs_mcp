@@ -179,6 +179,15 @@ LINK_PATTERNS: tuple[LinkPattern, ...] = (
         test_input="[Open in DartPad](https://dartpad.dev/?id=abc123)",
         test_output="[Omitted code: Interactive sample]",
     ),
+    # Catch-all for unmapped links
+    LinkPattern(
+        name="unmapped_link",
+        pattern=r"\[([^\]]+)\]\((?!https?://|mcp://|#)[^)]+\)",
+        replacement=r"[Omitted link: \1]",
+        description="[text](relative-uri) - catch-all for unmapped links (excludes http/https/mcp/anchor)",
+        test_input="See [documentation](../docs/guide.html) for details.",
+        test_output="See [Omitted link: documentation] for details.",
+    ),
 )
 
 # Pattern for detecting unmatched relative HTML links

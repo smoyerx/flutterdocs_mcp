@@ -394,6 +394,30 @@ def transform_dartpad_links(content: str) -> str:
     return re.sub(dartpad_pattern.pattern, dartpad_pattern.replacement, content)
 
 
+def transform_unmapped_links(content: str) -> str:
+    """Transform unmapped relative links to placeholder text.
+
+    Replaces links of the form [LINK_TEXT](URI) with [Omitted link: LINK_TEXT]
+    where URI does not start with http://, https://, mcp://, or #.
+
+    This transformation acts as a catch-all for any relative links that were
+    not transformed by other more specific transformation functions. It excludes:
+    - http:// and https:// URLs (external websites)
+    - mcp:// URIs (already transformed MCP links)
+    - # anchors (in-document navigation)
+
+    Uses patterns from LINK_PATTERNS registry.
+
+    Args:
+        content: The markdown content to transform.
+
+    Returns:
+        The content with unmapped relative links replaced by placeholder text.
+    """
+    unmapped_pattern = next(p for p in LINK_PATTERNS if p.name == "unmapped_link")
+    return re.sub(unmapped_pattern.pattern, unmapped_pattern.replacement, content)
+
+
 def fix_link_spacing(content: str) -> str:
     """Add missing space after markdown links followed by text.
 
@@ -458,7 +482,8 @@ def apply_transformations(content: str, source_context: str = "") -> str:
     8. Transform member links to MCP URI format (3-part entity members)
     9. Transform image links to placeholder text
     10. Transform DartPad links to placeholder text
-    11. Fix link spacing issues after markdown links
+    11. Transform unmapped links to placeholder text (catch-all for remaining relative links)
+    12. Fix link spacing issues after markdown links
 
     Note: More specific 2-part patterns (class, mixin, constant, extension-type)
     must come before the catch-all other_root pattern. The 3-part patterns
@@ -497,6 +522,7 @@ def apply_transformations(content: str, source_context: str = "") -> str:
     # Special link handling
     content = transform_image_links(content)
     content = transform_dartpad_links(content)
+    content = transform_unmapped_links(content)
     content = fix_link_spacing(content)
 
     # Collect any remaining unmatched HTML links

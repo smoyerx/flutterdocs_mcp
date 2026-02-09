@@ -24,6 +24,7 @@ from flutterdoc_gen.convert.transformations import (
     transform_mixin_links,
     transform_named_constructor_links,
     transform_other_root_links,
+    transform_unmapped_links,
 )
 
 
@@ -648,6 +649,72 @@ class TestTransformDartpadLinks:
         assert result == ""
 
 
+class TestTransformUnmappedLinks:
+    """Tests for transform_unmapped_links transformation function."""
+
+    def test_transforms_relative_html_link(self) -> None:
+        """Relative HTML link should be transformed to placeholder text."""
+        content = "See [documentation](../docs/guide.html) for details."
+        result = transform_unmapped_links(content)
+        assert result == "See [Omitted link: documentation] for details."
+
+    def test_transforms_multiple_unmapped_links(self) -> None:
+        """Multiple unmapped links should all be transformed."""
+        content = "[link1](path/file.html) and [link2](other/doc.md)"
+        result = transform_unmapped_links(content)
+        assert result == "[Omitted link: link1] and [Omitted link: link2]"
+
+    def test_preserves_http_links(self) -> None:
+        """HTTP links should be preserved."""
+        content = "See [Flutter](http://flutter.dev) site."
+        result = transform_unmapped_links(content)
+        assert result == content
+
+    def test_preserves_https_links(self) -> None:
+        """HTTPS links should be preserved."""
+        content = "See [Flutter](https://flutter.dev) site."
+        result = transform_unmapped_links(content)
+        assert result == content
+
+    def test_preserves_mcp_uris(self) -> None:
+        """MCP URIs (already transformed links) should be preserved."""
+        content = "See [Widget](mcp://flutter/api/widgets/Widget) class."
+        result = transform_unmapped_links(content)
+        assert result == content
+
+    def test_preserves_anchor_links(self) -> None:
+        """Anchor links should be preserved for in-document navigation."""
+        content = "Jump to [section](#heading) below."
+        result = transform_unmapped_links(content)
+        assert result == content
+
+    def test_transforms_parent_relative_path(self) -> None:
+        """Parent relative path should be transformed."""
+        content = "See [parent doc](../README.md) for more."
+        result = transform_unmapped_links(content)
+        assert result == "See [Omitted link: parent doc] for more."
+
+    def test_handles_empty_string(self) -> None:
+        """Empty string should return empty string."""
+        result = transform_unmapped_links("")
+        assert result == ""
+
+    def test_mixed_content_with_preserved_and_transformed(self) -> None:
+        """Mixed links: some preserved, some transformed."""
+        content = "[http link](https://example.com), [relative](file.html), and [anchor](#top)"
+        result = transform_unmapped_links(content)
+        assert (
+            result
+            == "[http link](https://example.com), [Omitted link: relative], and [anchor](#top)"
+        )
+
+    def test_already_transformed_links_not_affected(self) -> None:
+        """Links already transformed to MCP URIs should not match."""
+        content = "[Text](mcp://flutter/api/widgets/Text) widget"
+        result = transform_unmapped_links(content)
+        assert result == content
+
+
 class TestFixLinkSpacing:
     """Tests for fix_link_spacing transformation function."""
 
@@ -796,15 +863,16 @@ class TestUnmatchedPatternTracking:
         assert len(patterns) == 0
 
     def test_collects_multiple_patterns(self) -> None:
-        """Multiple unmatched patterns should all be collected."""
-        # Use patterns that aren't matched by any transformer
+        """With unmapped_link transformation, no patterns should be unmatched."""
+        # These patterns are now caught by transform_unmapped_links()
         content = (
             "[Unknown](foundation/some/nested/Unknown.html) and "
             "[Other](meta/path/to/Other.html)"
         )
         apply_transformations(content, source_context="test.html")
         patterns = get_unmatched_patterns()
-        assert len(patterns) == 2
+        # The unmapped_link transformation catches all relative links now
+        assert len(patterns) == 0
 
     def test_reset_clears_patterns(self) -> None:
         """Reset should clear all collected patterns."""
