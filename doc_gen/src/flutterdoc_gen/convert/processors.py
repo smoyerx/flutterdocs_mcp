@@ -101,8 +101,8 @@ def process_properties(
     if not members:
         return
 
-    native_dir = builder.get_properties_dir(inherited=False)
-    inherited_dir = builder.get_properties_dir(inherited=True)
+    native_dir = builder.get_native_properties_dir()
+    inherited_dir = builder.get_inherited_properties_dir()
 
     for member in members:
         is_native = (
@@ -162,8 +162,8 @@ def process_methods(
     if not members:
         return
 
-    native_dir = builder.get_methods_dir(inherited=False)
-    inherited_dir = builder.get_methods_dir(inherited=True)
+    native_dir = builder.get_native_methods_dir()
+    inherited_dir = builder.get_inherited_methods_dir()
 
     for member in members:
         is_native = (
@@ -225,8 +225,8 @@ def process_operators(
     if not members:
         return
 
-    native_dir = builder.get_operators_dir(inherited=False)
-    inherited_dir = builder.get_operators_dir(inherited=True)
+    native_dir = builder.get_native_operators_dir()
+    inherited_dir = builder.get_inherited_operators_dir()
 
     for member in members:
         is_native = (

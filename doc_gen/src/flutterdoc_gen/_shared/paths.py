@@ -13,7 +13,7 @@ All filesystem path logic is centralized in:
 - _get_member_dir: Maps MemberType to member subdirectories
 - _get_member_file: Handles native vs inherited file naming
 
-Convenience aliases (get_properties_dir, get_native_method_file, etc.) wrap the generic
+Convenience aliases (get_native_properties_dir, get_native_method_file, etc.) wrap the generic
 methods for readability at call sites.
 """
 
@@ -229,14 +229,23 @@ class PathBuilder:
     def get_constants_dir(self) -> Path:
         return self._get_member_dir(MemberType.CONSTANTS, inherited=False)
 
-    def get_properties_dir(self, inherited: bool = False) -> Path:
-        return self._get_member_dir(MemberType.PROPERTIES, inherited)
+    def get_native_properties_dir(self) -> Path:
+        return self._get_member_dir(MemberType.PROPERTIES, inherited=False)
 
-    def get_methods_dir(self, inherited: bool = False) -> Path:
-        return self._get_member_dir(MemberType.METHODS, inherited)
+    def get_inherited_properties_dir(self) -> Path:
+        return self._get_member_dir(MemberType.PROPERTIES, inherited=True)
 
-    def get_operators_dir(self, inherited: bool = False) -> Path:
-        return self._get_member_dir(MemberType.OPERATORS, inherited)
+    def get_native_methods_dir(self) -> Path:
+        return self._get_member_dir(MemberType.METHODS, inherited=False)
+
+    def get_inherited_methods_dir(self) -> Path:
+        return self._get_member_dir(MemberType.METHODS, inherited=True)
+
+    def get_native_operators_dir(self) -> Path:
+        return self._get_member_dir(MemberType.OPERATORS, inherited=False)
+
+    def get_inherited_operators_dir(self) -> Path:
+        return self._get_member_dir(MemberType.OPERATORS, inherited=True)
 
     def get_statics_dir(self) -> Path:
         return self._get_member_dir(MemberType.STATICS, inherited=False)
@@ -257,26 +266,26 @@ class PathBuilder:
             MemberType.PROPERTIES, member_name, inherited=False
         )
 
+    def get_inherited_property_file(self, member_name: str) -> Path:
+        return self._get_member_file(MemberType.PROPERTIES, member_name, inherited=True)
+
     def get_native_method_file(self, member_name: str) -> Path:
         return self._get_member_file(MemberType.METHODS, member_name, inherited=False)
 
+    def get_inherited_method_file(self, member_name: str) -> Path:
+        return self._get_member_file(MemberType.METHODS, member_name, inherited=True)
+
     def get_native_operator_file(self, member_name: str) -> Path:
         return self._get_member_file(MemberType.OPERATORS, member_name, inherited=False)
+
+    def get_inherited_operator_file(self, member_name: str) -> Path:
+        return self._get_member_file(MemberType.OPERATORS, member_name, inherited=True)
 
     def get_static_file(self, member_name: str) -> Path:
         return self._get_member_file(MemberType.STATICS, member_name, inherited=False)
 
     def get_snippet_file(self, short_name: str) -> Path:
         return self._get_member_file(MemberType.SNIPPETS, short_name, inherited=False)
-
-    def get_inherited_property_file(self, member_name: str) -> Path:
-        return self._get_member_file(MemberType.PROPERTIES, member_name, inherited=True)
-
-    def get_inherited_method_file(self, member_name: str) -> Path:
-        return self._get_member_file(MemberType.METHODS, member_name, inherited=True)
-
-    def get_inherited_operator_file(self, member_name: str) -> Path:
-        return self._get_member_file(MemberType.OPERATORS, member_name, inherited=True)
 
     # --- Input Path Convenience Aliases ---
 

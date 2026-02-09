@@ -72,7 +72,7 @@ class TestPathBuilder:
         assert result == Path("/output/api/widgets/classes/Text/Text.md")
         assert result.suffix == ".md"
 
-    def test_get_properties_dir_native(self):
+    def test_get_native_properties_dir(self):
         """Verify native properties directory construction."""
         builder = PathBuilder(
             section="material",
@@ -81,10 +81,10 @@ class TestPathBuilder:
             doc_dir=Path("/doc"),
             output_dir=Path("/output"),
         )
-        result = builder.get_properties_dir(inherited=False)
+        result = builder.get_native_properties_dir()
         assert result == Path("/output/api/material/classes/ListTile/properties/native")
 
-    def test_get_properties_dir_inherited(self):
+    def test_get_inherited_properties_dir(self):
         """Verify inherited properties directory construction."""
         builder = PathBuilder(
             section="material",
@@ -93,7 +93,7 @@ class TestPathBuilder:
             doc_dir=Path("/doc"),
             output_dir=Path("/output"),
         )
-        result = builder.get_properties_dir(inherited=True)
+        result = builder.get_inherited_properties_dir()
         assert result == Path(
             "/output/api/material/classes/ListTile/properties/inherited"
         )
@@ -139,7 +139,7 @@ class TestPathBuilder:
         assert result == Path("/output/api/material/classes/ListTile/constructors")
         assert "constructors" in result.parts
 
-    def test_get_methods_dir_native(self):
+    def test_get_native_methods_dir(self):
         """Verify native methods directory construction."""
         builder = PathBuilder(
             section="material",
@@ -148,12 +148,12 @@ class TestPathBuilder:
             doc_dir=Path("/doc"),
             output_dir=Path("/output"),
         )
-        result = builder.get_methods_dir(inherited=False)
+        result = builder.get_native_methods_dir()
         assert result == Path("/output/api/material/classes/ListTile/methods/native")
         assert "methods" in result.parts
         assert "native" in result.parts
 
-    def test_get_methods_dir_inherited(self):
+    def test_get_inherited_methods_dir(self):
         """Verify inherited methods directory construction."""
         builder = PathBuilder(
             section="material",
@@ -162,12 +162,12 @@ class TestPathBuilder:
             doc_dir=Path("/doc"),
             output_dir=Path("/output"),
         )
-        result = builder.get_methods_dir(inherited=True)
+        result = builder.get_inherited_methods_dir()
         assert result == Path("/output/api/material/classes/ListTile/methods/inherited")
         assert "methods" in result.parts
         assert "inherited" in result.parts
 
-    def test_get_operators_dir_native(self):
+    def test_get_native_operators_dir(self):
         """Verify native operators directory construction."""
         builder = PathBuilder(
             section="material",
@@ -176,12 +176,12 @@ class TestPathBuilder:
             doc_dir=Path("/doc"),
             output_dir=Path("/output"),
         )
-        result = builder.get_operators_dir(inherited=False)
+        result = builder.get_native_operators_dir()
         assert result == Path("/output/api/material/classes/InkWell/operators/native")
         assert "operators" in result.parts
         assert "native" in result.parts
 
-    def test_get_operators_dir_inherited(self):
+    def test_get_inherited_operators_dir(self):
         """Verify inherited operators directory construction."""
         builder = PathBuilder(
             section="material",
@@ -190,7 +190,7 @@ class TestPathBuilder:
             doc_dir=Path("/doc"),
             output_dir=Path("/output"),
         )
-        result = builder.get_operators_dir(inherited=True)
+        result = builder.get_inherited_operators_dir()
         assert result == Path(
             "/output/api/material/classes/InkWell/operators/inherited"
         )
@@ -561,7 +561,7 @@ class TestPathBuilder:
             builder.get_constructors_dir()
 
         with pytest.raises(ValueError, match="requires entity context"):
-            builder.get_properties_dir()
+            builder.get_native_properties_dir()
 
         with pytest.raises(ValueError, match="requires entity context"):
             builder.get_native_property_file("selected")
@@ -612,7 +612,7 @@ class TestPathBuilder:
         assert builder.get_entity_file() == Path(
             "/output/api/material/classes/ListTile/ListTile.md"
         )
-        assert builder.get_properties_dir() == Path(
+        assert builder.get_native_properties_dir() == Path(
             "/output/api/material/classes/ListTile/properties/native"
         )
 

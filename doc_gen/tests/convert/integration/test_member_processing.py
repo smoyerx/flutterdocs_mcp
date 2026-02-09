@@ -129,7 +129,7 @@ class TestInheritedMemberGeneration:
         inkwell_builder = build_entity_path_builder(
             output_dir, "material", "InkWell", CategoryType.CLASS
         )
-        inherited_props_dir = inkwell_builder.get_properties_dir(inherited=True)
+        inherited_props_dir = inkwell_builder.get_inherited_properties_dir()
         assert inherited_props_dir.exists()
 
         # Check for at least some inherited properties
@@ -149,7 +149,7 @@ class TestInheritedMemberGeneration:
         inkwell_builder = build_entity_path_builder(
             output_dir, "material", "InkWell", CategoryType.CLASS
         )
-        inherited_methods_dir = inkwell_builder.get_methods_dir(inherited=True)
+        inherited_methods_dir = inkwell_builder.get_inherited_methods_dir()
         assert inherited_methods_dir.exists()
 
         # Check for at least some inherited methods
@@ -169,7 +169,7 @@ class TestInheritedMemberGeneration:
         inkwell_builder = build_entity_path_builder(
             output_dir, "material", "InkWell", CategoryType.CLASS
         )
-        inherited_operators_dir = inkwell_builder.get_operators_dir(inherited=True)
+        inherited_operators_dir = inkwell_builder.get_inherited_operators_dir()
         assert inherited_operators_dir.exists()
 
         # Check for at least some inherited operators
@@ -368,7 +368,7 @@ class TestFunctionDeclarationCleanup:
         inkwell_builder = build_entity_path_builder(
             output_dir, "material", "InkWell", CategoryType.CLASS
         )
-        inherited_methods_dir = inkwell_builder.get_methods_dir(inherited=True)
+        inherited_methods_dir = inkwell_builder.get_inherited_methods_dir()
         assert inherited_methods_dir.exists()
 
         method_files = list(inherited_methods_dir.glob("*.md"))
@@ -439,7 +439,7 @@ class TestFunctionDeclarationCleanup:
         extension_builder = build_entity_path_builder(
             output_dir, "widgets", "WidgetStateOperators", CategoryType.EXTENSION
         )
-        operators_dir = extension_builder.get_operators_dir()
+        operators_dir = extension_builder.get_native_operators_dir()
         assert operators_dir.exists(), f"Operators directory not found: {operators_dir}"
 
         operator_files = list(operators_dir.glob("*.md"))

@@ -23,11 +23,26 @@ for name in class_names:
         entity_type=CategoryType.CLASS,
     )
     
-    # Read markdown files
+    # Read entity documentation
     entity_file = builder.get_entity_file()
     content = entity_file.read_text()
+    # Load entity into database...
     
-    # Load into database...
+    # Enumerate and read all constructors
+    constructors_dir = builder.get_constructors_dir()
+    if constructors_dir.exists():
+        for ctor_file in constructors_dir.glob("*.md"):
+            ctor_name = ctor_file.stem  # e.g., "ThemeData" or "ThemeData.dark"
+            ctor_content = ctor_file.read_text()
+            # Load constructor into database...
+    
+    # Enumerate and read all native methods
+    methods_dir = builder.get_native_methods_dir()
+    if methods_dir.exists():
+        for method_file in methods_dir.glob("*.md"):
+            method_name = method_file.stem  # e.g., "build" or "dispose"
+            method_content = method_file.read_text()
+            # Load method into database...
 ```
 
 ## convert.py Usage (doc_dir required for reading HTML)
