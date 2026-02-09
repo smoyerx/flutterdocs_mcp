@@ -129,8 +129,9 @@ class PathBuilder:
             Path like output_dir/api/{section}/{type_subdir}/{entity_name}
         """
         self._require_entity_context()
-        assert self.entity_name is not None  # Type hint for mypy / Pylance
-        assert self.entity_type is not None  # Type hint for mypy / Pylance
+        assert (
+            self.entity_name is not None and self.entity_type is not None
+        )  # Type hint for mypy / Pylance
         subdir = PathBuilder._get_category_subdir(self.entity_type)
         return self.output_dir / "api" / self.section / subdir / self.entity_name
 
@@ -217,7 +218,9 @@ class PathBuilder:
 
     def get_entity_file(self) -> Path:
         self._require_entity_context()
-        assert self._entity_dir is not None and self.entity_name is not None
+        assert (
+            self._entity_dir is not None and self.entity_name is not None
+        )  # Type hint for mypy / Pylance
         return self._entity_dir / f"{self.entity_name}.md"
 
     def get_constructors_dir(self) -> Path:
@@ -317,7 +320,7 @@ class PathBuilder:
 
     def get_input_member_file(self, member_name: str) -> Path:
         self._require_entity_context()
-        assert self.entity_name is not None
+        assert self.entity_name is not None  # Type hint for mypy / Pylance
         return self.get_input_section_dir() / self.entity_name / f"{member_name}.html"
 
     def get_input_named_constructor_file(self, member_name: str) -> Path:
@@ -333,7 +336,7 @@ class PathBuilder:
             Path like doc_dir/flutter/section/entity/entity.member.html
         """
         self._require_entity_context()
-        assert self.entity_name is not None
+        assert self.entity_name is not None  # Type hint for mypy / Pylance
         return (
             self.get_input_section_dir()
             / self.entity_name
@@ -353,7 +356,7 @@ class PathBuilder:
             Path like doc_dir/flutter/section/entity/member-constant.html
         """
         self._require_entity_context()
-        assert self.entity_name is not None
+        assert self.entity_name is not None  # Type hint for mypy / Pylance
         return (
             self.get_input_section_dir()
             / self.entity_name
