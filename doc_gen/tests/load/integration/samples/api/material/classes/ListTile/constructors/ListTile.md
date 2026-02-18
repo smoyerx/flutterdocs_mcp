@@ -1,0 +1,93 @@
+# ListTile constructor
+
+const ListTile({
+[Key](mcp://flutter/api/foundation/Key)? key,
+[Widget](mcp://flutter/api/widgets/Widget)? leading,
+[Widget](mcp://flutter/api/widgets/Widget)? title,
+[Widget](mcp://flutter/api/widgets/Widget)? subtitle,
+[Widget](mcp://flutter/api/widgets/Widget)? trailing,
+[bool](mcp://flutter/api/dart-core/bool)? isThreeLine,
+[bool](mcp://flutter/api/dart-core/bool)? dense,
+[VisualDensity](mcp://flutter/api/material/VisualDensity)? visualDensity,
+[ShapeBorder](mcp://flutter/api/painting/ShapeBorder)? shape,
+[ListTileStyle](mcp://flutter/api/material/ListTileStyle)? style,
+[Color](mcp://flutter/api/dart-ui/Color)? selectedColor,
+[Color](mcp://flutter/api/dart-ui/Color)? iconColor,
+[Color](mcp://flutter/api/dart-ui/Color)? textColor,
+[TextStyle](mcp://flutter/api/painting/TextStyle)? titleTextStyle,
+[TextStyle](mcp://flutter/api/painting/TextStyle)? subtitleTextStyle,
+[TextStyle](mcp://flutter/api/painting/TextStyle)? leadingAndTrailingTextStyle,
+[EdgeInsetsGeometry](mcp://flutter/api/painting/EdgeInsetsGeometry)? contentPadding,
+[bool](mcp://flutter/api/dart-core/bool) enabled = true,
+[GestureTapCallback](mcp://flutter/api/gestures/GestureTapCallback)? onTap,
+[GestureLongPressCallback](mcp://flutter/api/gestures/GestureLongPressCallback)? onLongPress,
+[ValueChanged](mcp://flutter/api/foundation/ValueChanged)<[bool](mcp://flutter/api/dart-core/bool)>? onFocusChange,
+[MouseCursor](mcp://flutter/api/services/MouseCursor)? mouseCursor,
+[bool](mcp://flutter/api/dart-core/bool) selected = false,
+[Color](mcp://flutter/api/dart-ui/Color)? focusColor,
+[Color](mcp://flutter/api/dart-ui/Color)? hoverColor,
+[Color](mcp://flutter/api/dart-ui/Color)? splashColor,
+[FocusNode](mcp://flutter/api/widgets/FocusNode)? focusNode,
+[bool](mcp://flutter/api/dart-core/bool) autofocus = false,
+[Color](mcp://flutter/api/dart-ui/Color)? tileColor,
+[Color](mcp://flutter/api/dart-ui/Color)? selectedTileColor,
+[bool](mcp://flutter/api/dart-core/bool)? enableFeedback,
+[double](mcp://flutter/api/dart-core/double)? horizontalTitleGap,
+[double](mcp://flutter/api/dart-core/double)? minVerticalPadding,
+[double](mcp://flutter/api/dart-core/double)? minLeadingWidth,
+[double](mcp://flutter/api/dart-core/double)? minTileHeight,
+[ListTileTitleAlignment](mcp://flutter/api/material/ListTileTitleAlignment)? titleAlignment,
+[bool](mcp://flutter/api/dart-core/bool) internalAddSemanticForOnTap = true,
+[MaterialStatesController](mcp://flutter/api/material/MaterialStatesController)? statesController,
+})
+
+Creates a list tile.
+
+If `isThreeLine` is true, then `subtitle` must not be null.
+
+Requires one of its ancestors to be a [Material](mcp://flutter/api/material/Material) widget.
+
+## Implementation
+
+```dart
+const ListTile({
+  super.key,
+  this.leading,
+  this.title,
+  this.subtitle,
+  this.trailing,
+  this.isThreeLine,
+  this.dense,
+  this.visualDensity,
+  this.shape,
+  this.style,
+  this.selectedColor,
+  this.iconColor,
+  this.textColor,
+  this.titleTextStyle,
+  this.subtitleTextStyle,
+  this.leadingAndTrailingTextStyle,
+  this.contentPadding,
+  this.enabled = true,
+  this.onTap,
+  this.onLongPress,
+  this.onFocusChange,
+  this.mouseCursor,
+  this.selected = false,
+  this.focusColor,
+  this.hoverColor,
+  this.splashColor,
+  this.focusNode,
+  this.autofocus = false,
+  this.tileColor,
+  this.selectedTileColor,
+  this.enableFeedback,
+  this.horizontalTitleGap,
+  this.minVerticalPadding,
+  this.minLeadingWidth,
+  this.minTileHeight,
+  this.titleAlignment,
+  this.internalAddSemanticForOnTap = true,
+  this.statesController,
+}) : assert(isThreeLine != true || subtitle != null);
+```

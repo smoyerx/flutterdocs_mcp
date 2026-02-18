@@ -1,0 +1,81 @@
+# InkWell constructor
+
+const InkWell({
+[Key](mcp://flutter/api/foundation/Key)? key,
+[Widget](mcp://flutter/api/widgets/Widget)? child,
+[GestureTapCallback](mcp://flutter/api/gestures/GestureTapCallback)? onTap,
+[GestureTapCallback](mcp://flutter/api/gestures/GestureTapCallback)? onDoubleTap,
+[GestureLongPressCallback](mcp://flutter/api/gestures/GestureLongPressCallback)? onLongPress,
+[GestureLongPressUpCallback](mcp://flutter/api/gestures/GestureLongPressUpCallback)? onLongPressUp,
+[GestureTapDownCallback](mcp://flutter/api/gestures/GestureTapDownCallback)? onTapDown,
+[GestureTapUpCallback](mcp://flutter/api/gestures/GestureTapUpCallback)? onTapUp,
+[GestureTapCallback](mcp://flutter/api/gestures/GestureTapCallback)? onTapCancel,
+[GestureTapCallback](mcp://flutter/api/gestures/GestureTapCallback)? onSecondaryTap,
+[GestureTapUpCallback](mcp://flutter/api/gestures/GestureTapUpCallback)? onSecondaryTapUp,
+[GestureTapDownCallback](mcp://flutter/api/gestures/GestureTapDownCallback)? onSecondaryTapDown,
+[GestureTapCallback](mcp://flutter/api/gestures/GestureTapCallback)? onSecondaryTapCancel,
+[ValueChanged](mcp://flutter/api/foundation/ValueChanged)<[bool](mcp://flutter/api/dart-core/bool)>? onHighlightChanged,
+[ValueChanged](mcp://flutter/api/foundation/ValueChanged)<[bool](mcp://flutter/api/dart-core/bool)>? onHover,
+[MouseCursor](mcp://flutter/api/services/MouseCursor)? mouseCursor,
+[Color](mcp://flutter/api/dart-ui/Color)? focusColor,
+[Color](mcp://flutter/api/dart-ui/Color)? hoverColor,
+[Color](mcp://flutter/api/dart-ui/Color)? highlightColor,
+[WidgetStateProperty](mcp://flutter/api/widgets/WidgetStateProperty)<[Color](mcp://flutter/api/dart-ui/Color)?>? overlayColor,
+[Color](mcp://flutter/api/dart-ui/Color)? splashColor,
+[InteractiveInkFeatureFactory](mcp://flutter/api/material/InteractiveInkFeatureFactory)? splashFactory,
+[double](mcp://flutter/api/dart-core/double)? radius,
+[BorderRadius](mcp://flutter/api/painting/BorderRadius)? borderRadius,
+[ShapeBorder](mcp://flutter/api/painting/ShapeBorder)? customBorder,
+[bool](mcp://flutter/api/dart-core/bool) enableFeedback = true,
+[bool](mcp://flutter/api/dart-core/bool) excludeFromSemantics = false,
+[FocusNode](mcp://flutter/api/widgets/FocusNode)? focusNode,
+[bool](mcp://flutter/api/dart-core/bool) canRequestFocus = true,
+[ValueChanged](mcp://flutter/api/foundation/ValueChanged)<[bool](mcp://flutter/api/dart-core/bool)>? onFocusChange,
+[bool](mcp://flutter/api/dart-core/bool) autofocus = false,
+[MaterialStatesController](mcp://flutter/api/material/MaterialStatesController)? statesController,
+[Duration](mcp://flutter/api/dart-core/Duration)? hoverDuration,
+})
+
+Creates an ink well.
+
+Must have an ancestor [Material](mcp://flutter/api/material/Material) widget in which to cause ink reactions.
+
+## Implementation
+
+```dart
+const InkWell({
+  super.key,
+  super.child,
+  super.onTap,
+  super.onDoubleTap,
+  super.onLongPress,
+  super.onLongPressUp,
+  super.onTapDown,
+  super.onTapUp,
+  super.onTapCancel,
+  super.onSecondaryTap,
+  super.onSecondaryTapUp,
+  super.onSecondaryTapDown,
+  super.onSecondaryTapCancel,
+  super.onHighlightChanged,
+  super.onHover,
+  super.mouseCursor,
+  super.focusColor,
+  super.hoverColor,
+  super.highlightColor,
+  super.overlayColor,
+  super.splashColor,
+  super.splashFactory,
+  super.radius,
+  super.borderRadius,
+  super.customBorder,
+  super.enableFeedback,
+  super.excludeFromSemantics,
+  super.focusNode,
+  super.canRequestFocus,
+  super.onFocusChange,
+  super.autofocus,
+  super.statesController,
+  super.hoverDuration,
+}) : super(containedInkWell: true, highlightShape: BoxShape.rectangle);
+```

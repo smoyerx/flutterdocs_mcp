@@ -1,0 +1,211 @@
+# ThemeData.raw constructor
+
+const ThemeData.raw({
+required [Map](mcp://flutter/api/dart-core/Map)<[Type](mcp://flutter/api/dart-core/Type), [Adaptation](mcp://flutter/api/material/Adaptation)<[Object](mcp://flutter/api/dart-core/Object)>> adaptationMap,
+required [bool](mcp://flutter/api/dart-core/bool) applyElevationOverlayColor,
+required [NoDefaultCupertinoThemeData](mcp://flutter/api/cupertino/NoDefaultCupertinoThemeData)? cupertinoOverrideTheme,
+required [Map](mcp://flutter/api/dart-core/Map)<[Object](mcp://flutter/api/dart-core/Object), [ThemeExtension](mcp://flutter/api/material/ThemeExtension)> extensions,
+required [InputDecorationThemeData](mcp://flutter/api/material/InputDecorationThemeData) inputDecorationTheme,
+required [MaterialTapTargetSize](mcp://flutter/api/material/MaterialTapTargetSize) materialTapTargetSize,
+required [PageTransitionsTheme](mcp://flutter/api/material/PageTransitionsTheme) pageTransitionsTheme,
+required [TargetPlatform](mcp://flutter/api/foundation/TargetPlatform) platform,
+required [ScrollbarThemeData](mcp://flutter/api/material/ScrollbarThemeData) scrollbarTheme,
+required [InteractiveInkFeatureFactory](mcp://flutter/api/material/InteractiveInkFeatureFactory) splashFactory,
+required [bool](mcp://flutter/api/dart-core/bool) useMaterial3,
+required [VisualDensity](mcp://flutter/api/material/VisualDensity) visualDensity,
+required [ColorScheme](mcp://flutter/api/material/ColorScheme) colorScheme,
+required [Color](mcp://flutter/api/dart-ui/Color) canvasColor,
+required [Color](mcp://flutter/api/dart-ui/Color) cardColor,
+required [Color](mcp://flutter/api/dart-ui/Color) disabledColor,
+required [Color](mcp://flutter/api/dart-ui/Color) dividerColor,
+required [Color](mcp://flutter/api/dart-ui/Color) focusColor,
+required [Color](mcp://flutter/api/dart-ui/Color) highlightColor,
+required [Color](mcp://flutter/api/dart-ui/Color) hintColor,
+required [Color](mcp://flutter/api/dart-ui/Color) hoverColor,
+required [Color](mcp://flutter/api/dart-ui/Color) primaryColor,
+required [Color](mcp://flutter/api/dart-ui/Color) primaryColorDark,
+required [Color](mcp://flutter/api/dart-ui/Color) primaryColorLight,
+required [Color](mcp://flutter/api/dart-ui/Color) scaffoldBackgroundColor,
+required [Color](mcp://flutter/api/dart-ui/Color) secondaryHeaderColor,
+required [Color](mcp://flutter/api/dart-ui/Color) shadowColor,
+required [Color](mcp://flutter/api/dart-ui/Color) splashColor,
+required [Color](mcp://flutter/api/dart-ui/Color) unselectedWidgetColor,
+required [IconThemeData](mcp://flutter/api/widgets/IconThemeData) iconTheme,
+required [IconThemeData](mcp://flutter/api/widgets/IconThemeData) primaryIconTheme,
+required [TextTheme](mcp://flutter/api/material/TextTheme) primaryTextTheme,
+required [TextTheme](mcp://flutter/api/material/TextTheme) textTheme,
+required [Typography](mcp://flutter/api/material/Typography) typography,
+required [ActionIconThemeData](mcp://flutter/api/material/ActionIconThemeData)? actionIconTheme,
+required [AppBarThemeData](mcp://flutter/api/material/AppBarThemeData) appBarTheme,
+required [BadgeThemeData](mcp://flutter/api/material/BadgeThemeData) badgeTheme,
+required [MaterialBannerThemeData](mcp://flutter/api/material/MaterialBannerThemeData) bannerTheme,
+required [BottomAppBarThemeData](mcp://flutter/api/material/BottomAppBarThemeData) bottomAppBarTheme,
+required [BottomNavigationBarThemeData](mcp://flutter/api/material/BottomNavigationBarThemeData) bottomNavigationBarTheme,
+required [BottomSheetThemeData](mcp://flutter/api/material/BottomSheetThemeData) bottomSheetTheme,
+required [ButtonThemeData](mcp://flutter/api/material/ButtonThemeData) buttonTheme,
+required [CardThemeData](mcp://flutter/api/material/CardThemeData) cardTheme,
+required [CarouselViewThemeData](mcp://flutter/api/material/CarouselViewThemeData) carouselViewTheme,
+required [CheckboxThemeData](mcp://flutter/api/material/CheckboxThemeData) checkboxTheme,
+required [ChipThemeData](mcp://flutter/api/material/ChipThemeData) chipTheme,
+required [DataTableThemeData](mcp://flutter/api/material/DataTableThemeData) dataTableTheme,
+required [DatePickerThemeData](mcp://flutter/api/material/DatePickerThemeData) datePickerTheme,
+required [DialogThemeData](mcp://flutter/api/material/DialogThemeData) dialogTheme,
+required [DividerThemeData](mcp://flutter/api/material/DividerThemeData) dividerTheme,
+required [DrawerThemeData](mcp://flutter/api/material/DrawerThemeData) drawerTheme,
+required [DropdownMenuThemeData](mcp://flutter/api/material/DropdownMenuThemeData) dropdownMenuTheme,
+required [ElevatedButtonThemeData](mcp://flutter/api/material/ElevatedButtonThemeData) elevatedButtonTheme,
+required [ExpansionTileThemeData](mcp://flutter/api/material/ExpansionTileThemeData) expansionTileTheme,
+required [FilledButtonThemeData](mcp://flutter/api/material/FilledButtonThemeData) filledButtonTheme,
+required [FloatingActionButtonThemeData](mcp://flutter/api/material/FloatingActionButtonThemeData) floatingActionButtonTheme,
+required [IconButtonThemeData](mcp://flutter/api/material/IconButtonThemeData) iconButtonTheme,
+required [ListTileThemeData](mcp://flutter/api/material/ListTileThemeData) listTileTheme,
+required [MenuBarThemeData](mcp://flutter/api/material/MenuBarThemeData) menuBarTheme,
+required [MenuButtonThemeData](mcp://flutter/api/material/MenuButtonThemeData) menuButtonTheme,
+required [MenuThemeData](mcp://flutter/api/material/MenuThemeData) menuTheme,
+required [NavigationBarThemeData](mcp://flutter/api/material/NavigationBarThemeData) navigationBarTheme,
+required [NavigationDrawerThemeData](mcp://flutter/api/material/NavigationDrawerThemeData) navigationDrawerTheme,
+required [NavigationRailThemeData](mcp://flutter/api/material/NavigationRailThemeData) navigationRailTheme,
+required [OutlinedButtonThemeData](mcp://flutter/api/material/OutlinedButtonThemeData) outlinedButtonTheme,
+required [PopupMenuThemeData](mcp://flutter/api/material/PopupMenuThemeData) popupMenuTheme,
+required [ProgressIndicatorThemeData](mcp://flutter/api/material/ProgressIndicatorThemeData) progressIndicatorTheme,
+required [RadioThemeData](mcp://flutter/api/material/RadioThemeData) radioTheme,
+required [SearchBarThemeData](mcp://flutter/api/material/SearchBarThemeData) searchBarTheme,
+required [SearchViewThemeData](mcp://flutter/api/material/SearchViewThemeData) searchViewTheme,
+required [SegmentedButtonThemeData](mcp://flutter/api/material/SegmentedButtonThemeData) segmentedButtonTheme,
+required [SliderThemeData](mcp://flutter/api/material/SliderThemeData) sliderTheme,
+required [SnackBarThemeData](mcp://flutter/api/material/SnackBarThemeData) snackBarTheme,
+required [SwitchThemeData](mcp://flutter/api/material/SwitchThemeData) switchTheme,
+required [TabBarThemeData](mcp://flutter/api/material/TabBarThemeData) tabBarTheme,
+required [TextButtonThemeData](mcp://flutter/api/material/TextButtonThemeData) textButtonTheme,
+required [TextSelectionThemeData](mcp://flutter/api/material/TextSelectionThemeData) textSelectionTheme,
+required [TimePickerThemeData](mcp://flutter/api/material/TimePickerThemeData) timePickerTheme,
+required [ToggleButtonsThemeData](mcp://flutter/api/material/ToggleButtonsThemeData) toggleButtonsTheme,
+required [TooltipThemeData](mcp://flutter/api/material/TooltipThemeData) tooltipTheme,
+@[Deprecated](mcp://flutter/api/dart-core/Deprecated/Deprecated)('Use OverflowBar instead. ' 'This feature was deprecated after v3.21.0-10.0.pre.') [ButtonBarThemeData](mcp://flutter/api/material/ButtonBarThemeData)? buttonBarTheme,
+@[Deprecated](mcp://flutter/api/dart-core/Deprecated/Deprecated)('Use DialogThemeData.backgroundColor instead. ' 'This feature was deprecated after v3.27.0-0.1.pre.') required [Color](mcp://flutter/api/dart-ui/Color) dialogBackgroundColor,
+@[Deprecated](mcp://flutter/api/dart-core/Deprecated/Deprecated)('Use TabBarThemeData.indicatorColor instead. ' 'This feature was deprecated after v3.28.0-1.0.pre.') required [Color](mcp://flutter/api/dart-ui/Color) indicatorColor,
+})
+
+Create a [ThemeData](mcp://flutter/api/material/ThemeData) given a set of exact values. Most values must be
+specified. They all must also be non-null except for `cupertinoOverrideTheme`, and deprecated members.
+
+This will rarely be used directly. It is used by [lerp](mcp://flutter/api/material/ThemeData/lerp) to
+create intermediate themes based on two themes created with the [ThemeData](mcp://flutter/api/material/ThemeData) constructor.
+
+## Implementation
+
+```dart
+const ThemeData.raw({
+  // For the sanity of the reader, make sure these properties are in the same
+  // order in every place that they are separated by section comments (e.g.
+  // GENERAL CONFIGURATION). Each section except for deprecations should be
+  // alphabetical by symbol name.
+
+  // GENERAL CONFIGURATION
+  required this.adaptationMap,
+  required this.applyElevationOverlayColor,
+  required this.cupertinoOverrideTheme,
+  required this.extensions,
+  required this.inputDecorationTheme,
+  required this.materialTapTargetSize,
+  required this.pageTransitionsTheme,
+  required this.platform,
+  required this.scrollbarTheme,
+  required this.splashFactory,
+  required this.useMaterial3,
+  required this.visualDensity,
+  // COLOR
+  required this.colorScheme,
+  // [colorScheme] is the preferred way to configure colors. The [Color] properties
+  // listed below (as well as primarySwatch) will gradually be phased out, see
+  // https://github.com/flutter/flutter/issues/91772.
+  required this.canvasColor,
+  required this.cardColor,
+  required this.disabledColor,
+  required this.dividerColor,
+  required this.focusColor,
+  required this.highlightColor,
+  required this.hintColor,
+  required this.hoverColor,
+  required this.primaryColor,
+  required this.primaryColorDark,
+  required this.primaryColorLight,
+  required this.scaffoldBackgroundColor,
+  required this.secondaryHeaderColor,
+  required this.shadowColor,
+  required this.splashColor,
+  required this.unselectedWidgetColor,
+  // TYPOGRAPHY & ICONOGRAPHY
+  required this.iconTheme,
+  required this.primaryIconTheme,
+  required this.primaryTextTheme,
+  required this.textTheme,
+  required this.typography,
+  // COMPONENT THEMES
+  required this.actionIconTheme,
+  required this.appBarTheme,
+  required this.badgeTheme,
+  required this.bannerTheme,
+  required this.bottomAppBarTheme,
+  required this.bottomNavigationBarTheme,
+  required this.bottomSheetTheme,
+  required this.buttonTheme,
+  required this.cardTheme,
+  required this.carouselViewTheme,
+  required this.checkboxTheme,
+  required this.chipTheme,
+  required this.dataTableTheme,
+  required this.datePickerTheme,
+  required this.dialogTheme,
+  required this.dividerTheme,
+  required this.drawerTheme,
+  required this.dropdownMenuTheme,
+  required this.elevatedButtonTheme,
+  required this.expansionTileTheme,
+  required this.filledButtonTheme,
+  required this.floatingActionButtonTheme,
+  required this.iconButtonTheme,
+  required this.listTileTheme,
+  required this.menuBarTheme,
+  required this.menuButtonTheme,
+  required this.menuTheme,
+  required this.navigationBarTheme,
+  required this.navigationDrawerTheme,
+  required this.navigationRailTheme,
+  required this.outlinedButtonTheme,
+  required this.popupMenuTheme,
+  required this.progressIndicatorTheme,
+  required this.radioTheme,
+  required this.searchBarTheme,
+  required this.searchViewTheme,
+  required this.segmentedButtonTheme,
+  required this.sliderTheme,
+  required this.snackBarTheme,
+  required this.switchTheme,
+  required this.tabBarTheme,
+  required this.textButtonTheme,
+  required this.textSelectionTheme,
+  required this.timePickerTheme,
+  required this.toggleButtonsTheme,
+  required this.tooltipTheme,
+  // DEPRECATED (newest deprecations at the bottom)
+  @Deprecated(
+    'Use OverflowBar instead. '
+    'This feature was deprecated after v3.21.0-10.0.pre.',
+  )
+  ButtonBarThemeData? buttonBarTheme,
+  @Deprecated(
+    'Use DialogThemeData.backgroundColor instead. '
+    'This feature was deprecated after v3.27.0-0.1.pre.',
+  )
+  required this.dialogBackgroundColor,
+  @Deprecated(
+    'Use TabBarThemeData.indicatorColor instead. '
+    'This feature was deprecated after v3.28.0-1.0.pre.',
+  )
+  required this.indicatorColor,
+}) : // DEPRECATED (newest deprecations at the bottom)
+     // should not be `required`, use getter pattern to avoid breakages.
+     _buttonBarTheme = buttonBarTheme,
+     assert(buttonBarTheme != null);
+```
