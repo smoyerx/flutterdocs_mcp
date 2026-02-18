@@ -1,5 +1,5 @@
 ---
-description: "Complete Python development workflow: coding standards, testing (uv run pytest), linting (uvx ruff), and formatting. Consult for ANY Python work."
+description: "Complete Python development workflow: coding standards, testing (uv run pytest), linting (uvx ruff check), and formatting (uvx ruff format). Consult for ANY Python work."
 name: python_coding
 applyTo: "**/*.py"
 ---
@@ -27,7 +27,7 @@ Instructions for developing Python code in this project.
 
 ## Process Workflow
 
-When completing a Python coding task, run the following in the Python project root (e.g., `doc_gen/`):
+When completing a Python coding task, run the following:
 1. Run `uvx ruff check --fix` to lint the code. If any lint errors were not auto-fixed:
    - Fix each lint error
    - Run `uvx ruff check --fix` again
