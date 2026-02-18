@@ -21,7 +21,7 @@ CREATE TABLE entity (
     type_id INTEGER NOT NULL,
     content_markdown TEXT,
     snippet_markdown TEXT,
-    UNIQUE(library_id, identifier_id),
+    UNIQUE(identifier_id, library_id),
     FOREIGN KEY (library_id) REFERENCES library(id),
     FOREIGN KEY (identifier_id) REFERENCES identifier(id),
     FOREIGN KEY (type_id) REFERENCES type(id)
@@ -33,17 +33,14 @@ CREATE TABLE member (
     identifier_id INTEGER NOT NULL,
     type_id INTEGER NOT NULL,
     content_markdown TEXT,
-    UNIQUE(entity_id, identifier_id),
+    UNIQUE(identifier_id, entity_id),
     FOREIGN KEY (entity_id) REFERENCES entity(id),
     FOREIGN KEY (identifier_id) REFERENCES identifier(id),
     FOREIGN KEY (type_id) REFERENCES type(id)
 );
 
-
-CREATE INDEX idx_entity_library ON entity(library_id);
 CREATE INDEX idx_entity_identifier ON entity(identifier_id);
-CREATE INDEX idx_entity_uri ON entity(identifier_id, library_id);
+CREATE INDEX idx_entity_unique ON entity(identifier_id, library_id);
 
-CREATE INDEX idx_member_entity ON member(entity_id);
 CREATE INDEX idx_member_identifier ON member(identifier_id);
-CREATE INDEX idx_member_fqn ON member(identifier_id, entity_id);
+CREATE INDEX idx_member_unique ON member(identifier_id, entity_id);
