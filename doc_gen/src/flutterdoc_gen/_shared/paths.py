@@ -139,7 +139,7 @@ class PathBuilder:
         """Get member type output directory.
 
         Maps MemberType to subdirectory structure. Properties, methods, and
-        operators have native/inherited splits; constructors, constants, statics,
+        operators have native/inherited splits; constructors, constants, static methods,
         and snippets do not.
 
         Args:
@@ -153,26 +153,26 @@ class PathBuilder:
         assert self._entity_dir is not None  # Type hint for mypy / Pylance
         # Map enum to filesystem directory name
         match member_type:
-            case MemberType.CONSTRUCTORS:
+            case MemberType.CONSTRUCTOR:
                 base = "constructors"
-            case MemberType.CONSTANTS:
+            case MemberType.CONSTANT:
                 base = "constants"
-            case MemberType.PROPERTIES:
+            case MemberType.PROPERTY:
                 base = "properties"
-            case MemberType.METHODS:
+            case MemberType.METHOD:
                 base = "methods"
-            case MemberType.OPERATORS:
+            case MemberType.OPERATOR:
                 base = "operators"
-            case MemberType.STATICS:
+            case MemberType.STATIC:
                 base = "statics"
-            case MemberType.SNIPPETS:
+            case MemberType.SNIPPET:
                 base = "snippets"
 
         # Add inherited/native split for relevant types
         if member_type in (
-            MemberType.PROPERTIES,
-            MemberType.METHODS,
-            MemberType.OPERATORS,
+            MemberType.PROPERTY,
+            MemberType.METHOD,
+            MemberType.OPERATOR,
         ):
             subdir = f"{base}/{'inherited' if inherited else 'native'}"
         else:
@@ -224,68 +224,68 @@ class PathBuilder:
         return self._entity_dir / f"{self.entity_name}.md"
 
     def get_constructors_dir(self) -> Path:
-        return self._get_member_dir(MemberType.CONSTRUCTORS, inherited=False)
+        return self._get_member_dir(MemberType.CONSTRUCTOR, inherited=False)
 
     def get_constants_dir(self) -> Path:
-        return self._get_member_dir(MemberType.CONSTANTS, inherited=False)
+        return self._get_member_dir(MemberType.CONSTANT, inherited=False)
 
     def get_native_properties_dir(self) -> Path:
-        return self._get_member_dir(MemberType.PROPERTIES, inherited=False)
+        return self._get_member_dir(MemberType.PROPERTY, inherited=False)
 
     def get_inherited_properties_dir(self) -> Path:
-        return self._get_member_dir(MemberType.PROPERTIES, inherited=True)
+        return self._get_member_dir(MemberType.PROPERTY, inherited=True)
 
     def get_native_methods_dir(self) -> Path:
-        return self._get_member_dir(MemberType.METHODS, inherited=False)
+        return self._get_member_dir(MemberType.METHOD, inherited=False)
 
     def get_inherited_methods_dir(self) -> Path:
-        return self._get_member_dir(MemberType.METHODS, inherited=True)
+        return self._get_member_dir(MemberType.METHOD, inherited=True)
 
     def get_native_operators_dir(self) -> Path:
-        return self._get_member_dir(MemberType.OPERATORS, inherited=False)
+        return self._get_member_dir(MemberType.OPERATOR, inherited=False)
 
     def get_inherited_operators_dir(self) -> Path:
-        return self._get_member_dir(MemberType.OPERATORS, inherited=True)
+        return self._get_member_dir(MemberType.OPERATOR, inherited=True)
 
     def get_statics_dir(self) -> Path:
-        return self._get_member_dir(MemberType.STATICS, inherited=False)
+        return self._get_member_dir(MemberType.STATIC, inherited=False)
 
     def get_snippets_dir(self) -> Path:
-        return self._get_member_dir(MemberType.SNIPPETS, inherited=False)
+        return self._get_member_dir(MemberType.SNIPPET, inherited=False)
 
     def get_constructor_file(self, member_name: str) -> Path:
         return self._get_member_file(
-            MemberType.CONSTRUCTORS, member_name, inherited=False
+            MemberType.CONSTRUCTOR, member_name, inherited=False
         )
 
     def get_constant_file(self, member_name: str) -> Path:
-        return self._get_member_file(MemberType.CONSTANTS, member_name, inherited=False)
+        return self._get_member_file(MemberType.CONSTANT, member_name, inherited=False)
 
     def get_native_property_file(self, member_name: str) -> Path:
         return self._get_member_file(
-            MemberType.PROPERTIES, member_name, inherited=False
+            MemberType.PROPERTY, member_name, inherited=False
         )
 
     def get_inherited_property_file(self, member_name: str) -> Path:
-        return self._get_member_file(MemberType.PROPERTIES, member_name, inherited=True)
+        return self._get_member_file(MemberType.PROPERTY, member_name, inherited=True)
 
     def get_native_method_file(self, member_name: str) -> Path:
-        return self._get_member_file(MemberType.METHODS, member_name, inherited=False)
+        return self._get_member_file(MemberType.METHOD, member_name, inherited=False)
 
     def get_inherited_method_file(self, member_name: str) -> Path:
-        return self._get_member_file(MemberType.METHODS, member_name, inherited=True)
+        return self._get_member_file(MemberType.METHOD, member_name, inherited=True)
 
     def get_native_operator_file(self, member_name: str) -> Path:
-        return self._get_member_file(MemberType.OPERATORS, member_name, inherited=False)
+        return self._get_member_file(MemberType.OPERATOR, member_name, inherited=False)
 
     def get_inherited_operator_file(self, member_name: str) -> Path:
-        return self._get_member_file(MemberType.OPERATORS, member_name, inherited=True)
+        return self._get_member_file(MemberType.OPERATOR, member_name, inherited=True)
 
     def get_static_file(self, member_name: str) -> Path:
-        return self._get_member_file(MemberType.STATICS, member_name, inherited=False)
+        return self._get_member_file(MemberType.STATIC, member_name, inherited=False)
 
     def get_snippet_file(self, short_name: str) -> Path:
-        return self._get_member_file(MemberType.SNIPPETS, short_name, inherited=False)
+        return self._get_member_file(MemberType.SNIPPET, short_name, inherited=False)
 
     # --- Input Path Convenience Aliases ---
 

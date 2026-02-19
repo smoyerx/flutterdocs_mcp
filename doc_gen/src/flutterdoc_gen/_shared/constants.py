@@ -51,12 +51,15 @@ class MemberType(StrEnum):
     """Logical member types for entity documentation.
 
     Maps to filesystem subdirectories via PathBuilder.
+
+    Note: A snippet is not a member of an entity, but we include it here because we are
+    grouping code snippets with the member documentation for an entity.
     """
 
-    CONSTRUCTORS = "constructors"
-    CONSTANTS = "constants"
-    PROPERTIES = "properties"
-    METHODS = "methods"
-    OPERATORS = "operators"
-    STATICS = "statics"
-    SNIPPETS = "snippets"
+    CONSTRUCTOR = "constructor"
+    CONSTANT = "constant"
+    PROPERTY = "property"
+    METHOD = "method"
+    OPERATOR = "operator"
+    STATIC = "static_method"
+    SNIPPET = "snippet"
