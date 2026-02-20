@@ -7,6 +7,7 @@ for all flutterdoc_gen tools (convert, load, etc.).
 import logging
 import sys
 from pathlib import Path
+from typing import NoReturn
 
 # Logger names for different message types
 _PROGRESS_LOGGER_NAME = "flutterdoc_gen.progress"
@@ -71,7 +72,7 @@ def configure_logging(verbose: bool) -> None:
     notification_logger.setLevel(log_level)
 
 
-def log_processing_error(message: str, source_file: Path | None = None) -> None:
+def log_processing_error(message: str, source_file: Path | None = None) -> NoReturn:
     """Log an error message with optional file context and exit with status 1.
 
     This function is used for fatal errors during processing. It logs the error

@@ -8,6 +8,7 @@ dependencies = [
 
 [project.scripts]
 convert = "flutterdoc_gen.convert.cli:main"
+load = "flutterdoc_gen.load.cli:main"
 
 [build-system]
 requires = ["hatchling"]
