@@ -24,6 +24,7 @@ If `{DB_FILE}` does not exist, `load.py` must create it and initialize the schem
 
 The structure of the input is documented in `PATHBUILDER_USAGE.md` and is summarized here for reference only:
 
+- Library file: `{DOC_DIR}/api/{section}/{section}.md` (accessed via `PathBuilder.get_library_file()`)
 - Entity root file: `{DOC_DIR}/api/{section}/{category_subdir}/{entity_name}/{entity_name}.md`
 - Member files: `{DOC_DIR}/api/{section}/{category_subdir}/{entity_name}/{member_type}/[native|inherited]/{member_name}.md` (for properties, methods, operators) or `{DOC_DIR}/api/{section}/{category_subdir}/{entity_name}/{member_type}/{member_name}.md` (for constructors, constants, statics)
 
@@ -41,31 +42,37 @@ Before loading, `load.py` must validate:
 
 ### 2. Database Initialization
 
-If `{DB_FILE}` does not exist, `load.py` must create it and execute the DDL to initialize all tables and indexes (see [Database Schema](#database-schema)). The DDL must be embedded directly in the Python source as a string constant; it must not be read from an external file at runtime.
+If `{DB_FILE}` does not exist, `load.py` must execute the following steps in a **single transaction** (Transaction 1):
 
-If `{DB_FILE}` already exists, `load.py` must skip schema initialization and proceed directly to loading.
+1. Create the database file and execute the DDL to initialize all tables and indexes (see [Database Schema](#database-schema)). The DDL must be embedded directly in the Python source as a string constant; it must not be read from an external file at runtime.
+2. Pre-populate the `entity_type` table by inserting one row for each value in `ALL_CATEGORIES`.
+3. Pre-populate the `member_type` table by inserting one row for each value in `ALL_MEMBERS`.
 
-### 3. Library Validation
+`load.py` may assume these tables never need to be updated after initial population.
 
-Each section represents the documentation for a single library. Before loading any non-library entities, `load.py` must:
+If `{DB_FILE}` already exists, `load.py` must skip this transaction entirely and proceed directly to loading.
 
-1. Call `list_entity_names(doc_dir, section, CategoryType.LIBRARY)` to find library entries for the section.
-2. If the result contains exactly one entry, load it into the `library` table (see [Database Mapping](#database-mapping)) and retain the resulting `library.id` for use as `library_id` on all `entity` rows in step 4.
-3. If the result does not contain exactly one entry, log a notification. Load any LIBRARY entities that do exist into the `library` table, but skip step 4 entirely — no `entity` rows are inserted for this section.
+### 3. Library Loading
+
+Each section represents the documentation for a single library. `load.py` must locate the library file via `PathBuilder.get_library_file()` (which returns `{DOC_DIR}/api/{section}/{section}.md`). The library name stored in the database is the section name.
+
+In a **single transaction** (Transaction 2), `load.py` must:
+
+1. Check whether the library file exists. If it does not, log a notification and skip step 4 entirely — no `entity` rows are inserted for this section.
+2. Read the library file and insert or update the row in the `library` table (see [Database Mapping](#database-mapping)).
+3. Retain the resulting `library.id` for use as `library_id` on all `entity` rows in step 4.
 
 ### 4. Entity Enumeration and Loading
 
-For each `CategoryType` in `ALL_CATEGORIES` (canonical iteration order), `load.py` must call `list_entity_names(doc_dir, section, category_type)` to discover all entities of that type. If no entities exist for a category, skip it silently.
+For each `CategoryType` in `ALL_CATEGORIES` (canonical iteration order), `load.py` must call `list_entity_names(doc_dir, section, category_type)` to discover all entities of that type. If no entities exist for a category, skip it silently. All `CategoryType` values in `ALL_CATEGORIES` are loaded into the `entity` table.
 
-`CategoryType.LIBRARY` entities are handled separately in step 3 above. All other `CategoryType` values are loaded into the `entity` table.
-
-For each discovered non-library entity:
+For each discovered entity:
 
 1. Create a `PathBuilder` with `section`, `output_dir` (the `{DOC_DIR}` argument), `entity_name`, and `entity_type`.
 2. Verify that the entity's root markdown file exists via `builder.get_entity_file()`. If the file does not exist, log a notification and skip this entity (including all its members); continue with the next entity.
 3. Enumerate members from all applicable member directories (see below). Count the total number of members found.
 4. Log a single progress message of the form `"Loading {category}: {entity_name} ({N} members)"` (e.g., `"Loading class: ListTile (42 members)"`).
-5. Insert or upsert the entity and all its members into the database (see [Database Mapping](#database-mapping)).
+5. In a **single transaction** (Transaction 3), insert or update the entity row and all its member rows in the database (see [Database Mapping](#database-mapping)). This transaction also includes any required inserts into the `identifier` table for the entity name and all member names.
 
 Member directories to enumerate via `*.md` glob:
 
@@ -77,7 +84,7 @@ Member directories to enumerate via `*.md` glob:
 - Inherited methods: `builder.get_inherited_methods_dir()`
 - Native operators: `builder.get_native_operators_dir()`
 - Inherited operators: `builder.get_inherited_operators_dir()`
-- Statics: `builder.get_statics_dir()`
+- Statics (static methods): `builder.get_statics_dir()`
 
 If a member directory does not exist, skip it silently. Both native and inherited member directories must be enumerated; there will never be an identifier conflict between native and inherited members for the same entity.
 
@@ -88,7 +95,7 @@ The member count logged in the progress message is the total count of member fil
 ### 5. Logging
 
 - Use `get_progress_logger()` for the `"Loading {category}: {entity_name} ({N} members)"` progress message per entity (gated by `--verbose`).
-- Use `get_notification_logger()` for unexpected but non-fatal conditions (e.g., missing entity file, wrong number of library entries, empty section).
+- Use `get_notification_logger()` for unexpected but non-fatal conditions (e.g., missing entity file, missing library file, empty section).
 - Use `log_processing_error()` for fatal errors that prevent further progress (exits with status 1).
 
 ### 6. Exit Behavior
@@ -160,28 +167,28 @@ CREATE INDEX idx_member_unique ON member(identifier_id, entity_id);
 
 ### `identifier` table
 
-All entity names and member names are stored as rows in `identifier`. Before inserting any entity or member, `load.py` must insert the name with `INSERT OR IGNORE INTO identifier(name) VALUES (?)` and then retrieve its `id` with a `SELECT`. The `UNIQUE` constraint ensures deduplication across sections.
+All entity names and member names are stored as rows in `identifier`. Within Transaction 3 (per-entity), before inserting any entity or member row, `load.py` must insert the name with `INSERT OR IGNORE INTO identifier(name) VALUES (?)` and then retrieve its `id` with a `SELECT`. The `UNIQUE` constraint ensures deduplication across sections.
 
 ### `entity_type` table
 
-All `CategoryType` string values used for entities are stored as rows in `entity_type`. Use `INSERT OR IGNORE INTO entity_type(name) VALUES (?)` and retrieve the `id` with a `SELECT`. Type values come from `CategoryType` (e.g., `"class"`, `"mixin"`, `"enum"`).
+The `entity_type` table is pre-populated during database initialization (Transaction 1) using `ALL_CATEGORIES`. The values inserted are those from `CategoryType`: `"class"`, `"mixin"`, `"constant"`, `"extension_type"`, `"enum"`, `"extension"`, `"function"`, `"typedef"`. Lookups at load time can use a simple `SELECT id FROM entity_type WHERE name = ?`.
 
 ### `member_type` table
 
-All `MemberType` string values are stored as rows in `member_type`. Use `INSERT OR IGNORE INTO member_type(name) VALUES (?)` and retrieve the `id` with a `SELECT`. Type values come from `MemberType` (e.g., `"constructors"`, `"methods"`, `"properties"`). Note that `MemberType.SNIPPETS` (`"snippets"`) must NOT be inserted into `member_type` or used as a `member_type_id` value; snippets are stored in `entity.snippet_markdown`, not as `member` rows.
+The `member_type` table is pre-populated during database initialization (Transaction 1) using `ALL_MEMBERS`. The values inserted are those from `MemberType`: `"constructor"`, `"constant"`, `"property"`, `"method"`, `"operator"`, `"static_method"`. Lookups at load time can use a simple `SELECT id FROM member_type WHERE name = ?`.
 
-For inherited member directories (`get_inherited_*_dir()`), use the same `MemberType` string as the native counterpart (e.g., `"methods"` for both native and inherited methods).
+For inherited member directories (`get_inherited_*_dir()`), use the same `MemberType` value as the native counterpart (e.g., `MemberType.METHOD` for both native and inherited methods).
 
 ### `library` table
 
-One row per `CategoryType.LIBRARY` entity.
+One row per section, representing the section's library documentation.
 
 | DB column | Source |
 |---|---|
-| `name` | Entity name (from `list_entity_names(..., CategoryType.LIBRARY)`) |
-| `content_markdown` | Contents of `builder.get_entity_file()` |
+| `name` | The section name (e.g., `"material"`) |
+| `content_markdown` | Contents of `PathBuilder.get_library_file()` |
 
-To insert or update a `library` row without changing its `id` (which is referenced as a foreign key by `entity.library_id`), use:
+This insert is part of Transaction 2. To insert or update a `library` row without changing its `id` (which is referenced as a foreign key by `entity.library_id`), use:
 
 ```sql
 INSERT INTO library(name, content_markdown)
@@ -191,7 +198,7 @@ ON CONFLICT(name) DO UPDATE SET content_markdown = excluded.content_markdown
 
 ### `entity` table
 
-One row per non-`LIBRARY` entity (CLASS, MIXIN, ENUM, CONSTANT, EXTENSION_TYPE, EXTENSION, FUNCTION, TYPEDEF).
+One row per entity — one for each `CategoryType` in `ALL_CATEGORIES` (CLASS, MIXIN, CONSTANT, EXTENSION_TYPE, ENUM, EXTENSION, FUNCTION, TYPEDEF).
 
 | DB column | Source |
 |---|---|
