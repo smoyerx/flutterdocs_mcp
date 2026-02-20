@@ -443,43 +443,39 @@ def process_typedef(
 
 def process_library(
     options_handle: ConversionOptionsHandle,
-    library_name: str,
-    library_file: Path,
     section: str,
     doc_dir: Path,
     root_output_dir: Path,
 ) -> None:
     """Process library documentation files.
 
-    Process the root library documentation file; does not have associated member documentation files.
+    Process the root library documentation file; does not have associated member
+    documentation files. The library file is stored as a flat section-level file
+    at api/{section}/{section}.md.
 
     Args:
         options_handle: The ConversionOptionsHandle instance to use for conversion.
-        library_name: The name of the library being processed.
-        library_file: Path to the main library HTML file.
         section: The documentation section name.
         doc_dir: The root documentation directory.
         root_output_dir: The root output directory.
     """
 
-    # Create PathBuilder with entity context
+    # Create PathBuilder with section context only (no entity context)
     builder = PathBuilder(
         section=section,
-        entity_name=library_name,
-        entity_type=CategoryType.LIBRARY,
         doc_dir=doc_dir,
         output_dir=root_output_dir,
     )
 
-    # Create library output directory
-    library_output_dir = builder.get_entity_dir()
-    ensure_dir_exists(library_output_dir)
+    # Ensure section output directory exists
+    ensure_dir_exists(builder.get_api_section_dir())
 
     # Get logger for progress messages
     progress_logger = get_progress_logger()
 
     # Process the root library file
-    progress_logger.info(f"  Processing library file: {library_file}")
-    library_markdown = convert_html_to_markdown(options_handle, library_file)
-    library_output_file = builder.get_entity_file()
+    library_input_file = builder.get_input_library_file()
+    progress_logger.info(f"  Processing library file: {library_input_file}")
+    library_markdown = convert_html_to_markdown(options_handle, library_input_file)
+    library_output_file = builder.get_library_file()
     library_output_file.write_text(library_markdown, encoding="utf-8")

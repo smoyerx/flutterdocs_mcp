@@ -13,6 +13,7 @@ from convert.conftest import (
     SAMPLES_DIR,
 )
 from flutterdoc_gen._shared.constants import CategoryType
+from flutterdoc_gen._shared.paths import PathBuilder
 from flutterdoc_gen.convert.transformations import FOOTER_MARKER
 
 
@@ -39,14 +40,6 @@ class TestFileCategorization:
             "accelerateEasing",
             "kBottomNavigationBarHeight",
         ]
-
-        # Verify libraries
-        library_names = [name for name, _ in categorized[CategoryType.LIBRARY]]
-        assert library_names == ["material"]
-        # Verify library file path is index.html
-        library_paths = [path for _, path in categorized[CategoryType.LIBRARY]]
-        assert len(library_paths) == 1
-        assert library_paths[0].name == "index.html"
 
         # Verify enums
         enum_names = [name for name, _ in categorized[CategoryType.ENUM]]
@@ -83,14 +76,6 @@ class TestFileCategorization:
             name for name, _ in categorized[CategoryType.EXTENSION_TYPE]
         ]
         assert extension_type_names == ["OverlayChildLayoutInfo"]
-
-        # Verify libraries
-        library_names = [name for name, _ in categorized[CategoryType.LIBRARY]]
-        assert library_names == ["widgets"]
-        # Verify library file path is index.html
-        library_paths = [path for _, path in categorized[CategoryType.LIBRARY]]
-        assert len(library_paths) == 1
-        assert library_paths[0].name == "index.html"
 
         # Verify no other types in widgets section
         assert len(categorized[CategoryType.MIXIN]) == 0
@@ -277,21 +262,18 @@ class TestDirectoryStructureByType:
         assert typedef_file.is_file()
 
     def test_library_file_structure(self, output_dir: Path) -> None:
-        """Libraries should be in api/{section}/library/{entity_name}/{entity_name}.md."""
+        """Library should be at api/{section}/{section}.md (flat file, no subdirectory)."""
         result = run_convert(SAMPLES_DIR, "material", output_dir)
         assert result.returncode == 0
 
-        library_builder = build_entity_path_builder(
-            output_dir, "material", "material", CategoryType.LIBRARY
-        )
-        library_file = library_builder.get_entity_file()
+        library_builder = PathBuilder(section="material", output_dir=output_dir)
+        library_file = library_builder.get_library_file()
 
-        expected_path = (
-            output_dir / "api" / "material" / "library" / "material" / "material.md"
-        )
+        expected_path = output_dir / "api" / "material" / "material.md"
         assert library_file == expected_path
         assert library_file.exists()
         assert library_file.is_file()
+        assert not (output_dir / "api" / "material" / "library").exists()
 
 
 class TestMixinProcessing:
@@ -432,29 +414,17 @@ class TestStandaloneTypeProcessing:
         )
 
     def test_library_no_subdirectories(self, output_dir: Path) -> None:
-        """Libraries should not create member subdirectories.
-
-        Libraries have an entity directory but no member subdirectories.
-        """
+        """Library should be a flat file at api/{section}/{section}.md with no entity directory."""
         result = run_convert(SAMPLES_DIR, "material", output_dir)
         assert result.returncode == 0
 
-        library_builder = build_entity_path_builder(
-            output_dir, "material", "material", CategoryType.LIBRARY
-        )
-        library_file = library_builder.get_entity_file()
+        library_builder = PathBuilder(section="material", output_dir=output_dir)
+        library_file = library_builder.get_library_file()
         assert library_file.exists()
         assert library_file.is_file()
 
-        # Libraries have an entity directory
-        library_dir = library_builder.get_entity_dir()
-        assert library_dir.exists()
-
-        # But should not have member subdirectories (properties, methods, etc.)
-        member_subdirs = [d for d in library_dir.iterdir() if d.is_dir()]
-        assert len(member_subdirs) == 0, (
-            f"Library should not have member subdirs: {member_subdirs}"
-        )
+        # Library is a flat file; there should be no library/ subdirectory
+        assert not (output_dir / "api" / "material" / "library").exists()
 
     def test_all_standalone_types_converted(self, output_dir: Path) -> None:
         """All standalone type files should be converted to markdown."""
@@ -471,9 +441,9 @@ class TestStandaloneTypeProcessing:
         typedef_file = build_entity_path_builder(
             output_dir, "material", "DrawerCallback", CategoryType.TYPEDEF
         ).get_entity_file()
-        library_file = build_entity_path_builder(
-            output_dir, "material", "material", CategoryType.LIBRARY
-        ).get_entity_file()
+        library_file = PathBuilder(
+            section="material", output_dir=output_dir
+        ).get_library_file()
 
         for file in [constant_file, function_file, typedef_file, library_file]:
             assert file.exists(), f"Standalone type file not found: {file}"

@@ -14,9 +14,8 @@ from convert.conftest import (
     get_available_sections,
     run_convert,
     SAMPLES_DIR,
-    build_entity_path_builder,
 )
-from flutterdoc_gen._shared.constants import CategoryType
+from flutterdoc_gen._shared.paths import PathBuilder
 from flutterdoc_gen.convert.patterns import MCP_URI_PREFIX
 
 
@@ -413,17 +412,16 @@ class TestLinkTransformationByType:
     def test_library_links_behavior(self, output_dir: Path) -> None:
         """Library links should follow expected patterns.
 
-        Library files are typically standalone and may not have many internal links.
+        Library files are flat section-level files at api/{section}/{section}.md.
         This test validates library output exists and contains expected content.
         """
         result = run_convert(SAMPLES_DIR, "material", output_dir)
         assert result.returncode == 0
 
-        # Library files are created at the section level
-        library_builder = build_entity_path_builder(
-            output_dir, "material", "material", CategoryType.LIBRARY
-        )
-        library_file = library_builder.get_entity_file()
+        # Library file is a flat section-level file
+        library_file = PathBuilder(
+            section="material", output_dir=output_dir
+        ).get_library_file()
         assert library_file.exists(), f"Library file not found: {library_file}"
 
         content = library_file.read_text(encoding="utf-8")

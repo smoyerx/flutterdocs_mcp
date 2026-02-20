@@ -159,7 +159,28 @@ def main() -> None:
         print(f"No files found matching pattern in section '{args.section}'")
         sys.exit(0)
 
-    # Process classes (existing functionality)
+    # Process library file first if it exists
+    library_input_file = PathBuilder(
+        section=args.section,
+        output_dir=args.output,
+        doc_dir=args.documents,
+    ).get_input_library_file()
+    if library_input_file.exists():
+        progress_logger.info(f"Converting library: {args.section}")
+        try:
+            process_library(
+                options_handle,
+                args.section,
+                args.documents,
+                args.output,
+            )
+        except OSError as e:
+            log_processing_error(
+                f"Cannot write output file for {args.section}: {e}",
+                library_input_file,
+            )
+
+    # Process other categories of entities in section (classes, mixins, etc.)
     for class_name, class_file in categorized_files[CategoryType.CLASS]:
         progress_logger.info(f"Converting class: {class_name}")
 
@@ -178,7 +199,6 @@ def main() -> None:
                 f"Cannot write output file for {class_name}: {e}", class_file
             )
 
-    # Process other categories with stub processors
     for mixin_name, mixin_file in categorized_files[CategoryType.MIXIN]:
         progress_logger.info(f"Converting mixin: {mixin_name}")
         try:
@@ -209,22 +229,6 @@ def main() -> None:
         except OSError as e:
             log_processing_error(
                 f"Cannot write output file for {constant_name}: {e}", constant_file
-            )
-
-    for library_name, library_file in categorized_files[CategoryType.LIBRARY]:
-        progress_logger.info(f"Converting library: {library_name}")
-        try:
-            process_library(
-                options_handle,
-                library_name,
-                library_file,
-                args.section,
-                args.documents,
-                args.output,
-            )
-        except OSError as e:
-            log_processing_error(
-                f"Cannot write output file for {library_name}: {e}", library_file
             )
 
     for extension_type_name, extension_type_file in categorized_files[

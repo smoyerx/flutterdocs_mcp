@@ -46,6 +46,15 @@ class TestPathBuilder:
         result = builder.get_api_section_dir()
         assert result == Path("/output/api/widgets")
 
+    def test_get_library_file(self):
+        """Verify library file maps to {output_dir}/api/{section}/{section}.md."""
+        builder = PathBuilder(
+            section="material",
+            output_dir=Path("/output"),
+        )
+        result = builder.get_library_file()
+        assert result == Path("/output/api/material/material.md")
+
     def test_get_entity_dir(self):
         """Verify entity directory construction."""
         builder = PathBuilder(
@@ -364,6 +373,27 @@ class TestPathBuilder:
         result = builder.get_input_section_dir()
         assert result == Path("/doc/flutter/material")
 
+    def test_get_input_library_file(self):
+        """Verify input library file maps to {doc_dir}/flutter/{section}/index.html."""
+        builder = PathBuilder(
+            section="material",
+            output_dir=Path("/output"),
+            doc_dir=Path("/doc"),
+        )
+        result = builder.get_input_library_file()
+        assert result == Path("/doc/flutter/material/index.html")
+
+    def test_get_input_library_file_requires_doc_dir(self):
+        """Verify get_input_library_file raises ValueError without doc_dir."""
+        import pytest
+
+        builder = PathBuilder(
+            section="material",
+            output_dir=Path("/output"),
+        )
+        with pytest.raises(ValueError, match="requires doc_dir"):
+            builder.get_input_library_file()
+
     def test_get_input_member_file(self):
         """Verify input member file path construction."""
         builder = PathBuilder(
@@ -435,18 +465,6 @@ class TestPathBuilder:
         )
         entity_dir = builder.get_entity_dir()
         assert "constants" in entity_dir.parts
-
-    def test_entity_type_mapping_library(self):
-        """Verify LIBRARY type maps to 'library' directory."""
-        builder = PathBuilder(
-            section="material",
-            entity_name="material",
-            entity_type=CategoryType.LIBRARY,
-            doc_dir=Path("/doc"),
-            output_dir=Path("/output"),
-        )
-        entity_dir = builder.get_entity_dir()
-        assert "library" in entity_dir.parts
 
     def test_entity_type_mapping_extension_type(self):
         """Verify EXTENSION_TYPE type maps to 'extension_types' directory."""
@@ -526,6 +544,9 @@ class TestPathBuilder:
 
         with pytest.raises(ValueError, match="requires doc_dir"):
             builder.get_input_snippets_dir()
+
+        with pytest.raises(ValueError, match="requires doc_dir"):
+            builder.get_input_library_file()
 
     def test_input_methods_work_with_doc_dir(self):
         """Test that input methods work when doc_dir is provided."""

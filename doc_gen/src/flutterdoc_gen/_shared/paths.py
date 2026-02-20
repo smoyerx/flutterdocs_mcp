@@ -106,8 +106,6 @@ class PathBuilder:
                 return "enums"
             case CategoryType.CONSTANT:
                 return "constants"
-            case CategoryType.LIBRARY:
-                return "library"
             case CategoryType.EXTENSION_TYPE:
                 return "extension_types"
             case CategoryType.EXTENSION:
@@ -208,6 +206,16 @@ class PathBuilder:
     def get_api_section_dir(self) -> Path:
         return self.output_dir / "api" / self.section
 
+    def get_library_file(self) -> Path:
+        """Get output path for the library markdown file.
+
+        Libraries are stored as flat section-level files, not in a subdirectory.
+
+        Returns:
+            Path like output_dir/api/{section}/{section}.md
+        """
+        return self.get_api_section_dir() / f"{self.section}.md"
+
     def get_entity_dir(self) -> Path:
         self._require_entity_context()
         assert self._entity_dir is not None  # Type hint for mypy / Pylance
@@ -296,10 +304,6 @@ class PathBuilder:
 
     def get_input_entity_file(self) -> Path:
         self._require_entity_context()
-        # Special case: library files are always named index.html
-        if self.entity_type == CategoryType.LIBRARY:
-            return self.get_input_section_dir() / "index.html"
-
         match self.entity_type:
             case CategoryType.CLASS:
                 suffix = "-class"
@@ -321,6 +325,17 @@ class PathBuilder:
                 suffix = ""
 
         return self.get_input_section_dir() / f"{self.entity_name}{suffix}.html"
+
+    def get_input_library_file(self) -> Path:
+        """Get input path for the library HTML file.
+
+        Library files are always named index.html in the section directory.
+
+        Returns:
+            Path like doc_dir/flutter/{section}/index.html
+        """
+        self._require_doc_dir()
+        return self.get_input_section_dir() / "index.html"
 
     def get_input_member_file(self, member_name: str) -> Path:
         self._require_entity_context()

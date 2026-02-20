@@ -15,7 +15,6 @@ class CategoryType(StrEnum):
     - MIXIN: Mixin documentation files (*-mixin.html)
     - ENUM: Enum documentation files (identified via *-enum-sidebar.html)
     - CONSTANT: Constant documentation files (*-constant.html)
-    - LIBRARY: Library documentation files (*-library.html)
     - EXTENSION_TYPE: Extension type files (*-extension-type.html)
     - EXTENSION: Extension files (identified via *-extension-sidebar.html)
     - FUNCTION: Function documentation files (lowercase-starting names)
@@ -26,7 +25,6 @@ class CategoryType(StrEnum):
     MIXIN = "mixin"
     ENUM = "enum"
     CONSTANT = "constant"
-    LIBRARY = "library"
     EXTENSION_TYPE = "extension_type"
     EXTENSION = "extension"
     FUNCTION = "function"
@@ -38,7 +36,6 @@ ALL_CATEGORIES = [
     CategoryType.CLASS,
     CategoryType.MIXIN,
     CategoryType.CONSTANT,
-    CategoryType.LIBRARY,
     CategoryType.EXTENSION_TYPE,
     CategoryType.ENUM,
     CategoryType.EXTENSION,
@@ -48,7 +45,7 @@ ALL_CATEGORIES = [
 
 
 class MemberType(StrEnum):
-    """Logical member types for entity documentation.
+    """Logical member types for category (entity) documentation.
 
     Maps to filesystem subdirectories via PathBuilder.
     """

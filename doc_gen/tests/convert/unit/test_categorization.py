@@ -82,19 +82,6 @@ def test_categorize_constant_files(tmp_path: Path, mock_section_dir: Path) -> No
     ) in result[CategoryType.CONSTANT]
 
 
-def test_categorize_library_files(tmp_path: Path, mock_section_dir: Path) -> None:
-    """Test categorization of library documentation files."""
-    # Library identification requires both index.html and test_section-library.html
-    create_test_files(mock_section_dir, ["index.html", "test_section-library.html"])
-
-    result = find_and_categorize_root_files(tmp_path, "test_section")
-
-    assert len(result[CategoryType.LIBRARY]) == 1
-    assert ("test_section", mock_section_dir / "index.html") in result[
-        CategoryType.LIBRARY
-    ]
-
-
 def test_categorize_extension_type_files(
     tmp_path: Path, mock_section_dir: Path
 ) -> None:
@@ -225,6 +212,22 @@ def test_sidebar_files_are_ignored(tmp_path: Path, mock_section_dir: Path) -> No
     assert len(result[CategoryType.ENUM]) == 0
 
 
+def test_library_marker_files_are_ignored(
+    tmp_path: Path, mock_section_dir: Path
+) -> None:
+    """Test that *-library.html and index.html are not categorized as entities."""
+    create_test_files(
+        mock_section_dir,
+        ["test_section-library.html", "index.html"],
+    )
+
+    result = find_and_categorize_root_files(tmp_path, "test_section")
+
+    # Should not be categorized in any category
+    for category_values in result.values():
+        assert len(category_values) == 0
+
+
 def test_enum_without_sidebar_not_categorized(
     tmp_path: Path, mock_section_dir: Path
 ) -> None:
@@ -279,8 +282,6 @@ def test_mixed_categories(tmp_path: Path, mock_section_dir: Path) -> None:
             "ListTile-class.html",
             "BaseSliderTrackShape-mixin.html",
             "accelerateEasing-constant.html",
-            "index.html",
-            "test_section-library.html",
             "HourFormat.html",
             "HourFormat-enum-sidebar.html",
             "showBottomSheet.html",
@@ -293,7 +294,6 @@ def test_mixed_categories(tmp_path: Path, mock_section_dir: Path) -> None:
     assert len(result[CategoryType.CLASS]) == 2
     assert len(result[CategoryType.MIXIN]) == 1
     assert len(result[CategoryType.CONSTANT]) == 1
-    assert len(result[CategoryType.LIBRARY]) == 1
     assert len(result[CategoryType.ENUM]) == 1
     assert len(result[CategoryType.FUNCTION]) == 1
     assert len(result[CategoryType.TYPEDEF]) == 1

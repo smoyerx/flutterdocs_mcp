@@ -28,7 +28,7 @@ def find_and_categorize_root_files(
 
     Returns:
         A dictionary mapping category names to lists of (name, path) tuples.
-        Categories: 'class', 'mixin', 'constant', 'library', 'extension_type',
+        Categories: 'class', 'mixin', 'constant', 'extension_type',
                    'enum', 'extension', 'function', 'typedef'
     """
     # Use temporary PathBuilder to construct path
@@ -44,7 +44,6 @@ def find_and_categorize_root_files(
         CategoryType.CLASS: [],
         CategoryType.MIXIN: [],
         CategoryType.CONSTANT: [],
-        CategoryType.LIBRARY: [],
         CategoryType.EXTENSION_TYPE: [],
         CategoryType.ENUM: [],
         CategoryType.EXTENSION: [],
@@ -65,6 +64,12 @@ def find_and_categorize_root_files(
         # Skip sidebar files but track them for indirect identification
         if filename.endswith("-sidebar.html"):
             sidebar_files.add(filename)
+            continue
+
+        # Skip library-related files: marker ({section}-library.html) and content (index.html)
+        # The library file is handled directly by cli.py via get_input_library_file()
+        if filename.endswith("-library.html") or filename == "index.html":
+            categorized_files.add(filename)
             continue
 
         # Extract base name and check direct patterns
@@ -90,17 +95,7 @@ def find_and_categorize_root_files(
             )
             categorized_files.add(filename)
 
-    # Second pass: Indirect identification via sidebar files and library check
-    # Check for library: index.html exists and {section}-library.html exists
-    library_marker = f"{section}-library.html"
-    index_file = section_dir / "index.html"
-    if index_file.exists() and library_marker in {f.name for f in all_html_files}:
-        categories[CategoryType.LIBRARY].append(
-            (section, index_file)
-        )  # Use section name as library name
-        categorized_files.add("index.html")
-        categorized_files.add(library_marker)  # Mark marker file as categorized too
-
+    # Second pass: Indirect identification via sidebar files
     for html_file in all_html_files:
         filename = html_file.name
 
