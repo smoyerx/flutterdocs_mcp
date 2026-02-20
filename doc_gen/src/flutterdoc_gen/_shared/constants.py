@@ -56,3 +56,14 @@ class MemberType(StrEnum):
     METHOD = "method"
     OPERATOR = "operator"
     STATIC = "static_method"
+
+
+# All member values in canonical order for iteration
+ALL_MEMBERS = [
+    MemberType.CONSTRUCTOR,
+    MemberType.CONSTANT,
+    MemberType.PROPERTY,
+    MemberType.METHOD,
+    MemberType.OPERATOR,
+    MemberType.STATIC,
+]

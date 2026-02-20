@@ -33,7 +33,6 @@ load.py MUST access all convert.py output exclusively via `PathBuilder` methods 
 | `MIXIN` | `mixins` |
 | `ENUM` | `enums` |
 | `CONSTANT` | `constants` |
-| `LIBRARY` | `library` |
 | `EXTENSION_TYPE` | `extension_types` |
 | `EXTENSION` | `extensions` |
 | `FUNCTION` | `functions` |
