@@ -138,9 +138,8 @@ class PathBuilder:
     def _get_member_dir(self, member_type: MemberType, inherited: bool) -> Path:
         """Get member type output directory.
 
-        Maps MemberType to subdirectory structure. Properties, methods, and
-        operators have native/inherited splits; constructors, constants, static methods,
-        and snippets do not.
+        Maps MemberType to subdirectory structure. Properties, methods, and operators
+        have native/inherited splits; constructors, constants, and static methods do not.
 
         Args:
             member_type: The type of member
@@ -165,8 +164,6 @@ class PathBuilder:
                 base = "operators"
             case MemberType.STATIC:
                 base = "statics"
-            case MemberType.SNIPPET:
-                base = "snippets"
 
         # Add inherited/native split for relevant types
         if member_type in (
@@ -251,7 +248,7 @@ class PathBuilder:
         return self._get_member_dir(MemberType.STATIC, inherited=False)
 
     def get_snippets_dir(self) -> Path:
-        return self._get_member_dir(MemberType.SNIPPET, inherited=False)
+        return self.get_entity_dir() / "snippets"
 
     def get_constructor_file(self, member_name: str) -> Path:
         return self._get_member_file(
@@ -262,9 +259,7 @@ class PathBuilder:
         return self._get_member_file(MemberType.CONSTANT, member_name, inherited=False)
 
     def get_native_property_file(self, member_name: str) -> Path:
-        return self._get_member_file(
-            MemberType.PROPERTY, member_name, inherited=False
-        )
+        return self._get_member_file(MemberType.PROPERTY, member_name, inherited=False)
 
     def get_inherited_property_file(self, member_name: str) -> Path:
         return self._get_member_file(MemberType.PROPERTY, member_name, inherited=True)
@@ -285,7 +280,7 @@ class PathBuilder:
         return self._get_member_file(MemberType.STATIC, member_name, inherited=False)
 
     def get_snippet_file(self, short_name: str) -> Path:
-        return self._get_member_file(MemberType.SNIPPET, short_name, inherited=False)
+        return self.get_snippets_dir() / f"{short_name}.md"
 
     # --- Input Path Convenience Aliases ---
 
