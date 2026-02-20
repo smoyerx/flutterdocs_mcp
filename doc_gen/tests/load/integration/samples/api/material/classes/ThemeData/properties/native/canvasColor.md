@@ -1,9 +1,9 @@
 # canvasColor property
 
-[Color](mcp://flutter/api/dart-ui/Color) canvasColor
+[Color](flutter-docs://api/dart-ui/Color) canvasColor
 
 
-The default color of [MaterialType.canvas](mcp://flutter/api/material/MaterialType) [Material](mcp://flutter/api/material/Material).
+The default color of [MaterialType.canvas](flutter-docs://api/material/MaterialType) [Material](flutter-docs://api/material/Material).
 
 ## Implementation
 

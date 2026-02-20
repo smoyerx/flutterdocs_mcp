@@ -1,8 +1,8 @@
 # accelerateEasing top-level constant
 
-1. @[Deprecated](mcp://flutter/api/dart-core/Deprecated/Deprecated)('Use Easing.legacyAccelerate (M2) or Easing.standardAccelerate (M3) instead. ' 'This curve is updated in M3. ' 'This feature was deprecated after v3.18.0-0.1.pre.')
+1. @[Deprecated](flutter-docs://api/dart-core/Deprecated/Deprecated)('Use Easing.legacyAccelerate (M2) or Easing.standardAccelerate (M3) instead. ' 'This curve is updated in M3. ' 'This feature was deprecated after v3.18.0-0.1.pre.')
 
-[Curve](mcp://flutter/api/animation/Curve) const accelerateEasing
+[Curve](flutter-docs://api/animation/Curve) const accelerateEasing
 
 The accelerate easing curve in the Material 2 specification.
 

@@ -1,11 +1,11 @@
 # onLongPress property
 
-[GestureLongPressCallback](mcp://flutter/api/gestures/GestureLongPressCallback)? onLongPress
+[GestureLongPressCallback](flutter-docs://api/gestures/GestureLongPressCallback)? onLongPress
 
 
 Called when the user long-presses on this list tile.
 
-Inoperative if [enabled](mcp://flutter/api/material/ListTile/enabled) is false.
+Inoperative if [enabled](flutter-docs://api/material/ListTile/enabled) is false.
 
 ## Implementation
 

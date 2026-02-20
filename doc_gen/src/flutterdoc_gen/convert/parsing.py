@@ -81,7 +81,7 @@ def extract_member_definitions(section_content: str) -> list[dict[str, str]]:
     members: list[dict[str, str]] = []
     paragraphs = split_into_paragraphs(section_content)
 
-    # Pattern to match [text](mcp://flutter/api/section/entity/member)
+    # Pattern to match [text](flutter-docs://api/section/entity/member)
     link_pattern = re.compile(
         rf"^\s*\[([^\]]+)\]\({MCP_URI_PREFIX}([^/]+)/([^/]+)/([^)]+)\)"
     )
@@ -209,7 +209,7 @@ def extract_member_links(
 ) -> list[dict[str, str]]:
     """Extract member links from section content.
 
-    Parses lines that start with [MEMBER](mcp://flutter/api/SECTION/ENTITY/MEMBER)
+    Parses lines that start with [MEMBER](flutter-docs://api/SECTION/ENTITY/MEMBER)
     followed by a type signature arrow (→, ->, etc.), and captures the link text,
     section, entity, member name, result type, and description.
 
@@ -232,7 +232,7 @@ def extract_member_links(
     # Supported: → (U+2192), ↔ (U+2194), -> , => , <-> , <=> , ➜ (U+279C), ➔ (U+2794)
     arrow_pattern = r"(?:\u2192|\u2194|\u279C|\u2794|<->|<=>|->|=>)"
 
-    # Pattern to match [text](mcp://flutter/api/section/entity/member) followed by
+    # Pattern to match [text](flutter-docs://api/section/entity/member) followed by
     # optional whitespace and an arrow (type signature).
     # This distinguishes property definitions from inline references
     link_pattern = re.compile(
@@ -297,7 +297,7 @@ def extract_constructor_links(
     MCP links that appear in description text.
 
     Parses paragraphs where the first line starts with
-    [CONSTRUCTOR](mcp://flutter/api/SECTION/ENTITY/CONSTRUCTOR).
+    [CONSTRUCTOR](flutter-docs://api/SECTION/ENTITY/CONSTRUCTOR).
     Constructors are followed by parameter lists, not arrows.
 
     Args:
@@ -313,7 +313,7 @@ def extract_constructor_links(
     members: list[dict[str, str]] = []
     paragraphs = split_into_paragraphs(section_content)
 
-    # Pattern to match [text](mcp://flutter/api/section/entity/member)
+    # Pattern to match [text](flutter-docs://api/section/entity/member)
     # For constructors, we don't require the arrow - just the MCP link at line start
     link_pattern = re.compile(
         rf"^\s*\[([^\]]+)\]\({MCP_URI_PREFIX}([^/]+)/([^/]+)/([^)]+)\)"
@@ -351,7 +351,7 @@ def extract_method_links(
 ) -> list[dict[str, str]]:
     """Extract method links from section content.
 
-    Parses lines that start with [METHOD](mcp://flutter/api/SECTION/ENTITY/METHOD)
+    Parses lines that start with [METHOD](flutter-docs://api/SECTION/ENTITY/METHOD)
     for methods. Methods have parameters followed by an arrow and return type.
     The arrow may appear after the parameters, not immediately after the link.
 
@@ -379,7 +379,7 @@ def extract_method_links(
     # Supported: → (U+2192), ↔ (U+2194), -> , => , <-> , <=> , ➜ (U+279C), ➔ (U+2794)
     arrow_pattern = r"(?:\u2192|\u2194|\u279C|\u2794|<->|<=>|->|=>)"
 
-    # Pattern to match [text](mcp://flutter/api/section/entity/member)
+    # Pattern to match [text](flutter-docs://api/section/entity/member)
     # For methods, the link is at the start of the line, but the arrow comes after parameters
     link_pattern = re.compile(
         rf"^\s*\[([^\]]+)\]\({MCP_URI_PREFIX}([^/]+)/([^/]+)/([^)]+)\)"
@@ -446,7 +446,7 @@ def extract_static_method_links(
     MCP links that appear in description text (e.g., cross-references to other entities).
 
     Parses paragraphs where the first line starts with
-    [METHOD](mcp://flutter/api/SECTION/ENTITY/METHOD)( for static methods.
+    [METHOD](flutter-docs://api/SECTION/ENTITY/METHOD)( for static methods.
     The opening parenthesis after the link is required as static methods always have
     parameter lists.
 
@@ -463,7 +463,7 @@ def extract_static_method_links(
     members: list[dict[str, str]] = []
     paragraphs = split_into_paragraphs(section_content)
 
-    # Pattern to match [text](mcp://flutter/api/section/entity/member)(
+    # Pattern to match [text](flutter-docs://api/section/entity/member)(
     # The opening parenthesis after the link is required because static methods
     # always have parameter lists following the link.
     link_pattern = re.compile(

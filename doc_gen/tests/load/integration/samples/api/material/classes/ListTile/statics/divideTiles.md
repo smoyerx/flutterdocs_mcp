@@ -1,16 +1,16 @@
 # divideTiles static method
 
-[Iterable](mcp://flutter/api/dart-core/Iterable)<[Widget](mcp://flutter/api/widgets/Widget)>divideTiles({
-[BuildContext](mcp://flutter/api/widgets/BuildContext)? context,
-required [Iterable](mcp://flutter/api/dart-core/Iterable)<[Widget](mcp://flutter/api/widgets/Widget)> tiles,
-[Color](mcp://flutter/api/dart-ui/Color)? color,
+[Iterable](flutter-docs://api/dart-core/Iterable)<[Widget](flutter-docs://api/widgets/Widget)>divideTiles({
+[BuildContext](flutter-docs://api/widgets/BuildContext)? context,
+required [Iterable](flutter-docs://api/dart-core/Iterable)<[Widget](flutter-docs://api/widgets/Widget)> tiles,
+[Color](flutter-docs://api/dart-ui/Color)? color,
 })
 
-Add a one pixel border in between each tile. If color isn't specified the[ThemeData.dividerColor](mcp://flutter/api/material/ThemeData/dividerColor) of the context's [Theme](mcp://flutter/api/material/Theme) is used.
+Add a one pixel border in between each tile. If color isn't specified the[ThemeData.dividerColor](flutter-docs://api/material/ThemeData/dividerColor) of the context's [Theme](flutter-docs://api/material/Theme) is used.
 
 See also:
 
-- [Divider](mcp://flutter/api/material/Divider), which you can use to obtain this effect manually.
+- [Divider](flutter-docs://api/material/Divider), which you can use to obtain this effect manually.
 
 
 ## Implementation

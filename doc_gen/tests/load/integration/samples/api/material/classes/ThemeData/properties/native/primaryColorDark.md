@@ -1,9 +1,9 @@
 # primaryColorDark property
 
-[Color](mcp://flutter/api/dart-ui/Color) primaryColorDark
+[Color](flutter-docs://api/dart-ui/Color) primaryColorDark
 
 
-A darker version of the [primaryColor](mcp://flutter/api/material/ThemeData/primaryColor).
+A darker version of the [primaryColor](flutter-docs://api/material/ThemeData/primaryColor).
 
 ## Implementation
 

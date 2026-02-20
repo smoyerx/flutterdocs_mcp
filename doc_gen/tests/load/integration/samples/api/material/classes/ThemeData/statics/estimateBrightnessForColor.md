@@ -1,10 +1,10 @@
 # estimateBrightnessForColor static method
 
-[Brightness](mcp://flutter/api/dart-ui/Brightness) estimateBrightnessForColor(
-[Color](mcp://flutter/api/dart-ui/Color) color
+[Brightness](flutter-docs://api/dart-ui/Brightness) estimateBrightnessForColor(
+[Color](flutter-docs://api/dart-ui/Color) color
 )
 
-Determines whether the given [Color](mcp://flutter/api/dart-ui/Color) is [Brightness.light](mcp://flutter/api/dart-ui/Brightness) or [Brightness.dark](mcp://flutter/api/dart-ui/Brightness).
+Determines whether the given [Color](flutter-docs://api/dart-ui/Color) is [Brightness.light](flutter-docs://api/dart-ui/Brightness) or [Brightness.dark](flutter-docs://api/dart-ui/Brightness).
 
 This compares the luminosity of the given color to a threshold value that
 matches the Material Design specification.

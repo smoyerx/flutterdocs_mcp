@@ -1,9 +1,9 @@
 # searchBarTheme property
 
-[SearchBarThemeData](mcp://flutter/api/material/SearchBarThemeData) searchBarTheme
+[SearchBarThemeData](flutter-docs://api/material/SearchBarThemeData) searchBarTheme
 
 
-A theme for customizing the appearance and layout of [SearchBar](mcp://flutter/api/material/SearchBar) widgets.
+A theme for customizing the appearance and layout of [SearchBar](flutter-docs://api/material/SearchBar) widgets.
 
 ## Implementation
 

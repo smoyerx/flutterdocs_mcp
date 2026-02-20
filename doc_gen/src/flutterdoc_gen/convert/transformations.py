@@ -187,7 +187,7 @@ def transform_class_links(content: str) -> str:
     """Transform class links to MCP URI format.
 
     Replaces links of the form [CLASS_NAME](SECTION/CLASS_NAME-class.html)
-    with [CLASS_NAME](mcp://flutter/api/SECTION/CLASS_NAME).
+    with [CLASS_NAME](flutter-docs://api/SECTION/CLASS_NAME).
 
     Uses patterns from LINK_PATTERNS registry.
 
@@ -205,7 +205,7 @@ def transform_mixin_links(content: str) -> str:
     """Transform mixin links to MCP URI format.
 
     Replaces links of the form [MIXIN_NAME](SECTION/MIXIN_NAME-mixin.html)
-    with [MIXIN_NAME](mcp://flutter/api/SECTION/MIXIN_NAME).
+    with [MIXIN_NAME](flutter-docs://api/SECTION/MIXIN_NAME).
 
     Uses patterns from LINK_PATTERNS registry.
 
@@ -223,7 +223,7 @@ def transform_constant_links(content: str) -> str:
     """Transform constant links to MCP URI format.
 
     Replaces links of the form [CONSTANT_NAME](SECTION/CONSTANT_NAME-constant.html)
-    with [CONSTANT_NAME](mcp://flutter/api/SECTION/CONSTANT_NAME).
+    with [CONSTANT_NAME](flutter-docs://api/SECTION/CONSTANT_NAME).
 
     This handles 2-part paths for root-level constant entities. This is distinct
     from 3-part paths for enum member constants (handled by transform_enum_constant_links).
@@ -244,7 +244,7 @@ def transform_extension_type_links(content: str) -> str:
     """Transform extension type links to MCP URI format.
 
     Replaces links of the form [EXTENSION_TYPE_NAME](SECTION/EXTENSION_TYPE_NAME-extension-type.html)
-    with [EXTENSION_TYPE_NAME](mcp://flutter/api/SECTION/EXTENSION_TYPE_NAME).
+    with [EXTENSION_TYPE_NAME](flutter-docs://api/SECTION/EXTENSION_TYPE_NAME).
 
     Uses patterns from LINK_PATTERNS registry.
 
@@ -266,7 +266,7 @@ def transform_other_root_links(content: str) -> str:
     """Transform other root documentation links to MCP URI format.
 
     Replaces links of the form [ROOT_DOC_NAME](SECTION/ROOT_DOC_NAME.html)
-    with [ROOT_DOC_NAME](mcp://flutter/api/SECTION/ROOT_DOC_NAME).
+    with [ROOT_DOC_NAME](flutter-docs://api/SECTION/ROOT_DOC_NAME).
 
     This handles all root documentation files EXCEPT those with specific suffixes
     (-class, -mixin, -constant, -extension-type) which are handled by other
@@ -289,7 +289,7 @@ def transform_named_constructor_links(content: str) -> str:
     """Transform named constructor links to MCP URI format.
 
     Replaces links of the form [ENTITY_NAME.MEMBER_NAME](SECTION/ENTITY_NAME/ENTITY_NAME.MEMBER_NAME.html)
-    with [ENTITY_NAME.MEMBER_NAME](mcp://flutter/api/SECTION/ENTITY_NAME/ENTITY_NAME.MEMBER_NAME).
+    with [ENTITY_NAME.MEMBER_NAME](flutter-docs://api/SECTION/ENTITY_NAME/ENTITY_NAME.MEMBER_NAME).
 
     This handles 3-part paths where the entity name is repeated in the filename,
     which is the pattern used for named constructors and static factory methods
@@ -318,7 +318,7 @@ def transform_enum_constant_links(content: str) -> str:
     """Transform enum constant links to MCP URI format.
 
     Replaces links of the form [CONSTANT](SECTION/ENUM/CONSTANT-constant.html)
-    with [CONSTANT](mcp://flutter/api/SECTION/ENUM/CONSTANT).
+    with [CONSTANT](flutter-docs://api/SECTION/ENUM/CONSTANT).
 
     This handles 3-part paths with -constant.html suffix, which are enum member
     constants (like the `values` constant on enums). This is distinct from
@@ -344,7 +344,7 @@ def transform_member_links(content: str) -> str:
     """Transform member links to MCP URI format.
 
     Replaces links of the form [MEMBER](SECTION/ENTITY/MEMBER.html)
-    with [MEMBER](mcp://flutter/api/SECTION/ENTITY/MEMBER).
+    with [MEMBER](flutter-docs://api/SECTION/ENTITY/MEMBER).
 
     Uses patterns from LINK_PATTERNS registry.
 
@@ -398,12 +398,12 @@ def transform_unmapped_links(content: str) -> str:
     """Transform unmapped relative links to placeholder text.
 
     Replaces links of the form [LINK_TEXT](URI) with [Omitted link: LINK_TEXT]
-    where URI does not start with http://, https://, mcp://, or #.
+    where URI does not start with http://, https://, flutter-docs://, or #.
 
     This transformation acts as a catch-all for any relative links that were
     not transformed by other more specific transformation functions. It excludes:
     - http:// and https:// URLs (external websites)
-    - mcp:// URIs (already transformed MCP links)
+    - flutter-docs:// URIs (already transformed Flutter docs links)
     - # anchors (in-document navigation)
 
     Uses patterns from LINK_PATTERNS registry.

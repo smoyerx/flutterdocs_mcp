@@ -1,8 +1,8 @@
 # childSize property
 
-[Size](mcp://flutter/api/dart-ui/Size) get childSize
+[Size](flutter-docs://api/dart-ui/Size) get childSize
 
-The size of [OverlayPortal.child](mcp://flutter/api/widgets/OverlayPortal/child) in its own coordinates.
+The size of [OverlayPortal.child](flutter-docs://api/widgets/OverlayPortal/child) in its own coordinates.
 
 ## Implementation
 

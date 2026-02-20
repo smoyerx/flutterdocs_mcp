@@ -1,13 +1,13 @@
 # ThemeData.light constructor
 
 ThemeData.light({
-[bool](mcp://flutter/api/dart-core/bool)? useMaterial3,
+[bool](flutter-docs://api/dart-core/bool)? useMaterial3,
 })
 
 A default light theme.
 
 This theme does not contain text geometry. Instead, it is expected that
-this theme is localized using text geometry using [ThemeData.localize](mcp://flutter/api/material/ThemeData/localize).
+this theme is localized using text geometry using [ThemeData.localize](flutter-docs://api/material/ThemeData/localize).
 
 ## Implementation
 

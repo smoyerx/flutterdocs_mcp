@@ -1,8 +1,8 @@
 # enableFeedback property
 
-[bool](mcp://flutter/api/dart-core/bool) enableFeedback
+[bool](flutter-docs://api/dart-core/bool) enableFeedback
 
 Whether detected gestures should provide acoustic and/or haptic feedback.
 
-This property is inherited from [InkResponse](mcp://flutter/api/material/InkResponse).
-See further details at [enableFeedback](mcp://flutter/api/material/InkResponse/enableFeedback).
+This property is inherited from [InkResponse](flutter-docs://api/material/InkResponse).
+See further details at [enableFeedback](flutter-docs://api/material/InkResponse/enableFeedback).

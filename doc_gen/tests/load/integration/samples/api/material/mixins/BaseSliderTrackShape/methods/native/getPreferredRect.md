@@ -1,19 +1,19 @@
 # getPreferredRect method
 
-[Rect](mcp://flutter/api/dart-ui/Rect) getPreferredRect({
-required [RenderBox](mcp://flutter/api/rendering/RenderBox) parentBox,
-[Offset](mcp://flutter/api/dart-ui/Offset) offset = Offset.zero,
-required [SliderThemeData](mcp://flutter/api/material/SliderThemeData) sliderTheme,
-[bool](mcp://flutter/api/dart-core/bool) isEnabled = false,
-[bool](mcp://flutter/api/dart-core/bool) isDiscrete = false,
+[Rect](flutter-docs://api/dart-ui/Rect) getPreferredRect({
+required [RenderBox](flutter-docs://api/rendering/RenderBox) parentBox,
+[Offset](flutter-docs://api/dart-ui/Offset) offset = Offset.zero,
+required [SliderThemeData](flutter-docs://api/material/SliderThemeData) sliderTheme,
+[bool](flutter-docs://api/dart-core/bool) isEnabled = false,
+[bool](flutter-docs://api/dart-core/bool) isDiscrete = false,
 })
 
-Returns a rect that represents the track bounds that fits within the[Slider](mcp://flutter/api/material/Slider).
+Returns a rect that represents the track bounds that fits within the[Slider](flutter-docs://api/material/Slider).
 
-The width is the width of the [Slider](mcp://flutter/api/material/Slider) or [RangeSlider](mcp://flutter/api/material/RangeSlider), but padded by
-the max of the overlay and thumb radius. The height is defined by the [SliderThemeData.trackHeight](mcp://flutter/api/material/SliderThemeData/trackHeight).
+The width is the width of the [Slider](flutter-docs://api/material/Slider) or [RangeSlider](flutter-docs://api/material/RangeSlider), but padded by
+the max of the overlay and thumb radius. The height is defined by the [SliderThemeData.trackHeight](flutter-docs://api/material/SliderThemeData/trackHeight).
 
-The [Rect](mcp://flutter/api/dart-ui/Rect) is centered both horizontally and vertically within the slider
+The [Rect](flutter-docs://api/dart-ui/Rect) is centered both horizontally and vertically within the slider
 bounds.
 
 ## Implementation

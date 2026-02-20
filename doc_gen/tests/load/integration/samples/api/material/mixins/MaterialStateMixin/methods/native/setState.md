@@ -1,15 +1,15 @@
 # setState method
 
-@[protected](mcp://flutter/api/meta/protected)
+@[protected](flutter-docs://api/meta/protected)
 voidsetState(
-[VoidCallback](mcp://flutter/api/dart-ui/VoidCallback) fn
+[VoidCallback](flutter-docs://api/dart-ui/VoidCallback) fn
 )
 
 
 Notify the framework that the internal state of this object has changed.
 
-Whenever you change the internal state of a [State](mcp://flutter/api/widgets/State) object, make the
-change in a function that you pass to [setState](mcp://flutter/api/widgets/State/setState):
+Whenever you change the internal state of a [State](flutter-docs://api/widgets/State) object, make the
+change in a function that you pass to [setState](flutter-docs://api/widgets/State/setState):
 
 ```dart
 setState(() { _myState = newValue; });
@@ -19,18 +19,18 @@ The provided callback is immediately called synchronously. It must not
 return a future (the callback cannot be `async`), since then it would be
 unclear when the state was actually being set.
 
-Calling [setState](mcp://flutter/api/widgets/State/setState) notifies the framework that the internal state of this
+Calling [setState](flutter-docs://api/widgets/State/setState) notifies the framework that the internal state of this
 object has changed in a way that might impact the user interface in this
-subtree, which causes the framework to schedule a [build](mcp://flutter/api/widgets/State/build) for this [State](mcp://flutter/api/widgets/State) object.
+subtree, which causes the framework to schedule a [build](flutter-docs://api/widgets/State/build) for this [State](flutter-docs://api/widgets/State) object.
 
-If you just change the state directly without calling [setState](mcp://flutter/api/widgets/State/setState), the
-framework might not schedule a [build](mcp://flutter/api/widgets/State/build) and the user interface for this
+If you just change the state directly without calling [setState](flutter-docs://api/widgets/State/setState), the
+framework might not schedule a [build](flutter-docs://api/widgets/State/build) and the user interface for this
 subtree might not be updated to reflect the new state.
 
-Generally it is recommended that the [setState](mcp://flutter/api/widgets/State/setState) method only be used to
+Generally it is recommended that the [setState](flutter-docs://api/widgets/State/setState) method only be used to
 wrap the actual changes to the state, not any computation that might be
-associated with the change. For example, here a value used by the [build](mcp://flutter/api/widgets/State/build) function is incremented, and then the change is written to disk, but only
-the increment is wrapped in the [setState](mcp://flutter/api/widgets/State/setState):
+associated with the change. For example, here a value used by the [build](flutter-docs://api/widgets/State/build) function is incremented, and then the change is written to disk, but only
+the increment is wrapped in the [setState](flutter-docs://api/widgets/State/setState):
 
 ```dart
 Future<void> _incrementCounter() async {
@@ -44,11 +44,11 @@ Future<void> _incrementCounter() async {
 
 ```
 Sometimes, the changed state is in some other object not owned by the
-widget [State](mcp://flutter/api/widgets/State), but the widget nonetheless needs to be updated to react to
-the new state. This is especially common with [Listenable](mcp://flutter/api/foundation/Listenable) s, such as [AnimationController](mcp://flutter/api/animation/AnimationController) s.
+widget [State](flutter-docs://api/widgets/State), but the widget nonetheless needs to be updated to react to
+the new state. This is especially common with [Listenable](flutter-docs://api/foundation/Listenable) s, such as [AnimationController](flutter-docs://api/animation/AnimationController) s.
 
 In such cases, it is good practice to leave a comment in the callback
-passed to [setState](mcp://flutter/api/widgets/State/setState) that explains what state changed:
+passed to [setState](flutter-docs://api/widgets/State/setState) that explains what state changed:
 
 ```dart
 void _update() {
@@ -58,17 +58,17 @@ void _update() {
 animation.addListener(_update);
 
 ```
-It is an error to call this method after the framework calls [dispose](mcp://flutter/api/widgets/State/dispose).
+It is an error to call this method after the framework calls [dispose](flutter-docs://api/widgets/State/dispose).
 You can determine whether it is legal to call this method by checking
-whether the [mounted](mcp://flutter/api/widgets/State/mounted) property is true. That said, it is better practice
-to cancel whatever work might trigger the [setState](mcp://flutter/api/widgets/State/setState) rather than merely
-checking for [mounted](mcp://flutter/api/widgets/State/mounted) before calling [setState](mcp://flutter/api/widgets/State/setState), as otherwise CPU cycles
+whether the [mounted](flutter-docs://api/widgets/State/mounted) property is true. That said, it is better practice
+to cancel whatever work might trigger the [setState](flutter-docs://api/widgets/State/setState) rather than merely
+checking for [mounted](flutter-docs://api/widgets/State/mounted) before calling [setState](flutter-docs://api/widgets/State/setState), as otherwise CPU cycles
 will be wasted.
 
 ## Design discussion
 
 The original version of this API was a method called `markNeedsBuild`, for
-consistency with [RenderObject.markNeedsLayout](mcp://flutter/api/rendering/RenderObject/markNeedsLayout), [RenderObject.markNeedsPaint](mcp://flutter/api/rendering/RenderObject/markNeedsPaint), *et al*.
+consistency with [RenderObject.markNeedsLayout](flutter-docs://api/rendering/RenderObject/markNeedsLayout), [RenderObject.markNeedsPaint](flutter-docs://api/rendering/RenderObject/markNeedsPaint), *et al*.
 
 However, early user testing of the Flutter framework revealed that people
 would call `markNeedsBuild()` much more often than necessary. Essentially,
@@ -83,8 +83,8 @@ update their state in a callback caused developers to think more carefully
 about what exactly was being updated, and thus improved their understanding
 of the appropriate times to call the method.
 
-In practice, the [setState](mcp://flutter/api/widgets/State/setState) method's implementation is trivial: it calls
-the provided callback synchronously, then calls [Element.markNeedsBuild](mcp://flutter/api/widgets/Element/markNeedsBuild).
+In practice, the [setState](flutter-docs://api/widgets/State/setState) method's implementation is trivial: it calls
+the provided callback synchronously, then calls [Element.markNeedsBuild](flutter-docs://api/widgets/Element/markNeedsBuild).
 
 ## Performance considerations
 
@@ -93,20 +93,20 @@ expected to be called at most once per frame, the overhead is irrelevant
 anyway. Nonetheless, it is best to avoid calling this function redundantly
 (e.g. in a tight loop), as it does involve creating a closure and calling
 it. The method is idempotent, there is no benefit to calling it more than
-once per [State](mcp://flutter/api/widgets/State) per frame.
+once per [State](flutter-docs://api/widgets/State) per frame.
 
 The *indirect* cost of causing this function, however, is high: it causes
 the widget to rebuild, possibly triggering rebuilds for the entire subtree
 rooted at this widget, and further triggering a relayout and repaint of
-the entire corresponding [RenderObject](mcp://flutter/api/rendering/RenderObject) subtree.
+the entire corresponding [RenderObject](flutter-docs://api/rendering/RenderObject) subtree.
 
-For this reason, this method should only be called when the [build](mcp://flutter/api/widgets/State/build) method
+For this reason, this method should only be called when the [build](flutter-docs://api/widgets/State/build) method
 will, as a result of whatever state change was detected, change its result
 meaningfully.
 
 See also:
 
-- [StatefulWidget](mcp://flutter/api/widgets/StatefulWidget), the API documentation for which has a section on
+- [StatefulWidget](flutter-docs://api/widgets/StatefulWidget), the API documentation for which has a section on
 performance considerations that are relevant here.
 
 

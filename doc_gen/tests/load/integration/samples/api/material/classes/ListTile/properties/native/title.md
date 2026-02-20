@@ -1,13 +1,13 @@
 # title property
 
-[Widget](mcp://flutter/api/widgets/Widget)? title
+[Widget](flutter-docs://api/widgets/Widget)? title
 
 
 The primary content of the list tile.
 
-Typically a [Text](mcp://flutter/api/widgets/Text) widget.
+Typically a [Text](flutter-docs://api/widgets/Text) widget.
 
-This should not wrap. To enforce the single line limit, use[Text.maxLines](mcp://flutter/api/widgets/Text/maxLines).
+This should not wrap. To enforce the single line limit, use[Text.maxLines](flutter-docs://api/widgets/Text/maxLines).
 
 ## Implementation
 

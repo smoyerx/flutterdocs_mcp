@@ -1,11 +1,11 @@
 # cardTheme property
 
-[CardThemeData](mcp://flutter/api/material/CardThemeData) cardTheme
+[CardThemeData](flutter-docs://api/material/CardThemeData) cardTheme
 
 
-The colors and styles used to render [Card](mcp://flutter/api/material/Card).
+The colors and styles used to render [Card](flutter-docs://api/material/Card).
 
-This is the value returned from [CardTheme.of](mcp://flutter/api/material/CardTheme/of).
+This is the value returned from [CardTheme.of](flutter-docs://api/material/CardTheme/of).
 
 ## Implementation
 

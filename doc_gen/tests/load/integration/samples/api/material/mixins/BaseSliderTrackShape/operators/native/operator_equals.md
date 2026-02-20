@@ -1,13 +1,13 @@
 # operator == method
 
-[bool](mcp://flutter/api/dart-core/bool) operator ==(
-[Object](mcp://flutter/api/dart-core/Object) other
+[bool](flutter-docs://api/dart-core/bool) operator ==(
+[Object](flutter-docs://api/dart-core/Object) other
 )
 
 
 The equality operator.
 
-The default behavior for all [Object](mcp://flutter/api/dart-core/Object) s is to return true if and
+The default behavior for all [Object](flutter-docs://api/dart-core/Object) s is to return true if and
 only if this object and `other` are the same object.
 
 Override this method to specify a different equality relation on
@@ -28,7 +28,7 @@ so whether two objects are equal should only change
 if at least one of the objects was modified.
 
 If a subclass overrides the equality operator, it should override
-the [hashCode](mcp://flutter/api/dart-core/Object/hashCode) method as well to maintain consistency.
+the [hashCode](flutter-docs://api/dart-core/Object/hashCode) method as well to maintain consistency.
 
 ## Implementation
 

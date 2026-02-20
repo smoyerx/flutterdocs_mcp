@@ -1,6 +1,6 @@
 # softWrap property
 
-[bool](mcp://flutter/api/dart-core/bool)? softWrap
+[bool](flutter-docs://api/dart-core/bool)? softWrap
 
 
 Whether the text should break at soft line breaks.

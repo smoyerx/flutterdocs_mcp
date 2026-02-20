@@ -215,7 +215,7 @@ class TestTransformClassLinks:
         """Class link should be transformed to MCP URI."""
         content = "See [Widget](widgets/Widget-class.html) for details."
         result = transform_class_links(content)
-        assert result == "See [Widget](mcp://flutter/api/widgets/Widget) for details."
+        assert result == "See [Widget](flutter-docs://api/widgets/Widget) for details."
 
     def test_transforms_multiple_class_links(self) -> None:
         """Multiple class links should all be transformed."""
@@ -225,7 +225,7 @@ class TestTransformClassLinks:
         result = transform_class_links(content)
         assert (
             result
-            == "[Widget](mcp://flutter/api/widgets/Widget) and [Text](mcp://flutter/api/widgets/Text)"
+            == "[Widget](flutter-docs://api/widgets/Widget) and [Text](flutter-docs://api/widgets/Text)"
         )
 
     def test_preserves_non_class_links(self) -> None:
@@ -255,7 +255,7 @@ class TestTransformMixinLinks:
         result = transform_mixin_links(content)
         assert (
             result
-            == "See [BaseSliderTrackShape](mcp://flutter/api/material/BaseSliderTrackShape) for details."
+            == "See [BaseSliderTrackShape](flutter-docs://api/material/BaseSliderTrackShape) for details."
         )
 
     def test_transforms_multiple_mixin_links(self) -> None:
@@ -264,7 +264,7 @@ class TestTransformMixinLinks:
         result = transform_mixin_links(content)
         assert (
             result
-            == "[Mixin1](mcp://flutter/api/widgets/Mixin1) and [Mixin2](mcp://flutter/api/material/Mixin2)"
+            == "[Mixin1](flutter-docs://api/widgets/Mixin1) and [Mixin2](flutter-docs://api/material/Mixin2)"
         )
 
     def test_preserves_non_mixin_links(self) -> None:
@@ -294,7 +294,7 @@ class TestTransformConstantLinks:
         result = transform_constant_links(content)
         assert (
             result
-            == "See [kBottomNavigationBarHeight](mcp://flutter/api/material/kBottomNavigationBarHeight) for value."
+            == "See [kBottomNavigationBarHeight](flutter-docs://api/material/kBottomNavigationBarHeight) for value."
         )
 
     def test_transforms_multiple_constant_links(self) -> None:
@@ -305,8 +305,8 @@ class TestTransformConstantLinks:
         )
         result = transform_constant_links(content)
         assert result == (
-            "[kHeight](mcp://flutter/api/material/kHeight) and "
-            "[kWidth](mcp://flutter/api/widgets/kWidth)"
+            "[kHeight](flutter-docs://api/material/kHeight) and "
+            "[kWidth](flutter-docs://api/widgets/kWidth)"
         )
 
     def test_preserves_enum_constant_links(self) -> None:
@@ -342,7 +342,7 @@ class TestTransformExtensionTypeLinks:
         result = transform_extension_type_links(content)
         assert (
             result
-            == "See [OverlayChildLayoutInfo](mcp://flutter/api/widgets/OverlayChildLayoutInfo) for info."
+            == "See [OverlayChildLayoutInfo](flutter-docs://api/widgets/OverlayChildLayoutInfo) for info."
         )
 
     def test_transforms_multiple_extension_type_links(self) -> None:
@@ -353,8 +353,8 @@ class TestTransformExtensionTypeLinks:
         )
         result = transform_extension_type_links(content)
         assert result == (
-            "[ExtType1](mcp://flutter/api/widgets/ExtType1) and "
-            "[ExtType2](mcp://flutter/api/material/ExtType2)"
+            "[ExtType1](flutter-docs://api/widgets/ExtType1) and "
+            "[ExtType2](flutter-docs://api/material/ExtType2)"
         )
 
     def test_preserves_non_extension_type_links(self) -> None:
@@ -384,7 +384,7 @@ class TestTransformOtherRootLinks:
         result = transform_other_root_links(content)
         assert (
             result
-            == "See [MyFunction](mcp://flutter/api/dart-core/MyFunction) for details."
+            == "See [MyFunction](flutter-docs://api/dart-core/MyFunction) for details."
         )
 
     def test_transforms_multiple_other_root_links(self) -> None:
@@ -395,8 +395,8 @@ class TestTransformOtherRootLinks:
         )
         result = transform_other_root_links(content)
         assert result == (
-            "[Function1](mcp://flutter/api/dart-core/Function1) and "
-            "[Function2](mcp://flutter/api/widgets/Function2)"
+            "[Function1](flutter-docs://api/dart-core/Function1) and "
+            "[Function2](flutter-docs://api/widgets/Function2)"
         )
 
     def test_preserves_member_links(self) -> None:
@@ -450,7 +450,7 @@ class TestTransformMemberLinks:
         """Member link should be transformed to MCP URI."""
         content = "See [build](widgets/Widget/build.html) method."
         result = transform_member_links(content)
-        assert result == "See [build](mcp://flutter/api/widgets/Widget/build) method."
+        assert result == "See [build](flutter-docs://api/widgets/Widget/build) method."
 
     def test_transforms_multiple_member_links(self) -> None:
         """Multiple member links should all be transformed."""
@@ -460,7 +460,7 @@ class TestTransformMemberLinks:
         result = transform_member_links(content)
         assert (
             result
-            == "[build](mcp://flutter/api/widgets/Widget/build) and [key](mcp://flutter/api/widgets/Widget/key)"
+            == "[build](flutter-docs://api/widgets/Widget/build) and [key](flutter-docs://api/widgets/Widget/key)"
         )
 
     def test_preserves_non_member_links(self) -> None:
@@ -484,7 +484,7 @@ class TestTransformNamedConstructorLinks:
         result = transform_named_constructor_links(content)
         assert (
             result
-            == "See [Text.rich](mcp://flutter/api/widgets/Text/Text.rich) constructor."
+            == "See [Text.rich](flutter-docs://api/widgets/Text/Text.rich) constructor."
         )
 
     def test_transforms_multiple_named_constructor_links(self) -> None:
@@ -495,8 +495,8 @@ class TestTransformNamedConstructorLinks:
         )
         result = transform_named_constructor_links(content)
         assert result == (
-            "Use [ThemeData.from](mcp://flutter/api/material/ThemeData/ThemeData.from) or "
-            "[IconButton.filled](mcp://flutter/api/material/IconButton/IconButton.filled)"
+            "Use [ThemeData.from](flutter-docs://api/material/ThemeData/ThemeData.from) or "
+            "[IconButton.filled](flutter-docs://api/material/IconButton/IconButton.filled)"
         )
 
     def test_preserves_regular_member_links(self) -> None:
@@ -531,9 +531,9 @@ class TestTransformNamedConstructorLinks:
         )
         result = transform_named_constructor_links(content)
         assert result == (
-            "[ColorScheme.fromSeed](mcp://flutter/api/material/ColorScheme/ColorScheme.fromSeed) and "
-            "[Transform.rotate](mcp://flutter/api/widgets/Transform/Transform.rotate) and "
-            "[FloatingActionButton.extended](mcp://flutter/api/material/FloatingActionButton/FloatingActionButton.extended)"
+            "[ColorScheme.fromSeed](flutter-docs://api/material/ColorScheme/ColorScheme.fromSeed) and "
+            "[Transform.rotate](flutter-docs://api/widgets/Transform/Transform.rotate) and "
+            "[FloatingActionButton.extended](flutter-docs://api/material/FloatingActionButton/FloatingActionButton.extended)"
         )
 
 
@@ -546,7 +546,7 @@ class TestTransformEnumConstantLinks:
         result = transform_enum_constant_links(content)
         assert (
             result
-            == "See [values](mcp://flutter/api/material/HourFormat/values) for list."
+            == "See [values](flutter-docs://api/material/HourFormat/values) for list."
         )
 
     def test_transforms_multiple_enum_constant_links(self) -> None:
@@ -557,8 +557,8 @@ class TestTransformEnumConstantLinks:
         )
         result = transform_enum_constant_links(content)
         assert result == (
-            "[values](mcp://flutter/api/material/HourFormat/values) and "
-            "[values](mcp://flutter/api/widgets/SomeEnum/values)"
+            "[values](flutter-docs://api/material/HourFormat/values) and "
+            "[values](flutter-docs://api/widgets/SomeEnum/values)"
         )
 
     def test_preserves_non_constant_member_links(self) -> None:
@@ -678,7 +678,7 @@ class TestTransformUnmappedLinks:
 
     def test_preserves_mcp_uris(self) -> None:
         """MCP URIs (already transformed links) should be preserved."""
-        content = "See [Widget](mcp://flutter/api/widgets/Widget) class."
+        content = "See [Widget](flutter-docs://api/widgets/Widget) class."
         result = transform_unmapped_links(content)
         assert result == content
 
@@ -710,7 +710,7 @@ class TestTransformUnmappedLinks:
 
     def test_already_transformed_links_not_affected(self) -> None:
         """Links already transformed to MCP URIs should not match."""
-        content = "[Text](mcp://flutter/api/widgets/Text) widget"
+        content = "[Text](flutter-docs://api/widgets/Text) widget"
         result = transform_unmapped_links(content)
         assert result == content
 
@@ -894,9 +894,9 @@ class TestCleanupFunctionDeclaration:
 
 1. @[override](dart-core/override-constant.html)
 
-[Widget](mcp://flutter/api/widgets/Widget)build(
+[Widget](flutter-docs://api/widgets/Widget)build(
 
-1. [BuildContext](mcp://flutter/api/widgets/BuildContext) context
+1. [BuildContext](flutter-docs://api/widgets/BuildContext) context
 )
 
 
@@ -905,8 +905,8 @@ Describes the part of the user interface represented by this widget."""
 # build method
 
 @[override](dart-core/override-constant.html)
-[Widget](mcp://flutter/api/widgets/Widget)build(
-[BuildContext](mcp://flutter/api/widgets/BuildContext) context
+[Widget](flutter-docs://api/widgets/Widget)build(
+[BuildContext](flutter-docs://api/widgets/BuildContext) context
 )
 
 
@@ -920,8 +920,8 @@ Describes the part of the user interface represented by this widget."""
 # MyClass constructor
 
 MyClass({
-- [int](mcp://flutter/api/dart-core/int) value,
-- [String](mcp://flutter/api/dart-core/String)? name,
+- [int](flutter-docs://api/dart-core/int) value,
+- [String](flutter-docs://api/dart-core/String)? name,
 })
 
 Creates a new MyClass instance."""
@@ -929,8 +929,8 @@ Creates a new MyClass instance."""
 # MyClass constructor
 
 MyClass({
-[int](mcp://flutter/api/dart-core/int) value,
-[String](mcp://flutter/api/dart-core/String)? name,
+[int](flutter-docs://api/dart-core/int) value,
+[String](flutter-docs://api/dart-core/String)? name,
 })
 
 Creates a new MyClass instance."""
@@ -1255,8 +1255,8 @@ Description."""
 
 const InkWell({
 
-1. [Key](mcp://flutter/api/foundation/Key)? key,
-2. [Widget](mcp://flutter/api/widgets/Widget)? child,
+1. [Key](flutter-docs://api/foundation/Key)? key,
+2. [Widget](flutter-docs://api/widgets/Widget)? child,
 })
 
 Creates an ink well."""
@@ -1264,8 +1264,8 @@ Creates an ink well."""
 # InkWell constructor
 
 const InkWell({
-[Key](mcp://flutter/api/foundation/Key)? key,
-[Widget](mcp://flutter/api/widgets/Widget)? child,
+[Key](flutter-docs://api/foundation/Key)? key,
+[Widget](flutter-docs://api/widgets/Widget)? child,
 })
 
 Creates an ink well."""

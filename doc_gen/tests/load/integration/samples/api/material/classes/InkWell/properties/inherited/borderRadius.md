@@ -1,9 +1,9 @@
 # borderRadius property
 
-[BorderRadius](mcp://flutter/api/painting/BorderRadius)? borderRadius
+[BorderRadius](flutter-docs://api/painting/BorderRadius)? borderRadius
 
 The border radius of the containing rectangle. This is effective only if
-[highlightShape](mcp://flutter/api/material/InkResponse/highlightShape) is [BoxShape.rectangle](mcp://flutter/api/painting/BoxShape).
+[highlightShape](flutter-docs://api/material/InkResponse/highlightShape) is [BoxShape.rectangle](flutter-docs://api/painting/BoxShape).
 
-This property is inherited from [InkResponse](mcp://flutter/api/material/InkResponse).
-See further details at [borderRadius](mcp://flutter/api/material/InkResponse/borderRadius).
+This property is inherited from [InkResponse](flutter-docs://api/material/InkResponse).
+See further details at [borderRadius](flutter-docs://api/material/InkResponse/borderRadius).

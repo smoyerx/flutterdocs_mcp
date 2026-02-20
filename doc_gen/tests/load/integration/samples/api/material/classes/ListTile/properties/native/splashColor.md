@@ -1,9 +1,9 @@
 # splashColor property
 
-[Color](mcp://flutter/api/dart-ui/Color)? splashColor
+[Color](flutter-docs://api/dart-ui/Color)? splashColor
 
 
-The color of splash for the tile's [Material](mcp://flutter/api/material/Material).
+The color of splash for the tile's [Material](flutter-docs://api/material/Material).
 
 ## Implementation
 

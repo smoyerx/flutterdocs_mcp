@@ -1,8 +1,8 @@
 # isPressed property
 
-[bool](mcp://flutter/api/dart-core/bool) get isPressed
+[bool](flutter-docs://api/dart-core/bool) get isPressed
 
-Getter for whether this class considers [WidgetState.pressed](mcp://flutter/api/widgets/WidgetState) to be active.
+Getter for whether this class considers [WidgetState.pressed](flutter-docs://api/widgets/WidgetState) to be active.
 
 ## Implementation
 

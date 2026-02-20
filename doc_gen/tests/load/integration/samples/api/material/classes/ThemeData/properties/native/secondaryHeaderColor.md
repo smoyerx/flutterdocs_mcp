@@ -1,9 +1,9 @@
 # secondaryHeaderColor property
 
-[Color](mcp://flutter/api/dart-ui/Color) secondaryHeaderColor
+[Color](flutter-docs://api/dart-ui/Color) secondaryHeaderColor
 
 
-The color of the header of a [PaginatedDataTable](mcp://flutter/api/material/PaginatedDataTable) when there are selected rows.
+The color of the header of a [PaginatedDataTable](flutter-docs://api/material/PaginatedDataTable) when there are selected rows.
 
 ## Implementation
 

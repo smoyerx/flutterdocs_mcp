@@ -1,9 +1,9 @@
 # buttonTheme property
 
-[ButtonThemeData](mcp://flutter/api/material/ButtonThemeData) buttonTheme
+[ButtonThemeData](flutter-docs://api/material/ButtonThemeData) buttonTheme
 
 
-Defines the default configuration of button widgets, like [DropdownButton](mcp://flutter/api/material/DropdownButton) and [ButtonBar](mcp://flutter/api/material/ButtonBar).
+Defines the default configuration of button widgets, like [DropdownButton](flutter-docs://api/material/DropdownButton) and [ButtonBar](flutter-docs://api/material/ButtonBar).
 
 ## Implementation
 

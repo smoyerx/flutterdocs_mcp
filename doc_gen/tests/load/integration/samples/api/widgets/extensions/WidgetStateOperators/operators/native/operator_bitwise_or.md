@@ -1,10 +1,10 @@
 # operator | method
 
-[WidgetStatesConstraint](mcp://flutter/api/widgets/WidgetStatesConstraint) operator |(
-[WidgetStatesConstraint](mcp://flutter/api/widgets/WidgetStatesConstraint) other
+[WidgetStatesConstraint](flutter-docs://api/widgets/WidgetStatesConstraint) operator |(
+[WidgetStatesConstraint](flutter-docs://api/widgets/WidgetStatesConstraint) other
 )
 
-Combines two [WidgetStatesConstraint](mcp://flutter/api/widgets/WidgetStatesConstraint) values using logical "or".
+Combines two [WidgetStatesConstraint](flutter-docs://api/widgets/WidgetStatesConstraint) values using logical "or".
 
 ## Implementation
 

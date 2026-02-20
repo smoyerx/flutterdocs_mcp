@@ -27,7 +27,7 @@ class TestLinkTransformations:
         """Class links with -class.html suffix must be transformed to MCP URIs.
 
         Per spec: [CLASS_NAME](SECTION/CLASS_NAME-class.html)
-        becomes: [CLASS_NAME](mcp://flutter/api/SECTION/CLASS_NAME)
+        becomes: [CLASS_NAME](flutter-docs://api/SECTION/CLASS_NAME)
         """
         result = run_convert(SAMPLES_DIR, section, output_dir)
         assert result.returncode == 0
@@ -58,7 +58,7 @@ class TestLinkTransformations:
         """Member links (3-part paths without dots) must be transformed to MCP URIs.
 
         Per spec: [MEMBER](SECTION/CLASS/MEMBER.html)
-        becomes: [MEMBER](mcp://flutter/api/SECTION/CLASS/MEMBER)
+        becomes: [MEMBER](flutter-docs://api/SECTION/CLASS/MEMBER)
 
         Does NOT include dotted members like Class.member.html (not in spec).
         """
@@ -100,7 +100,7 @@ class TestLinkTransformations:
 
         Validates that:
         1. MCP URIs are present in output
-        2. MCP URIs follow the correct format: mcp://flutter/api/SECTION/...
+        2. MCP URIs follow the correct format: flutter-docs://api/SECTION/...
         """
         result = run_convert(SAMPLES_DIR, section, output_dir)
         assert result.returncode == 0

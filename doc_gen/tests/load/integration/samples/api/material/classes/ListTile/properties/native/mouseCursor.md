@@ -1,19 +1,19 @@
 # mouseCursor property
 
-[MouseCursor](mcp://flutter/api/services/MouseCursor)? mouseCursor
+[MouseCursor](flutter-docs://api/services/MouseCursor)? mouseCursor
 
 
 The cursor for a mouse pointer when it enters or is hovering over the
 widget.
 
-If [mouseCursor](mcp://flutter/api/material/ListTile/mouseCursor) is a [WidgetStateMouseCursor](mcp://flutter/api/widgets/WidgetStateMouseCursor), [WidgetStateProperty.resolve](mcp://flutter/api/widgets/WidgetStateProperty/resolve) is used for the following [WidgetState](mcp://flutter/api/widgets/WidgetState) s:
+If [mouseCursor](flutter-docs://api/material/ListTile/mouseCursor) is a [WidgetStateMouseCursor](flutter-docs://api/widgets/WidgetStateMouseCursor), [WidgetStateProperty.resolve](flutter-docs://api/widgets/WidgetStateProperty/resolve) is used for the following [WidgetState](flutter-docs://api/widgets/WidgetState) s:
 
-- [WidgetState.selected](mcp://flutter/api/widgets/WidgetState).
-- [WidgetState.disabled](mcp://flutter/api/widgets/WidgetState).
+- [WidgetState.selected](flutter-docs://api/widgets/WidgetState).
+- [WidgetState.disabled](flutter-docs://api/widgets/WidgetState).
 
 
-If null, then the value of [ListTileThemeData.mouseCursor](mcp://flutter/api/material/ListTileThemeData/mouseCursor) is used. If
-that is also null, then [WidgetStateMouseCursor.clickable](mcp://flutter/api/widgets/WidgetStateMouseCursor/clickable) is used.
+If null, then the value of [ListTileThemeData.mouseCursor](flutter-docs://api/material/ListTileThemeData/mouseCursor) is used. If
+that is also null, then [WidgetStateMouseCursor.clickable](flutter-docs://api/widgets/WidgetStateMouseCursor/clickable) is used.
 
 ## Implementation
 

@@ -1,9 +1,9 @@
 # bottomNavigationBarTheme property
 
-[BottomNavigationBarThemeData](mcp://flutter/api/material/BottomNavigationBarThemeData) bottomNavigationBarTheme
+[BottomNavigationBarThemeData](flutter-docs://api/material/BottomNavigationBarThemeData) bottomNavigationBarTheme
 
 
-A theme for customizing the appearance and layout of [BottomNavigationBar](mcp://flutter/api/material/BottomNavigationBar) widgets.
+A theme for customizing the appearance and layout of [BottomNavigationBar](flutter-docs://api/material/BottomNavigationBar) widgets.
 
 ## Implementation
 

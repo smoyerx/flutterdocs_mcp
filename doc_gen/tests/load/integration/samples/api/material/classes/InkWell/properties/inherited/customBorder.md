@@ -1,8 +1,8 @@
 # customBorder property
 
-[ShapeBorder](mcp://flutter/api/painting/ShapeBorder)? customBorder
+[ShapeBorder](flutter-docs://api/painting/ShapeBorder)? customBorder
 
 The custom clip border.
 
-This property is inherited from [InkResponse](mcp://flutter/api/material/InkResponse).
-See further details at [customBorder](mcp://flutter/api/material/InkResponse/customBorder).
+This property is inherited from [InkResponse](flutter-docs://api/material/InkResponse).
+See further details at [customBorder](flutter-docs://api/material/InkResponse/customBorder).

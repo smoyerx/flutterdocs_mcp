@@ -1,6 +1,6 @@
 # enableFeedback property
 
-[bool](mcp://flutter/api/dart-core/bool)? enableFeedback
+[bool](flutter-docs://api/dart-core/bool)? enableFeedback
 
 
 Whether detected gestures should provide acoustic and/or haptic feedback.
@@ -12,7 +12,7 @@ When null, the default value is true.
 
 See also:
 
-- [Feedback](mcp://flutter/api/widgets/Feedback) for providing platform-specific feedback to certain actions.
+- [Feedback](flutter-docs://api/widgets/Feedback) for providing platform-specific feedback to certain actions.
 
 
 ## Implementation

@@ -1,12 +1,12 @@
 # setMaterialState method
 
-@[protected](mcp://flutter/api/meta/protected)
+@[protected](flutter-docs://api/meta/protected)
 voidsetMaterialState(
-[WidgetState](mcp://flutter/api/widgets/WidgetState) state,
-[bool](mcp://flutter/api/dart-core/bool) isSet
+[WidgetState](flutter-docs://api/widgets/WidgetState) state,
+[bool](flutter-docs://api/dart-core/bool) isSet
 )
 
-Mutator to mark a [WidgetState](mcp://flutter/api/widgets/WidgetState) value as either active or inactive.
+Mutator to mark a [WidgetState](flutter-docs://api/widgets/WidgetState) value as either active or inactive.
 
 ## Implementation
 

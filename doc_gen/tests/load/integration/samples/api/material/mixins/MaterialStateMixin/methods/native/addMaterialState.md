@@ -1,11 +1,11 @@
 # addMaterialState method
 
-@[protected](mcp://flutter/api/meta/protected)
+@[protected](flutter-docs://api/meta/protected)
 voidaddMaterialState(
-[WidgetState](mcp://flutter/api/widgets/WidgetState) state
+[WidgetState](flutter-docs://api/widgets/WidgetState) state
 )
 
-Mutator to mark a [WidgetState](mcp://flutter/api/widgets/WidgetState) value as active.
+Mutator to mark a [WidgetState](flutter-docs://api/widgets/WidgetState) value as active.
 
 ## Implementation
 

@@ -1,6 +1,6 @@
 # kBottomNavigationBarHeight top-level constant
 
-[double](mcp://flutter/api/dart-core/double) const kBottomNavigationBarHeight
+[double](flutter-docs://api/dart-core/double) const kBottomNavigationBarHeight
 
 The height of the bottom navigation bar.
 

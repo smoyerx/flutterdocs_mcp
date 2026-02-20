@@ -1,9 +1,9 @@
 # menuBarTheme property
 
-[MenuBarThemeData](mcp://flutter/api/material/MenuBarThemeData) menuBarTheme
+[MenuBarThemeData](flutter-docs://api/material/MenuBarThemeData) menuBarTheme
 
 
-A theme for customizing the color, shape, elevation, and other [MenuStyle](mcp://flutter/api/material/MenuStyle) aspects of the menu bar created by the [MenuBar](mcp://flutter/api/material/MenuBar) widget.
+A theme for customizing the color, shape, elevation, and other [MenuStyle](flutter-docs://api/material/MenuStyle) aspects of the menu bar created by the [MenuBar](flutter-docs://api/material/MenuBar) widget.
 
 ## Implementation
 

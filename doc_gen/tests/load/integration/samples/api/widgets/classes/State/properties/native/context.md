@@ -1,16 +1,16 @@
 # context property
 
-[BuildContext](mcp://flutter/api/widgets/BuildContext) get context
+[BuildContext](flutter-docs://api/widgets/BuildContext) get context
 
 The location in the tree where this widget builds.
 
-The framework associates [State](mcp://flutter/api/widgets/State) objects with a [BuildContext](mcp://flutter/api/widgets/BuildContext) after
-creating them with [StatefulWidget.createState](mcp://flutter/api/widgets/StatefulWidget/createState) and before calling [initState](mcp://flutter/api/widgets/State/initState). The association is permanent: the [State](mcp://flutter/api/widgets/State) object will never
-change its [BuildContext](mcp://flutter/api/widgets/BuildContext). However, the [BuildContext](mcp://flutter/api/widgets/BuildContext) itself can be moved
+The framework associates [State](flutter-docs://api/widgets/State) objects with a [BuildContext](flutter-docs://api/widgets/BuildContext) after
+creating them with [StatefulWidget.createState](flutter-docs://api/widgets/StatefulWidget/createState) and before calling [initState](flutter-docs://api/widgets/State/initState). The association is permanent: the [State](flutter-docs://api/widgets/State) object will never
+change its [BuildContext](flutter-docs://api/widgets/BuildContext). However, the [BuildContext](flutter-docs://api/widgets/BuildContext) itself can be moved
 around the tree.
 
-After calling [dispose](mcp://flutter/api/widgets/State/dispose), the framework severs the [State](mcp://flutter/api/widgets/State) object's
-connection with the [BuildContext](mcp://flutter/api/widgets/BuildContext).
+After calling [dispose](flutter-docs://api/widgets/State/dispose), the framework severs the [State](flutter-docs://api/widgets/State) object's
+connection with the [BuildContext](flutter-docs://api/widgets/BuildContext).
 
 ## Implementation
 

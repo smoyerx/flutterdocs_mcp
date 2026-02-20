@@ -1,11 +1,11 @@
 # textSpan property
 
-[InlineSpan](mcp://flutter/api/painting/InlineSpan)? textSpan
+[InlineSpan](flutter-docs://api/painting/InlineSpan)? textSpan
 
 
-The text to display as a [InlineSpan](mcp://flutter/api/painting/InlineSpan).
+The text to display as a [InlineSpan](flutter-docs://api/painting/InlineSpan).
 
-This will be null if [data](mcp://flutter/api/widgets/Text/data) is provided instead.
+This will be null if [data](flutter-docs://api/widgets/Text/data) is provided instead.
 
 ## Implementation
 

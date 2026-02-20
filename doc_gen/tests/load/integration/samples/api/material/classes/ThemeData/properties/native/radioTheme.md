@@ -1,9 +1,9 @@
 # radioTheme property
 
-[RadioThemeData](mcp://flutter/api/material/RadioThemeData) radioTheme
+[RadioThemeData](flutter-docs://api/material/RadioThemeData) radioTheme
 
 
-A theme for customizing the appearance and layout of [Radio](mcp://flutter/api/material/Radio) widgets.
+A theme for customizing the appearance and layout of [Radio](flutter-docs://api/material/Radio) widgets.
 
 ## Implementation
 

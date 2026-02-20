@@ -1,6 +1,6 @@
 # disabledColor property
 
-[Color](mcp://flutter/api/dart-ui/Color) disabledColor
+[Color](flutter-docs://api/dart-ui/Color) disabledColor
 
 
 The color used for widgets that are inoperative, regardless of

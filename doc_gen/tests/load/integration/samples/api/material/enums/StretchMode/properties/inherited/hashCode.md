@@ -1,8 +1,8 @@
 # hashCode property
 
-[int](mcp://flutter/api/dart-core/int) hashCode
+[int](flutter-docs://api/dart-core/int) hashCode
 
 The hash code for this object.
 
-This property is inherited from [Object](mcp://flutter/api/dart-core/Object).
-See further details at [hashCode](mcp://flutter/api/dart-core/Object/hashCode).
+This property is inherited from [Object](flutter-docs://api/dart-core/Object).
+See further details at [hashCode](flutter-docs://api/dart-core/Object/hashCode).

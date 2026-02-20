@@ -1,8 +1,8 @@
 # operator ~ method
 
-[WidgetStatesConstraint](mcp://flutter/api/widgets/WidgetStatesConstraint) operator ~()
+[WidgetStatesConstraint](flutter-docs://api/widgets/WidgetStatesConstraint) operator ~()
 
-Takes a [WidgetStatesConstraint](mcp://flutter/api/widgets/WidgetStatesConstraint) and applies the logical "not".
+Takes a [WidgetStatesConstraint](flutter-docs://api/widgets/WidgetStatesConstraint) and applies the logical "not".
 
 ## Implementation
 

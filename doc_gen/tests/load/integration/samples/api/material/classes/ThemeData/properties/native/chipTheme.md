@@ -1,11 +1,11 @@
 # chipTheme property
 
-[ChipThemeData](mcp://flutter/api/material/ChipThemeData) chipTheme
+[ChipThemeData](flutter-docs://api/material/ChipThemeData) chipTheme
 
 
-The colors and styles used to render [Chip](mcp://flutter/api/material/Chip) s.
+The colors and styles used to render [Chip](flutter-docs://api/material/Chip) s.
 
-This is the value returned from [ChipTheme.of](mcp://flutter/api/material/ChipTheme/of).
+This is the value returned from [ChipTheme.of](flutter-docs://api/material/ChipTheme/of).
 
 ## Implementation
 

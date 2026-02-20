@@ -1,112 +1,112 @@
 # ThemeData constructor
 
 ThemeData({
-[Iterable](mcp://flutter/api/dart-core/Iterable)<[Adaptation](mcp://flutter/api/material/Adaptation)<[Object](mcp://flutter/api/dart-core/Object)>>? adaptations,
-[bool](mcp://flutter/api/dart-core/bool)? applyElevationOverlayColor,
-[NoDefaultCupertinoThemeData](mcp://flutter/api/cupertino/NoDefaultCupertinoThemeData)? cupertinoOverrideTheme,
-[Iterable](mcp://flutter/api/dart-core/Iterable)<[ThemeExtension](mcp://flutter/api/material/ThemeExtension)>? extensions,
-[Object](mcp://flutter/api/dart-core/Object)? inputDecorationTheme,
-[MaterialTapTargetSize](mcp://flutter/api/material/MaterialTapTargetSize)? materialTapTargetSize,
-[PageTransitionsTheme](mcp://flutter/api/material/PageTransitionsTheme)? pageTransitionsTheme,
-[TargetPlatform](mcp://flutter/api/foundation/TargetPlatform)? platform,
-[ScrollbarThemeData](mcp://flutter/api/material/ScrollbarThemeData)? scrollbarTheme,
-[InteractiveInkFeatureFactory](mcp://flutter/api/material/InteractiveInkFeatureFactory)? splashFactory,
-[bool](mcp://flutter/api/dart-core/bool)? useMaterial3,
-[bool](mcp://flutter/api/dart-core/bool)? useSystemColors,
-[VisualDensity](mcp://flutter/api/material/VisualDensity)? visualDensity,
-[ColorScheme](mcp://flutter/api/material/ColorScheme)? colorScheme,
-[Brightness](mcp://flutter/api/dart-ui/Brightness)? brightness,
-[Color](mcp://flutter/api/dart-ui/Color)? colorSchemeSeed,
-[Color](mcp://flutter/api/dart-ui/Color)? canvasColor,
-[Color](mcp://flutter/api/dart-ui/Color)? cardColor,
-[Color](mcp://flutter/api/dart-ui/Color)? disabledColor,
-[Color](mcp://flutter/api/dart-ui/Color)? dividerColor,
-[Color](mcp://flutter/api/dart-ui/Color)? focusColor,
-[Color](mcp://flutter/api/dart-ui/Color)? highlightColor,
-[Color](mcp://flutter/api/dart-ui/Color)? hintColor,
-[Color](mcp://flutter/api/dart-ui/Color)? hoverColor,
-[Color](mcp://flutter/api/dart-ui/Color)? primaryColor,
-[Color](mcp://flutter/api/dart-ui/Color)? primaryColorDark,
-[Color](mcp://flutter/api/dart-ui/Color)? primaryColorLight,
-[MaterialColor](mcp://flutter/api/material/MaterialColor)? primarySwatch,
-[Color](mcp://flutter/api/dart-ui/Color)? scaffoldBackgroundColor,
-[Color](mcp://flutter/api/dart-ui/Color)? secondaryHeaderColor,
-[Color](mcp://flutter/api/dart-ui/Color)? shadowColor,
-[Color](mcp://flutter/api/dart-ui/Color)? splashColor,
-[Color](mcp://flutter/api/dart-ui/Color)? unselectedWidgetColor,
-[String](mcp://flutter/api/dart-core/String)? fontFamily,
-[List](mcp://flutter/api/dart-core/List)<[String](mcp://flutter/api/dart-core/String)>? fontFamilyFallback,
-[String](mcp://flutter/api/dart-core/String)? package,
-[IconThemeData](mcp://flutter/api/widgets/IconThemeData)? iconTheme,
-[IconThemeData](mcp://flutter/api/widgets/IconThemeData)? primaryIconTheme,
-[TextTheme](mcp://flutter/api/material/TextTheme)? primaryTextTheme,
-[TextTheme](mcp://flutter/api/material/TextTheme)? textTheme,
-[Typography](mcp://flutter/api/material/Typography)? typography,
-[ActionIconThemeData](mcp://flutter/api/material/ActionIconThemeData)? actionIconTheme,
-[Object](mcp://flutter/api/dart-core/Object)? appBarTheme,
-[BadgeThemeData](mcp://flutter/api/material/BadgeThemeData)? badgeTheme,
-[MaterialBannerThemeData](mcp://flutter/api/material/MaterialBannerThemeData)? bannerTheme,
-[BottomAppBarThemeData](mcp://flutter/api/material/BottomAppBarThemeData)? bottomAppBarTheme,
-[BottomNavigationBarThemeData](mcp://flutter/api/material/BottomNavigationBarThemeData)? bottomNavigationBarTheme,
-[BottomSheetThemeData](mcp://flutter/api/material/BottomSheetThemeData)? bottomSheetTheme,
-[ButtonThemeData](mcp://flutter/api/material/ButtonThemeData)? buttonTheme,
-[CardThemeData](mcp://flutter/api/material/CardThemeData)? cardTheme,
-[CarouselViewThemeData](mcp://flutter/api/material/CarouselViewThemeData)? carouselViewTheme,
-[CheckboxThemeData](mcp://flutter/api/material/CheckboxThemeData)? checkboxTheme,
-[ChipThemeData](mcp://flutter/api/material/ChipThemeData)? chipTheme,
-[DataTableThemeData](mcp://flutter/api/material/DataTableThemeData)? dataTableTheme,
-[DatePickerThemeData](mcp://flutter/api/material/DatePickerThemeData)? datePickerTheme,
-[DialogThemeData](mcp://flutter/api/material/DialogThemeData)? dialogTheme,
-[DividerThemeData](mcp://flutter/api/material/DividerThemeData)? dividerTheme,
-[DrawerThemeData](mcp://flutter/api/material/DrawerThemeData)? drawerTheme,
-[DropdownMenuThemeData](mcp://flutter/api/material/DropdownMenuThemeData)? dropdownMenuTheme,
-[ElevatedButtonThemeData](mcp://flutter/api/material/ElevatedButtonThemeData)? elevatedButtonTheme,
-[ExpansionTileThemeData](mcp://flutter/api/material/ExpansionTileThemeData)? expansionTileTheme,
-[FilledButtonThemeData](mcp://flutter/api/material/FilledButtonThemeData)? filledButtonTheme,
-[FloatingActionButtonThemeData](mcp://flutter/api/material/FloatingActionButtonThemeData)? floatingActionButtonTheme,
-[IconButtonThemeData](mcp://flutter/api/material/IconButtonThemeData)? iconButtonTheme,
-[ListTileThemeData](mcp://flutter/api/material/ListTileThemeData)? listTileTheme,
-[MenuBarThemeData](mcp://flutter/api/material/MenuBarThemeData)? menuBarTheme,
-[MenuButtonThemeData](mcp://flutter/api/material/MenuButtonThemeData)? menuButtonTheme,
-[MenuThemeData](mcp://flutter/api/material/MenuThemeData)? menuTheme,
-[NavigationBarThemeData](mcp://flutter/api/material/NavigationBarThemeData)? navigationBarTheme,
-[NavigationDrawerThemeData](mcp://flutter/api/material/NavigationDrawerThemeData)? navigationDrawerTheme,
-[NavigationRailThemeData](mcp://flutter/api/material/NavigationRailThemeData)? navigationRailTheme,
-[OutlinedButtonThemeData](mcp://flutter/api/material/OutlinedButtonThemeData)? outlinedButtonTheme,
-[PopupMenuThemeData](mcp://flutter/api/material/PopupMenuThemeData)? popupMenuTheme,
-[ProgressIndicatorThemeData](mcp://flutter/api/material/ProgressIndicatorThemeData)? progressIndicatorTheme,
-[RadioThemeData](mcp://flutter/api/material/RadioThemeData)? radioTheme,
-[SearchBarThemeData](mcp://flutter/api/material/SearchBarThemeData)? searchBarTheme,
-[SearchViewThemeData](mcp://flutter/api/material/SearchViewThemeData)? searchViewTheme,
-[SegmentedButtonThemeData](mcp://flutter/api/material/SegmentedButtonThemeData)? segmentedButtonTheme,
-[SliderThemeData](mcp://flutter/api/material/SliderThemeData)? sliderTheme,
-[SnackBarThemeData](mcp://flutter/api/material/SnackBarThemeData)? snackBarTheme,
-[SwitchThemeData](mcp://flutter/api/material/SwitchThemeData)? switchTheme,
-[TabBarThemeData](mcp://flutter/api/material/TabBarThemeData)? tabBarTheme,
-[TextButtonThemeData](mcp://flutter/api/material/TextButtonThemeData)? textButtonTheme,
-[TextSelectionThemeData](mcp://flutter/api/material/TextSelectionThemeData)? textSelectionTheme,
-[TimePickerThemeData](mcp://flutter/api/material/TimePickerThemeData)? timePickerTheme,
-[ToggleButtonsThemeData](mcp://flutter/api/material/ToggleButtonsThemeData)? toggleButtonsTheme,
-[TooltipThemeData](mcp://flutter/api/material/TooltipThemeData)? tooltipTheme,
-@[Deprecated](mcp://flutter/api/dart-core/Deprecated/Deprecated)('Use OverflowBar instead. ' 'This feature was deprecated after v3.21.0-10.0.pre.') [ButtonBarThemeData](mcp://flutter/api/material/ButtonBarThemeData)? buttonBarTheme,
-@[Deprecated](mcp://flutter/api/dart-core/Deprecated/Deprecated)('Use DialogThemeData.backgroundColor instead. ' 'This feature was deprecated after v3.27.0-0.1.pre.') [Color](mcp://flutter/api/dart-ui/Color)? dialogBackgroundColor,
-@[Deprecated](mcp://flutter/api/dart-core/Deprecated/Deprecated)('Use TabBarThemeData.indicatorColor instead. ' 'This feature was deprecated after v3.28.0-1.0.pre.') [Color](mcp://flutter/api/dart-ui/Color)? indicatorColor,
+[Iterable](flutter-docs://api/dart-core/Iterable)<[Adaptation](flutter-docs://api/material/Adaptation)<[Object](flutter-docs://api/dart-core/Object)>>? adaptations,
+[bool](flutter-docs://api/dart-core/bool)? applyElevationOverlayColor,
+[NoDefaultCupertinoThemeData](flutter-docs://api/cupertino/NoDefaultCupertinoThemeData)? cupertinoOverrideTheme,
+[Iterable](flutter-docs://api/dart-core/Iterable)<[ThemeExtension](flutter-docs://api/material/ThemeExtension)>? extensions,
+[Object](flutter-docs://api/dart-core/Object)? inputDecorationTheme,
+[MaterialTapTargetSize](flutter-docs://api/material/MaterialTapTargetSize)? materialTapTargetSize,
+[PageTransitionsTheme](flutter-docs://api/material/PageTransitionsTheme)? pageTransitionsTheme,
+[TargetPlatform](flutter-docs://api/foundation/TargetPlatform)? platform,
+[ScrollbarThemeData](flutter-docs://api/material/ScrollbarThemeData)? scrollbarTheme,
+[InteractiveInkFeatureFactory](flutter-docs://api/material/InteractiveInkFeatureFactory)? splashFactory,
+[bool](flutter-docs://api/dart-core/bool)? useMaterial3,
+[bool](flutter-docs://api/dart-core/bool)? useSystemColors,
+[VisualDensity](flutter-docs://api/material/VisualDensity)? visualDensity,
+[ColorScheme](flutter-docs://api/material/ColorScheme)? colorScheme,
+[Brightness](flutter-docs://api/dart-ui/Brightness)? brightness,
+[Color](flutter-docs://api/dart-ui/Color)? colorSchemeSeed,
+[Color](flutter-docs://api/dart-ui/Color)? canvasColor,
+[Color](flutter-docs://api/dart-ui/Color)? cardColor,
+[Color](flutter-docs://api/dart-ui/Color)? disabledColor,
+[Color](flutter-docs://api/dart-ui/Color)? dividerColor,
+[Color](flutter-docs://api/dart-ui/Color)? focusColor,
+[Color](flutter-docs://api/dart-ui/Color)? highlightColor,
+[Color](flutter-docs://api/dart-ui/Color)? hintColor,
+[Color](flutter-docs://api/dart-ui/Color)? hoverColor,
+[Color](flutter-docs://api/dart-ui/Color)? primaryColor,
+[Color](flutter-docs://api/dart-ui/Color)? primaryColorDark,
+[Color](flutter-docs://api/dart-ui/Color)? primaryColorLight,
+[MaterialColor](flutter-docs://api/material/MaterialColor)? primarySwatch,
+[Color](flutter-docs://api/dart-ui/Color)? scaffoldBackgroundColor,
+[Color](flutter-docs://api/dart-ui/Color)? secondaryHeaderColor,
+[Color](flutter-docs://api/dart-ui/Color)? shadowColor,
+[Color](flutter-docs://api/dart-ui/Color)? splashColor,
+[Color](flutter-docs://api/dart-ui/Color)? unselectedWidgetColor,
+[String](flutter-docs://api/dart-core/String)? fontFamily,
+[List](flutter-docs://api/dart-core/List)<[String](flutter-docs://api/dart-core/String)>? fontFamilyFallback,
+[String](flutter-docs://api/dart-core/String)? package,
+[IconThemeData](flutter-docs://api/widgets/IconThemeData)? iconTheme,
+[IconThemeData](flutter-docs://api/widgets/IconThemeData)? primaryIconTheme,
+[TextTheme](flutter-docs://api/material/TextTheme)? primaryTextTheme,
+[TextTheme](flutter-docs://api/material/TextTheme)? textTheme,
+[Typography](flutter-docs://api/material/Typography)? typography,
+[ActionIconThemeData](flutter-docs://api/material/ActionIconThemeData)? actionIconTheme,
+[Object](flutter-docs://api/dart-core/Object)? appBarTheme,
+[BadgeThemeData](flutter-docs://api/material/BadgeThemeData)? badgeTheme,
+[MaterialBannerThemeData](flutter-docs://api/material/MaterialBannerThemeData)? bannerTheme,
+[BottomAppBarThemeData](flutter-docs://api/material/BottomAppBarThemeData)? bottomAppBarTheme,
+[BottomNavigationBarThemeData](flutter-docs://api/material/BottomNavigationBarThemeData)? bottomNavigationBarTheme,
+[BottomSheetThemeData](flutter-docs://api/material/BottomSheetThemeData)? bottomSheetTheme,
+[ButtonThemeData](flutter-docs://api/material/ButtonThemeData)? buttonTheme,
+[CardThemeData](flutter-docs://api/material/CardThemeData)? cardTheme,
+[CarouselViewThemeData](flutter-docs://api/material/CarouselViewThemeData)? carouselViewTheme,
+[CheckboxThemeData](flutter-docs://api/material/CheckboxThemeData)? checkboxTheme,
+[ChipThemeData](flutter-docs://api/material/ChipThemeData)? chipTheme,
+[DataTableThemeData](flutter-docs://api/material/DataTableThemeData)? dataTableTheme,
+[DatePickerThemeData](flutter-docs://api/material/DatePickerThemeData)? datePickerTheme,
+[DialogThemeData](flutter-docs://api/material/DialogThemeData)? dialogTheme,
+[DividerThemeData](flutter-docs://api/material/DividerThemeData)? dividerTheme,
+[DrawerThemeData](flutter-docs://api/material/DrawerThemeData)? drawerTheme,
+[DropdownMenuThemeData](flutter-docs://api/material/DropdownMenuThemeData)? dropdownMenuTheme,
+[ElevatedButtonThemeData](flutter-docs://api/material/ElevatedButtonThemeData)? elevatedButtonTheme,
+[ExpansionTileThemeData](flutter-docs://api/material/ExpansionTileThemeData)? expansionTileTheme,
+[FilledButtonThemeData](flutter-docs://api/material/FilledButtonThemeData)? filledButtonTheme,
+[FloatingActionButtonThemeData](flutter-docs://api/material/FloatingActionButtonThemeData)? floatingActionButtonTheme,
+[IconButtonThemeData](flutter-docs://api/material/IconButtonThemeData)? iconButtonTheme,
+[ListTileThemeData](flutter-docs://api/material/ListTileThemeData)? listTileTheme,
+[MenuBarThemeData](flutter-docs://api/material/MenuBarThemeData)? menuBarTheme,
+[MenuButtonThemeData](flutter-docs://api/material/MenuButtonThemeData)? menuButtonTheme,
+[MenuThemeData](flutter-docs://api/material/MenuThemeData)? menuTheme,
+[NavigationBarThemeData](flutter-docs://api/material/NavigationBarThemeData)? navigationBarTheme,
+[NavigationDrawerThemeData](flutter-docs://api/material/NavigationDrawerThemeData)? navigationDrawerTheme,
+[NavigationRailThemeData](flutter-docs://api/material/NavigationRailThemeData)? navigationRailTheme,
+[OutlinedButtonThemeData](flutter-docs://api/material/OutlinedButtonThemeData)? outlinedButtonTheme,
+[PopupMenuThemeData](flutter-docs://api/material/PopupMenuThemeData)? popupMenuTheme,
+[ProgressIndicatorThemeData](flutter-docs://api/material/ProgressIndicatorThemeData)? progressIndicatorTheme,
+[RadioThemeData](flutter-docs://api/material/RadioThemeData)? radioTheme,
+[SearchBarThemeData](flutter-docs://api/material/SearchBarThemeData)? searchBarTheme,
+[SearchViewThemeData](flutter-docs://api/material/SearchViewThemeData)? searchViewTheme,
+[SegmentedButtonThemeData](flutter-docs://api/material/SegmentedButtonThemeData)? segmentedButtonTheme,
+[SliderThemeData](flutter-docs://api/material/SliderThemeData)? sliderTheme,
+[SnackBarThemeData](flutter-docs://api/material/SnackBarThemeData)? snackBarTheme,
+[SwitchThemeData](flutter-docs://api/material/SwitchThemeData)? switchTheme,
+[TabBarThemeData](flutter-docs://api/material/TabBarThemeData)? tabBarTheme,
+[TextButtonThemeData](flutter-docs://api/material/TextButtonThemeData)? textButtonTheme,
+[TextSelectionThemeData](flutter-docs://api/material/TextSelectionThemeData)? textSelectionTheme,
+[TimePickerThemeData](flutter-docs://api/material/TimePickerThemeData)? timePickerTheme,
+[ToggleButtonsThemeData](flutter-docs://api/material/ToggleButtonsThemeData)? toggleButtonsTheme,
+[TooltipThemeData](flutter-docs://api/material/TooltipThemeData)? tooltipTheme,
+@[Deprecated](flutter-docs://api/dart-core/Deprecated/Deprecated)('Use OverflowBar instead. ' 'This feature was deprecated after v3.21.0-10.0.pre.') [ButtonBarThemeData](flutter-docs://api/material/ButtonBarThemeData)? buttonBarTheme,
+@[Deprecated](flutter-docs://api/dart-core/Deprecated/Deprecated)('Use DialogThemeData.backgroundColor instead. ' 'This feature was deprecated after v3.27.0-0.1.pre.') [Color](flutter-docs://api/dart-ui/Color)? dialogBackgroundColor,
+@[Deprecated](flutter-docs://api/dart-core/Deprecated/Deprecated)('Use TabBarThemeData.indicatorColor instead. ' 'This feature was deprecated after v3.28.0-1.0.pre.') [Color](flutter-docs://api/dart-ui/Color)? indicatorColor,
 })
 
-Create a [ThemeData](mcp://flutter/api/material/ThemeData) that's used to configure a [Theme](mcp://flutter/api/material/Theme).
+Create a [ThemeData](flutter-docs://api/material/ThemeData) that's used to configure a [Theme](flutter-docs://api/material/Theme).
 
 The `colorScheme` and `textTheme` are used by the Material components to
 compute default values for visual properties. The API documentation for
 each component widget explains exactly how the defaults are computed.
 
-When providing a [ColorScheme](mcp://flutter/api/material/ColorScheme), apps can either provide one directly
+When providing a [ColorScheme](flutter-docs://api/material/ColorScheme), apps can either provide one directly
 with the `colorScheme` parameter, or have one generated for them by
 using the `colorSchemeSeed` and `brightness` parameters. A generated
 color scheme will be based on the tones of `colorSchemeSeed` and all of
 its contrasting color will meet accessibility guidelines for readability.
-(See [ColorScheme.fromSeed](mcp://flutter/api/material/ColorScheme/ColorScheme.fromSeed) for more details.)
+(See [ColorScheme.fromSeed](flutter-docs://api/material/ColorScheme/ColorScheme.fromSeed) for more details.)
 
-If the app wants to customize a generated color scheme, it can use[ColorScheme.fromSeed](mcp://flutter/api/material/ColorScheme/ColorScheme.fromSeed) directly and then [ColorScheme.copyWith](mcp://flutter/api/material/ColorScheme/copyWith) on the
+If the app wants to customize a generated color scheme, it can use[ColorScheme.fromSeed](flutter-docs://api/material/ColorScheme/ColorScheme.fromSeed) directly and then [ColorScheme.copyWith](flutter-docs://api/material/ColorScheme/copyWith) on the
 result to override any colors that need to be replaced. The result of
 this can be used as the `colorScheme` directly.
 
@@ -115,8 +115,8 @@ as when using generation from a seed color.
 
 If `colorSchemeSeed` is non-null then `colorScheme`, `primaryColor` and `primarySwatch` must all be null.
 
-The `textTheme` [TextStyle](mcp://flutter/api/painting/TextStyle) colors are black if the color scheme's
-brightness is [Brightness.light](mcp://flutter/api/dart-ui/Brightness), and white for [Brightness.dark](mcp://flutter/api/dart-ui/Brightness).
+The `textTheme` [TextStyle](flutter-docs://api/painting/TextStyle) colors are black if the color scheme's
+brightness is [Brightness.light](flutter-docs://api/dart-ui/Brightness), and white for [Brightness.dark](flutter-docs://api/dart-ui/Brightness).
 
 To override the appearance of specific components, provide
 a component theme parameter like `sliderTheme`, `toggleButtonsTheme`,
@@ -127,10 +127,10 @@ will be used to override certain theme colors. The `colorScheme`, `textTheme`, `
 
 See also:
 
-- [ThemeData.from](mcp://flutter/api/material/ThemeData/ThemeData.from), which creates a ThemeData from a [ColorScheme](mcp://flutter/api/material/ColorScheme).
-- [ThemeData.light](mcp://flutter/api/material/ThemeData/ThemeData.light), which creates the default light theme.
-- [ThemeData.dark](mcp://flutter/api/material/ThemeData/ThemeData.dark), which creates the default dark theme.
-- [ColorScheme.fromSeed](mcp://flutter/api/material/ColorScheme/ColorScheme.fromSeed), which is used to create a [ColorScheme](mcp://flutter/api/material/ColorScheme) from a seed color.
+- [ThemeData.from](flutter-docs://api/material/ThemeData/ThemeData.from), which creates a ThemeData from a [ColorScheme](flutter-docs://api/material/ColorScheme).
+- [ThemeData.light](flutter-docs://api/material/ThemeData/ThemeData.light), which creates the default light theme.
+- [ThemeData.dark](flutter-docs://api/material/ThemeData/ThemeData.dark), which creates the default dark theme.
+- [ColorScheme.fromSeed](flutter-docs://api/material/ColorScheme/ColorScheme.fromSeed), which is used to create a [ColorScheme](flutter-docs://api/material/ColorScheme) from a seed color.
 
 
 ## Implementation

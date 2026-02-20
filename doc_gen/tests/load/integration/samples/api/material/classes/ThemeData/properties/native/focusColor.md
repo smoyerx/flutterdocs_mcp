@@ -1,6 +1,6 @@
 # focusColor property
 
-[Color](mcp://flutter/api/dart-ui/Color) focusColor
+[Color](flutter-docs://api/dart-ui/Color) focusColor
 
 
 The focus color used indicate that a component has the input focus.

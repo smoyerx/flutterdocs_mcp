@@ -1,11 +1,11 @@
 # sliderTheme property
 
-[SliderThemeData](mcp://flutter/api/material/SliderThemeData) sliderTheme
+[SliderThemeData](flutter-docs://api/material/SliderThemeData) sliderTheme
 
 
-The colors and shapes used to render [Slider](mcp://flutter/api/material/Slider).
+The colors and shapes used to render [Slider](flutter-docs://api/material/Slider).
 
-This is the value returned from [SliderTheme.of](mcp://flutter/api/material/SliderTheme/of).
+This is the value returned from [SliderTheme.of](flutter-docs://api/material/SliderTheme/of).
 
 ## Implementation
 

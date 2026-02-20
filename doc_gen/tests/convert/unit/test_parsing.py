@@ -119,17 +119,17 @@ class TestSplitIntoParagraphs:
 
     def test_handles_no_blank_line_after_header(self) -> None:
         """Should work when member follows immediately after section header."""
-        content = "## Properties\n[prop](mcp://link)→ Type"
+        content = "## Properties\n[prop](flutter-docs://link)→ Type"
         result = split_into_paragraphs(content)
         assert len(result) == 1
-        assert result[0] == "[prop](mcp://link)→ Type"
+        assert result[0] == "[prop](flutter-docs://link)→ Type"
 
     def test_handles_header_before_next_section(self) -> None:
         """Should work when paragraph is followed immediately by section header."""
-        content = "[prop](mcp://link)→ Type\nDesc\n## Methods"
+        content = "[prop](flutter-docs://link)→ Type\nDesc\n## Methods"
         result = split_into_paragraphs(content)
         assert len(result) == 1
-        assert result[0] == "[prop](mcp://link)→ Type\nDesc"
+        assert result[0] == "[prop](flutter-docs://link)→ Type\nDesc"
 
     def test_preserves_internal_newlines(self) -> None:
         """Should preserve newlines within paragraphs."""

@@ -1,15 +1,15 @@
 # localize static method
 
-[ThemeData](mcp://flutter/api/material/ThemeData) localize(
-[ThemeData](mcp://flutter/api/material/ThemeData) baseTheme,
-[TextTheme](mcp://flutter/api/material/TextTheme) localTextGeometry
+[ThemeData](flutter-docs://api/material/ThemeData) localize(
+[ThemeData](flutter-docs://api/material/ThemeData) baseTheme,
+[TextTheme](flutter-docs://api/material/TextTheme) localTextGeometry
 )
 
 Returns a new theme built by merging the text geometry provided by the`localTextGeometry` theme with the `baseTheme`.
 
-For those text styles in the `baseTheme` whose [TextStyle.inherit](mcp://flutter/api/painting/TextStyle/inherit) is set
+For those text styles in the `baseTheme` whose [TextStyle.inherit](flutter-docs://api/painting/TextStyle/inherit) is set
 to true, the returned theme's text styles inherit the geometric properties
-of `localTextGeometry`. The resulting text styles' [TextStyle.inherit](mcp://flutter/api/painting/TextStyle/inherit) is
+of `localTextGeometry`. The resulting text styles' [TextStyle.inherit](flutter-docs://api/painting/TextStyle/inherit) is
 set to those provided by `localTextGeometry`.
 
 ## Implementation

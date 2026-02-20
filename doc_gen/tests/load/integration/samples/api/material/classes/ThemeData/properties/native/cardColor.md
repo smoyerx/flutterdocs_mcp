@@ -1,9 +1,9 @@
 # cardColor property
 
-[Color](mcp://flutter/api/dart-ui/Color) cardColor
+[Color](flutter-docs://api/dart-ui/Color) cardColor
 
 
-The color of [Material](mcp://flutter/api/material/Material) when it is used as a [Card](mcp://flutter/api/material/Card).
+The color of [Material](flutter-docs://api/material/Material) when it is used as a [Card](flutter-docs://api/material/Card).
 
 ## Implementation
 

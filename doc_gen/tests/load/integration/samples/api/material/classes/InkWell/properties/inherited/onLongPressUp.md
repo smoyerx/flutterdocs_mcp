@@ -1,8 +1,8 @@
 # onLongPressUp property
 
-[GestureLongPressUpCallback](mcp://flutter/api/gestures/GestureLongPressUpCallback)? onLongPressUp
+[GestureLongPressUpCallback](flutter-docs://api/gestures/GestureLongPressUpCallback)? onLongPressUp
 
 Called when the user lifts their finger after a long press on the button.
 
-This property is inherited from [InkResponse](mcp://flutter/api/material/InkResponse).
-See further details at [onLongPressUp](mcp://flutter/api/material/InkResponse/onLongPressUp).
+This property is inherited from [InkResponse](flutter-docs://api/material/InkResponse).
+See further details at [onLongPressUp](flutter-docs://api/material/InkResponse/onLongPressUp).

@@ -1,16 +1,16 @@
 # splashFactory property
 
-[InteractiveInkFeatureFactory](mcp://flutter/api/material/InteractiveInkFeatureFactory) splashFactory
+[InteractiveInkFeatureFactory](flutter-docs://api/material/InteractiveInkFeatureFactory) splashFactory
 
 
-Defines the appearance of ink splashes produces by [InkWell](mcp://flutter/api/material/InkWell) and [InkResponse](mcp://flutter/api/material/InkResponse).
+Defines the appearance of ink splashes produces by [InkWell](flutter-docs://api/material/InkWell) and [InkResponse](flutter-docs://api/material/InkResponse).
 
 See also:
 
-- [InkSplash.splashFactory](mcp://flutter/api/material/InkSplash/splashFactory), which defines the default splash.
-- [InkRipple.splashFactory](mcp://flutter/api/material/InkRipple/splashFactory), which defines a splash that spreads out
+- [InkSplash.splashFactory](flutter-docs://api/material/InkSplash/splashFactory), which defines the default splash.
+- [InkRipple.splashFactory](flutter-docs://api/material/InkRipple/splashFactory), which defines a splash that spreads out
 more aggressively than the default.
-- [InkSparkle.splashFactory](mcp://flutter/api/material/InkSparkle/splashFactory), which defines a more aggressive and organic
+- [InkSparkle.splashFactory](flutter-docs://api/material/InkSparkle/splashFactory), which defines a more aggressive and organic
 splash with sparkle effects.
 
 

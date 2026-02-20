@@ -1,9 +1,9 @@
 # bottomAppBarTheme property
 
-[BottomAppBarThemeData](mcp://flutter/api/material/BottomAppBarThemeData) bottomAppBarTheme
+[BottomAppBarThemeData](flutter-docs://api/material/BottomAppBarThemeData) bottomAppBarTheme
 
 
-A theme for customizing the shape, elevation, and color of a [BottomAppBar](mcp://flutter/api/material/BottomAppBar).
+A theme for customizing the shape, elevation, and color of a [BottomAppBar](flutter-docs://api/material/BottomAppBar).
 
 ## Implementation
 

@@ -1,8 +1,8 @@
 # isDragged property
 
-[bool](mcp://flutter/api/dart-core/bool) get isDragged
+[bool](flutter-docs://api/dart-core/bool) get isDragged
 
-Getter for whether this class considers [WidgetState.dragged](mcp://flutter/api/widgets/WidgetState) to be active.
+Getter for whether this class considers [WidgetState.dragged](flutter-docs://api/widgets/WidgetState) to be active.
 
 ## Implementation
 

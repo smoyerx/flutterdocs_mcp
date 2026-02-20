@@ -1,8 +1,8 @@
 # debugFillProperties method
 
-@[override](mcp://flutter/api/dart-core/override)
+@[override](flutter-docs://api/dart-core/override)
 voiddebugFillProperties(
-[DiagnosticPropertiesBuilder](mcp://flutter/api/foundation/DiagnosticPropertiesBuilder) properties
+[DiagnosticPropertiesBuilder](flutter-docs://api/foundation/DiagnosticPropertiesBuilder) properties
 )
 
 
@@ -10,12 +10,12 @@ Add additional properties associated with the node.
 
 [https://www.youtube.com/embed/DnC7eT-vh1k?rel=0](https://www.youtube.com/embed/DnC7eT-vh1k?rel=0)
 
-Use the most specific [DiagnosticsProperty](mcp://flutter/api/foundation/DiagnosticsProperty) existing subclass to describe
-each property instead of the [DiagnosticsProperty](mcp://flutter/api/foundation/DiagnosticsProperty) base class. There are
-only a small number of [DiagnosticsProperty](mcp://flutter/api/foundation/DiagnosticsProperty) subclasses each covering a
+Use the most specific [DiagnosticsProperty](flutter-docs://api/foundation/DiagnosticsProperty) existing subclass to describe
+each property instead of the [DiagnosticsProperty](flutter-docs://api/foundation/DiagnosticsProperty) base class. There are
+only a small number of [DiagnosticsProperty](flutter-docs://api/foundation/DiagnosticsProperty) subclasses each covering a
 common use case. Consider what values a property is relevant for users
 debugging as users debugging large trees are overloaded with information.
-Common named parameters in [DiagnosticsNode](mcp://flutter/api/foundation/DiagnosticsNode) subclasses help filter when
+Common named parameters in [DiagnosticsNode](flutter-docs://api/foundation/DiagnosticsNode) subclasses help filter when
 and how properties are displayed.
 
 `defaultValue`, `showName`, `showSeparator`, and `level` keep string
@@ -27,7 +27,7 @@ uninteresting. For example, specify a default value of null any time
 a property being null does not indicate an error.
 - Avoid specifying the `level` parameter unless the result you want
 cannot be achieved by using the `defaultValue` parameter or using
-the [ObjectFlagProperty](mcp://flutter/api/foundation/ObjectFlagProperty) class to conditionally display the property
+the [ObjectFlagProperty](flutter-docs://api/foundation/ObjectFlagProperty) class to conditionally display the property
 as a flag.
 - Specify `showName` and `showSeparator` in rare cases where the string
 output would look clumsy if they were not set.
@@ -52,38 +52,38 @@ good uses of all of these parameters.
 
 ## DiagnosticsProperty subclasses for primitive types
 
-- [StringProperty](mcp://flutter/api/foundation/StringProperty), which supports automatically enclosing a [String](mcp://flutter/api/dart-core/String) value in quotes.
-- [DoubleProperty](mcp://flutter/api/foundation/DoubleProperty), which supports specifying a unit of measurement for
-a [double](mcp://flutter/api/dart-core/double) value.
-- [PercentProperty](mcp://flutter/api/foundation/PercentProperty), which clamps a [double](mcp://flutter/api/dart-core/double) to between 0 and 1 and
+- [StringProperty](flutter-docs://api/foundation/StringProperty), which supports automatically enclosing a [String](flutter-docs://api/dart-core/String) value in quotes.
+- [DoubleProperty](flutter-docs://api/foundation/DoubleProperty), which supports specifying a unit of measurement for
+a [double](flutter-docs://api/dart-core/double) value.
+- [PercentProperty](flutter-docs://api/foundation/PercentProperty), which clamps a [double](flutter-docs://api/dart-core/double) to between 0 and 1 and
 formats it as a percentage.
-- [IntProperty](mcp://flutter/api/foundation/IntProperty), which supports specifying a unit of measurement for an
-[int](mcp://flutter/api/dart-core/int) value.
-- [FlagProperty](mcp://flutter/api/foundation/FlagProperty), which formats a [bool](mcp://flutter/api/dart-core/bool) value as one or more flags.
+- [IntProperty](flutter-docs://api/foundation/IntProperty), which supports specifying a unit of measurement for an
+[int](flutter-docs://api/dart-core/int) value.
+- [FlagProperty](flutter-docs://api/foundation/FlagProperty), which formats a [bool](flutter-docs://api/dart-core/bool) value as one or more flags.
 Depending on the use case it is better to format a bool as
-`DiagnosticsProperty<bool>` instead of using [FlagProperty](mcp://flutter/api/foundation/FlagProperty) as the
+`DiagnosticsProperty<bool>` instead of using [FlagProperty](flutter-docs://api/foundation/FlagProperty) as the
 output is more verbose but unambiguous.
 
 
-## Other important [DiagnosticsProperty](mcp://flutter/api/foundation/DiagnosticsProperty) variants
+## Other important [DiagnosticsProperty](flutter-docs://api/foundation/DiagnosticsProperty) variants
 
-- [EnumProperty](mcp://flutter/api/foundation/EnumProperty), which provides terse descriptions of enum values
+- [EnumProperty](flutter-docs://api/foundation/EnumProperty), which provides terse descriptions of enum values
 working around limitations of the `toString` implementation for Dart
 enum types.
-- [IterableProperty](mcp://flutter/api/foundation/IterableProperty), which handles iterable values with display
-customizable depending on the [DiagnosticsTreeStyle](mcp://flutter/api/foundation/DiagnosticsTreeStyle) used.
-- [ObjectFlagProperty](mcp://flutter/api/foundation/ObjectFlagProperty), which provides terse descriptions of whether a
+- [IterableProperty](flutter-docs://api/foundation/IterableProperty), which handles iterable values with display
+customizable depending on the [DiagnosticsTreeStyle](flutter-docs://api/foundation/DiagnosticsTreeStyle) used.
+- [ObjectFlagProperty](flutter-docs://api/foundation/ObjectFlagProperty), which provides terse descriptions of whether a
 property value is present or not. For example, whether an `onClick` callback is specified or an animation is in progress.
-- [ColorProperty](mcp://flutter/api/painting/ColorProperty), which must be used if the property value is
-a [Color](mcp://flutter/api/dart-ui/Color) or one of its subclasses.
-- [IconDataProperty](mcp://flutter/api/widgets/IconDataProperty), which must be used if the property value
-is of type [IconData](mcp://flutter/api/widgets/IconData).
+- [ColorProperty](flutter-docs://api/painting/ColorProperty), which must be used if the property value is
+a [Color](flutter-docs://api/dart-ui/Color) or one of its subclasses.
+- [IconDataProperty](flutter-docs://api/widgets/IconDataProperty), which must be used if the property value
+is of type [IconData](flutter-docs://api/widgets/IconData).
 
 
-If none of these subclasses apply, use the [DiagnosticsProperty](mcp://flutter/api/foundation/DiagnosticsProperty) constructor or in rare cases create your own [DiagnosticsProperty](mcp://flutter/api/foundation/DiagnosticsProperty) subclass as in the case for [TransformProperty](mcp://flutter/api/painting/TransformProperty) which handles [Matrix4](mcp://flutter/api/package-vector_math_vector_math_64/Matrix4) that represent transforms. Generally any property value with a good `toString` method implementation works fine using [DiagnosticsProperty](mcp://flutter/api/foundation/DiagnosticsProperty) directly.
+If none of these subclasses apply, use the [DiagnosticsProperty](flutter-docs://api/foundation/DiagnosticsProperty) constructor or in rare cases create your own [DiagnosticsProperty](flutter-docs://api/foundation/DiagnosticsProperty) subclass as in the case for [TransformProperty](flutter-docs://api/painting/TransformProperty) which handles [Matrix4](flutter-docs://api/package-vector_math_vector_math_64/Matrix4) that represent transforms. Generally any property value with a good `toString` method implementation works fine using [DiagnosticsProperty](flutter-docs://api/foundation/DiagnosticsProperty) directly.
 
-This example shows best practices for implementing [debugFillProperties](mcp://flutter/api/widgets/Text/debugFillProperties) illustrating use of all common [DiagnosticsProperty](mcp://flutter/api/foundation/DiagnosticsProperty) subclasses and all
-common [DiagnosticsProperty](mcp://flutter/api/foundation/DiagnosticsProperty) parameters.
+This example shows best practices for implementing [debugFillProperties](flutter-docs://api/widgets/Text/debugFillProperties) illustrating use of all common [DiagnosticsProperty](flutter-docs://api/foundation/DiagnosticsProperty) subclasses and all
+common [DiagnosticsProperty](flutter-docs://api/foundation/DiagnosticsProperty) parameters.
 
 
 
@@ -210,7 +210,7 @@ class ExampleObject extends ExampleSuperclass {
 }
 ```
 
-Used by [toDiagnosticsNode](mcp://flutter/api/foundation/DiagnosticableTree/toDiagnosticsNode) and [toString](mcp://flutter/api/foundation/Diagnosticable/toString).
+Used by [toDiagnosticsNode](flutter-docs://api/foundation/DiagnosticableTree/toDiagnosticsNode) and [toString](flutter-docs://api/foundation/Diagnosticable/toString).
 
 Do not add values that have lifetime shorter than the object.
 

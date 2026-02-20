@@ -1,10 +1,10 @@
 # appBarTheme property
 
-[AppBarThemeData](mcp://flutter/api/material/AppBarThemeData) appBarTheme
+[AppBarThemeData](flutter-docs://api/material/AppBarThemeData) appBarTheme
 
 
 A theme for customizing the color, elevation, brightness, iconTheme and
-textTheme of [AppBar](mcp://flutter/api/material/AppBar) s.
+textTheme of [AppBar](flutter-docs://api/material/AppBar) s.
 
 ## Implementation
 

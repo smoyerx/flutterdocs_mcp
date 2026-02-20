@@ -1,20 +1,20 @@
 # updateMaterialState method
 
-@[protected](mcp://flutter/api/meta/protected)
-[ValueChanged](mcp://flutter/api/foundation/ValueChanged)<[bool](mcp://flutter/api/dart-core/bool)>updateMaterialState(
-[WidgetState](mcp://flutter/api/widgets/WidgetState) key, {
-[ValueChanged](mcp://flutter/api/foundation/ValueChanged)<[bool](mcp://flutter/api/dart-core/bool)>? onChanged,
+@[protected](flutter-docs://api/meta/protected)
+[ValueChanged](flutter-docs://api/foundation/ValueChanged)<[bool](flutter-docs://api/dart-core/bool)>updateMaterialState(
+[WidgetState](flutter-docs://api/widgets/WidgetState) key, {
+[ValueChanged](flutter-docs://api/foundation/ValueChanged)<[bool](flutter-docs://api/dart-core/bool)>? onChanged,
 })
 
-Callback factory which accepts a [WidgetState](mcp://flutter/api/widgets/WidgetState) value and returns a
-closure to mutate [materialStates](mcp://flutter/api/material/MaterialStateMixin/materialStates) and call [setState](mcp://flutter/api/widgets/State/setState).
+Callback factory which accepts a [WidgetState](flutter-docs://api/widgets/WidgetState) value and returns a
+closure to mutate [materialStates](flutter-docs://api/material/MaterialStateMixin/materialStates) and call [setState](flutter-docs://api/widgets/State/setState).
 
 Accepts an optional second named parameter, `onChanged`, which allows
-arbitrary functionality to be wired through the [MaterialStateMixin](mcp://flutter/api/material/MaterialStateMixin).
+arbitrary functionality to be wired through the [MaterialStateMixin](flutter-docs://api/material/MaterialStateMixin).
 If supplied, the `onChanged` function is only called when child widgets
-report events that make changes to the current set of [WidgetState](mcp://flutter/api/widgets/WidgetState) s.
+report events that make changes to the current set of [WidgetState](flutter-docs://api/widgets/WidgetState) s.
 
-This example shows how to use the [updateMaterialState](mcp://flutter/api/material/MaterialStateMixin/updateMaterialState) callback factory
+This example shows how to use the [updateMaterialState](flutter-docs://api/material/MaterialStateMixin/updateMaterialState) callback factory
 in other widgets, including the optional `onChanged` callback.
 
 

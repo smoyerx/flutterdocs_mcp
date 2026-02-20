@@ -1,13 +1,13 @@
 # statesController property
 
-[MaterialStatesController](mcp://flutter/api/material/MaterialStatesController)? statesController
+[MaterialStatesController](flutter-docs://api/material/MaterialStatesController)? statesController
 
 
 Represents the interactive "state" of this widget in terms of
-a set of [WidgetState](mcp://flutter/api/widgets/WidgetState) s, like [WidgetState.pressed](mcp://flutter/api/widgets/WidgetState) and [WidgetState.focused](mcp://flutter/api/widgets/WidgetState).
+a set of [WidgetState](flutter-docs://api/widgets/WidgetState) s, like [WidgetState.pressed](flutter-docs://api/widgets/WidgetState) and [WidgetState.focused](flutter-docs://api/widgets/WidgetState).
 
-Classes based on this one can provide their own[WidgetStatesController](mcp://flutter/api/widgets/WidgetStatesController) to which they've added listeners.
-They can also update the controller's [WidgetStatesController.value](mcp://flutter/api/foundation/ValueNotifier/value) however, this may only be done when it's safe to call [State.setState](mcp://flutter/api/widgets/State/setState), like in an event handler.
+Classes based on this one can provide their own[WidgetStatesController](flutter-docs://api/widgets/WidgetStatesController) to which they've added listeners.
+They can also update the controller's [WidgetStatesController.value](flutter-docs://api/foundation/ValueNotifier/value) however, this may only be done when it's safe to call [State.setState](flutter-docs://api/widgets/State/setState), like in an event handler.
 
 ## Implementation
 

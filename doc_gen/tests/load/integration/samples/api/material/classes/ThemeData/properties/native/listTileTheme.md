@@ -1,9 +1,9 @@
 # listTileTheme property
 
-[ListTileThemeData](mcp://flutter/api/material/ListTileThemeData) listTileTheme
+[ListTileThemeData](flutter-docs://api/material/ListTileThemeData) listTileTheme
 
 
-A theme for customizing the appearance of [ListTile](mcp://flutter/api/material/ListTile) widgets.
+A theme for customizing the appearance of [ListTile](flutter-docs://api/material/ListTile) widgets.
 
 ## Implementation
 

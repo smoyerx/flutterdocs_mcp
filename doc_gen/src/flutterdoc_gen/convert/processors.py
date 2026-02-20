@@ -19,6 +19,7 @@ from flutterdoc_gen.convert.parsing import (
     extract_static_method_links,
 )
 from flutterdoc_gen._shared.paths import PathBuilder, ensure_dir_exists
+from flutterdoc_gen.convert.patterns import MCP_URI_PREFIX
 from flutterdoc_gen.convert.templates import (
     INHERITED_METHOD_TEMPLATE,
     INHERITED_OPERATOR_TEMPLATE,
@@ -58,7 +59,7 @@ def process_constructors(
         ):
             log_processing_error(
                 f"Constructor link has unexpected URI: "
-                f"mcp://flutter/api/{member['section']}/{member['entity_name']}/{member['member']}"
+                f"{MCP_URI_PREFIX}{member['section']}/{member['entity_name']}/{member['member']}"
             )
 
         # Try regular member file first (e.g., Widget/Widget.html for default constructor)

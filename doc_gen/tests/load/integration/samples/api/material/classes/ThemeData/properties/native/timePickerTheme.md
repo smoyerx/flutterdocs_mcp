@@ -1,6 +1,6 @@
 # timePickerTheme property
 
-[TimePickerThemeData](mcp://flutter/api/material/TimePickerThemeData) timePickerTheme
+[TimePickerThemeData](flutter-docs://api/material/TimePickerThemeData) timePickerTheme
 
 
 A theme for customizing the appearance and layout of time picker widgets.

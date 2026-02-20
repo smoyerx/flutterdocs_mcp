@@ -1,16 +1,16 @@
 # build method
 
-@[override](mcp://flutter/api/dart-core/override)
-[Widget](mcp://flutter/api/widgets/Widget) build(
-[BuildContext](mcp://flutter/api/widgets/BuildContext) context
+@[override](flutter-docs://api/dart-core/override)
+[Widget](flutter-docs://api/widgets/Widget) build(
+[BuildContext](flutter-docs://api/widgets/BuildContext) context
 )
 
 
 Describes the part of the user interface represented by this widget.
 
 The framework calls this method when this widget is inserted into the tree
-in a given [BuildContext](mcp://flutter/api/widgets/BuildContext) and when the dependencies of this widget change
-(e.g., an [InheritedWidget](mcp://flutter/api/widgets/InheritedWidget) referenced by this widget changes). This
+in a given [BuildContext](flutter-docs://api/widgets/BuildContext) and when the dependencies of this widget change
+(e.g., an [InheritedWidget](flutter-docs://api/widgets/InheritedWidget) referenced by this widget changes). This
 method can potentially be called in every frame and should not have any side
 effects beyond building a widget.
 
@@ -18,16 +18,16 @@ The framework replaces the subtree below this widget with the widget
 returned by this method, either by updating the existing subtree or by
 removing the subtree and inflating a new subtree, depending on whether the
 widget returned by this method can update the root of the existing
-subtree, as determined by calling [Widget.canUpdate](mcp://flutter/api/widgets/Widget/canUpdate).
+subtree, as determined by calling [Widget.canUpdate](flutter-docs://api/widgets/Widget/canUpdate).
 
 Typically implementations return a newly created constellation of widgets
 that are configured with information from this widget's constructor and
-from the given [BuildContext](mcp://flutter/api/widgets/BuildContext).
+from the given [BuildContext](flutter-docs://api/widgets/BuildContext).
 
-The given [BuildContext](mcp://flutter/api/widgets/BuildContext) contains information about the location in the
+The given [BuildContext](flutter-docs://api/widgets/BuildContext) contains information about the location in the
 tree at which this widget is being built. For example, the context
 provides the set of inherited widgets for this location in the tree. A
-given widget might be built with multiple different [BuildContext](mcp://flutter/api/widgets/BuildContext) arguments over time if the widget is moved around the tree or if the
+given widget might be built with multiple different [BuildContext](flutter-docs://api/widgets/BuildContext) arguments over time if the widget is moved around the tree or if the
 widget is inserted into the tree in multiple places at once.
 
 The implementation of this method must only depend on:
@@ -35,14 +35,14 @@ The implementation of this method must only depend on:
 - the fields of the widget, which themselves must not change over time,
 and
 - any ambient state obtained from the `context` using
-[BuildContext.dependOnInheritedWidgetOfExactType](mcp://flutter/api/widgets/BuildContext/dependOnInheritedWidgetOfExactType).
+[BuildContext.dependOnInheritedWidgetOfExactType](flutter-docs://api/widgets/BuildContext/dependOnInheritedWidgetOfExactType).
 
 
-If a widget's [build](mcp://flutter/api/material/ListTile/build) method is to depend on anything else, use a [StatefulWidget](mcp://flutter/api/widgets/StatefulWidget) instead.
+If a widget's [build](flutter-docs://api/material/ListTile/build) method is to depend on anything else, use a [StatefulWidget](flutter-docs://api/widgets/StatefulWidget) instead.
 
 See also:
 
-- [StatelessWidget](mcp://flutter/api/widgets/StatelessWidget), which contains the discussion on performance considerations.
+- [StatelessWidget](flutter-docs://api/widgets/StatelessWidget), which contains the discussion on performance considerations.
 
 
 ## Implementation

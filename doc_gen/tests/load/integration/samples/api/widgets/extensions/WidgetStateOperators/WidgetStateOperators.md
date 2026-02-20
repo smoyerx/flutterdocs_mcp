@@ -1,6 +1,6 @@
 # WidgetStateOperators extension
 
-These operators can be used inside a [WidgetStateMap](mcp://flutter/api/widgets/WidgetStateMap) to combine states
+These operators can be used inside a [WidgetStateMap](flutter-docs://api/widgets/WidgetStateMap) to combine states
 and find a match.
 
 Example:
@@ -15,28 +15,28 @@ In the above case, `constraint.isSatisfiedBy(states)` is equivalent to:
 states.contains(WidgetState.focused) || states.contains(WidgetState.hovered);
 
 ```
-Since enums can't extend other classes, [WidgetState](mcp://flutter/api/widgets/WidgetState) instead `implements` the [WidgetStatesConstraint](mcp://flutter/api/widgets/WidgetStatesConstraint) interface. This `extension` ensures that
+Since enums can't extend other classes, [WidgetState](flutter-docs://api/widgets/WidgetState) instead `implements` the [WidgetStatesConstraint](flutter-docs://api/widgets/WidgetStatesConstraint) interface. This `extension` ensures that
 the operators can be used without being directly inherited.
 
 on
-- [WidgetStatesConstraint](mcp://flutter/api/widgets/WidgetStatesConstraint)
+- [WidgetStatesConstraint](flutter-docs://api/widgets/WidgetStatesConstraint)
 
 ## Operators
 
-[operator &](mcp://flutter/api/widgets/WidgetStateOperators/operator_bitwise_and)([WidgetStatesConstraint](mcp://flutter/api/widgets/WidgetStatesConstraint) other) → [WidgetStatesConstraint](mcp://flutter/api/widgets/WidgetStatesConstraint)
-Available on [WidgetStatesConstraint](mcp://flutter/api/widgets/WidgetStatesConstraint),
- provided by the [WidgetStateOperators](mcp://flutter/api/widgets/WidgetStateOperators) extension
+[operator &](flutter-docs://api/widgets/WidgetStateOperators/operator_bitwise_and)([WidgetStatesConstraint](flutter-docs://api/widgets/WidgetStatesConstraint) other) → [WidgetStatesConstraint](flutter-docs://api/widgets/WidgetStatesConstraint)
+Available on [WidgetStatesConstraint](flutter-docs://api/widgets/WidgetStatesConstraint),
+ provided by the [WidgetStateOperators](flutter-docs://api/widgets/WidgetStateOperators) extension
 
-Combines two [WidgetStatesConstraint](mcp://flutter/api/widgets/WidgetStatesConstraint) values using logical "and".
+Combines two [WidgetStatesConstraint](flutter-docs://api/widgets/WidgetStatesConstraint) values using logical "and".
 
-[operator |](mcp://flutter/api/widgets/WidgetStateOperators/operator_bitwise_or)([WidgetStatesConstraint](mcp://flutter/api/widgets/WidgetStatesConstraint) other) → [WidgetStatesConstraint](mcp://flutter/api/widgets/WidgetStatesConstraint)
-Available on [WidgetStatesConstraint](mcp://flutter/api/widgets/WidgetStatesConstraint),
- provided by the [WidgetStateOperators](mcp://flutter/api/widgets/WidgetStateOperators) extension
+[operator |](flutter-docs://api/widgets/WidgetStateOperators/operator_bitwise_or)([WidgetStatesConstraint](flutter-docs://api/widgets/WidgetStatesConstraint) other) → [WidgetStatesConstraint](flutter-docs://api/widgets/WidgetStatesConstraint)
+Available on [WidgetStatesConstraint](flutter-docs://api/widgets/WidgetStatesConstraint),
+ provided by the [WidgetStateOperators](flutter-docs://api/widgets/WidgetStateOperators) extension
 
-Combines two [WidgetStatesConstraint](mcp://flutter/api/widgets/WidgetStatesConstraint) values using logical "or".
+Combines two [WidgetStatesConstraint](flutter-docs://api/widgets/WidgetStatesConstraint) values using logical "or".
 
-[operator ~](mcp://flutter/api/widgets/WidgetStateOperators/operator_bitwise_negate)() → [WidgetStatesConstraint](mcp://flutter/api/widgets/WidgetStatesConstraint)
-Available on [WidgetStatesConstraint](mcp://flutter/api/widgets/WidgetStatesConstraint),
- provided by the [WidgetStateOperators](mcp://flutter/api/widgets/WidgetStateOperators) extension
+[operator ~](flutter-docs://api/widgets/WidgetStateOperators/operator_bitwise_negate)() → [WidgetStatesConstraint](flutter-docs://api/widgets/WidgetStatesConstraint)
+Available on [WidgetStatesConstraint](flutter-docs://api/widgets/WidgetStatesConstraint),
+ provided by the [WidgetStateOperators](flutter-docs://api/widgets/WidgetStateOperators) extension
 
-Takes a [WidgetStatesConstraint](mcp://flutter/api/widgets/WidgetStatesConstraint) and applies the logical "not".
+Takes a [WidgetStatesConstraint](flutter-docs://api/widgets/WidgetStatesConstraint) and applies the logical "not".

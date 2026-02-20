@@ -1,11 +1,11 @@
 # removeMaterialState method
 
-@[protected](mcp://flutter/api/meta/protected)
+@[protected](flutter-docs://api/meta/protected)
 voidremoveMaterialState(
-[WidgetState](mcp://flutter/api/widgets/WidgetState) state
+[WidgetState](flutter-docs://api/widgets/WidgetState) state
 )
 
-Mutator to mark a [WidgetState](mcp://flutter/api/widgets/WidgetState) value as inactive.
+Mutator to mark a [WidgetState](flutter-docs://api/widgets/WidgetState) value as inactive.
 
 ## Implementation
 

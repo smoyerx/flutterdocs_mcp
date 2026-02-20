@@ -9,7 +9,7 @@ from dataclasses import dataclass
 
 
 # MCP URI scheme prefix for Flutter API documentation
-MCP_URI_PREFIX = "mcp://flutter/api/"
+MCP_URI_PREFIX = "flutter-docs://api/"
 
 # Noise strings to remove from converted markdown
 # These are artifacts from the HTML conversion that don't add value
@@ -95,7 +95,7 @@ LINK_PATTERNS: tuple[LinkPattern, ...] = (
         replacement=rf"[\1]({MCP_URI_PREFIX}\2/\3)",
         description="[ClassName](section/ClassName-class.html)",
         test_input="See [Widget](widgets/Widget-class.html) for details.",
-        test_output="See [Widget](mcp://flutter/api/widgets/Widget) for details.",
+        test_output="See [Widget](flutter-docs://api/widgets/Widget) for details.",
     ),
     # Mixin links
     LinkPattern(
@@ -104,7 +104,7 @@ LINK_PATTERNS: tuple[LinkPattern, ...] = (
         replacement=rf"[\1]({MCP_URI_PREFIX}\2/\3)",
         description="[MixinName](section/MixinName-mixin.html)",
         test_input="See [BaseSliderTrackShape](material/BaseSliderTrackShape-mixin.html) for details.",
-        test_output="See [BaseSliderTrackShape](mcp://flutter/api/material/BaseSliderTrackShape) for details.",
+        test_output="See [BaseSliderTrackShape](flutter-docs://api/material/BaseSliderTrackShape) for details.",
     ),
     # Constant links (2-part root constants, not enum member constants)
     LinkPattern(
@@ -113,7 +113,7 @@ LINK_PATTERNS: tuple[LinkPattern, ...] = (
         replacement=rf"[\1]({MCP_URI_PREFIX}\2/\3)",
         description="[constantName](section/constantName-constant.html)",
         test_input="See [kBottomNavigationBarHeight](material/kBottomNavigationBarHeight-constant.html) for value.",
-        test_output="See [kBottomNavigationBarHeight](mcp://flutter/api/material/kBottomNavigationBarHeight) for value.",
+        test_output="See [kBottomNavigationBarHeight](flutter-docs://api/material/kBottomNavigationBarHeight) for value.",
     ),
     # Extension type links
     LinkPattern(
@@ -122,7 +122,7 @@ LINK_PATTERNS: tuple[LinkPattern, ...] = (
         replacement=rf"[\1]({MCP_URI_PREFIX}\2/\3)",
         description="[ExtensionTypeName](section/ExtensionTypeName-extension-type.html)",
         test_input="See [OverlayChildLayoutInfo](widgets/OverlayChildLayoutInfo-extension-type.html) for info.",
-        test_output="See [OverlayChildLayoutInfo](mcp://flutter/api/widgets/OverlayChildLayoutInfo) for info.",
+        test_output="See [OverlayChildLayoutInfo](flutter-docs://api/widgets/OverlayChildLayoutInfo) for info.",
     ),
     # Other root documentation links (catch-all for remaining root docs)
     # Must come AFTER more specific 2-part patterns (class, mixin, constant, extension-type)
@@ -132,7 +132,7 @@ LINK_PATTERNS: tuple[LinkPattern, ...] = (
         replacement=rf"[\1]({MCP_URI_PREFIX}\2/\3)",
         description="[EntityName](section/EntityName.html)",
         test_input="See [MyFunction](dart-core/MyFunction.html) for details.",
-        test_output="See [MyFunction](mcp://flutter/api/dart-core/MyFunction) for details.",
+        test_output="See [MyFunction](flutter-docs://api/dart-core/MyFunction) for details.",
     ),
     # Named constructor links (3-part with entity name repeated in filename)
     LinkPattern(
@@ -141,7 +141,7 @@ LINK_PATTERNS: tuple[LinkPattern, ...] = (
         replacement=rf"[\1]({MCP_URI_PREFIX}\2/\3/\3.\4)",
         description="[EntityName.memberName](section/EntityName/EntityName.memberName.html)",
         test_input="See [Text.rich](widgets/Text/Text.rich.html) constructor.",
-        test_output="See [Text.rich](mcp://flutter/api/widgets/Text/Text.rich) constructor.",
+        test_output="See [Text.rich](flutter-docs://api/widgets/Text/Text.rich) constructor.",
     ),
     # Enum constant links (3-part with -constant.html suffix)
     # Must come BEFORE member_link to match the more specific pattern first.
@@ -151,7 +151,7 @@ LINK_PATTERNS: tuple[LinkPattern, ...] = (
         replacement=rf"[\1]({MCP_URI_PREFIX}\2/\3/\4)",
         description="[constant](section/Enum/constant-constant.html)",
         test_input="See [values](material/HourFormat/values-constant.html) for list.",
-        test_output="See [values](mcp://flutter/api/material/HourFormat/values) for list.",
+        test_output="See [values](flutter-docs://api/material/HourFormat/values) for list.",
     ),
     # Member links
     LinkPattern(
@@ -160,7 +160,7 @@ LINK_PATTERNS: tuple[LinkPattern, ...] = (
         replacement=rf"[\1]({MCP_URI_PREFIX}\2/\3/\4)",
         description="[member](section/entity/member.html)",
         test_input="[build](widgets/Widget/build.html) method",
-        test_output="[build](mcp://flutter/api/widgets/Widget/build) method",
+        test_output="[build](flutter-docs://api/widgets/Widget/build) method",
     ),
     # Special links
     LinkPattern(
@@ -182,9 +182,9 @@ LINK_PATTERNS: tuple[LinkPattern, ...] = (
     # Catch-all for unmapped links
     LinkPattern(
         name="unmapped_link",
-        pattern=r"\[([^\]]+)\]\((?!https?://|mcp://|#)[^)]+\)",
+        pattern=rf"\[([^\]]+)\]\((?!https?://|{re.escape(MCP_URI_PREFIX)}|#)[^)]+\)",
         replacement=r"[Omitted link: \1]",
-        description="[text](relative-uri) - catch-all for unmapped links (excludes http/https/mcp/anchor)",
+        description="[text](relative-uri) - catch-all for unmapped links (excludes http/https/flutter-docs/anchor)",
         test_input="See [documentation](../docs/guide.html) for details.",
         test_output="See [Omitted link: documentation] for details.",
     ),

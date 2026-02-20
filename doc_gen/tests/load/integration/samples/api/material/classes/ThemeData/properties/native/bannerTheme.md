@@ -1,9 +1,9 @@
 # bannerTheme property
 
-[MaterialBannerThemeData](mcp://flutter/api/material/MaterialBannerThemeData) bannerTheme
+[MaterialBannerThemeData](flutter-docs://api/material/MaterialBannerThemeData) bannerTheme
 
 
-A theme for customizing the color and text style of a [MaterialBanner](mcp://flutter/api/material/MaterialBanner).
+A theme for customizing the color and text style of a [MaterialBanner](flutter-docs://api/material/MaterialBanner).
 
 ## Implementation
 

@@ -1,9 +1,9 @@
 # onTapUp property
 
-[GestureTapUpCallback](mcp://flutter/api/gestures/GestureTapUpCallback)? onTapUp
+[GestureTapUpCallback](flutter-docs://api/gestures/GestureTapUpCallback)? onTapUp
 
 Called when the user releases a tap that was started on this part of the
-material. [onTap](mcp://flutter/api/material/InkResponse/onTap) is called immediately after.
+material. [onTap](flutter-docs://api/material/InkResponse/onTap) is called immediately after.
 
-This property is inherited from [InkResponse](mcp://flutter/api/material/InkResponse).
-See further details at [onTapUp](mcp://flutter/api/material/InkResponse/onTapUp).
+This property is inherited from [InkResponse](flutter-docs://api/material/InkResponse).
+See further details at [onTapUp](flutter-docs://api/material/InkResponse/onTapUp).

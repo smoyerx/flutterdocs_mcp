@@ -1,8 +1,8 @@
 # isHovered property
 
-[bool](mcp://flutter/api/dart-core/bool) get isHovered
+[bool](flutter-docs://api/dart-core/bool) get isHovered
 
-Getter for whether this class considers [WidgetState.hovered](mcp://flutter/api/widgets/WidgetState) to be active.
+Getter for whether this class considers [WidgetState.hovered](flutter-docs://api/widgets/WidgetState) to be active.
 
 ## Implementation
 

@@ -1,9 +1,9 @@
 # drawerTheme property
 
-[DrawerThemeData](mcp://flutter/api/material/DrawerThemeData) drawerTheme
+[DrawerThemeData](flutter-docs://api/material/DrawerThemeData) drawerTheme
 
 
-A theme for customizing the appearance and layout of [Drawer](mcp://flutter/api/material/Drawer) widgets.
+A theme for customizing the appearance and layout of [Drawer](flutter-docs://api/material/Drawer) widgets.
 
 ## Implementation
 

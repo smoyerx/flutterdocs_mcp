@@ -1,8 +1,8 @@
 # overlaySize property
 
-[Size](mcp://flutter/api/dart-ui/Size) get overlaySize
+[Size](flutter-docs://api/dart-ui/Size) get overlaySize
 
-The size of the target [Overlay](mcp://flutter/api/widgets/Overlay) in its own coordinates.
+The size of the target [Overlay](flutter-docs://api/widgets/Overlay) in its own coordinates.
 
 ## Implementation
 

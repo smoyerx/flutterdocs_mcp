@@ -1,9 +1,9 @@
 # toggleButtonsTheme property
 
-[ToggleButtonsThemeData](mcp://flutter/api/material/ToggleButtonsThemeData) toggleButtonsTheme
+[ToggleButtonsThemeData](flutter-docs://api/material/ToggleButtonsThemeData) toggleButtonsTheme
 
 
-Defines the default configuration of [ToggleButtons](mcp://flutter/api/material/ToggleButtons) widgets.
+Defines the default configuration of [ToggleButtons](flutter-docs://api/material/ToggleButtons) widgets.
 
 ## Implementation
 

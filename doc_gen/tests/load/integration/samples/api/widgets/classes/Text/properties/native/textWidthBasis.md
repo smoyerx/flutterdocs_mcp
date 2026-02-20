@@ -1,6 +1,6 @@
 # textWidthBasis property
 
-[TextWidthBasis](mcp://flutter/api/painting/TextWidthBasis)? textWidthBasis
+[TextWidthBasis](flutter-docs://api/painting/TextWidthBasis)? textWidthBasis
 
 
 Defines how to measure the width of the rendered text.

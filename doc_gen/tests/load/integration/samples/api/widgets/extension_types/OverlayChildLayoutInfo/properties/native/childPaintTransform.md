@@ -1,8 +1,8 @@
 # childPaintTransform property
 
-[Matrix4](mcp://flutter/api/package-vector_math_vector_math_64/Matrix4) get childPaintTransform
+[Matrix4](flutter-docs://api/package-vector_math_vector_math_64/Matrix4) get childPaintTransform
 
-The paint transform of [OverlayPortal.child](mcp://flutter/api/widgets/OverlayPortal/child), in the target [Overlay](mcp://flutter/api/widgets/Overlay)'s
+The paint transform of [OverlayPortal.child](flutter-docs://api/widgets/OverlayPortal/child), in the target [Overlay](flutter-docs://api/widgets/Overlay)'s
 coordinates.
 
 ## Implementation

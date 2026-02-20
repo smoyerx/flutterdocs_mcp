@@ -1,9 +1,9 @@
 # badgeTheme property
 
-[BadgeThemeData](mcp://flutter/api/material/BadgeThemeData) badgeTheme
+[BadgeThemeData](flutter-docs://api/material/BadgeThemeData) badgeTheme
 
 
-A theme for customizing the color of [Badge](mcp://flutter/api/material/Badge) s.
+A theme for customizing the color of [Badge](flutter-docs://api/material/Badge) s.
 
 ## Implementation
 

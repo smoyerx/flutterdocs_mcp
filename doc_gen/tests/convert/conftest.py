@@ -27,7 +27,7 @@ def make_mcp_uri(section: str, class_name: str, member: str | None = None) -> st
         member: Optional member name (e.g., "build", "hashCode").
 
     Returns:
-        Full MCP URI string like "mcp://flutter/api/widgets/Widget/build".
+        Full MCP URI string like "flutter-docs://api/widgets/Widget/build".
     """
     if member:
         return f"{MCP_URI_PREFIX}{section}/{class_name}/{member}"

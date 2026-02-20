@@ -1,12 +1,12 @@
 # inputDecorationTheme property
 
-[InputDecorationThemeData](mcp://flutter/api/material/InputDecorationThemeData) inputDecorationTheme
+[InputDecorationThemeData](flutter-docs://api/material/InputDecorationThemeData) inputDecorationTheme
 
 
-The default [InputDecoration](mcp://flutter/api/material/InputDecoration) values for [InputDecorator](mcp://flutter/api/material/InputDecorator), [TextField](mcp://flutter/api/material/TextField),
-and [TextFormField](mcp://flutter/api/material/TextFormField) are based on this theme.
+The default [InputDecoration](flutter-docs://api/material/InputDecoration) values for [InputDecorator](flutter-docs://api/material/InputDecorator), [TextField](flutter-docs://api/material/TextField),
+and [TextFormField](flutter-docs://api/material/TextFormField) are based on this theme.
 
-See [InputDecoration.applyDefaults](mcp://flutter/api/material/InputDecoration/applyDefaults).
+See [InputDecoration.applyDefaults](flutter-docs://api/material/InputDecoration/applyDefaults).
 
 ## Implementation
 

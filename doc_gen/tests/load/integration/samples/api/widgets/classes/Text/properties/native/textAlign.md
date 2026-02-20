@@ -1,6 +1,6 @@
 # textAlign property
 
-[TextAlign](mcp://flutter/api/dart-ui/TextAlign)? textAlign
+[TextAlign](flutter-docs://api/dart-ui/TextAlign)? textAlign
 
 
 How the text should be aligned horizontally.

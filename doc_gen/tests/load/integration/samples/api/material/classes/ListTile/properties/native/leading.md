@@ -1,11 +1,11 @@
 # leading property
 
-[Widget](mcp://flutter/api/widgets/Widget)? leading
+[Widget](flutter-docs://api/widgets/Widget)? leading
 
 
 A widget to display before the title.
 
-Typically an [Icon](mcp://flutter/api/widgets/Icon) or a [CircleAvatar](mcp://flutter/api/material/CircleAvatar) widget.
+Typically an [Icon](flutter-docs://api/widgets/Icon) or a [CircleAvatar](flutter-docs://api/material/CircleAvatar) widget.
 
 ## Implementation
 

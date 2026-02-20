@@ -1,6 +1,6 @@
 # highlightColor property
 
-[Color](mcp://flutter/api/dart-ui/Color) highlightColor
+[Color](flutter-docs://api/dart-ui/Color) highlightColor
 
 
 The highlight color used during ink splash animations or to

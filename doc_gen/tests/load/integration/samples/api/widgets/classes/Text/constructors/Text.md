@@ -1,29 +1,29 @@
 # Text constructor
 
 const Text(
-[String](mcp://flutter/api/dart-core/String) data, {
-[Key](mcp://flutter/api/foundation/Key)? key,
-[TextStyle](mcp://flutter/api/painting/TextStyle)? style,
-[StrutStyle](mcp://flutter/api/painting/StrutStyle)? strutStyle,
-[TextAlign](mcp://flutter/api/dart-ui/TextAlign)? textAlign,
-[TextDirection](mcp://flutter/api/dart-ui/TextDirection)? textDirection,
-[Locale](mcp://flutter/api/dart-ui/Locale)? locale,
-[bool](mcp://flutter/api/dart-core/bool)? softWrap,
-[TextOverflow](mcp://flutter/api/painting/TextOverflow)? overflow,
-@[Deprecated](mcp://flutter/api/dart-core/Deprecated/Deprecated)('Use textScaler instead. ' 'Use of textScaleFactor was deprecated in preparation for the upcoming nonlinear text scaling support. ' 'This feature was deprecated after v3.12.0-2.0.pre.') [double](mcp://flutter/api/dart-core/double)? textScaleFactor,
-[TextScaler](mcp://flutter/api/painting/TextScaler)? textScaler,
-[int](mcp://flutter/api/dart-core/int)? maxLines,
-[String](mcp://flutter/api/dart-core/String)? semanticsLabel,
-[String](mcp://flutter/api/dart-core/String)? semanticsIdentifier,
-[TextWidthBasis](mcp://flutter/api/painting/TextWidthBasis)? textWidthBasis,
-[TextHeightBehavior](mcp://flutter/api/dart-ui/TextHeightBehavior)? textHeightBehavior,
-[Color](mcp://flutter/api/dart-ui/Color)? selectionColor,
+[String](flutter-docs://api/dart-core/String) data, {
+[Key](flutter-docs://api/foundation/Key)? key,
+[TextStyle](flutter-docs://api/painting/TextStyle)? style,
+[StrutStyle](flutter-docs://api/painting/StrutStyle)? strutStyle,
+[TextAlign](flutter-docs://api/dart-ui/TextAlign)? textAlign,
+[TextDirection](flutter-docs://api/dart-ui/TextDirection)? textDirection,
+[Locale](flutter-docs://api/dart-ui/Locale)? locale,
+[bool](flutter-docs://api/dart-core/bool)? softWrap,
+[TextOverflow](flutter-docs://api/painting/TextOverflow)? overflow,
+@[Deprecated](flutter-docs://api/dart-core/Deprecated/Deprecated)('Use textScaler instead. ' 'Use of textScaleFactor was deprecated in preparation for the upcoming nonlinear text scaling support. ' 'This feature was deprecated after v3.12.0-2.0.pre.') [double](flutter-docs://api/dart-core/double)? textScaleFactor,
+[TextScaler](flutter-docs://api/painting/TextScaler)? textScaler,
+[int](flutter-docs://api/dart-core/int)? maxLines,
+[String](flutter-docs://api/dart-core/String)? semanticsLabel,
+[String](flutter-docs://api/dart-core/String)? semanticsIdentifier,
+[TextWidthBasis](flutter-docs://api/painting/TextWidthBasis)? textWidthBasis,
+[TextHeightBehavior](flutter-docs://api/dart-ui/TextHeightBehavior)? textHeightBehavior,
+[Color](flutter-docs://api/dart-ui/Color)? selectionColor,
 })
 
 Creates a text widget.
 
 If the `style` argument is null, the text will use the style from the
-closest enclosing [DefaultTextStyle](mcp://flutter/api/widgets/DefaultTextStyle).
+closest enclosing [DefaultTextStyle](flutter-docs://api/widgets/DefaultTextStyle).
 
 The `overflow` property's behavior is affected by the `softWrap` argument.
 If the `softWrap` is true or null, the glyph causing overflow, and those

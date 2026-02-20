@@ -1,12 +1,12 @@
 # toString method
 
-[String](mcp://flutter/api/dart-core/String) toString()
+[String](flutter-docs://api/dart-core/String) toString()
 
 
 A string representation of this object.
 
 Some classes have a default textual representation,
-often paired with a static `parse` function (like [int.parse](mcp://flutter/api/dart-core/int/parse)).
+often paired with a static `parse` function (like [int.parse](flutter-docs://api/dart-core/int/parse)).
 These classes will provide the textual representation as
 their string representation.
 

@@ -1,8 +1,8 @@
 # isErrored property
 
-[bool](mcp://flutter/api/dart-core/bool) get isErrored
+[bool](flutter-docs://api/dart-core/bool) get isErrored
 
-Getter for whether this class considers [WidgetState.error](mcp://flutter/api/widgets/WidgetState) to be active.
+Getter for whether this class considers [WidgetState.error](flutter-docs://api/widgets/WidgetState) to be active.
 
 ## Implementation
 

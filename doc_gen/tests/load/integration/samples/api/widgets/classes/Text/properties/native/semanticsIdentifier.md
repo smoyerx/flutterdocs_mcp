@@ -1,6 +1,6 @@
 # semanticsIdentifier property
 
-[String](mcp://flutter/api/dart-core/String)? semanticsIdentifier
+[String](flutter-docs://api/dart-core/String)? semanticsIdentifier
 
 
 A unique identifier for the semantics node for this widget.

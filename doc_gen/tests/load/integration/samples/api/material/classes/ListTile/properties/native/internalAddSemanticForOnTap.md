@@ -1,6 +1,6 @@
 # internalAddSemanticForOnTap property
 
-[bool](mcp://flutter/api/dart-core/bool) internalAddSemanticForOnTap
+[bool](flutter-docs://api/dart-core/bool) internalAddSemanticForOnTap
 
 
 Whether to add button:true to the semantics if onTap is provided.

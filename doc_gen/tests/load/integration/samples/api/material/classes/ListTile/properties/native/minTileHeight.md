@@ -1,9 +1,9 @@
 # minTileHeight property
 
-[double](mcp://flutter/api/dart-core/double)? minTileHeight
+[double](flutter-docs://api/dart-core/double)? minTileHeight
 
 
-The minimum height allocated for the [ListTile](mcp://flutter/api/material/ListTile) widget.
+The minimum height allocated for the [ListTile](flutter-docs://api/material/ListTile) widget.
 
 If this is null, default tile heights are 56.0, 72.0, and 88.0 for one,
 two, and three lines of text respectively. If `isDense` is true, these

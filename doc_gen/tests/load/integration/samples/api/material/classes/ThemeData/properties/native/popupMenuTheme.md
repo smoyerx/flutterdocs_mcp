@@ -1,6 +1,6 @@
 # popupMenuTheme property
 
-[PopupMenuThemeData](mcp://flutter/api/material/PopupMenuThemeData) popupMenuTheme
+[PopupMenuThemeData](flutter-docs://api/material/PopupMenuThemeData) popupMenuTheme
 
 
 A theme for customizing the color, shape, elevation, and text style of

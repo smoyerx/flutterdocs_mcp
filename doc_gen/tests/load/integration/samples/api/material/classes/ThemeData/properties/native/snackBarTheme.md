@@ -1,9 +1,9 @@
 # snackBarTheme property
 
-[SnackBarThemeData](mcp://flutter/api/material/SnackBarThemeData) snackBarTheme
+[SnackBarThemeData](flutter-docs://api/material/SnackBarThemeData) snackBarTheme
 
 
-A theme for customizing colors, shape, elevation, and behavior of a [SnackBar](mcp://flutter/api/material/SnackBar).
+A theme for customizing colors, shape, elevation, and behavior of a [SnackBar](flutter-docs://api/material/SnackBar).
 
 ## Implementation
 

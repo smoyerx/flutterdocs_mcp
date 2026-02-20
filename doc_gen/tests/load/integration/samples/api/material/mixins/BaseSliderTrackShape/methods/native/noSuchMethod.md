@@ -1,7 +1,7 @@
 # noSuchMethod method
 
 dynamicnoSuchMethod(
-[Invocation](mcp://flutter/api/dart-core/Invocation) invocation
+[Invocation](flutter-docs://api/dart-core/Invocation) invocation
 )
 
 
@@ -16,12 +16,12 @@ object.add(42); // Statically allowed, run-time error
 
 ```
 This invalid code will invoke the `noSuchMethod` method
-of the integer `1` with an [Invocation](mcp://flutter/api/dart-core/Invocation) representing the `.add(42)` call and arguments (which then throws).
+of the integer `1` with an [Invocation](flutter-docs://api/dart-core/Invocation) representing the `.add(42)` call and arguments (which then throws).
 
-Classes can override [noSuchMethod](mcp://flutter/api/dart-core/Object/noSuchMethod) to provide custom behavior
+Classes can override [noSuchMethod](flutter-docs://api/dart-core/Object/noSuchMethod) to provide custom behavior
 for such invalid dynamic invocations.
 
-A class with a non-default [noSuchMethod](mcp://flutter/api/dart-core/Object/noSuchMethod) invocation can also
+A class with a non-default [noSuchMethod](flutter-docs://api/dart-core/Object/noSuchMethod) invocation can also
 omit implementations for members of its interface.
 Example:
 
@@ -48,7 +48,7 @@ it becomes the result of the original invocation.
 If the value is not of a type that can be returned by the original
 invocation, a type error occurs at the invocation.
 
-The default behavior is to throw a [NoSuchMethodError](mcp://flutter/api/dart-core/NoSuchMethodError).
+The default behavior is to throw a [NoSuchMethodError](flutter-docs://api/dart-core/NoSuchMethodError).
 
 ## Implementation
 

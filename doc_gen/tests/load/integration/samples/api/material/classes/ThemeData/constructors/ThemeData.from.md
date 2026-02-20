@@ -1,21 +1,21 @@
 # ThemeData.from constructor
 
 ThemeData.from({
-required [ColorScheme](mcp://flutter/api/material/ColorScheme) colorScheme,
-[TextTheme](mcp://flutter/api/material/TextTheme)? textTheme,
-[bool](mcp://flutter/api/dart-core/bool)? useMaterial3,
+required [ColorScheme](flutter-docs://api/material/ColorScheme) colorScheme,
+[TextTheme](flutter-docs://api/material/TextTheme)? textTheme,
+[bool](flutter-docs://api/dart-core/bool)? useMaterial3,
 })
 
-Create a [ThemeData](mcp://flutter/api/material/ThemeData) based on the colors in the given `colorScheme` and
+Create a [ThemeData](flutter-docs://api/material/ThemeData) based on the colors in the given `colorScheme` and
 text styles of the optional `textTheme`.
 
-If `colorScheme`.brightness is [Brightness.dark](mcp://flutter/api/dart-ui/Brightness) then [ThemeData.applyElevationOverlayColor](mcp://flutter/api/material/ThemeData/applyElevationOverlayColor) will be set to true to support
+If `colorScheme`.brightness is [Brightness.dark](flutter-docs://api/dart-ui/Brightness) then [ThemeData.applyElevationOverlayColor](flutter-docs://api/material/ThemeData/applyElevationOverlayColor) will be set to true to support
 the Material dark theme method for indicating elevation by applying
 a semi-transparent onSurface color on top of the surface color.
 
 This is the recommended method to theme your application. As we move
 forward we will be converting all the widget implementations to only use
-colors or colors derived from those in [ColorScheme](mcp://flutter/api/material/ColorScheme).
+colors or colors derived from those in [ColorScheme](flutter-docs://api/material/ColorScheme).
 
 This example will set up an application to use the baseline Material
 Design light and dark themes.

@@ -1,11 +1,11 @@
 # data property
 
-[String](mcp://flutter/api/dart-core/String)? data
+[String](flutter-docs://api/dart-core/String)? data
 
 
 The text to display.
 
-This will be null if a [textSpan](mcp://flutter/api/widgets/Text/textSpan) is provided instead.
+This will be null if a [textSpan](flutter-docs://api/widgets/Text/textSpan) is provided instead.
 
 ## Implementation
 

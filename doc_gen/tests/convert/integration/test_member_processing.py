@@ -233,7 +233,7 @@ class TestEnumConstantsProcessing:
         content = enum_file.read_text(encoding="utf-8")
 
         # The original link [values](material/HourFormat/values-constant.html)
-        # should be transformed to [values](mcp://flutter/api/material/HourFormat/values)
+        # should be transformed to [values](flutter-docs://api/material/HourFormat/values)
         assert "values-constant.html" not in content, (
             "Enum constant link should be transformed"
         )

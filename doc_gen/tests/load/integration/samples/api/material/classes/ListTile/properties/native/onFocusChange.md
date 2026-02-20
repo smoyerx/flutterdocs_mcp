@@ -1,6 +1,6 @@
 # onFocusChange property
 
-[ValueChanged](mcp://flutter/api/foundation/ValueChanged)<[bool](mcp://flutter/api/dart-core/bool)>? onFocusChange
+[ValueChanged](flutter-docs://api/foundation/ValueChanged)<[bool](flutter-docs://api/dart-core/bool)>? onFocusChange
 
 
 Handler called when the focus changes.

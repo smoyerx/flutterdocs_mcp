@@ -1,8 +1,8 @@
 # toStringDeep method
 
-[String](mcp://flutter/api/dart-core/String) toStringDeep(/* See DiagnosticableTree documentation for parameters */)
+[String](flutter-docs://api/dart-core/String) toStringDeep(/* See DiagnosticableTree documentation for parameters */)
 
 Returns a string representation of this node and its descendants.
 
-This method is inherited from [DiagnosticableTree](mcp://flutter/api/foundation/DiagnosticableTree).
-See further details at [toStringDeep](mcp://flutter/api/foundation/DiagnosticableTree/toStringDeep).
+This method is inherited from [DiagnosticableTree](flutter-docs://api/foundation/DiagnosticableTree).
+See further details at [toStringDeep](flutter-docs://api/foundation/DiagnosticableTree/toStringDeep).

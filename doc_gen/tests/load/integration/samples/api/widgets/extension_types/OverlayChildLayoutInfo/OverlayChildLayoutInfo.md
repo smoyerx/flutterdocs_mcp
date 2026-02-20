@@ -1,20 +1,20 @@
 # OverlayChildLayoutInfo extension type
 
-The additional layout information available to the[OverlayPortal.overlayChildLayoutBuilder](mcp://flutter/api/widgets/OverlayPortal/OverlayPortal.overlayChildLayoutBuilder) callback.
+The additional layout information available to the[OverlayPortal.overlayChildLayoutBuilder](flutter-docs://api/widgets/OverlayPortal/OverlayPortal.overlayChildLayoutBuilder) callback.
 
 on
-- ([Size](mcp://flutter/api/dart-ui/Size), [Matrix4](mcp://flutter/api/package-vector_math_vector_math_64/Matrix4), [Size](mcp://flutter/api/dart-ui/Size))
+- ([Size](flutter-docs://api/dart-ui/Size), [Matrix4](flutter-docs://api/package-vector_math_vector_math_64/Matrix4), [Size](flutter-docs://api/dart-ui/Size))
 
 ## Properties
 
-[childPaintTransform](mcp://flutter/api/widgets/OverlayChildLayoutInfo/childPaintTransform) → [Matrix4](mcp://flutter/api/package-vector_math_vector_math_64/Matrix4)
-The paint transform of [OverlayPortal.child](mcp://flutter/api/widgets/OverlayPortal/child), in the target [Overlay](mcp://flutter/api/widgets/Overlay)'s
+[childPaintTransform](flutter-docs://api/widgets/OverlayChildLayoutInfo/childPaintTransform) → [Matrix4](flutter-docs://api/package-vector_math_vector_math_64/Matrix4)
+The paint transform of [OverlayPortal.child](flutter-docs://api/widgets/OverlayPortal/child), in the target [Overlay](flutter-docs://api/widgets/Overlay)'s
 coordinates.
 
 
-[childSize](mcp://flutter/api/widgets/OverlayChildLayoutInfo/childSize) → [Size](mcp://flutter/api/dart-ui/Size)
-The size of [OverlayPortal.child](mcp://flutter/api/widgets/OverlayPortal/child) in its own coordinates.
+[childSize](flutter-docs://api/widgets/OverlayChildLayoutInfo/childSize) → [Size](flutter-docs://api/dart-ui/Size)
+The size of [OverlayPortal.child](flutter-docs://api/widgets/OverlayPortal/child) in its own coordinates.
 
 
-[overlaySize](mcp://flutter/api/widgets/OverlayChildLayoutInfo/overlaySize) → [Size](mcp://flutter/api/dart-ui/Size)
-The size of the target [Overlay](mcp://flutter/api/widgets/Overlay) in its own coordinates.
+[overlaySize](flutter-docs://api/widgets/OverlayChildLayoutInfo/overlaySize) → [Size](flutter-docs://api/dart-ui/Size)
+The size of the target [Overlay](flutter-docs://api/widgets/Overlay) in its own coordinates.
