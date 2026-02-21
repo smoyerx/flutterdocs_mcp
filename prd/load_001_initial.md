@@ -240,10 +240,10 @@ ON CONFLICT(identifier_id, entity_id) DO UPDATE SET
 
 ## Source Structure
 
-`load.py` must follow the same layered module structure as `convert.py`, within `doc_gen/src/flutterdoc_gen/load/`:
+`load.py` must follow the same layered module structure as `convert.py`, within `make_docs/src/flutterdocs/load/`:
 
 ```
-doc_gen/src/flutterdoc_gen/load/
+make_docs/src/flutterdocs/load/
   __main__.py     # Entry point (calls cli.main)
   cli.py          # Argument parsing, validation, orchestration loop
   db.py           # Database initialization, connection, upsert helpers
@@ -251,11 +251,11 @@ doc_gen/src/flutterdoc_gen/load/
                   # (analogous to rootdocs.py / processors.py in convert)
 ```
 
-Register an entry point script named `load` in `pyproject.toml` pointing to `flutterdoc_gen.load.cli:main`.
+Register an entry point script named `load` in `pyproject.toml` pointing to `flutterdocs.load.cli:main`.
 
 ## Test Structure
 
-Tests must follow the same layout as `convert` tests under `doc_gen/tests/load/`:
+Tests must follow the same layout as `convert` tests under `make_docs/tests/load/`:
 
 ```
 tests/

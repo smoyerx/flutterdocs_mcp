@@ -10,5 +10,5 @@ This project is a Model Context Protocol (MCP) server for Flutter and Dart docum
 ## Project Structure
 
 - flutterdoc_mcp/: Contains the Dart-based MCP server implementation.
-- doc_gen/: Contains Python scripts for generating Flutter/Dart documentation in markdown format and storing it in a sqlite3 database.
+- make_docs/: Contains Python scripts for generating Flutter/Dart documentation in markdown format and storing it in a sqlite3 database.
 - prd/: Contains product requirement documents (PRDs) for the components of this project.

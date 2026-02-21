@@ -21,25 +21,25 @@ Refactoring into a multi-file package will:
 - Improve code organization and discoverability
 - Enable more focused unit testing per module
 - Facilitate future extensions (e.g., processing mixins, enums, or other documentation types)
-- Support additional Python scripts/tools in the doc_gen directory
+- Support additional Python scripts/tools in the make_docs directory
 - Follow Python best practices for larger projects
 
 ## Proposed Package Structure
 
-The structure uses a `flutterdoc_gen` parent package to support multiple tools (convert, and future scripts) under a unified namespace:
+The structure uses a `flutterdocs` parent package to support multiple tools (convert, and future scripts) under a unified namespace:
 
 ```
-doc_gen/
+make_docs/
 ├── pyproject.toml
 ├── src/
-│   └── flutterdoc_gen/
+│   └── flutterdocs/
 │       ├── __init__.py              # Top-level package (minimal, version info)
 │       ├── _shared/                 # Shared utilities across tools (future use)
 │       │   ├── __init__.py
 │       │   └── logging.py           # Common logging configuration (future)
 │       └── convert/
 │           ├── __init__.py          # Package exports
-│           ├── __main__.py          # CLI entry point (python -m flutterdoc_gen.convert)
+│           ├── __main__.py          # CLI entry point (python -m flutterdocs.convert)
 │           ├── cli.py               # Argument parsing and main()
 │           ├── patterns.py          # Pattern definitions (LINK_PATTERNS, NOISE_STRINGS, etc.)
 │           ├── paths.py             # Output path construction for markdown files
@@ -77,10 +77,10 @@ doc_gen/
 To add a new script (e.g., `index` for building a search index), create:
 
 ```
-src/flutterdoc_gen/
+src/flutterdocs/
 └── index/
     ├── __init__.py
-    ├── __main__.py          # python -m flutterdoc_gen.index
+    ├── __main__.py          # python -m flutterdocs.index
     ├── cli.py
     └── ...                  # Additional modules as needed
 
@@ -220,42 +220,42 @@ Contains CLI-related functions:
 - main()
 ```
 
-### `flutterdoc_gen/__init__.py`
+### `flutterdocs/__init__.py`
 
 Minimal top-level package initialization:
 
 ```python
-"""flutterdoc_gen - Tools for generating Flutter/Dart documentation."""
+"""flutterdocs - Tools for generating Flutter/Dart documentation."""
 
 __version__ = "0.2.0"
 ```
 
-### `flutterdoc_gen/convert/__init__.py`
+### `flutterdocs/convert/__init__.py`
 
 Exports the public API of the convert package:
 
 ```python
-from flutterdoc_gen.convert.cli import main
-from flutterdoc_gen.convert.transformations import (
+from flutterdocs.convert.cli import main
+from flutterdocs.convert.transformations import (
     apply_transformations,
     transform_class_links,
     transform_member_links,
     # ... other public functions
 )
-from flutterdoc_gen.convert.parsing import (
+from flutterdocs.convert.parsing import (
     extract_section_content,
     extract_member_links,
     # ...
 )
-from flutterdoc_gen.convert.patterns import LINK_PATTERNS, LinkPattern
+from flutterdocs.convert.patterns import LINK_PATTERNS, LinkPattern
 ```
 
-### `flutterdoc_gen/convert/__main__.py`
+### `flutterdocs/convert/__main__.py`
 
-Enables `python -m flutterdoc_gen.convert` execution:
+Enables `python -m flutterdocs.convert` execution:
 
 ```python
-from flutterdoc_gen.convert.cli import main
+from flutterdocs.convert.cli import main
 
 if __name__ == "__main__":
     main()
@@ -297,11 +297,11 @@ Unit tests are organized by module under each tool's test directory:
 
 | Test File | Module Under Test | Coverage |
 |-----------|------------------|----------|
-| `tests/convert/unit/test_patterns.py` | `flutterdoc_gen.convert.patterns` | Pattern registry validation, regex compilation |
-| `tests/convert/unit/test_paths.py` | `flutterdoc_gen.convert.paths` | Output path construction, directory helpers |
-| `tests/convert/unit/test_transformations.py` | `flutterdoc_gen.convert.transformations` | All cleanup and link transformation functions |
-| `tests/convert/unit/test_parsing.py` | `flutterdoc_gen.convert.parsing` | Section extraction, member link parsing |
-| `tests/convert/unit/test_conversion.py` | `flutterdoc_gen.convert.conversion` | HTML-to-markdown conversion, Dart snippet wrapping |
+| `tests/convert/unit/test_patterns.py` | `flutterdocs.convert.patterns` | Pattern registry validation, regex compilation |
+| `tests/convert/unit/test_paths.py` | `flutterdocs.convert.paths` | Output path construction, directory helpers |
+| `tests/convert/unit/test_transformations.py` | `flutterdocs.convert.transformations` | All cleanup and link transformation functions |
+| `tests/convert/unit/test_parsing.py` | `flutterdocs.convert.parsing` | Section extraction, member link parsing |
+| `tests/convert/unit/test_conversion.py` | `flutterdocs.convert.conversion` | HTML-to-markdown conversion, Dart snippet wrapping |
 
 ### Integration Tests
 
@@ -326,9 +326,9 @@ dependencies = [
 ]
 
 [project.scripts]
-convert = "flutterdoc_gen.convert.cli:main"
+convert = "flutterdocs.convert.cli:main"
 # Future scripts would be added here:
-# index = "flutterdoc_gen.index.cli:main"
+# index = "flutterdocs.index.cli:main"
 
 [dependency-groups]
 dev = [
@@ -344,7 +344,7 @@ testpaths = ["tests"]
 ### Key Configuration Notes
 
 1. **Source Layout**: Uses `src/` layout per PEP 517/518 best practices
-2. **Parent Package**: `flutterdoc_gen` serves as namespace for all tools
+2. **Parent Package**: `flutterdocs` serves as namespace for all tools
 3. **Entry Points**: The `[project.scripts]` section creates `convert` command for `uv run` and after installation
 4. **pytest Configuration**: `pythonpath = ["src"]` ensures imports work correctly
 5. **Build System**: Not needed - `uv` handles building automatically
@@ -353,9 +353,9 @@ testpaths = ["tests"]
 
 ### Phase 1: Create Package Structure
 
-1. Create `src/flutterdoc_gen/` directory structure
-2. Create `src/flutterdoc_gen/__init__.py` with version info
-3. Create `src/flutterdoc_gen/convert/` directory
+1. Create `src/flutterdocs/` directory structure
+2. Create `src/flutterdocs/__init__.py` with version info
+3. Create `src/flutterdocs/convert/` directory
 4. Create `__init__.py` and `__main__.py` files for convert
 5. Move pattern definitions to `patterns.py`
 6. Extract path construction logic to `paths.py`
@@ -365,7 +365,7 @@ testpaths = ["tests"]
 
 1. Move transformation functions to `transformations.py`
 2. Move parsing functions to `parsing.py`
-3. Update imports within the package to use `flutterdoc_gen.convert.*`
+3. Update imports within the package to use `flutterdocs.convert.*`
 4. Ensure all cross-module dependencies are resolved
 
 ### Phase 3: Split Conversion and Processing Logic
@@ -396,18 +396,18 @@ testpaths = ["tests"]
 2. Add `[project.scripts]` entry point for `convert`
 3. Run full test suite to verify functionality
 4. Update any documentation or README files
-5. Create placeholder `src/flutterdoc_gen/_shared/` directory for future shared utilities
+5. Create placeholder `src/flutterdocs/_shared/` directory for future shared utilities
 
 ## Import Structure Examples
 
 ### Internal Imports (within convert package)
 
 ```python
-# In flutterdoc_gen/convert/processors.py
-from flutterdoc_gen.convert.conversion import convert_html_to_markdown, convert_dart_snippet
-from flutterdoc_gen.convert.parsing import extract_section_content, extract_member_links
-from flutterdoc_gen.convert.templates import INHERITED_PROPERTY_TEMPLATE
-from flutterdoc_gen.convert.paths import (
+# In flutterdocs/convert/processors.py
+from flutterdocs.convert.conversion import convert_html_to_markdown, convert_dart_snippet
+from flutterdocs.convert.parsing import extract_section_content, extract_member_links
+from flutterdocs.convert.templates import INHERITED_PROPERTY_TEMPLATE
+from flutterdocs.convert.paths import (
     get_constructor_file_path,
     get_native_property_file_path,
     ensure_constructors_directory,
@@ -417,21 +417,21 @@ from flutterdoc_gen.convert.paths import (
 ### Cross-Tool Imports (future shared utilities)
 
 ```python
-# In flutterdoc_gen/convert/cli.py (future, when shared utilities exist)
-from flutterdoc_gen._shared.logging import configure_logging
+# In flutterdocs/convert/cli.py (future, when shared utilities exist)
+from flutterdocs._shared.logging import configure_logging
 ```
 
 ### External Imports (in tests)
 
 ```python
 # In tests/convert/unit/test_transformations.py
-from flutterdoc_gen.convert.transformations import (
+from flutterdocs.convert.transformations import (
     remove_header,
     remove_footer,
     transform_class_links,
     apply_transformations,
 )
-from flutterdoc_gen.convert.patterns import LINK_PATTERNS
+from flutterdocs.convert.patterns import LINK_PATTERNS
 
 # In tests/convert/integration/test_conversion_pipeline.py
 import subprocess
@@ -456,7 +456,7 @@ The command-line interface and behavior remain identical:
 |----------|--------|-------|
 | **Development** | `uv run convert.py -d ... -s ... -o ...` | `uv run convert -d ... -s ... -o ...` |
 | **After install** | N/A | `convert -d ... -s ... -o ...` |
-| **Module execution** | N/A | `python -m flutterdoc_gen.convert -d ...` |
+| **Module execution** | N/A | `python -m flutterdocs.convert -d ...` |
 
 ## Success Criteria
 
@@ -473,9 +473,9 @@ The refactoring is considered complete when:
 
 This refactored structure enables future enhancements:
 
-1. **New Documentation Types**: Add new processor modules (e.g., `flutterdoc_gen/convert/processors/mixins.py`)
-2. **Additional Tools**: Add sibling packages under `flutterdoc_gen/` (e.g., `flutterdoc_gen/index/`, `flutterdoc_gen/validate/`)
-3. **Shared Utilities**: Common code in `flutterdoc_gen/_shared/` (logging, path utilities, etc.)
+1. **New Documentation Types**: Add new processor modules (e.g., `flutterdocs/convert/processors/mixins.py`)
+2. **Additional Tools**: Add sibling packages under `flutterdocs/` (e.g., `flutterdocs/index/`, `flutterdocs/validate/`)
+3. **Shared Utilities**: Common code in `flutterdocs/_shared/` (logging, path utilities, etc.)
 4. **Plugin Architecture**: Pattern definitions could be loaded from external files
 5. **Async Processing**: Large documentation sets could benefit from async I/O
 6. **Database Output**: Additional output formats beyond markdown files
@@ -486,7 +486,7 @@ To add a new `index` tool for building a documentation search index:
 
 1. Create the package structure:
    ```
-   src/flutterdoc_gen/index/
+   src/flutterdocs/index/
    ├── __init__.py
    ├── __main__.py
    ├── cli.py
@@ -496,8 +496,8 @@ To add a new `index` tool for building a documentation search index:
 2. Add the entry point to `pyproject.toml`:
    ```toml
    [project.scripts]
-   convert = "flutterdoc_gen.convert.cli:main"
-   index = "flutterdoc_gen.index.cli:main"
+   convert = "flutterdocs.convert.cli:main"
+   index = "flutterdocs.index.cli:main"
    ```
 
 3. Create the test structure:

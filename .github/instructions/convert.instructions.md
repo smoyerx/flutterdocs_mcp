@@ -1,7 +1,7 @@
 ---
 description: "convert.py inputs, outputs, source structure, and test structure. Reference for load.py PRDs and implementation."
 name: convert_reference
-applyTo: "doc_gen/src/flutterdoc_gen/load/**,doc_gen/tests/load/**"
+applyTo: "make_docs/src/flutterdocs/load/**,make_docs/tests/load/**"
 ---
 
 # convert.py Reference
@@ -40,13 +40,13 @@ load.py MUST access all convert.py output exclusively via `PathBuilder` methods 
 
 ## Shared Code (used by both convert.py and load.py)
 
-All shared code lives in `doc_gen/src/flutterdoc_gen/_shared/`:
+All shared code lives in `make_docs/src/flutterdocs/_shared/`:
 
 - `constants.py`: `CategoryType` (StrEnum), `MemberType` (StrEnum), `ALL_CATEGORIES` (canonical iteration order).
 - `paths.py`: `PathBuilder` (immutable dataclass for all path construction), `ensure_dir_exists()`, `list_entity_names()`.
 - `logging.py`: `configure_logging()`, `get_progress_logger()`, `get_notification_logger()`, `log_processing_error()`.
 
-See `doc_gen/PATHBUILDER_USAGE.md` for complete `PathBuilder` usage examples for load.py. Key points:
+See `make_docs/PATHBUILDER_USAGE.md` for complete `PathBuilder` usage examples for load.py. Key points:
 - load.py omits `doc_dir` from `PathBuilder` (only `section`, `output_dir`, `entity_name`, `entity_type` needed).
 - Use `list_entity_names(output_dir, section, CategoryType.X)` to discover entities without a `PathBuilder`.
 - `builder.get_entity_file()` → root entity markdown file.
@@ -55,7 +55,7 @@ See `doc_gen/PATHBUILDER_USAGE.md` for complete `PathBuilder` usage examples for
 ## Source Structure
 
 ```
-doc_gen/src/flutterdoc_gen/
+make_docs/src/flutterdocs/
   _shared/
     constants.py       # CategoryType, MemberType, ALL_CATEGORIES
     paths.py           # PathBuilder, ensure_dir_exists, list_entity_names
@@ -73,15 +73,15 @@ doc_gen/src/flutterdoc_gen/
     templates.py       # Markdown template helpers
 ```
 
-load.py should follow the same layered structure within `doc_gen/src/flutterdoc_gen/load/`:
+load.py should follow the same layered structure within `make_docs/src/flutterdocs/load/`:
 - `cli.py` for argument parsing and orchestration
 - `__main__.py` as entry point
 - Module(s) for entity-level loading (analogous to `rootdocs.py`)
-- Register an entry point script named `load` in `pyproject.toml` pointing to `flutterdoc_gen.load.cli:main`
+- Register an entry point script named `load` in `pyproject.toml` pointing to `flutterdocs.load.cli:main`
 
 ## Test Structure
 
-Convert tests live in `doc_gen/tests/convert/` and are organized by type:
+Convert tests live in `make_docs/tests/convert/` and are organized by type:
 
 ```
 tests/
@@ -111,3 +111,4 @@ tests/
 ```
 
 load.py tests should follow the same layout under `tests/load/`. The load.py sample data should be the markdown output produced by running `convert` against the convert.py HTML samples in `tests/convert/integration/samples/`. If convert.py's output format changes, the load.py samples must be regenerated.
+

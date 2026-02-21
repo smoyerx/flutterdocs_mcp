@@ -60,9 +60,9 @@ After these updates, convert.cli MUST:
 
 ## Testing Requirements
 
-convert.py tests must be updated to confirm the correct categorization of root documentation files in doc_gen/tests/convert/integration/samples/flutter/material and doc_gen/tests/convert/integration/samples/flutter/widgets as specified below.
+convert.py tests must be updated to confirm the correct categorization of root documentation files in make_docs/tests/convert/integration/samples/flutter/material and make_docs/tests/convert/integration/samples/flutter/widgets as specified below.
 
-Categorization of root documentation files in doc_gen/tests/convert/integration/samples/flutter/material:
+Categorization of root documentation files in make_docs/tests/convert/integration/samples/flutter/material:
 - Root class documentation files: InkWell-class.html, ListTile-class.html
 - Root mixin documentation files: BaseSliderTrackShape-mixin.html, MaterialStateMixin-mixin.html
 - Root constant documentation files: accelerateEasing-constant.html, kBottomNavigationBarHeight-constant.html
@@ -71,7 +71,7 @@ Categorization of root documentation files in doc_gen/tests/convert/integration/
 - Root function documentation files: showBottomSheet.html, showMenu.html
 - Root typedef documentation files: DrawerCallback.html, MaterialState.html
 
-Categorization of root documentation files in doc_gen/tests/convert/integration/samples/flutter/widgets:
+Categorization of root documentation files in make_docs/tests/convert/integration/samples/flutter/widgets:
 - Root class documentation files: State-class.html, Text-class.html
 - Root extension documentation files: WidgetStateOperators.html
 - Root extension type documentation files: OverlayChildLayoutInfo-extension-type.html

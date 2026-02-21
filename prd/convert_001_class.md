@@ -108,12 +108,12 @@ Test fixtures:
 - Sample HTML files representing Flutter and Dart documentation, as described in the [Flutter and Dart Documentation Sample](#flutter-and-dart-documentation-sample) section below.
 
 Test organization and execution:
-- Store tests in `doc_gen/tests/convert` 
-- Within the `doc_gen` directory, execute tests with `uv run pytest tests/convert`
+- Store tests in `make_docs/tests/convert` 
+- Within the `make_docs` directory, execute tests with `uv run pytest tests/convert`
 
 ## Flutter and Dart Documentation Sample
 
-To aid in development and testing, a small sample of Flutter and Dart documentation HTML files is provided. These sample files are in directory `doc_gen/tests/convert/samples`, which represents {DOC_DIR} as used throughout this specification. Subdirectories and files within `samples` mimic the actual structure of Flutter and Dart documentation.
+To aid in development and testing, a small sample of Flutter and Dart documentation HTML files is provided. These sample files are in directory `make_docs/tests/convert/samples`, which represents {DOC_DIR} as used throughout this specification. Subdirectories and files within `samples` mimic the actual structure of Flutter and Dart documentation.
 
 ## Dependencies
 

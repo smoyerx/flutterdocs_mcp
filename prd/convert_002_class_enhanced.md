@@ -1,6 +1,6 @@
 # convert.py Update
 
-convert.py is a single-file Python script for converting Flutter and Dart documentation files from HTML to markdown. The convert.py script is located in the doc_gen directory of this repository.
+convert.py is a single-file Python script for converting Flutter and Dart documentation files from HTML to markdown. The convert.py script is located in the make_docs directory of this repository.
 
 This document specifies a set of changes to convert.py to enhance its functionality, improve code organization, and ensure maintainability.
 
@@ -316,17 +316,17 @@ Test fixtures:
 - Sample HTML files representing Flutter and Dart documentation, as described in the [Flutter and Dart Documentation Sample](#flutter-and-dart-documentation-sample) section below.
 
 Test organization and execution:
-- Store tests in `doc_gen/tests/convert` 
-- Within the `doc_gen` directory, execute tests with `uv run pytest tests/convert`
+- Store tests in `make_docs/tests/convert` 
+- Within the `make_docs` directory, execute tests with `uv run pytest tests/convert`
 
 **Note**: Testing MUST adhere to the following guidelines:
-- Preserve the existing organization of test files in the `doc_gen/tests/convert` directory
+- Preserve the existing organization of test files in the `make_docs/tests/convert` directory
 - Update existing tests as necessary to accommodate the changes specified in this document
 - Add new tests as necessary to cover all new functionality specified in this document
 
 ## Flutter and Dart Documentation Sample
 
-To aid in development and testing, a small sample of Flutter and Dart documentation HTML files is provided. These sample files are in directory `doc_gen/tests/convert/samples`, which represents {DOC_DIR} as used throughout this specification. Subdirectories and files within `samples` mimic the actual structure of Flutter and Dart documentation.
+To aid in development and testing, a small sample of Flutter and Dart documentation HTML files is provided. These sample files are in directory `make_docs/tests/convert/samples`, which represents {DOC_DIR} as used throughout this specification. Subdirectories and files within `samples` mimic the actual structure of Flutter and Dart documentation.
 
 ## Dependencies
 

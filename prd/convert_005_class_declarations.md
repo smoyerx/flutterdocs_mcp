@@ -14,11 +14,11 @@ This document specifies updates to the convert.py script for processing class do
 
 convert.py CURRENTLY processes class documentation files by:
 - Converting HTML files to markdown using the html-to-markdown library
-- Calling the function flutterdoc_gen.convert.transformations.apply_transformations to clean up the resulting markdown content
+- Calling the function flutterdocs.convert.transformations.apply_transformations to clean up the resulting markdown content
 
 ## New Multi-Line Function Declaration Cleanup Transformation
 
-This document defines a new multi-line function declaration cleanup transformation that must be applied to specific markdown content, defined below, *after* the generic transformations currently applied. This new transformation should be implemented as a separate function in flutterdoc_gen.convert.transformations.py.
+This document defines a new multi-line function declaration cleanup transformation that must be applied to specific markdown content, defined below, *after* the generic transformations currently applied. This new transformation should be implemented as a separate function in flutterdocs.convert.transformations.py.
 
 ### Transformation Definition
 
