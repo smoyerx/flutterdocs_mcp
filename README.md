@@ -1,2 +1,2 @@
-# flutterdoc_mcp
-MCP Server for Flutter/Dart Documentation
+# flutterdocs_mcp
+Flutter documentation your LLM can navigate and understand.
