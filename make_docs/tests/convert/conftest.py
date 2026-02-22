@@ -83,6 +83,44 @@ def run_convert(
     return subprocess.run(cmd, capture_output=True, text=True)
 
 
+def run_convert_list(
+    doc_dir: Path,
+    section_list_file: Path,
+    output_dir: Path,
+    verbose: bool = False,
+) -> subprocess.CompletedProcess[str]:
+    """Run the convert command using a section list file (-S).
+
+    Args:
+        doc_dir: Path to documentation directory.
+        section_list_file: Path to text file containing section names.
+        output_dir: Path to output directory.
+        verbose: Whether to enable verbose output.
+
+    Returns:
+        CompletedProcess with stdout, stderr, and returncode.
+    """
+    uv_path = shutil.which("uv")
+    if uv_path is None:
+        pytest.skip("uv not found in PATH")
+
+    cmd = [
+        uv_path,
+        "run",
+        "convert",
+        "-d",
+        str(doc_dir),
+        "-S",
+        str(section_list_file),
+        "-o",
+        str(output_dir),
+    ]
+    if verbose:
+        cmd.append("-v")
+
+    return subprocess.run(cmd, capture_output=True, text=True)
+
+
 def get_available_sections() -> list[str]:
     """Get list of available sections from samples directory.
 

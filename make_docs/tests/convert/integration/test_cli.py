@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 
 from flutterdocs._shared.constants import CategoryType
-from convert.conftest import run_convert, SAMPLES_DIR
+from convert.conftest import run_convert, run_convert_list, SAMPLES_DIR
 from flutterdocs._shared.paths import PathBuilder
 
 
@@ -50,10 +50,11 @@ class TestConvertErrorHandling:
             or "error" in result.stderr.lower()
         )
 
-    def test_nonexistent_section_fails(self, output_dir: Path) -> None:
-        """Conversion should fail if section directory doesn't exist."""
+    def test_nonexistent_section_skips_cleanly(self, output_dir: Path) -> None:
+        """A nonexistent section is skipped with a notification; exit code is 0."""
         result = run_convert(SAMPLES_DIR, "nonexistent_section", output_dir)
-        assert result.returncode != 0
+        assert result.returncode == 0
+        assert "skipped" in result.stdout.lower() or "skipped" in result.stderr.lower()
 
     def test_missing_required_args_fails(self, output_dir: Path) -> None:
         """Conversion should fail if required arguments are missing."""
@@ -234,3 +235,116 @@ class TestConvertDirectoryStructure:
         inkwell_class_file = inkwell_builder.get_entity_file()
         assert inkwell_class_file.exists(), "InkWell class file should exist"
         assert inkwell_class_file.parent == inkwell_class_dir
+
+
+class TestSectionList:
+    """Tests for -S/--section-list argument behavior."""
+
+    @pytest.fixture
+    def output_dir(self, tmp_path: Path) -> Path:
+        """Create a temporary output directory."""
+        return tmp_path / "output"
+
+    def test_section_list_processes_all_sections(
+        self, tmp_path: Path, output_dir: Path
+    ) -> None:
+        """All sections named in the list file should be processed."""
+        section_file = tmp_path / "sections.txt"
+        section_file.write_text("material\nwidgets\n", encoding="utf-8")
+
+        result = run_convert_list(SAMPLES_DIR, section_file, output_dir)
+        assert result.returncode == 0
+
+        for section in ("material", "widgets"):
+            section_dir = PathBuilder(
+                section=section, output_dir=output_dir
+            ).get_api_section_dir()
+            assert section_dir.exists(), (
+                f"Section directory should exist for: {section}"
+            )
+
+    def test_section_list_with_comments_and_blanks(
+        self, tmp_path: Path, output_dir: Path
+    ) -> None:
+        """Comments and blank lines in the section list file are ignored."""
+        section_file = tmp_path / "sections.txt"
+        section_file.write_text(
+            "# convert these sections\n\nmaterial\n\n# end\n", encoding="utf-8"
+        )
+
+        result = run_convert_list(SAMPLES_DIR, section_file, output_dir)
+        assert result.returncode == 0
+
+        material_dir = PathBuilder(
+            section="material", output_dir=output_dir
+        ).get_api_section_dir()
+        assert material_dir.exists()
+
+    def test_section_and_section_list_together_fails(
+        self, tmp_path: Path, output_dir: Path
+    ) -> None:
+        """-s and -S together must be rejected by argparse."""
+        import shutil
+        import subprocess
+
+        uv_path = shutil.which("uv")
+        if uv_path is None:
+            pytest.skip("uv not found in PATH")
+
+        section_file = tmp_path / "sections.txt"
+        section_file.write_text("material\n", encoding="utf-8")
+
+        result = subprocess.run(
+            [
+                uv_path,
+                "run",
+                "convert",
+                "-d",
+                str(SAMPLES_DIR),
+                "-s",
+                "material",
+                "-S",
+                str(section_file),
+                "-o",
+                str(output_dir),
+            ],
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode != 0
+
+    def test_nonexistent_section_list_file_fails(
+        self, tmp_path: Path, output_dir: Path
+    ) -> None:
+        """A section list file that does not exist should cause failure."""
+        missing = tmp_path / "no_such_file.txt"
+        result = run_convert_list(SAMPLES_DIR, missing, output_dir)
+        assert result.returncode != 0
+
+    def test_missing_section_skipped_with_notification(
+        self, tmp_path: Path, output_dir: Path
+    ) -> None:
+        """A valid section is processed; a nonexistent one is skipped (not a fatal error)."""
+        section_file = tmp_path / "sections.txt"
+        section_file.write_text("material\nnonexistent_section_xyz\n", encoding="utf-8")
+
+        result = run_convert_list(SAMPLES_DIR, section_file, output_dir, verbose=True)
+        assert result.returncode == 0
+
+        # Valid section should be present
+        material_dir = PathBuilder(
+            section="material", output_dir=output_dir
+        ).get_api_section_dir()
+        assert material_dir.exists()
+
+        # Skipped section should be mentioned in output
+        combined = result.stdout + result.stderr
+        assert "nonexistent_section_xyz" in combined or "skipped" in combined.lower()
+
+    def test_empty_section_list_fails(self, tmp_path: Path, output_dir: Path) -> None:
+        """A section list file that contains no sections (all blank/comments) should fail."""
+        section_file = tmp_path / "sections.txt"
+        section_file.write_text("# only comments\n\n", encoding="utf-8")
+
+        result = run_convert_list(SAMPLES_DIR, section_file, output_dir)
+        assert result.returncode != 0

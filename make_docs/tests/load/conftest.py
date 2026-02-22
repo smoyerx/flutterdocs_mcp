@@ -50,6 +50,44 @@ def run_load(
     return subprocess.run(cmd, capture_output=True, text=True)
 
 
+def run_load_list(
+    doc_dir: Path,
+    section_list_file: Path,
+    db_file: Path,
+    verbose: bool = False,
+) -> subprocess.CompletedProcess[str]:
+    """Run the load command using a section list file (-S).
+
+    Args:
+        doc_dir: Path to markdown documents directory (convert.py output).
+        section_list_file: Path to text file containing section names.
+        db_file: Path to the sqlite3 database file to create or update.
+        verbose: Whether to enable verbose output.
+
+    Returns:
+        CompletedProcess with stdout, stderr, and returncode.
+    """
+    uv_path = shutil.which("uv")
+    if uv_path is None:
+        pytest.skip("uv not found in PATH")
+
+    cmd = [
+        uv_path,
+        "run",
+        "load",
+        "-d",
+        str(doc_dir),
+        "-S",
+        str(section_list_file),
+        "-o",
+        str(db_file),
+    ]
+    if verbose:
+        cmd.append("-v")
+
+    return subprocess.run(cmd, capture_output=True, text=True)
+
+
 @pytest.fixture
 def db_path(tmp_path: Path) -> Path:
     """Provide a path for a sqlite3 database that does not yet exist.

@@ -391,6 +391,31 @@ class PathBuilder:
 # --- Standalone Helper Functions ---
 
 
+def read_section_list(path: Path) -> list[str]:
+    """Read a section list file and return a list of section names.
+
+    Each line in the file is a section name. Blank lines and lines whose
+    first non-whitespace character is ``#`` are silently ignored.
+
+    Args:
+        path: Path to the text file containing section names (one per line).
+
+    Returns:
+        List of non-empty, non-comment section names (preserves file order).
+
+    Raises:
+        FileNotFoundError: If *path* does not exist.
+        OSError: If *path* cannot be read for any other reason.
+    """
+    sections: list[str] = []
+    with path.open(encoding="utf-8") as fh:
+        for raw_line in fh:
+            line = raw_line.strip()
+            if line and not line.startswith("#"):
+                sections.append(line)
+    return sections
+
+
 def ensure_dir_exists(dir_path: Path) -> Path:
     """Create directory if it doesn't exist.
 

@@ -15,21 +15,19 @@ from flutterdocs._shared.logging import (
     get_progress_logger,
     log_processing_error,
 )
-from flutterdocs._shared.paths import PathBuilder, list_entity_names
+from flutterdocs._shared.paths import PathBuilder, list_entity_names, read_section_list
 from flutterdocs.load.db import open_or_create_db, upsert_library
 from flutterdocs.load.loader import load_entity
 
 
-def validate_inputs(doc_dir: Path, section: str, db_file: Path) -> None:
-    """Validate CLI inputs before loading.
+def validate_global_inputs(doc_dir: Path, db_file: Path) -> None:
+    """Validate CLI inputs that apply to the whole run (not per-section).
 
-    Checks that doc_dir exists and is a directory, that the section directory
-    within it exists, and that the parent of db_file is writable (when db_file
-    does not yet exist).
+    Checks that doc_dir exists and is a directory and that the parent of
+    db_file is writable when db_file does not yet exist.
 
     Args:
         doc_dir: Root markdown output directory from convert.py.
-        section: Documentation section name.
         db_file: Path for the sqlite3 output database.
 
     Raises:
@@ -38,13 +36,6 @@ def validate_inputs(doc_dir: Path, section: str, db_file: Path) -> None:
     if not doc_dir.exists() or not doc_dir.is_dir():
         log_processing_error(
             f"Documents directory does not exist or is not a directory: {doc_dir}"
-        )
-
-    temp_builder = PathBuilder(section=section, output_dir=doc_dir)
-    section_dir = temp_builder.get_api_section_dir()
-    if not section_dir.exists() or not section_dir.is_dir():
-        log_processing_error(
-            f"Section directory does not exist or is not a directory: {section_dir}"
         )
 
     if not db_file.exists():
@@ -57,6 +48,30 @@ def validate_inputs(doc_dir: Path, section: str, db_file: Path) -> None:
             log_processing_error(
                 f"Parent directory of database file is not writable: {parent}"
             )
+
+
+def _check_section_dir(doc_dir: Path, section: str) -> bool:
+    """Check that the section output directory exists.
+
+    Unlike validate_global_inputs, this does *not* exit on failure. Instead it
+    logs a notification and returns False so the caller can skip the section.
+
+    Args:
+        doc_dir: Root markdown output directory from convert.py.
+        section: Documentation section name.
+
+    Returns:
+        True if the section directory exists, False otherwise.
+    """
+    notification_logger = get_notification_logger()
+    temp_builder = PathBuilder(section=section, output_dir=doc_dir)
+    section_dir = temp_builder.get_api_section_dir()
+    if not section_dir.exists() or not section_dir.is_dir():
+        notification_logger.info(
+            f"Section directory does not exist, skipping: {section_dir}"
+        )
+        return False
+    return True
 
 
 def _is_writable(directory: Path) -> bool:
@@ -77,6 +92,94 @@ def _is_writable(directory: Path) -> bool:
         return False
 
 
+def process_section(
+    section: str,
+    conn: object,
+    doc_dir: Path,
+    progress_logger: object,
+    notification_logger: object,
+) -> dict[str, int]:
+    """Load all entities for a single section into the database.
+
+    Args:
+        section: Documentation section name (e.g. "material", "widgets").
+        conn: Open sqlite3 database connection.
+        doc_dir: Root markdown output directory from convert.py.
+        progress_logger: Logger for per-entity progress messages.
+        notification_logger: Logger for informational notices (skips, etc.).
+
+    Returns:
+        Dict mapping category string to number of entities loaded.
+        Returns an empty dict if the library file is missing.
+    """
+    # Transaction: load library
+    lib_builder = PathBuilder(section=section, output_dir=doc_dir)
+    library_file = lib_builder.get_library_file()
+
+    if not library_file.exists():
+        notification_logger.info(  # type: ignore[union-attr]
+            f"Library file not found, skipping section: {library_file}"
+        )
+        print(f"No library file found for section '{section}'")
+        return {}
+
+    library_content = library_file.read_text()
+    try:
+        with conn:  # type: ignore[attr-defined]
+            library_id = upsert_library(conn, section, library_content)  # type: ignore[arg-type]
+    except Exception as e:
+        log_processing_error(f"Failed to load library for section '{section}': {e}")
+
+    # Enumerate and load all entities
+    counts: dict[str, int] = {}
+
+    for category_type in ALL_CATEGORIES:
+        entity_names = list_entity_names(doc_dir, section, category_type)
+        if not entity_names:
+            continue
+
+        category_str = str(category_type)
+        loaded_count = 0
+
+        for entity_name in entity_names:
+            builder = PathBuilder(
+                section=section,
+                output_dir=doc_dir,
+                entity_name=entity_name,
+                entity_type=category_type,
+            )
+
+            entity_file = builder.get_entity_file()
+            if not entity_file.exists():
+                notification_logger.info(  # type: ignore[union-attr]
+                    f"Entity file not found, skipping: {entity_file}"
+                )
+                continue
+
+            try:
+                member_count = load_entity(
+                    conn,  # type: ignore[arg-type]
+                    builder=builder,
+                    library_id=library_id,
+                    entity_name=entity_name,
+                    category_type_str=category_str,
+                )
+            except Exception as e:
+                log_processing_error(
+                    f"Failed to load entity '{entity_name}' ({category_str}): {e}"
+                )
+
+            progress_logger.info(  # type: ignore[union-attr]
+                f"Loading {category_str}: {entity_name} ({member_count} members)"
+            )
+            loaded_count += 1
+
+        if loaded_count > 0:
+            counts[category_str] = loaded_count
+
+    return counts
+
+
 def main() -> None:
     """Main entry point for the load script."""
     parser = argparse.ArgumentParser(
@@ -90,11 +193,21 @@ def main() -> None:
         type=Path,
         help="Path to root markdown output directory produced by convert.py",
     )
-    parser.add_argument(
+    section_group = parser.add_mutually_exclusive_group(required=True)
+    section_group.add_argument(
         "-s",
         "--section",
-        required=True,
-        help="Name of the documentation section to load (e.g., material, widgets)",
+        help="Name of a single documentation section to load",
+    )
+    section_group.add_argument(
+        "-S",
+        "--section-list",
+        type=Path,
+        metavar="FILE",
+        help=(
+            "Path to a text file containing section names to load, one per line."
+            " Blank lines and lines starting with '#' are ignored."
+        ),
     )
     parser.add_argument(
         "-o",
@@ -117,88 +230,63 @@ def main() -> None:
     notification_logger = get_notification_logger()
 
     doc_dir: Path = args.documents
-    section: str = args.section
     db_file: Path = args.output
 
-    validate_inputs(doc_dir, section, db_file)
+    # Resolve the list of sections to process
+    if args.section is not None:
+        sections: list[str] = [args.section]
+    else:
+        try:
+            sections = read_section_list(args.section_list)
+        except OSError as e:
+            log_processing_error(f"Cannot read section list file: {e}")
+        if not sections:
+            log_processing_error(
+                f"Section list file contains no sections: {args.section_list}"
+            )
 
-    # Open (or create) the database
+    # Validate global inputs (once)
+    validate_global_inputs(doc_dir, db_file)
+
+    # Open (or create) the database once for the entire run
     try:
         conn = open_or_create_db(db_file)
     except Exception as e:
         log_processing_error(f"Failed to open or initialize database {db_file}: {e}")
 
-    # Transaction 2: load library
-    lib_builder = PathBuilder(section=section, output_dir=doc_dir)
-    library_file = lib_builder.get_library_file()
-
-    if not library_file.exists():
-        notification_logger.info(
-            f"Library file not found, skipping section: {library_file}"
-        )
-        print(f"No library file found for section '{section}'")
-        sys.exit(0)
-
-    library_content = library_file.read_text()
-    try:
-        with conn:
-            library_id = upsert_library(conn, section, library_content)
-    except Exception as e:
-        log_processing_error(f"Failed to load library for section '{section}': {e}")
-
-    # Enumerate and load all entities
-    counts: dict[str, int] = {}
     total_entities = 0
+    all_counts: dict[str, int] = {}
+    skipped = 0
 
-    for category_type in ALL_CATEGORIES:
-        entity_names = list_entity_names(doc_dir, section, category_type)
-        if not entity_names:
-            continue
-
-        category_str = str(category_type)
-        loaded_count = 0
-
-        for entity_name in entity_names:
-            builder = PathBuilder(
-                section=section,
-                output_dir=doc_dir,
-                entity_name=entity_name,
-                entity_type=category_type,
-            )
-
-            entity_file = builder.get_entity_file()
-            if not entity_file.exists():
-                notification_logger.info(
-                    f"Entity file not found, skipping: {entity_file}"
-                )
+    try:
+        for section in sections:
+            if not _check_section_dir(doc_dir, section):
+                skipped += 1
                 continue
 
-            try:
-                member_count = load_entity(
-                    conn,
-                    builder=builder,
-                    library_id=library_id,
-                    entity_name=entity_name,
-                    category_type_str=category_str,
-                )
-            except Exception as e:
-                log_processing_error(
-                    f"Failed to load entity '{entity_name}' ({category_str}): {e}"
-                )
-
-            progress_logger.info(
-                f"Loading {category_str}: {entity_name} ({member_count} members)"
+            counts = process_section(
+                section, conn, doc_dir, progress_logger, notification_logger
             )
-            loaded_count += 1
-            total_entities += 1
+            if not counts:
+                # Library file was missing; section was already reported
+                skipped += 1
+                continue
 
-        if loaded_count > 0:
-            counts[category_str] = loaded_count
+            section_total = sum(counts.values())
+            total_entities += section_total
+            summary_parts = [f"{cat}: {n}" for cat, n in counts.items()]
+            print(f"Loaded section '{section}': {', '.join(summary_parts)}")
+
+            for cat, n in counts.items():
+                all_counts[cat] = all_counts.get(cat, 0) + n
+    finally:
+        conn.close()  # type: ignore[union-attr]
+
+    if skipped:
+        print(
+            f"Skipped {skipped} section(s) due to missing directories or library files."
+        )
 
     if total_entities == 0:
-        print(f"No entities found for section '{section}'")
+        print("No entities loaded.")
         sys.exit(0)
-
-    # Print summary
-    summary_parts = [f"{cat}: {n}" for cat, n in counts.items()]
-    print(f"Loaded section '{section}': {', '.join(summary_parts)}")
