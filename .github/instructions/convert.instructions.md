@@ -1,29 +1,32 @@
 ---
-description: "convert.py inputs, outputs, source structure, and test structure. Reference for load.py PRDs and implementation."
+description: "convert.py source structure, CLI, output layout, and test structure."
 name: convert_reference
-applyTo: "make_docs/src/flutterdocs/load/**,make_docs/tests/load/**"
+applyTo: "make_docs/src/flutterdocs/convert/**,make_docs/tests/convert/**"
 ---
 
 # convert.py Reference
 
 ## Purpose
 
-`convert.py` (registered as the `convert` script in `pyproject.toml`) converts Flutter/Dart HTML documentation into markdown files organized in a structured output directory. `load.py` reads this output and loads it into the sqlite3 database defined in `DOCDB_SCHEMA.sql`.
+`convert.py` (registered as the `convert` script in `pyproject.toml`) converts Flutter/Dart HTML documentation into markdown files organized in a structured output directory. Its output is consumed by `load.py` to populate the sqlite3 database.
 
 ## CLI Invocation
 
+`-s` and `-S` are mutually exclusive; exactly one is required.
+
 ```
-convert -d <doc_dir> -s <section> -o <output_dir> [-v]
+convert -d <doc_dir> (-s <section> | -S <section_list_file>) -o <output_dir> [-v]
 ```
 
 - `-d` / `--documents`: Root HTML documentation directory (contains `flutter/` and `snippets/` subdirectories).
-- `-s` / `--section`: Documentation section name (e.g., `material`, `widgets`, `foundation`).
-- `-o` / `--output`: Root output directory. convert.py writes to `<output_dir>/api/<section>/...`.
+- `-s` / `--section`: Single documentation section name (e.g., `material`).
+- `-S` / `--section-list`: Path to a text file of section names, one per line; blank lines and `#` comments are ignored.
+- `-o` / `--output`: Root output directory; writes to `<output_dir>/api/<section>/...`.
 - `-v` / `--verbose`: Enable verbose logging.
 
 ## Output Structure
 
-load.py MUST access all convert.py output exclusively via `PathBuilder` methods and `list_entity_names()`. Never construct output paths manually.
+All path construction goes through `PathBuilder` (in `_shared/paths.py`). Never construct output paths manually.
 
 `CategoryType` → subdirectory mapping (source of truth: `PathBuilder._get_category_subdir()`):
 
@@ -38,19 +41,13 @@ load.py MUST access all convert.py output exclusively via `PathBuilder` methods 
 | `FUNCTION` | `functions` |
 | `TYPEDEF` | `typedefs` |
 
-## Shared Code (used by both convert.py and load.py)
+## Shared Code
 
 All shared code lives in `make_docs/src/flutterdocs/_shared/`:
 
-- `constants.py`: `CategoryType` (StrEnum), `MemberType` (StrEnum), `ALL_CATEGORIES` (canonical iteration order).
-- `paths.py`: `PathBuilder` (immutable dataclass for all path construction), `ensure_dir_exists()`, `list_entity_names()`.
+- `constants.py`: `CategoryType` (StrEnum), `MemberType` (StrEnum), `ALL_CATEGORIES`.
+- `paths.py`: `PathBuilder`, `ensure_dir_exists()`, `list_entity_names()`, `read_section_list()`.
 - `logging.py`: `configure_logging()`, `get_progress_logger()`, `get_notification_logger()`, `log_processing_error()`.
-
-See `make_docs/PATHBUILDER_USAGE.md` for complete `PathBuilder` usage examples for load.py. Key points:
-- load.py omits `doc_dir` from `PathBuilder` (only `section`, `output_dir`, `entity_name`, `entity_type` needed).
-- Use `list_entity_names(output_dir, section, CategoryType.X)` to discover entities without a `PathBuilder`.
-- `builder.get_entity_file()` → root entity markdown file.
-- `builder.get_native_methods_dir()`, `builder.get_constructors_dir()`, etc. → member subdirectories; glob `*.md` to enumerate members.
 
 ## Source Structure
 
@@ -58,7 +55,7 @@ See `make_docs/PATHBUILDER_USAGE.md` for complete `PathBuilder` usage examples f
 make_docs/src/flutterdocs/
   _shared/
     constants.py       # CategoryType, MemberType, ALL_CATEGORIES
-    paths.py           # PathBuilder, ensure_dir_exists, list_entity_names
+    paths.py           # PathBuilder, ensure_dir_exists, list_entity_names, read_section_list
     logging.py         # Logging helpers
   convert/
     __main__.py        # Entry point (calls cli.main)
@@ -73,42 +70,19 @@ make_docs/src/flutterdocs/
     templates.py       # Markdown template helpers
 ```
 
-load.py should follow the same layered structure within `make_docs/src/flutterdocs/load/`:
-- `cli.py` for argument parsing and orchestration
-- `__main__.py` as entry point
-- Module(s) for entity-level loading (analogous to `rootdocs.py`)
-- Register an entry point script named `load` in `pyproject.toml` pointing to `flutterdocs.load.cli:main`
-
 ## Test Structure
-
-Convert tests live in `make_docs/tests/convert/` and are organized by type:
 
 ```
 tests/
   conftest.py          # Top-level: output_dir fixture (tmp_path)
   convert/
-    conftest.py        # Convert-specific fixtures and helpers:
-                       #   SAMPLES_DIR, run_convert(), build_entity_path_builder(),
-                       #   build_section_path_builder(), get_available_sections(),
-                       #   get_class_names_for_section()
+    conftest.py        # SAMPLES_DIR, run_convert(), build_entity_path_builder(),
+                       # build_section_path_builder(), get_available_sections(),
+                       # get_class_names_for_section()
     unit/              # Pure unit tests (no filesystem, no subprocess)
-      test_categorization.py
-      test_conversion.py
-      test_parsing.py
-      test_paths.py
-      test_patterns.py
-      test_transformations.py
     integration/       # End-to-end tests using sample HTML in samples/
-      samples/         # Small real Flutter HTML files used as test fixtures
-        flutter/
-          <section>/   # One subdirectory per section
+      samples/         # Small real Flutter HTML files used as fixtures
+        flutter/<section>/
         snippets/
-      test_basic_conversion.py
-      test_cli.py
-      test_entity_types.py
-      test_link_transformations.py
-      test_member_processing.py
 ```
-
-load.py tests should follow the same layout under `tests/load/`. The load.py sample data should be the markdown output produced by running `convert` against the convert.py HTML samples in `tests/convert/integration/samples/`. If convert.py's output format changes, the load.py samples must be regenerated.
 
