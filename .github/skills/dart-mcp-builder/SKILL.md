@@ -9,7 +9,7 @@ This skill provides guidance, references, and examples for building and maintain
 
 Both MCP server and client references are provided. Client references support developing a test client for the MCP server, which can be useful for integration testing and debugging.
 
-Links in this skill reference `dart_mcp` version `0.4.1`.
+Links in this skill reference `dart_mcp` version `0.4.1`, which is the latest version at the time of this writing. If a newer version becomes available, the links can be updated by replacing `dart_mcp-v0.4.1` with the appropriate version number in the URLs.
 
 ## Overview (`README.md`)
 
