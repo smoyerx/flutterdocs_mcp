@@ -10,13 +10,15 @@
 
 ## Database File
 
-The sqlite3 database file is bundled with the package at `lib/db/flutter_docs.db`. It is committed to the GitHub repository and distributed as part of the pub.dev package, so users receive it automatically on `dart pub global activate flutterdocs_mcp`. The database content is controlled and quality-checked by the project maintainer using the `make_docs/` tooling.
+The sqlite3 database file will be bundled with the package at `lib/db/flutter_docs.db`. The database content is controlled and quality-checked by the project maintainer using the `make_docs/` tooling.
+
+Note: In the future, we will explore options for distributing the database file via pub.dev without having to clone the project repo. However, that will be a separate effort after the initial MCP server implementation is complete.
 
 ## Inputs
 
 `flutterdocs_mcp.dart` accepts the following command-line argument:
 
-- Optional: `--db <path>`: Overrides the path to the sqlite3 database file. Useful for users who generate a custom database with the `make_docs/` tooling. If not provided, the server resolves the bundled database using `Isolate.packageUri('package:flutterdocs_mcp/db/flutter_docs.db')`. If the resolved path does not exist or is not readable, the server logs an error and exits with a non-zero exit code.
+- Mandatory: `--db <path>`: Path to the sqlite3 database file. If the path does not exist or is not readable, the server logs an error and exits with a non-zero exit code.
 
 ## Tools
 
@@ -25,8 +27,8 @@ The MCP server must implement the following tools.
 ### lookupEntity
 
 - name: "lookupEntity"
-- title: "Resolve Flutter entity (class, mixin, enum, extension, extension type, typedef, top-level function, top-level constant) by name"
-- description: "Finds Flutter entity (class, mixin, enum, extension, extension type, typedef, top-level function, top-level constant) by identifier name. Use this when you have an entity name (e.g., ListTile, HourFormat) and need to know which library (or libraries) it belongs to. Navigation Tip: Use the returned [library, entity] values to construct resource URIs: flutter-docs://api/{library}/{entity}."
+- title: "Resolve Flutter/Dart entity (class, mixin, enum, extension, extension type, typedef, top-level function, top-level constant) by name"
+- description: "Finds Flutter/Dart entity (class, mixin, enum, extension, extension type, typedef, top-level function, top-level constant) by identifier name. Use this when you have an entity name (e.g., ListTile, HourFormat) and need to know which library (or libraries) it belongs to. Navigation Tip: Use the returned [library, entity, category] values to construct resource URIs: flutter-docs://api/{library}/{entity}."
 - inputSchema:
 {
   "type": "object",
@@ -46,13 +48,13 @@ The MCP server must implement the following tools.
     { "type": "integer", "description": "The total number of entity name matches found." },
     {
       "type": "array",
-      "description": "List of up to 10 match results ([library, entity, entity category] tuples).",
+      "description": "List of up to 10 match results ([library, entity, category] tuples).",
       "items": {
         "type": "array",
         "prefixItems": [
           { "type": "string", "description": "Library name (e.g., 'material')." },
           { "type": "string", "description": "Entity name (e.g., 'ListTile')." },
-          { "type": "string", "description": "Entity category (e.g., 'class')." }
+          { "type": "string", "description": "Category of entity (e.g., 'class')." }
         ],
         "description": "Construct resource URIs from these results as: flutter-docs://api/{library}/{entity}"
       }
@@ -63,8 +65,8 @@ The MCP server must implement the following tools.
 ### lookupMember
 
 - name: "lookupMember"
-- title: "Resolve Flutter member (constructor, property, method, operator, constant, static method) by name and optional library hint."
-- description: "Finds Flutter member (constructor, property, method, operator, constant, static method) by identifier name and optional library hint. Use this when you have a member name (e.g., visualDensity, addMaterialState) and need to know which entity it belongs to. The optional library name hint limits the search to that library, which is useful for common member names. Navigation Tip: Use the returned [library, entity, member] values to construct resource URIs: flutter-docs://api/{library}/{entity}/{member}."
+- title: "Resolve Flutter/Dart member (constructor, property, method, operator, constant, static method) by name and optional library hint."
+- description: "Finds Flutter/Dart member (constructor, property, method, operator, constant, static method) by identifier name and optional library name hint. Use this when you have a member name (e.g., visualDensity, addMaterialState) and need to know which entity it belongs to. The optional library name hint limits the search to that library, which is useful for common member names. Navigation Tip: Use the returned [library, entity, member, category] values to construct resource URIs: flutter-docs://api/{library}/{entity}/{member}."
 - inputSchema:
 {
   "type": "object",
@@ -88,14 +90,14 @@ The MCP server must implement the following tools.
     { "type": "integer", "description": "The total number of member name matches found." },
     {
       "type": "array",
-      "description": "List of up to 10 match results ([library, entity, member, member category] tuples).",
+      "description": "List of up to 10 match results ([library, entity, member, category] tuples).",
       "items": {
         "type": "array",
         "prefixItems": [
           { "type": "string", "description": "Library name (e.g., 'material')." },
           { "type": "string", "description": "Entity name (e.g., 'ListTile')." },
           { "type": "string", "description": "Member name (e.g., 'visualDensity')." },
-          { "type": "string", "description": "Member category (e.g., 'property')." }
+          { "type": "string", "description": "Category of member (e.g., 'property')." }
         ],
         "description": "Construct resource URIs from these results as: flutter-docs://api/{library}/{entity}/{member}"
       }
@@ -111,7 +113,7 @@ The MCP server must implement the following resource templates.
 
 - uriTemplate: "flutter-docs://api/{library}"
 - name: "libraryIndex"
-- title: "Flutter library documentation index"
+- title: "Flutter/Dart library documentation index"
 - description: "High-level summary of the library and all of its entities (classes, mixins, enums, extensions, extension types, typedefs, top-level functions, top-level constants). Contains embedded navigation links (resource URIs) to the detailed documentation for each entity."
 - annotations: {"audience": ["user", "assistant"]}
 
@@ -119,16 +121,16 @@ The MCP server must implement the following resource templates.
 
 - uriTemplate: "flutter-docs://api/{library}/{entity}"
 - name: "entityDocumentation"
-- title: "Flutter entity documentation"
-- description: "Detailed documentation for the Flutter entity (class, mixin, enum, extension, extension type, typedef, top-level function, top-level constant) in the specified library. Includes a summary of all its members (constructors, properties, methods, operators, constants, static methods), with embedded navigation links (resource URIs) to the detailed documentation for each member."
+- title: "Flutter/Dart entity documentation"
+- description: "Detailed documentation for the Flutter/Dart entity (class, mixin, enum, extension, extension type, typedef, top-level function, top-level constant) in the specified library. Includes a summary of all its members (constructors, properties, methods, operators, constants, static methods), with embedded navigation links (resource URIs) to the detailed documentation for each member."
 - annotations: {"audience": ["user", "assistant"]}
 
 ### memberDocumentation
 
 - uriTemplate: "flutter-docs://api/{library}/{entity}/{member}"
 - name: "memberDocumentation"
-- title: "Flutter member documentation"
-- description: "Detailed documentation for the Flutter member (constructor, property, method, operator, constant, static method) of the specified entity in the specified library."
+- title: "Flutter/Dart member documentation"
+- description: "Detailed documentation for the Flutter/Dart member (constructor, property, method, operator, constant, static method) of the specified entity in the specified library."
 - annotations: {"audience": ["user", "assistant"]}
 
 ## Database Queries to Implement Tool and Resource Functionality
@@ -153,7 +155,7 @@ SELECT library_id, entity_type_id FROM entity WHERE identifier_id = ? LIMIT 10
 
 Post-process each row: entity name = the input `name`; library name = `libraryById[library_id].name`; entity category = `entityTypeIdToName[entity_type_id]`.
 
-Both queries use the `idx_entity_identifier` index on `entity(identifier_id)`.
+Both queries use the `idx_entity_unique` index on `entity(identifier_id, library_id)`, with the leading `identifier_id` column satisfying the filter.
 
 ### lookupMember
 
@@ -192,7 +194,7 @@ LIMIT 10
 
 Post-process each row: member name = the input `name`; library name = `libraryById[library_id].name` (or the known `libraryHint`); entity name = `identifierIdToName[e.identifier_id]`; member category = `memberTypeIdToName[member_type_id]`.
 
-Both variants use the `idx_member_identifier` index on `member(identifier_id)`.
+Both variants use the `idx_member_unique` index on `member(identifier_id, entity_id)`, with the leading `identifier_id` column satisfying the filter.
 
 ### libraryIndex resource
 
@@ -238,9 +240,25 @@ Tools return a `CallToolResult` with `isError: true`. A short, human-readable er
 
 ### Resource errors
 
-Resource reads return an `ReadResourceResult`. Cases to handle:
+Resource template handlers have the return type `FutureOr<ReadResourceResult?>`. Returning `null` signals "not matched" (the framework tries the next template); throwing an exception signals an error. The two cases to handle:
 
-- `library`, `entity`, or `member` not found in the database → return an MCP error response (throw `McpError` with an appropriate error code and message).
+- **URI matched but content not found** (e.g., unknown library/entity/member): throw `RpcException(-32002, 'Resource not found', data: {'uri': request.uri})`. The `json_rpc_2` layer passes `RpcException` through unchanged, producing exactly the MCP-spec error response:
+  ```json
+  {
+    "jsonrpc": "2.0",
+    "id": 5,
+    "error": {
+      "code": -32002,
+      "message": "Resource not found",
+      "data": { "uri": "flutter-docs://api/{library}/{entity}" }
+    }
+  }
+  ```
+  `RpcException` is from `package:json_rpc_2/json_rpc_2.dart`. It is a direct dependency of `dart_mcp` and must also be declared as a direct dependency in `pubspec.yaml` so that the import is explicit.
+
+- **URI not matched** (no template applies): return `null` to let the framework fall through. This should not occur in practice since the three templates cover all valid `flutter-docs://api/...` URIs.
+
+
 
 ## Performance Optimizations
 
@@ -265,10 +283,12 @@ With these caches in place:
 
 ### Other optimizations
 
-- The sqlite3 database is opened once in the `DocDatabase` constructor and kept open for the lifetime of the process.
+- The sqlite3 database is opened once in the `DocDatabase` constructor, in read-only mode (`OpenMode.readOnly`), and kept open for the lifetime of the process. Read-only mode prevents accidental writes and allows the OS to share a single memory-mapped copy of the file across multiple processes.
 - All runtime SQL statements (`lookupEntity`, `lookupMember`, `entityDocumentation`, `memberDocumentation`) are compiled into prepared statements once at startup and reused across requests.
 
 ## Source Structure
+
+> **Pre-implementation note**: Before implementation begins, the maintainer will manually create the `flutterdocs_mcp/` Dart package directory, initialize `pubspec.yaml`, and run `dart pub get` to install dependencies. This manual bootstrapping step is not part of implementing this PRD.
 
 The package follows the standard Dart convention of separating public API (`lib/`) from implementation (`lib/src/`) to maximize the pub.dev pana score while keeping the server's internal structure clean.
 
@@ -330,7 +350,7 @@ flutterdocs_mcp/                  ← Dart package root (to be created)
 /// dart pub global activate flutterdocs_mcp
 /// flutterdocs_mcp --db /path/to/flutter_docs.db
 /// ```
-library flutterdocs_mcp;
+library;
 
 export 'src/server.dart';
 ```
@@ -369,6 +389,7 @@ dependencies:
   dart_mcp: ^0.4.1
   sqlite3: ^2.7.4        # bundles SQLite natively; no external libsqlite3 required
   args: ^2.6.0
+  json_rpc_2: ^3.0.2    # for RpcException used in resource not-found error handling
 
 dev_dependencies:
   lints: ^4.0.0
@@ -396,10 +417,57 @@ A `CHANGELOG.md` is required for a good pana score and must be present from the 
 
 ### Test database
 
-Tests use a minimal sqlite3 database created in-memory or written to a temp file during test setup (`setUp`) and deleted during teardown (`tearDown`). Fixture data should cover at least two libraries, one entity per library with multiple member types, to exercise the join logic.
+The fixture database is **not** committed to the repository. Instead, it is generated at test startup using `setUpAll()` and cleaned up in `tearDownAll()` via `dart:io`'s `Process.run()`.
 
-## Open Questions
+**Tests must be run from the repository root.** This is a deliberate restriction — these tests are intended to be run by the repo maintainer only — and it eliminates the need to locate the repo root dynamically at runtime.
 
-1. **Resource not-found behavior**: Unlike tools — where returning a total count of 0 with an empty result list is a valid non-error response — resources return text content, not structured result objects. There is no "zero results" concept for a resource: a resource either has content or it does not exist. The MCP spec recommends throwing an error for resources that cannot be resolved. The current design (throw `McpError`) reflects this guidance. **Confirm this is acceptable**, or clarify if a non-error empty-content response is preferred for any of the three resource types.
+`setUpAll()` creates a temporary file, then invokes the two `uv run load` commands to populate it. All paths are relative to the repo root (the working directory):
 
-2. **Bundled database path resolution**: The default db path is resolved at runtime using `Isolate.packageUri('package:flutterdocs_mcp/db/flutter_docs.db')`. Confirm this resolution strategy is acceptable and clarify the expected behavior if the resolved path does not exist (e.g., during development before the db has been generated for the first time): should the server fail immediately with a clear error, or fall back to a well-known user-local path such as `~/.local/share/flutterdocs_mcp/flutter_docs.db`?
+```dart
+import 'dart:io';
+
+late File _testDb;
+
+setUpAll(() async {
+  _testDb = await File.fromUri(
+    Directory.systemTemp.uri.resolve('flutterdocs_mcp_test.db'),
+  ).create();
+
+  for (final suite in ['material', 'widgets']) {
+    final result = await Process.run(
+      'uv',
+      [
+        'run', 'load',
+        '-d', 'tests/load/integration/samples',
+        '-s', suite,
+        '-o', _testDb.path,
+      ],
+      workingDirectory: 'make_docs',
+    );
+    if (result.exitCode != 0) {
+      throw StateError('uv run load failed for $suite:\n${result.stderr}');
+    }
+  }
+});
+
+tearDownAll(() async {
+  await _testDb.delete();
+});
+```
+
+This produces a two-library (`material`, `widgets`) database from the committed `make_docs/` integration test samples, which are fully deterministic. The approach requires `uv` to be installed and the `make_docs/` Python environment to be available, but avoids storing a binary sqlite3 file in git.
+
+
+
+## Resolved Decisions
+
+1. **Resource not-found error code**: Throw `RpcException(-32002, 'Resource not found', data: {'uri': request.uri})` from `package:json_rpc_2/json_rpc_2.dart`. The `dart_mcp` package does not define a `McpError` class or error-code constants; it delegates to `json_rpc_2`'s `Peer`, which passes `RpcException` instances through to the client unchanged. Any non-`RpcException` exception would be silently wrapped as a generic -32603 error, so `RpcException` must be used explicitly.
+
+2. **Database distribution**: Deferred. The database file (`flutter_docs.db`) is committed to the repository and users can obtain it by cloning the repo or downloading it directly. For the initial implementation, `--db` is mandatory; there is no default path. Options for bundling the database in the pub.dev package (e.g., `lib/db/`) will be evaluated separately after the initial server implementation is complete.
+
+3. **Dart SDK minimum version**: `>=3.9.0 <4.0.0` (required by the latest `dart_mcp` and `sqlite3`).
+
+4. **sqlite3 dependency**: Use latest `sqlite3`. The package bundles SQLite via Dart hooks; no external `libsqlite3` system library is required.
+
+5. **Pre-implementation setup**: The maintainer will manually create the `flutterdocs_mcp/` Dart package, `pubspec.yaml`, and run `dart pub get` before implementation begins. This is not a step in implementing the PRD.
+

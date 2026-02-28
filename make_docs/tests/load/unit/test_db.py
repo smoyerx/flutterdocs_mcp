@@ -60,9 +60,7 @@ class TestInitDb:
     def test_creates_indexes(self, mem_conn: sqlite3.Connection) -> None:
         """Expected indexes must be created."""
         expected = {
-            "idx_entity_identifier",
             "idx_entity_unique",
-            "idx_member_identifier",
             "idx_member_unique",
         }
         rows = mem_conn.execute(

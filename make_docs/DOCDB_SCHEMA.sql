@@ -44,8 +44,6 @@ CREATE TABLE member (
     FOREIGN KEY (member_type_id) REFERENCES member_type(id)
 );
 
-CREATE INDEX idx_entity_identifier ON entity(identifier_id);
 CREATE INDEX idx_entity_unique ON entity(identifier_id, library_id);
 
-CREATE INDEX idx_member_identifier ON member(identifier_id);
 CREATE INDEX idx_member_unique ON member(identifier_id, entity_id);
