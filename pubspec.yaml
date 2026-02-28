@@ -1,0 +1,20 @@
+name: flutterdocs_mcp
+description: An MCP server for Flutter and Dart API documentation.
+version: 0.0.1
+repository: https://github.com/smoyerx/flutterdocs_mcp
+
+executables:
+  flutterdocs_mcp: flutterdocs_mcp
+
+environment:
+  sdk: ^3.10.4
+
+dependencies:
+  args: ^2.7.0
+  dart_mcp: ^0.4.1
+  json_rpc_2: ^4.1.0
+  sqlite3: ^3.1.6
+
+dev_dependencies:
+  lints: ^6.0.0
+  test: ^1.25.6

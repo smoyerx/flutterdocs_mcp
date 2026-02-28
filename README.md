@@ -1,2 +1,4 @@
-# flutterdocs_mcp
-Flutter documentation your LLM can navigate and understand.
+# FlutterDocs MCP Server
+
+Flutter documentation your LLM can predict, navigate, and understand.
+
