@@ -118,7 +118,7 @@ class TestUpsertEntity:
         """upsert_entity must return a positive integer id."""
         lib_id, ident_id, type_id = self._setup(mem_conn)
         with mem_conn:
-            eid = upsert_entity(mem_conn, lib_id, ident_id, type_id, "# content", None)
+            eid = upsert_entity(mem_conn, lib_id, ident_id, type_id, "# content")
         assert isinstance(eid, int)
         assert eid > 0
 
@@ -126,23 +126,28 @@ class TestUpsertEntity:
         """Re-upserting the same entity must return the same id."""
         lib_id, ident_id, type_id = self._setup(mem_conn)
         with mem_conn:
-            eid1 = upsert_entity(mem_conn, lib_id, ident_id, type_id, "v1", None)
+            eid1 = upsert_entity(mem_conn, lib_id, ident_id, type_id, "v1")
         with mem_conn:
-            eid2 = upsert_entity(mem_conn, lib_id, ident_id, type_id, "v2", None)
+            eid2 = upsert_entity(mem_conn, lib_id, ident_id, type_id, "v2")
         assert eid1 == eid2
 
     def test_update_changes_content(self, mem_conn: sqlite3.Connection) -> None:
         """Re-upserting must update content_markdown."""
         lib_id, ident_id, type_id = self._setup(mem_conn)
         with mem_conn:
-            upsert_entity(mem_conn, lib_id, ident_id, type_id, "old", None)
+            upsert_entity(mem_conn, lib_id, ident_id, type_id, "old")
         with mem_conn:
-            upsert_entity(mem_conn, lib_id, ident_id, type_id, "new", "snippet")
-        row = mem_conn.execute(
-            "SELECT content_markdown, snippet_markdown FROM entity"
-        ).fetchone()
+            upsert_entity(mem_conn, lib_id, ident_id, type_id, "new")
+        row = mem_conn.execute("SELECT content_markdown FROM entity").fetchone()
         assert row["content_markdown"] == "new"
-        assert row["snippet_markdown"] == "snippet"
+
+    def test_entity_has_no_snippet_markdown_column(
+        self, mem_conn: sqlite3.Connection
+    ) -> None:
+        """The entity table must not have a snippet_markdown column."""
+        rows = mem_conn.execute("PRAGMA table_info(entity)").fetchall()
+        column_names = {row["name"] for row in rows}
+        assert "snippet_markdown" not in column_names
 
 
 class TestUpsertMember:
@@ -157,9 +162,7 @@ class TestUpsertMember:
                 "SELECT id FROM identifier WHERE name = 'ListTile'"
             ).fetchone()["id"]
             etype_id = get_entity_type_id(conn, "class")
-            entity_id = upsert_entity(
-                conn, lib_id, ent_ident_id, etype_id, "content", None
-            )
+            entity_id = upsert_entity(conn, lib_id, ent_ident_id, etype_id, "content")
 
             conn.execute("INSERT OR IGNORE INTO identifier(name) VALUES ('build')")
             mem_ident_id = conn.execute(

@@ -51,7 +51,8 @@ def collect_snippets(builder: PathBuilder) -> str | None:
     snippet_files = sorted(snippets_dir.glob("*.md"), key=lambda p: p.name)
     if not snippet_files:
         return None
-    return "\n\n".join(f.read_text() for f in snippet_files)
+    concatenated = "\n\n".join(f.read_text() for f in snippet_files)
+    return "\n\n## Code Examples\n\n" + concatenated
 
 
 def collect_members(
@@ -105,7 +106,9 @@ def load_entity(
     """
     entity_file = builder.get_entity_file()
     content_markdown = entity_file.read_text()
-    snippet_markdown = collect_snippets(builder)
+    snippet_appendage = collect_snippets(builder)
+    if snippet_appendage is not None:
+        content_markdown += snippet_appendage
     members = collect_members(builder)
 
     entity_type_id = get_entity_type_id(conn, category_type_str)
@@ -118,7 +121,6 @@ def load_entity(
             identifier_id=identifier_id,
             entity_type_id=entity_type_id,
             content_markdown=content_markdown,
-            snippet_markdown=snippet_markdown,
         )
         for member_name, member_type, member_file in members:
             member_markdown = member_file.read_text()

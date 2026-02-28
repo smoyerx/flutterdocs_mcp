@@ -38,7 +38,6 @@ CREATE TABLE entity (
     identifier_id INTEGER NOT NULL,
     entity_type_id INTEGER NOT NULL,
     content_markdown TEXT NOT NULL,
-    snippet_markdown TEXT,
     UNIQUE(identifier_id, library_id),
     FOREIGN KEY (library_id) REFERENCES library(id),
     FOREIGN KEY (identifier_id) REFERENCES identifier(id),
@@ -192,7 +191,6 @@ def upsert_entity(
     identifier_id: int,
     entity_type_id: int,
     content_markdown: str,
-    snippet_markdown: str | None,
 ) -> int:
     """Insert or update an entity row and return its id.
 
@@ -203,21 +201,20 @@ def upsert_entity(
         library_id: Foreign key to library.id.
         identifier_id: Foreign key to identifier.id for the entity name.
         entity_type_id: Foreign key to entity_type.id.
-        content_markdown: Markdown content of the entity root file.
-        snippet_markdown: Concatenated snippet markdown, or None.
+        content_markdown: Markdown content of the entity root file, including
+            any appended snippet content.
 
     Returns:
         The integer id of the entity row.
     """
     conn.execute(
         """
-        INSERT INTO entity(library_id, identifier_id, entity_type_id, content_markdown, snippet_markdown)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO entity(library_id, identifier_id, entity_type_id, content_markdown)
+        VALUES (?, ?, ?, ?)
         ON CONFLICT(identifier_id, library_id) DO UPDATE SET
-            content_markdown = excluded.content_markdown,
-            snippet_markdown = excluded.snippet_markdown
+            content_markdown = excluded.content_markdown
         """,
-        (library_id, identifier_id, entity_type_id, content_markdown, snippet_markdown),
+        (library_id, identifier_id, entity_type_id, content_markdown),
     )
     row = conn.execute(
         "SELECT id FROM entity WHERE identifier_id = ? AND library_id = ?",

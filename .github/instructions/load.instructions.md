@@ -39,7 +39,7 @@ All shared code lives in `make_docs/src/flutterdocs/_shared/`:
 Key `PathBuilder` usage (omit `doc_dir`; use `output_dir` for `doc_dir`):
 - `builder.get_library_file()` → section library markdown file.
 - `builder.get_entity_file()` → root entity markdown file.
-- `builder.get_snippets_dir()` → snippets directory; glob `*.md` for snippet files.
+- `builder.get_snippets_dir()` → snippets directory; glob `*.md` for snippet files. If snippets exist, they are sorted alphabetically, joined with `"\n\n"`, prefixed with `"\n\n## Code Examples\n\n"`, and appended to `entity.content_markdown`. There is no separate snippet column.
 - `builder.get_constructors_dir()`, `builder.get_native_methods_dir()`, etc. → member subdirectories; glob `*.md` to enumerate members.
 
 ## Source Structure

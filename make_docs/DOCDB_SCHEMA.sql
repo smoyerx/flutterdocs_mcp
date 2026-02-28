@@ -25,7 +25,6 @@ CREATE TABLE entity (
     identifier_id INTEGER NOT NULL,
     entity_type_id INTEGER NOT NULL,
     content_markdown TEXT NOT NULL,
-    snippet_markdown TEXT,
     UNIQUE(identifier_id, library_id),
     FOREIGN KEY (library_id) REFERENCES library(id),
     FOREIGN KEY (identifier_id) REFERENCES identifier(id),

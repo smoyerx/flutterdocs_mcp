@@ -58,13 +58,13 @@ class TestEntityLoading:
         conn.close()
         assert orphan_count == 0
 
-    def test_entity_snippet_markdown(self, db_path: Path) -> None:
-        """At least one entity with snippets must have non-null snippet_markdown."""
+    def test_entity_snippets_in_content_markdown(self, db_path: Path) -> None:
+        """Entities with snippets must have '## Code Examples' in content_markdown."""
         run_load(SAMPLES_DIR, "material", db_path)
         conn = sqlite3.connect(db_path)
         conn.row_factory = sqlite3.Row
         count = conn.execute(
-            "SELECT COUNT(*) FROM entity WHERE snippet_markdown IS NOT NULL"
+            "SELECT COUNT(*) FROM entity WHERE content_markdown LIKE '%## Code Examples%'"
         ).fetchone()[0]
         conn.close()
         # The material samples include snippet files for some entities
