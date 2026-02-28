@@ -288,13 +288,15 @@ With these caches in place:
 
 ## Source Structure
 
-> **Pre-implementation note**: Before implementation begins, the maintainer will manually create the `flutterdocs_mcp/` Dart package directory, initialize `pubspec.yaml`, and run `dart pub get` to install dependencies. This manual bootstrapping step is not part of implementing this PRD.
+> **Pre-implementation note**: The Dart package lives at the **repository root** — `pubspec.yaml`, `lib/`, `bin/`, etc. are added directly alongside the existing `make_docs/` and `prd/` directories. Before implementation begins, the maintainer will initialize `pubspec.yaml` at the repo root and run `dart pub get`. This manual bootstrapping step is not part of implementing this PRD.
+
+The Dart package lives at the repository root. This is required for correct pub.dev integration: `dart pub global activate` and all pub.dev scoring tools expect `pubspec.yaml` at the repo root. The `make_docs/` directory is existing Python tooling and reads naturally as a subdirectory of the Dart project.
 
 The package follows the standard Dart convention of separating public API (`lib/`) from implementation (`lib/src/`) to maximize the pub.dev pana score while keeping the server's internal structure clean.
 
 ```
-flutterdocs_mcp/                  ← Dart package root (to be created)
-  pubspec.yaml
+<repo root>/
+  pubspec.yaml                    ← Dart package manifest
   CHANGELOG.md
   README.md
   lib/
@@ -312,6 +314,8 @@ flutterdocs_mcp/                  ← Dart package root (to be created)
     example.md                    ← MCP client configuration snippets (Claude Desktop, VS Code Copilot, etc.)
   test/
     ...                           ← see Testing and Validation
+  make_docs/                      ← existing Python tooling for generating flutter_docs.db (unchanged)
+  prd/                            ← existing PRD documents (unchanged)
 ```
 
 ### Key class: `FlutterDocsMcpServer`
@@ -469,5 +473,5 @@ This produces a two-library (`material`, `widgets`) database from the committed 
 
 4. **sqlite3 dependency**: Use latest `sqlite3`. The package bundles SQLite via Dart hooks; no external `libsqlite3` system library is required.
 
-5. **Pre-implementation setup**: The maintainer will manually create the `flutterdocs_mcp/` Dart package, `pubspec.yaml`, and run `dart pub get` before implementation begins. This is not a step in implementing the PRD.
+5. **Pre-implementation setup**: The maintainer will initialize `pubspec.yaml` at the **repository root** (not in a subdirectory) and run `dart pub get` before implementation begins. This is not a step in implementing the PRD.
 
