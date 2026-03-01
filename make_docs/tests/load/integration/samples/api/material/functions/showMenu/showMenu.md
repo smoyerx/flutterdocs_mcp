@@ -1,6 +1,6 @@
 # showMenu<T> function
 
-[Future](flutter-docs://api/dart-async/Future)<T?>showMenu<T>({
+[Future](flutter-docs://api/dart-async/Future)<T?> showMenu<T>({
 required [BuildContext](flutter-docs://api/widgets/BuildContext) context,
 [RelativeRect](flutter-docs://api/rendering/RelativeRect)? position,
 [PopupMenuPositionBuilder](flutter-docs://api/material/PopupMenuPositionBuilder)? positionBuilder,

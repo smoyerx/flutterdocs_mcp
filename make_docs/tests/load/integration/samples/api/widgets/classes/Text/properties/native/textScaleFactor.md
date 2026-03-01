@@ -5,7 +5,7 @@
 [double](flutter-docs://api/dart-core/double)? textScaleFactor
 
 
-Deprecated. Will be removed in a future version of Flutter. Use[textScaler](flutter-docs://api/widgets/Text/textScaler) instead.
+Deprecated. Will be removed in a future version of Flutter. Use [textScaler](flutter-docs://api/widgets/Text/textScaler) instead.
 
 The number of font pixels for each logical pixel.
 

@@ -3,7 +3,7 @@
 1. @[protected](flutter-docs://api/meta/protected)
 2. @[mustCallSuper](flutter-docs://api/meta/mustCallSuper)
 
-voiddeactivate()
+void deactivate()
 
 Called when this object is removed from the tree.
 

@@ -3,7 +3,7 @@
 1. @[protected](flutter-docs://api/meta/protected)
 2. @[mustCallSuper](flutter-docs://api/meta/mustCallSuper)
 
-voiddidChangeDependencies()
+void didChangeDependencies()
 
 Called when a dependency of this [State](flutter-docs://api/widgets/State) object changes.
 

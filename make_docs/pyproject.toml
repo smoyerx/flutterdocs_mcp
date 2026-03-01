@@ -3,7 +3,7 @@ name = "flutterdocs"
 version = "0.2.0"
 requires-python = ">=3.12"
 dependencies = [
-    "html-to-markdown==2.24.1",
+    "html-to-markdown==2.27.1",
 ]
 
 [project.scripts]

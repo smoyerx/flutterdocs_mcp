@@ -1,12 +1,12 @@
 # divideTiles static method
 
-[Iterable](flutter-docs://api/dart-core/Iterable)<[Widget](flutter-docs://api/widgets/Widget)>divideTiles({
+[Iterable](flutter-docs://api/dart-core/Iterable)<[Widget](flutter-docs://api/widgets/Widget)> divideTiles({
 [BuildContext](flutter-docs://api/widgets/BuildContext)? context,
 required [Iterable](flutter-docs://api/dart-core/Iterable)<[Widget](flutter-docs://api/widgets/Widget)> tiles,
 [Color](flutter-docs://api/dart-ui/Color)? color,
 })
 
-Add a one pixel border in between each tile. If color isn't specified the[ThemeData.dividerColor](flutter-docs://api/material/ThemeData/dividerColor) of the context's [Theme](flutter-docs://api/material/Theme) is used.
+Add a one pixel border in between each tile. If color isn't specified the [ThemeData.dividerColor](flutter-docs://api/material/ThemeData/dividerColor) of the context's [Theme](flutter-docs://api/material/Theme) is used.
 
 See also:
 

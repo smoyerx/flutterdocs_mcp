@@ -5648,381 +5648,381 @@ Returns the [AxisDirection](flutter-docs://api/painting/AxisDirection) in which 
 
 ## Typedefs
 
-[ActionListenerCallback](flutter-docs://api/widgets/ActionListenerCallback)= void Function([Action](flutter-docs://api/widgets/Action)<[Intent](flutter-docs://api/widgets/Intent)> action)
+[ActionListenerCallback](flutter-docs://api/widgets/ActionListenerCallback) = void Function([Action](flutter-docs://api/widgets/Action)<[Intent](flutter-docs://api/widgets/Intent)> action)
 The kind of callback that an [Action](flutter-docs://api/widgets/Action) uses to notify of changes to the
 action's state.
 
-[AnimatableCallback](flutter-docs://api/animation/AnimatableCallback)<T>= T Function([double](flutter-docs://api/dart-core/double) value)
+[AnimatableCallback](flutter-docs://api/animation/AnimatableCallback)<T> = T Function([double](flutter-docs://api/dart-core/double) value)
 A typedef used by [Animatable.fromCallback](flutter-docs://api/animation/Animatable/Animatable.fromCallback) to create an [Animatable](flutter-docs://api/animation/Animatable) from a callback.
 
-[AnimatedCrossFadeBuilder](flutter-docs://api/widgets/AnimatedCrossFadeBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([Widget](flutter-docs://api/widgets/Widget) topChild, [Key](flutter-docs://api/foundation/Key) topChildKey, [Widget](flutter-docs://api/widgets/Widget) bottomChild, [Key](flutter-docs://api/foundation/Key) bottomChildKey)
+[AnimatedCrossFadeBuilder](flutter-docs://api/widgets/AnimatedCrossFadeBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([Widget](flutter-docs://api/widgets/Widget) topChild, [Key](flutter-docs://api/foundation/Key) topChildKey, [Widget](flutter-docs://api/widgets/Widget) bottomChild, [Key](flutter-docs://api/foundation/Key) bottomChildKey)
 Signature for the [AnimatedCrossFade.layoutBuilder](flutter-docs://api/widgets/AnimatedCrossFade/layoutBuilder) callback.
 
-[AnimatedItemBuilder](flutter-docs://api/widgets/AnimatedItemBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [int](flutter-docs://api/dart-core/int) index, [Animation](flutter-docs://api/animation/Animation)<[double](flutter-docs://api/dart-core/double)> animation)
+[AnimatedItemBuilder](flutter-docs://api/widgets/AnimatedItemBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [int](flutter-docs://api/dart-core/int) index, [Animation](flutter-docs://api/animation/Animation)<[double](flutter-docs://api/dart-core/double)> animation)
 Signature for the builder callback used by [AnimatedList](flutter-docs://api/widgets/AnimatedList), [AnimatedList.separated](flutter-docs://api/widgets/AnimatedList/AnimatedList.separated) & [AnimatedGrid](flutter-docs://api/widgets/AnimatedGrid) to build their animated children.
 
-[AnimatedRemovedItemBuilder](flutter-docs://api/widgets/AnimatedRemovedItemBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [Animation](flutter-docs://api/animation/Animation)<[double](flutter-docs://api/dart-core/double)> animation)
+[AnimatedRemovedItemBuilder](flutter-docs://api/widgets/AnimatedRemovedItemBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [Animation](flutter-docs://api/animation/Animation)<[double](flutter-docs://api/dart-core/double)> animation)
 Signature for the builder callback used in `AnimatedListState.removeItem` and
 `AnimatedGridState.removeItem` to animate their children after they have
 been removed.
 
-[AnimatedSwitcherLayoutBuilder](flutter-docs://api/widgets/AnimatedSwitcherLayoutBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([Widget](flutter-docs://api/widgets/Widget)? currentChild, [List](flutter-docs://api/dart-core/List)<[Widget](flutter-docs://api/widgets/Widget)> previousChildren)
+[AnimatedSwitcherLayoutBuilder](flutter-docs://api/widgets/AnimatedSwitcherLayoutBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([Widget](flutter-docs://api/widgets/Widget)? currentChild, [List](flutter-docs://api/dart-core/List)<[Widget](flutter-docs://api/widgets/Widget)> previousChildren)
 Signature for builders used to generate custom layouts for
 [AnimatedSwitcher](flutter-docs://api/widgets/AnimatedSwitcher).
 
-[AnimatedSwitcherTransitionBuilder](flutter-docs://api/widgets/AnimatedSwitcherTransitionBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([Widget](flutter-docs://api/widgets/Widget) child, [Animation](flutter-docs://api/animation/Animation)<[double](flutter-docs://api/dart-core/double)> animation)
+[AnimatedSwitcherTransitionBuilder](flutter-docs://api/widgets/AnimatedSwitcherTransitionBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([Widget](flutter-docs://api/widgets/Widget) child, [Animation](flutter-docs://api/animation/Animation)<[double](flutter-docs://api/dart-core/double)> animation)
 Signature for builders used to generate custom transitions for
 [AnimatedSwitcher](flutter-docs://api/widgets/AnimatedSwitcher).
 
-[AnimatedTransitionBuilder](flutter-docs://api/widgets/AnimatedTransitionBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [Animation](flutter-docs://api/animation/Animation)<[double](flutter-docs://api/dart-core/double)> animation, [Widget](flutter-docs://api/widgets/Widget)? child)
+[AnimatedTransitionBuilder](flutter-docs://api/widgets/AnimatedTransitionBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [Animation](flutter-docs://api/animation/Animation)<[double](flutter-docs://api/dart-core/double)> animation, [Widget](flutter-docs://api/widgets/Widget)? child)
 Builder callback used by [DualTransitionBuilder](flutter-docs://api/widgets/DualTransitionBuilder).
 
-[AnimationStatusListener](flutter-docs://api/animation/AnimationStatusListener)= void Function([AnimationStatus](flutter-docs://api/animation/AnimationStatus) status)
+[AnimationStatusListener](flutter-docs://api/animation/AnimationStatusListener) = void Function([AnimationStatus](flutter-docs://api/animation/AnimationStatus) status)
 Signature for listeners attached using [Animation.addStatusListener](flutter-docs://api/animation/Animation/addStatusListener).
 
-[AppExitRequestCallback](flutter-docs://api/widgets/AppExitRequestCallback)= [Future](flutter-docs://api/dart-async/Future)<[AppExitResponse](flutter-docs://api/dart-ui/AppExitResponse)> Function()
+[AppExitRequestCallback](flutter-docs://api/widgets/AppExitRequestCallback) = [Future](flutter-docs://api/dart-async/Future)<[AppExitResponse](flutter-docs://api/dart-ui/AppExitResponse)> Function()
 A callback type that is used by [AppLifecycleListener.onExitRequested](flutter-docs://api/widgets/AppLifecycleListener/onExitRequested) to
 ask the application if it wants to cancel application termination or not.
 
-[AppPrivateCommandCallback](flutter-docs://api/widgets/AppPrivateCommandCallback)= void Function([String](flutter-docs://api/dart-core/String) action, [Map](flutter-docs://api/dart-core/Map)<[String](flutter-docs://api/dart-core/String), dynamic> data)
+[AppPrivateCommandCallback](flutter-docs://api/widgets/AppPrivateCommandCallback) = void Function([String](flutter-docs://api/dart-core/String) action, [Map](flutter-docs://api/dart-core/Map)<[String](flutter-docs://api/dart-core/String), dynamic> data)
 Signature for the callback that reports the app private command results.
 
-[AsyncWidgetBuilder](flutter-docs://api/widgets/AsyncWidgetBuilder)<T>= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [AsyncSnapshot](flutter-docs://api/widgets/AsyncSnapshot)<T> snapshot)
+[AsyncWidgetBuilder](flutter-docs://api/widgets/AsyncWidgetBuilder)<T> = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [AsyncSnapshot](flutter-docs://api/widgets/AsyncSnapshot)<T> snapshot)
 Signature for strategies that build widgets based on asynchronous
 interaction.
 
-[AutocompleteFieldViewBuilder](flutter-docs://api/widgets/AutocompleteFieldViewBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [TextEditingController](flutter-docs://api/widgets/TextEditingController) textEditingController, [FocusNode](flutter-docs://api/widgets/FocusNode) focusNode, [VoidCallback](flutter-docs://api/dart-ui/VoidCallback) onFieldSubmitted)
+[AutocompleteFieldViewBuilder](flutter-docs://api/widgets/AutocompleteFieldViewBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [TextEditingController](flutter-docs://api/widgets/TextEditingController) textEditingController, [FocusNode](flutter-docs://api/widgets/FocusNode) focusNode, [VoidCallback](flutter-docs://api/dart-ui/VoidCallback) onFieldSubmitted)
 The type of the Autocomplete callback which returns the widget that
 contains the input [TextField](flutter-docs://api/material/TextField) or [TextFormField](flutter-docs://api/material/TextFormField).
 
-[AutocompleteOnSelected](flutter-docs://api/widgets/AutocompleteOnSelected)<T extends [Object](flutter-docs://api/dart-core/Object)>= void Function(T option)
+[AutocompleteOnSelected](flutter-docs://api/widgets/AutocompleteOnSelected)<T extends [Object](flutter-docs://api/dart-core/Object)> = void Function(T option)
 The type of the callback used by the [RawAutocomplete](flutter-docs://api/widgets/RawAutocomplete) widget to indicate
 that the user has selected an option.
 
-[AutocompleteOptionsBuilder](flutter-docs://api/widgets/AutocompleteOptionsBuilder)<T extends [Object](flutter-docs://api/dart-core/Object)>= [FutureOr](flutter-docs://api/dart-async/FutureOr)<[Iterable](flutter-docs://api/dart-core/Iterable)<T>> Function([TextEditingValue](flutter-docs://api/flutter_test/TextEditingValue) textEditingValue)
+[AutocompleteOptionsBuilder](flutter-docs://api/widgets/AutocompleteOptionsBuilder)<T extends [Object](flutter-docs://api/dart-core/Object)> = [FutureOr](flutter-docs://api/dart-async/FutureOr)<[Iterable](flutter-docs://api/dart-core/Iterable)<T>> Function([TextEditingValue](flutter-docs://api/flutter_test/TextEditingValue) textEditingValue)
 The type of the [RawAutocomplete](flutter-docs://api/widgets/RawAutocomplete) callback which computes the list of
 optional completions for the widget's field, based on the text the user has
 entered so far.
 
-[AutocompleteOptionsViewBuilder](flutter-docs://api/widgets/AutocompleteOptionsViewBuilder)<T extends [Object](flutter-docs://api/dart-core/Object)>= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [AutocompleteOnSelected](flutter-docs://api/widgets/AutocompleteOnSelected)<T> onSelected, [Iterable](flutter-docs://api/dart-core/Iterable)<T> options)
+[AutocompleteOptionsViewBuilder](flutter-docs://api/widgets/AutocompleteOptionsViewBuilder)<T extends [Object](flutter-docs://api/dart-core/Object)> = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [AutocompleteOnSelected](flutter-docs://api/widgets/AutocompleteOnSelected)<T> onSelected, [Iterable](flutter-docs://api/dart-core/Iterable)<T> options)
 The type of the [RawAutocomplete](flutter-docs://api/widgets/RawAutocomplete) callback which returns a [Widget](flutter-docs://api/widgets/Widget) that
 displays the specified `options` and calls `onSelected` if the user
 selects an option.
 
-[AutocompleteOptionToString](flutter-docs://api/widgets/AutocompleteOptionToString)<T extends [Object](flutter-docs://api/dart-core/Object)>= [String](flutter-docs://api/dart-core/String) Function(T option)
+[AutocompleteOptionToString](flutter-docs://api/widgets/AutocompleteOptionToString)<T extends [Object](flutter-docs://api/dart-core/Object)> = [String](flutter-docs://api/dart-core/String) Function(T option)
 The type of the [RawAutocomplete](flutter-docs://api/widgets/RawAutocomplete) callback that converts an option value to
 a string which can be displayed in the widget's options menu.
 
-[BottomSheetDragEndHandler](flutter-docs://api/material/BottomSheetDragEndHandler)= void Function([DragEndDetails](flutter-docs://api/gestures/DragEndDetails) details, {required [bool](flutter-docs://api/dart-core/bool) isClosing})
+[BottomSheetDragEndHandler](flutter-docs://api/material/BottomSheetDragEndHandler) = void Function([DragEndDetails](flutter-docs://api/gestures/DragEndDetails) details, {required [bool](flutter-docs://api/dart-core/bool) isClosing})
 A callback for when the user stops dragging the bottom sheet.
 
-[BottomSheetDragStartHandler](flutter-docs://api/material/BottomSheetDragStartHandler)= void Function([DragStartDetails](flutter-docs://api/gestures/DragStartDetails) details)
+[BottomSheetDragStartHandler](flutter-docs://api/material/BottomSheetDragStartHandler) = void Function([DragStartDetails](flutter-docs://api/gestures/DragStartDetails) details)
 A callback for when the user begins dragging the bottom sheet.
 
-[BoxConstraintsTransform](flutter-docs://api/rendering/BoxConstraintsTransform)= [BoxConstraints](flutter-docs://api/rendering/BoxConstraints) Function([BoxConstraints](flutter-docs://api/rendering/BoxConstraints) constraints)
+[BoxConstraintsTransform](flutter-docs://api/rendering/BoxConstraintsTransform) = [BoxConstraints](flutter-docs://api/rendering/BoxConstraints) Function([BoxConstraints](flutter-docs://api/rendering/BoxConstraints) constraints)
 Signature for a function that transforms a [BoxConstraints](flutter-docs://api/rendering/BoxConstraints) to another
 [BoxConstraints](flutter-docs://api/rendering/BoxConstraints).
 
-[ButtonLayerBuilder](flutter-docs://api/material/ButtonLayerBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [Set](flutter-docs://api/dart-core/Set)<[WidgetState](flutter-docs://api/widgets/WidgetState)> states, [Widget](flutter-docs://api/widgets/Widget)? child)
+[ButtonLayerBuilder](flutter-docs://api/material/ButtonLayerBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [Set](flutter-docs://api/dart-core/Set)<[WidgetState](flutter-docs://api/widgets/WidgetState)> states, [Widget](flutter-docs://api/widgets/Widget)? child)
 The type for [ButtonStyle.backgroundBuilder](flutter-docs://api/material/ButtonStyle/backgroundBuilder) and [ButtonStyle.foregroundBuilder](flutter-docs://api/material/ButtonStyle/foregroundBuilder).
 
-[ChildIndexGetter](flutter-docs://api/widgets/ChildIndexGetter)= [int](flutter-docs://api/dart-core/int)? Function([Key](flutter-docs://api/foundation/Key) key)
+[ChildIndexGetter](flutter-docs://api/widgets/ChildIndexGetter) = [int](flutter-docs://api/dart-core/int)? Function([Key](flutter-docs://api/foundation/Key) key)
 Called to find the new index of a child based on its `key` in case of
 reordering.
 
-[ConditionalElementVisitor](flutter-docs://api/widgets/ConditionalElementVisitor)= [bool](flutter-docs://api/dart-core/bool) Function([Element](flutter-docs://api/widgets/Element) element)
+[ConditionalElementVisitor](flutter-docs://api/widgets/ConditionalElementVisitor) = [bool](flutter-docs://api/dart-core/bool) Function([Element](flutter-docs://api/widgets/Element) element)
 Signature for the callback to [BuildContext.visitAncestorElements](flutter-docs://api/widgets/BuildContext/visitAncestorElements).
 
-[ConfirmDismissCallback](flutter-docs://api/widgets/ConfirmDismissCallback)= [Future](flutter-docs://api/dart-async/Future)<[bool](flutter-docs://api/dart-core/bool)?> Function([DismissDirection](flutter-docs://api/widgets/DismissDirection) direction)
+[ConfirmDismissCallback](flutter-docs://api/widgets/ConfirmDismissCallback) = [Future](flutter-docs://api/dart-async/Future)<[bool](flutter-docs://api/dart-core/bool)?> Function([DismissDirection](flutter-docs://api/widgets/DismissDirection) direction)
 Signature used by [Dismissible](flutter-docs://api/widgets/Dismissible) to give the application an opportunity to
 confirm or veto a dismiss gesture.
 
-[ControlsWidgetBuilder](flutter-docs://api/material/ControlsWidgetBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [ControlsDetails](flutter-docs://api/material/ControlsDetails) details)
+[ControlsWidgetBuilder](flutter-docs://api/material/ControlsWidgetBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [ControlsDetails](flutter-docs://api/material/ControlsDetails) details)
 A builder that creates a widget given the two callbacks `onStepContinue` and
 `onStepCancel`.
 
-[CreatePlatformViewCallback](flutter-docs://api/widgets/CreatePlatformViewCallback)= [PlatformViewController](flutter-docs://api/services/PlatformViewController) Function([PlatformViewCreationParams](flutter-docs://api/widgets/PlatformViewCreationParams) params)
+[CreatePlatformViewCallback](flutter-docs://api/widgets/CreatePlatformViewCallback) = [PlatformViewController](flutter-docs://api/services/PlatformViewController) Function([PlatformViewCreationParams](flutter-docs://api/widgets/PlatformViewCreationParams) params)
 Constructs a [PlatformViewController](flutter-docs://api/services/PlatformViewController).
 
-[CreateRectTween](flutter-docs://api/widgets/CreateRectTween)= [Tween](flutter-docs://api/animation/Tween)<[Rect](flutter-docs://api/dart-ui/Rect)?> Function([Rect](flutter-docs://api/dart-ui/Rect)? begin, [Rect](flutter-docs://api/dart-ui/Rect)? end)
+[CreateRectTween](flutter-docs://api/widgets/CreateRectTween) = [Tween](flutter-docs://api/animation/Tween)<[Rect](flutter-docs://api/dart-ui/Rect)?> Function([Rect](flutter-docs://api/dart-ui/Rect)? begin, [Rect](flutter-docs://api/dart-ui/Rect)? end)
 Signature for a function that takes two [Rect](flutter-docs://api/dart-ui/Rect) instances and returns a
 [RectTween](flutter-docs://api/animation/RectTween) that transitions between them.
 
-[DataColumnSortCallback](flutter-docs://api/material/DataColumnSortCallback)= void Function([int](flutter-docs://api/dart-core/int) columnIndex, [bool](flutter-docs://api/dart-core/bool) ascending)
+[DataColumnSortCallback](flutter-docs://api/material/DataColumnSortCallback) = void Function([int](flutter-docs://api/dart-core/int) columnIndex, [bool](flutter-docs://api/dart-core/bool) ascending)
 Signature for [DataColumn.onSort](flutter-docs://api/material/DataColumn/onSort) callback.
 
-[DecoderBufferCallback](flutter-docs://api/painting/DecoderBufferCallback)= [Future](flutter-docs://api/dart-async/Future)<[Codec](flutter-docs://api/dart-ui/Codec)> Function([ImmutableBuffer](flutter-docs://api/dart-ui/ImmutableBuffer) buffer, {[bool](flutter-docs://api/dart-core/bool) allowUpscaling, [int](flutter-docs://api/dart-core/int)? cacheHeight, [int](flutter-docs://api/dart-core/int)? cacheWidth})
+[DecoderBufferCallback](flutter-docs://api/painting/DecoderBufferCallback) = [Future](flutter-docs://api/dart-async/Future)<[Codec](flutter-docs://api/dart-ui/Codec)> Function([ImmutableBuffer](flutter-docs://api/dart-ui/ImmutableBuffer) buffer, {[bool](flutter-docs://api/dart-core/bool) allowUpscaling, [int](flutter-docs://api/dart-core/int)? cacheHeight, [int](flutter-docs://api/dart-core/int)? cacheWidth})
 Performs the decode process for use in [ImageProvider.loadBuffer](flutter-docs://api/painting/ImageProvider/loadBuffer).
 
-[DelegatedTransitionBuilder](flutter-docs://api/widgets/DelegatedTransitionBuilder)= [Widget](flutter-docs://api/widgets/Widget)? Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [Animation](flutter-docs://api/animation/Animation)<[double](flutter-docs://api/dart-core/double)> animation, [Animation](flutter-docs://api/animation/Animation)<[double](flutter-docs://api/dart-core/double)> secondaryAnimation, [bool](flutter-docs://api/dart-core/bool) allowSnapshotting, [Widget](flutter-docs://api/widgets/Widget)? child)
+[DelegatedTransitionBuilder](flutter-docs://api/widgets/DelegatedTransitionBuilder) = [Widget](flutter-docs://api/widgets/Widget)? Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [Animation](flutter-docs://api/animation/Animation)<[double](flutter-docs://api/dart-core/double)> animation, [Animation](flutter-docs://api/animation/Animation)<[double](flutter-docs://api/dart-core/double)> secondaryAnimation, [bool](flutter-docs://api/dart-core/bool) allowSnapshotting, [Widget](flutter-docs://api/widgets/Widget)? child)
 Signature for a builder used to control a page's exit transition.
 
-[DidRemovePageCallback](flutter-docs://api/widgets/DidRemovePageCallback)= void Function([Page](flutter-docs://api/widgets/Page)<[Object](flutter-docs://api/dart-core/Object)?> page)
+[DidRemovePageCallback](flutter-docs://api/widgets/DidRemovePageCallback) = void Function([Page](flutter-docs://api/widgets/Page)<[Object](flutter-docs://api/dart-core/Object)?> page)
 Signature for the [Navigator.onDidRemovePage](flutter-docs://api/widgets/Navigator/onDidRemovePage) callback.
 
-[DismissDirectionCallback](flutter-docs://api/widgets/DismissDirectionCallback)= void Function([DismissDirection](flutter-docs://api/widgets/DismissDirection) direction)
+[DismissDirectionCallback](flutter-docs://api/widgets/DismissDirectionCallback) = void Function([DismissDirection](flutter-docs://api/widgets/DismissDirection) direction)
 Signature used by [Dismissible](flutter-docs://api/widgets/Dismissible) to indicate that it has been dismissed in
 the given `direction`.
 
-[DismissUpdateCallback](flutter-docs://api/widgets/DismissUpdateCallback)= void Function([DismissUpdateDetails](flutter-docs://api/widgets/DismissUpdateDetails) details)
+[DismissUpdateCallback](flutter-docs://api/widgets/DismissUpdateCallback) = void Function([DismissUpdateDetails](flutter-docs://api/widgets/DismissUpdateDetails) details)
 Signature used by [Dismissible](flutter-docs://api/widgets/Dismissible) to indicate that the dismissible has been dragged.
 
-[DragAnchorStrategy](flutter-docs://api/widgets/DragAnchorStrategy)= [Offset](flutter-docs://api/dart-ui/Offset) Function([Draggable](flutter-docs://api/widgets/Draggable)<[Object](flutter-docs://api/dart-core/Object)> draggable, [BuildContext](flutter-docs://api/widgets/BuildContext) context, [Offset](flutter-docs://api/dart-ui/Offset) position)
+[DragAnchorStrategy](flutter-docs://api/widgets/DragAnchorStrategy) = [Offset](flutter-docs://api/dart-ui/Offset) Function([Draggable](flutter-docs://api/widgets/Draggable)<[Object](flutter-docs://api/dart-core/Object)> draggable, [BuildContext](flutter-docs://api/widgets/BuildContext) context, [Offset](flutter-docs://api/dart-ui/Offset) position)
 Signature for the strategy that determines the drag start point of a [Draggable](flutter-docs://api/widgets/Draggable).
 
-[DragEndCallback](flutter-docs://api/widgets/DragEndCallback)= void Function([DraggableDetails](flutter-docs://api/widgets/DraggableDetails) details)
+[DragEndCallback](flutter-docs://api/widgets/DragEndCallback) = void Function([DraggableDetails](flutter-docs://api/widgets/DraggableDetails) details)
 Signature for when the draggable is dropped.
 
-[DraggableCanceledCallback](flutter-docs://api/widgets/DraggableCanceledCallback)= void Function([Velocity](flutter-docs://api/gestures/Velocity) velocity, [Offset](flutter-docs://api/dart-ui/Offset) offset)
+[DraggableCanceledCallback](flutter-docs://api/widgets/DraggableCanceledCallback) = void Function([Velocity](flutter-docs://api/gestures/Velocity) velocity, [Offset](flutter-docs://api/dart-ui/Offset) offset)
 Signature for when a [Draggable](flutter-docs://api/widgets/Draggable) is dropped without being accepted by a [DragTarget](flutter-docs://api/widgets/DragTarget).
 
-[DragTargetAccept](flutter-docs://api/widgets/DragTargetAccept)<T>= void Function(T data)
+[DragTargetAccept](flutter-docs://api/widgets/DragTargetAccept)<T> = void Function(T data)
 Signature for causing a [DragTarget](flutter-docs://api/widgets/DragTarget) to accept the given data.
 
-[DragTargetAcceptWithDetails](flutter-docs://api/widgets/DragTargetAcceptWithDetails)<T>= void Function([DragTargetDetails](flutter-docs://api/widgets/DragTargetDetails)<T> details)
+[DragTargetAcceptWithDetails](flutter-docs://api/widgets/DragTargetAcceptWithDetails)<T> = void Function([DragTargetDetails](flutter-docs://api/widgets/DragTargetDetails)<T> details)
 Signature for determining information about the acceptance by a [DragTarget](flutter-docs://api/widgets/DragTarget).
 
-[DragTargetBuilder](flutter-docs://api/widgets/DragTargetBuilder)<T>= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [List](flutter-docs://api/dart-core/List)<T?> candidateData, [List](flutter-docs://api/dart-core/List) rejectedData)
+[DragTargetBuilder](flutter-docs://api/widgets/DragTargetBuilder)<T> = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [List](flutter-docs://api/dart-core/List)<T?> candidateData, [List](flutter-docs://api/dart-core/List) rejectedData)
 Signature for building children of a [DragTarget](flutter-docs://api/widgets/DragTarget).
 
-[DragTargetLeave](flutter-docs://api/widgets/DragTargetLeave)<T>= void Function(T? data)
+[DragTargetLeave](flutter-docs://api/widgets/DragTargetLeave)<T> = void Function(T? data)
 Signature for when a [Draggable](flutter-docs://api/widgets/Draggable) leaves a [DragTarget](flutter-docs://api/widgets/DragTarget).
 
-[DragTargetMove](flutter-docs://api/widgets/DragTargetMove)<T>= void Function([DragTargetDetails](flutter-docs://api/widgets/DragTargetDetails)<T> details)
+[DragTargetMove](flutter-docs://api/widgets/DragTargetMove)<T> = void Function([DragTargetDetails](flutter-docs://api/widgets/DragTargetDetails)<T> details)
 Signature for when a [Draggable](flutter-docs://api/widgets/Draggable) moves within a [DragTarget](flutter-docs://api/widgets/DragTarget).
 
-[DragTargetWillAccept](flutter-docs://api/widgets/DragTargetWillAccept)<T>= [bool](flutter-docs://api/dart-core/bool) Function(T? data)
+[DragTargetWillAccept](flutter-docs://api/widgets/DragTargetWillAccept)<T> = [bool](flutter-docs://api/dart-core/bool) Function(T? data)
 Signature for determining whether the given data will be accepted by a [DragTarget](flutter-docs://api/widgets/DragTarget).
 
-[DragTargetWillAcceptWithDetails](flutter-docs://api/widgets/DragTargetWillAcceptWithDetails)<T>= [bool](flutter-docs://api/dart-core/bool) Function([DragTargetDetails](flutter-docs://api/widgets/DragTargetDetails)<T> details)
+[DragTargetWillAcceptWithDetails](flutter-docs://api/widgets/DragTargetWillAcceptWithDetails)<T> = [bool](flutter-docs://api/dart-core/bool) Function([DragTargetDetails](flutter-docs://api/widgets/DragTargetDetails)<T> details)
 Signature for determining whether the given data will be accepted by a [DragTarget](flutter-docs://api/widgets/DragTarget),
 based on provided information.
 
-[DragUpdateCallback](flutter-docs://api/widgets/DragUpdateCallback)= void Function([DragUpdateDetails](flutter-docs://api/gestures/DragUpdateDetails) details)
+[DragUpdateCallback](flutter-docs://api/widgets/DragUpdateCallback) = void Function([DragUpdateDetails](flutter-docs://api/gestures/DragUpdateDetails) details)
 Signature for when a [Draggable](flutter-docs://api/widgets/Draggable) is dragged across the screen.
 
-[DrawerCallback](flutter-docs://api/material/DrawerCallback)= void Function([bool](flutter-docs://api/dart-core/bool) isOpened)
+[DrawerCallback](flutter-docs://api/material/DrawerCallback) = void Function([bool](flutter-docs://api/dart-core/bool) isOpened)
 Signature for the callback that's called when a [DrawerController](flutter-docs://api/material/DrawerController) is
 opened or closed.
 
-[DropdownButtonBuilder](flutter-docs://api/material/DropdownButtonBuilder)= [List](flutter-docs://api/dart-core/List)<[Widget](flutter-docs://api/widgets/Widget)> Function([BuildContext](flutter-docs://api/widgets/BuildContext) context)
+[DropdownButtonBuilder](flutter-docs://api/material/DropdownButtonBuilder) = [List](flutter-docs://api/dart-core/List)<[Widget](flutter-docs://api/widgets/Widget)> Function([BuildContext](flutter-docs://api/widgets/BuildContext) context)
 A builder to customize dropdown buttons.
 
-[EditableTextContextMenuBuilder](flutter-docs://api/widgets/EditableTextContextMenuBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [EditableTextState](flutter-docs://api/widgets/EditableTextState) editableTextState)
+[EditableTextContextMenuBuilder](flutter-docs://api/widgets/EditableTextContextMenuBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [EditableTextState](flutter-docs://api/widgets/EditableTextState) editableTextState)
 Signature for a widget builder that builds a context menu for the given
 [EditableTextState](flutter-docs://api/widgets/EditableTextState).
 
-[ElementCreatedCallback](flutter-docs://api/widgets/ElementCreatedCallback)= void Function([Object](flutter-docs://api/dart-core/Object) element)
+[ElementCreatedCallback](flutter-docs://api/widgets/ElementCreatedCallback) = void Function([Object](flutter-docs://api/dart-core/Object) element)
 The signature of the function that gets called when the [HtmlElementView](flutter-docs://api/widgets/HtmlElementView) DOM element is created.
 
-[ElementVisitor](flutter-docs://api/widgets/ElementVisitor)= void Function([Element](flutter-docs://api/widgets/Element) element)
+[ElementVisitor](flutter-docs://api/widgets/ElementVisitor) = void Function([Element](flutter-docs://api/widgets/Element) element)
 Signature for the callback to [BuildContext.visitChildElements](flutter-docs://api/widgets/BuildContext/visitChildElements).
 
-[EntryModeChangeCallback](flutter-docs://api/material/EntryModeChangeCallback)= void Function([TimePickerEntryMode](flutter-docs://api/material/TimePickerEntryMode) mode)
+[EntryModeChangeCallback](flutter-docs://api/material/EntryModeChangeCallback) = void Function([TimePickerEntryMode](flutter-docs://api/material/TimePickerEntryMode) mode)
 Signature for when the time picker entry mode is changed.
 
-[ErrorWidgetBuilder](flutter-docs://api/widgets/ErrorWidgetBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([FlutterErrorDetails](flutter-docs://api/foundation/FlutterErrorDetails) details)
+[ErrorWidgetBuilder](flutter-docs://api/widgets/ErrorWidgetBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([FlutterErrorDetails](flutter-docs://api/foundation/FlutterErrorDetails) details)
 Signature for the constructor that is called when an error occurs while
 building a widget.
 
-[ExitWidgetSelectionButtonBuilder](flutter-docs://api/widgets/ExitWidgetSelectionButtonBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, {required [GlobalKey](flutter-docs://api/widgets/GlobalKey)<[State](flutter-docs://api/widgets/State)<[StatefulWidget](flutter-docs://api/widgets/StatefulWidget)>> key, required [VoidCallback](flutter-docs://api/dart-ui/VoidCallback) onPressed, required [String](flutter-docs://api/dart-core/String) semanticsLabel})
+[ExitWidgetSelectionButtonBuilder](flutter-docs://api/widgets/ExitWidgetSelectionButtonBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, {required [GlobalKey](flutter-docs://api/widgets/GlobalKey)<[State](flutter-docs://api/widgets/State)<[StatefulWidget](flutter-docs://api/widgets/StatefulWidget)>> key, required [VoidCallback](flutter-docs://api/dart-ui/VoidCallback) onPressed, required [String](flutter-docs://api/dart-core/String) semanticsLabel})
 Signature for the builder callback used by
 [WidgetInspector.exitWidgetSelectionButtonBuilder](flutter-docs://api/widgets/WidgetInspector/exitWidgetSelectionButtonBuilder).
 
-[ExpansibleBuilder](flutter-docs://api/widgets/ExpansibleBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [Widget](flutter-docs://api/widgets/Widget) header, [Widget](flutter-docs://api/widgets/Widget) body, [Animation](flutter-docs://api/animation/Animation)<[double](flutter-docs://api/dart-core/double)> animation)
+[ExpansibleBuilder](flutter-docs://api/widgets/ExpansibleBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [Widget](flutter-docs://api/widgets/Widget) header, [Widget](flutter-docs://api/widgets/Widget) body, [Animation](flutter-docs://api/animation/Animation)<[double](flutter-docs://api/dart-core/double)> animation)
 The type of the callback that uses the header and body of an [Expansible](flutter-docs://api/widgets/Expansible) widget to build the widget.
 
-[ExpansibleComponentBuilder](flutter-docs://api/widgets/ExpansibleComponentBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [Animation](flutter-docs://api/animation/Animation)<[double](flutter-docs://api/dart-core/double)> animation)
+[ExpansibleComponentBuilder](flutter-docs://api/widgets/ExpansibleComponentBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [Animation](flutter-docs://api/animation/Animation)<[double](flutter-docs://api/dart-core/double)> animation)
 The type of the callback that returns the header or body of an [Expansible](flutter-docs://api/widgets/Expansible).
 
-[ExpansionPanelCallback](flutter-docs://api/material/ExpansionPanelCallback)= void Function([int](flutter-docs://api/dart-core/int) panelIndex, [bool](flutter-docs://api/dart-core/bool) isExpanded)
+[ExpansionPanelCallback](flutter-docs://api/material/ExpansionPanelCallback) = void Function([int](flutter-docs://api/dart-core/int) panelIndex, [bool](flutter-docs://api/dart-core/bool) isExpanded)
 Signature for the callback that's called when an [ExpansionPanel](flutter-docs://api/material/ExpansionPanel) is
 expanded or collapsed.
 
-[ExpansionPanelHeaderBuilder](flutter-docs://api/material/ExpansionPanelHeaderBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [bool](flutter-docs://api/dart-core/bool) isExpanded)
+[ExpansionPanelHeaderBuilder](flutter-docs://api/material/ExpansionPanelHeaderBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [bool](flutter-docs://api/dart-core/bool) isExpanded)
 Signature for the callback that's called when the header of the
 [ExpansionPanel](flutter-docs://api/material/ExpansionPanel) needs to rebuild.
 
 [ExpansionTileController](flutter-docs://api/material/ExpansionTileController) = [ExpansibleController](flutter-docs://api/widgets/ExpansibleController)
 Enables control over a single [ExpansionTile](flutter-docs://api/material/ExpansionTile)'s expanded/collapsed state.
 
-[FilterCallback](flutter-docs://api/material/FilterCallback)<T>= [List](flutter-docs://api/dart-core/List)<[DropdownMenuEntry](flutter-docs://api/material/DropdownMenuEntry)<T>> Function([List](flutter-docs://api/dart-core/List)<[DropdownMenuEntry](flutter-docs://api/material/DropdownMenuEntry)<T>> entries, [String](flutter-docs://api/dart-core/String) filter)
+[FilterCallback](flutter-docs://api/material/FilterCallback)<T> = [List](flutter-docs://api/dart-core/List)<[DropdownMenuEntry](flutter-docs://api/material/DropdownMenuEntry)<T>> Function([List](flutter-docs://api/dart-core/List)<[DropdownMenuEntry](flutter-docs://api/material/DropdownMenuEntry)<T>> entries, [String](flutter-docs://api/dart-core/String) filter)
 A callback function that returns the list of the items that matches the
 current applied filter.
 
-[FocusOnKeyCallback](flutter-docs://api/widgets/FocusOnKeyCallback)= [KeyEventResult](flutter-docs://api/widgets/KeyEventResult) Function([FocusNode](flutter-docs://api/widgets/FocusNode) node, [RawKeyEvent](flutter-docs://api/services/RawKeyEvent) event)
+[FocusOnKeyCallback](flutter-docs://api/widgets/FocusOnKeyCallback) = [KeyEventResult](flutter-docs://api/widgets/KeyEventResult) Function([FocusNode](flutter-docs://api/widgets/FocusNode) node, [RawKeyEvent](flutter-docs://api/services/RawKeyEvent) event)
 Signature of a callback used by [Focus.onKey](flutter-docs://api/widgets/Focus/onKey) and [FocusScope.onKey](flutter-docs://api/widgets/Focus/onKey) to receive key events.
 
-[FocusOnKeyEventCallback](flutter-docs://api/widgets/FocusOnKeyEventCallback)= [KeyEventResult](flutter-docs://api/widgets/KeyEventResult) Function([FocusNode](flutter-docs://api/widgets/FocusNode) node, [KeyEvent](flutter-docs://api/services/KeyEvent) event)
+[FocusOnKeyEventCallback](flutter-docs://api/widgets/FocusOnKeyEventCallback) = [KeyEventResult](flutter-docs://api/widgets/KeyEventResult) Function([FocusNode](flutter-docs://api/widgets/FocusNode) node, [KeyEvent](flutter-docs://api/services/KeyEvent) event)
 Signature of a callback used by [Focus.onKeyEvent](flutter-docs://api/widgets/Focus/onKeyEvent) and [FocusScope.onKeyEvent](flutter-docs://api/widgets/Focus/onKeyEvent) to receive key events.
 
-[FormFieldBuilder](flutter-docs://api/widgets/FormFieldBuilder)<T>= [Widget](flutter-docs://api/widgets/Widget) Function([FormFieldState](flutter-docs://api/widgets/FormFieldState)<T> field)
+[FormFieldBuilder](flutter-docs://api/widgets/FormFieldBuilder)<T> = [Widget](flutter-docs://api/widgets/Widget) Function([FormFieldState](flutter-docs://api/widgets/FormFieldState)<T> field)
 Signature for building the widget representing the form field.
 
-[FormFieldErrorBuilder](flutter-docs://api/widgets/FormFieldErrorBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [String](flutter-docs://api/dart-core/String) errorText)
+[FormFieldErrorBuilder](flutter-docs://api/widgets/FormFieldErrorBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [String](flutter-docs://api/dart-core/String) errorText)
 Signature for a callback that builds an error widget.
 
-[FormFieldSetter](flutter-docs://api/widgets/FormFieldSetter)<T>= void Function(T? newValue)
+[FormFieldSetter](flutter-docs://api/widgets/FormFieldSetter)<T> = void Function(T? newValue)
 Signature for being notified when a form field changes value.
 
-[FormFieldValidator](flutter-docs://api/widgets/FormFieldValidator)<T>= [String](flutter-docs://api/dart-core/String)? Function(T? value)
+[FormFieldValidator](flutter-docs://api/widgets/FormFieldValidator)<T> = [String](flutter-docs://api/dart-core/String)? Function(T? value)
 Signature for validating a form field.
 
-[GenerateAppTitle](flutter-docs://api/widgets/GenerateAppTitle)= [String](flutter-docs://api/dart-core/String) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context)
+[GenerateAppTitle](flutter-docs://api/widgets/GenerateAppTitle) = [String](flutter-docs://api/dart-core/String) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context)
 The signature of [WidgetsApp.onGenerateTitle](flutter-docs://api/widgets/WidgetsApp/onGenerateTitle).
 
-[GestureDragCancelCallback](flutter-docs://api/gestures/GestureDragCancelCallback)= void Function()
+[GestureDragCancelCallback](flutter-docs://api/gestures/GestureDragCancelCallback) = void Function()
 Signature for when the pointer that previously triggered a
 [GestureDragDownCallback](flutter-docs://api/gestures/GestureDragDownCallback) did not complete.
 
-[GestureDragDownCallback](flutter-docs://api/gestures/GestureDragDownCallback)= void Function([DragDownDetails](flutter-docs://api/gestures/DragDownDetails) details)
+[GestureDragDownCallback](flutter-docs://api/gestures/GestureDragDownCallback) = void Function([DragDownDetails](flutter-docs://api/gestures/DragDownDetails) details)
 Signature for when a pointer has contacted the screen and might begin to
 move.
 
-[GestureDragEndCallback](flutter-docs://api/gestures/GestureDragEndCallback)= void Function([DragEndDetails](flutter-docs://api/gestures/DragEndDetails) details)
+[GestureDragEndCallback](flutter-docs://api/gestures/GestureDragEndCallback) = void Function([DragEndDetails](flutter-docs://api/gestures/DragEndDetails) details)
 Signature for when a pointer that was previously in contact with the screen
 and moving is no longer in contact with the screen.
 
-[GestureDragStartCallback](flutter-docs://api/gestures/GestureDragStartCallback)= void Function([DragStartDetails](flutter-docs://api/gestures/DragStartDetails) details)
+[GestureDragStartCallback](flutter-docs://api/gestures/GestureDragStartCallback) = void Function([DragStartDetails](flutter-docs://api/gestures/DragStartDetails) details)
 Signature for when a pointer has contacted the screen and has begun to move.
 
-[GestureDragUpdateCallback](flutter-docs://api/gestures/GestureDragUpdateCallback)= void Function([DragUpdateDetails](flutter-docs://api/gestures/DragUpdateDetails) details)
+[GestureDragUpdateCallback](flutter-docs://api/gestures/GestureDragUpdateCallback) = void Function([DragUpdateDetails](flutter-docs://api/gestures/DragUpdateDetails) details)
 Signature for when a pointer that is in contact with the screen and moving
 has moved again.
 
-[GestureForcePressEndCallback](flutter-docs://api/gestures/GestureForcePressEndCallback)= void Function([ForcePressDetails](flutter-docs://api/gestures/ForcePressDetails) details)
+[GestureForcePressEndCallback](flutter-docs://api/gestures/GestureForcePressEndCallback) = void Function([ForcePressDetails](flutter-docs://api/gestures/ForcePressDetails) details)
 Signature for when the pointer that previously triggered a
 [ForcePressGestureRecognizer.onStart](flutter-docs://api/gestures/ForcePressGestureRecognizer/onStart) callback is no longer in contact
 with the screen.
 
-[GestureForcePressPeakCallback](flutter-docs://api/gestures/GestureForcePressPeakCallback)= void Function([ForcePressDetails](flutter-docs://api/gestures/ForcePressDetails) details)
+[GestureForcePressPeakCallback](flutter-docs://api/gestures/GestureForcePressPeakCallback) = void Function([ForcePressDetails](flutter-docs://api/gestures/ForcePressDetails) details)
 Signature used by [ForcePressGestureRecognizer](flutter-docs://api/gestures/ForcePressGestureRecognizer) for when a pointer that has
 pressed with at least [ForcePressGestureRecognizer.peakPressure](flutter-docs://api/gestures/ForcePressGestureRecognizer/peakPressure).
 
-[GestureForcePressStartCallback](flutter-docs://api/gestures/GestureForcePressStartCallback)= void Function([ForcePressDetails](flutter-docs://api/gestures/ForcePressDetails) details)
+[GestureForcePressStartCallback](flutter-docs://api/gestures/GestureForcePressStartCallback) = void Function([ForcePressDetails](flutter-docs://api/gestures/ForcePressDetails) details)
 Signature used by a [ForcePressGestureRecognizer](flutter-docs://api/gestures/ForcePressGestureRecognizer) for when a pointer has
 pressed with at least [ForcePressGestureRecognizer.startPressure](flutter-docs://api/gestures/ForcePressGestureRecognizer/startPressure).
 
-[GestureForcePressUpdateCallback](flutter-docs://api/gestures/GestureForcePressUpdateCallback)= void Function([ForcePressDetails](flutter-docs://api/gestures/ForcePressDetails) details)
+[GestureForcePressUpdateCallback](flutter-docs://api/gestures/GestureForcePressUpdateCallback) = void Function([ForcePressDetails](flutter-docs://api/gestures/ForcePressDetails) details)
 Signature used by [ForcePressGestureRecognizer](flutter-docs://api/gestures/ForcePressGestureRecognizer) during the frames
 after the triggering of a [ForcePressGestureRecognizer.onStart](flutter-docs://api/gestures/ForcePressGestureRecognizer/onStart) callback.
 
-[GestureLongPressCallback](flutter-docs://api/gestures/GestureLongPressCallback)= void Function()
+[GestureLongPressCallback](flutter-docs://api/gestures/GestureLongPressCallback) = void Function()
 Callback signature for [LongPressGestureRecognizer.onLongPress](flutter-docs://api/gestures/LongPressGestureRecognizer/onLongPress).
 
-[GestureLongPressEndCallback](flutter-docs://api/gestures/GestureLongPressEndCallback)= void Function([LongPressEndDetails](flutter-docs://api/gestures/LongPressEndDetails) details)
+[GestureLongPressEndCallback](flutter-docs://api/gestures/GestureLongPressEndCallback) = void Function([LongPressEndDetails](flutter-docs://api/gestures/LongPressEndDetails) details)
 Callback signature for [LongPressGestureRecognizer.onLongPressEnd](flutter-docs://api/gestures/LongPressGestureRecognizer/onLongPressEnd).
 
-[GestureLongPressMoveUpdateCallback](flutter-docs://api/gestures/GestureLongPressMoveUpdateCallback)= void Function([LongPressMoveUpdateDetails](flutter-docs://api/gestures/LongPressMoveUpdateDetails) details)
+[GestureLongPressMoveUpdateCallback](flutter-docs://api/gestures/GestureLongPressMoveUpdateCallback) = void Function([LongPressMoveUpdateDetails](flutter-docs://api/gestures/LongPressMoveUpdateDetails) details)
 Callback signature for [LongPressGestureRecognizer.onLongPressMoveUpdate](flutter-docs://api/gestures/LongPressGestureRecognizer/onLongPressMoveUpdate).
 
-[GestureLongPressStartCallback](flutter-docs://api/gestures/GestureLongPressStartCallback)= void Function([LongPressStartDetails](flutter-docs://api/gestures/LongPressStartDetails) details)
+[GestureLongPressStartCallback](flutter-docs://api/gestures/GestureLongPressStartCallback) = void Function([LongPressStartDetails](flutter-docs://api/gestures/LongPressStartDetails) details)
 Callback signature for [LongPressGestureRecognizer.onLongPressStart](flutter-docs://api/gestures/LongPressGestureRecognizer/onLongPressStart).
 
-[GestureLongPressUpCallback](flutter-docs://api/gestures/GestureLongPressUpCallback)= void Function()
+[GestureLongPressUpCallback](flutter-docs://api/gestures/GestureLongPressUpCallback) = void Function()
 Callback signature for [LongPressGestureRecognizer.onLongPressUp](flutter-docs://api/gestures/LongPressGestureRecognizer/onLongPressUp).
 
-[GestureRecognizerFactoryConstructor](flutter-docs://api/widgets/GestureRecognizerFactoryConstructor)<T extends [GestureRecognizer](flutter-docs://api/gestures/GestureRecognizer)>= T Function()
+[GestureRecognizerFactoryConstructor](flutter-docs://api/widgets/GestureRecognizerFactoryConstructor)<T extends [GestureRecognizer](flutter-docs://api/gestures/GestureRecognizer)> = T Function()
 Signature for closures that implement [GestureRecognizerFactory.constructor](flutter-docs://api/widgets/GestureRecognizerFactory/constructor).
 
-[GestureRecognizerFactoryInitializer](flutter-docs://api/widgets/GestureRecognizerFactoryInitializer)<T extends [GestureRecognizer](flutter-docs://api/gestures/GestureRecognizer)>= void Function(T instance)
+[GestureRecognizerFactoryInitializer](flutter-docs://api/widgets/GestureRecognizerFactoryInitializer)<T extends [GestureRecognizer](flutter-docs://api/gestures/GestureRecognizer)> = void Function(T instance)
 Signature for closures that implement [GestureRecognizerFactory.initializer](flutter-docs://api/widgets/GestureRecognizerFactory/initializer).
 
-[GestureScaleEndCallback](flutter-docs://api/gestures/GestureScaleEndCallback)= void Function([ScaleEndDetails](flutter-docs://api/gestures/ScaleEndDetails) details)
+[GestureScaleEndCallback](flutter-docs://api/gestures/GestureScaleEndCallback) = void Function([ScaleEndDetails](flutter-docs://api/gestures/ScaleEndDetails) details)
 Signature for when the pointers are no longer in contact with the screen.
 
-[GestureScaleStartCallback](flutter-docs://api/gestures/GestureScaleStartCallback)= void Function([ScaleStartDetails](flutter-docs://api/gestures/ScaleStartDetails) details)
+[GestureScaleStartCallback](flutter-docs://api/gestures/GestureScaleStartCallback) = void Function([ScaleStartDetails](flutter-docs://api/gestures/ScaleStartDetails) details)
 Signature for when the pointers in contact with the screen have established
 a focal point and initial scale of 1.0.
 
-[GestureScaleUpdateCallback](flutter-docs://api/gestures/GestureScaleUpdateCallback)= void Function([ScaleUpdateDetails](flutter-docs://api/gestures/ScaleUpdateDetails) details)
+[GestureScaleUpdateCallback](flutter-docs://api/gestures/GestureScaleUpdateCallback) = void Function([ScaleUpdateDetails](flutter-docs://api/gestures/ScaleUpdateDetails) details)
 Signature for when the pointers in contact with the screen have indicated a
 new focal point and/or scale.
 
-[GestureTapCallback](flutter-docs://api/gestures/GestureTapCallback)= void Function()
+[GestureTapCallback](flutter-docs://api/gestures/GestureTapCallback) = void Function()
 Signature for when a tap has occurred.
 
-[GestureTapCancelCallback](flutter-docs://api/gestures/GestureTapCancelCallback)= void Function()
+[GestureTapCancelCallback](flutter-docs://api/gestures/GestureTapCancelCallback) = void Function()
 Signature for when the pointer that previously triggered a
 [GestureTapDownCallback](flutter-docs://api/gestures/GestureTapDownCallback) will not end up causing a tap.
 
-[GestureTapDownCallback](flutter-docs://api/gestures/GestureTapDownCallback)= void Function([TapDownDetails](flutter-docs://api/gestures/TapDownDetails) details)
+[GestureTapDownCallback](flutter-docs://api/gestures/GestureTapDownCallback) = void Function([TapDownDetails](flutter-docs://api/gestures/TapDownDetails) details)
 Signature for when a pointer that might cause a tap has contacted the
 screen.
 
-[GestureTapUpCallback](flutter-docs://api/gestures/GestureTapUpCallback)= void Function([TapUpDetails](flutter-docs://api/gestures/TapUpDetails) details)
+[GestureTapUpCallback](flutter-docs://api/gestures/GestureTapUpCallback) = void Function([TapUpDetails](flutter-docs://api/gestures/TapUpDetails) details)
 Signature for when a pointer that will trigger a tap has stopped contacting
 the screen.
 
-[HeroFlightShuttleBuilder](flutter-docs://api/widgets/HeroFlightShuttleBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) flightContext, [Animation](flutter-docs://api/animation/Animation)<[double](flutter-docs://api/dart-core/double)> animation, [HeroFlightDirection](flutter-docs://api/widgets/HeroFlightDirection) flightDirection, [BuildContext](flutter-docs://api/widgets/BuildContext) fromHeroContext, [BuildContext](flutter-docs://api/widgets/BuildContext) toHeroContext)
+[HeroFlightShuttleBuilder](flutter-docs://api/widgets/HeroFlightShuttleBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) flightContext, [Animation](flutter-docs://api/animation/Animation)<[double](flutter-docs://api/dart-core/double)> animation, [HeroFlightDirection](flutter-docs://api/widgets/HeroFlightDirection) flightDirection, [BuildContext](flutter-docs://api/widgets/BuildContext) fromHeroContext, [BuildContext](flutter-docs://api/widgets/BuildContext) toHeroContext)
 A function that lets [Hero](flutter-docs://api/widgets/Hero) es self supply a [Widget](flutter-docs://api/widgets/Widget) that is shown during the
 hero's flight from one route to another instead of default (which is to
 show the destination route's instance of the Hero).
 
-[HeroPlaceholderBuilder](flutter-docs://api/widgets/HeroPlaceholderBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [Size](flutter-docs://api/dart-ui/Size) heroSize, [Widget](flutter-docs://api/widgets/Widget) child)
+[HeroPlaceholderBuilder](flutter-docs://api/widgets/HeroPlaceholderBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [Size](flutter-docs://api/dart-ui/Size) heroSize, [Widget](flutter-docs://api/widgets/Widget) child)
 Signature for a function that builds a [Hero](flutter-docs://api/widgets/Hero) placeholder widget given a
 child and a [Size](flutter-docs://api/dart-ui/Size).
 
-[HttpClientProvider](flutter-docs://api/painting/HttpClientProvider)= [HttpClient](flutter-docs://api/dart-io/HttpClient) Function()
+[HttpClientProvider](flutter-docs://api/painting/HttpClientProvider) = [HttpClient](flutter-docs://api/dart-io/HttpClient) Function()
 Signature for a method that returns an [HttpClient](flutter-docs://api/dart-io/HttpClient).
 
-[ImageChunkListener](flutter-docs://api/painting/ImageChunkListener)= void Function([ImageChunkEvent](flutter-docs://api/painting/ImageChunkEvent) event)
+[ImageChunkListener](flutter-docs://api/painting/ImageChunkListener) = void Function([ImageChunkEvent](flutter-docs://api/painting/ImageChunkEvent) event)
 Signature for listening to [ImageChunkEvent](flutter-docs://api/painting/ImageChunkEvent) events.
 
-[ImageDecoderCallback](flutter-docs://api/painting/ImageDecoderCallback)= [Future](flutter-docs://api/dart-async/Future)<[Codec](flutter-docs://api/dart-ui/Codec)> Function([ImmutableBuffer](flutter-docs://api/dart-ui/ImmutableBuffer) buffer, {[TargetImageSizeCallback](flutter-docs://api/dart-ui/TargetImageSizeCallback)? getTargetSize})
+[ImageDecoderCallback](flutter-docs://api/painting/ImageDecoderCallback) = [Future](flutter-docs://api/dart-async/Future)<[Codec](flutter-docs://api/dart-ui/Codec)> Function([ImmutableBuffer](flutter-docs://api/dart-ui/ImmutableBuffer) buffer, {[TargetImageSizeCallback](flutter-docs://api/dart-ui/TargetImageSizeCallback)? getTargetSize})
 Performs the decode process for use in [ImageProvider.loadImage](flutter-docs://api/painting/ImageProvider/loadImage).
 
-[ImageErrorListener](flutter-docs://api/painting/ImageErrorListener)= void Function([Object](flutter-docs://api/dart-core/Object) exception, [StackTrace](flutter-docs://api/dart-core/StackTrace)? stackTrace)
+[ImageErrorListener](flutter-docs://api/painting/ImageErrorListener) = void Function([Object](flutter-docs://api/dart-core/Object) exception, [StackTrace](flutter-docs://api/dart-core/StackTrace)? stackTrace)
 Signature for reporting errors when resolving images.
 
-[ImageErrorWidgetBuilder](flutter-docs://api/widgets/ImageErrorWidgetBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [Object](flutter-docs://api/dart-core/Object) error, [StackTrace](flutter-docs://api/dart-core/StackTrace)? stackTrace)
+[ImageErrorWidgetBuilder](flutter-docs://api/widgets/ImageErrorWidgetBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [Object](flutter-docs://api/dart-core/Object) error, [StackTrace](flutter-docs://api/dart-core/StackTrace)? stackTrace)
 Signature used by [Image.errorBuilder](flutter-docs://api/widgets/Image/errorBuilder) to create a replacement widget to
 render instead of the image.
 
-[ImageFrameBuilder](flutter-docs://api/widgets/ImageFrameBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [Widget](flutter-docs://api/widgets/Widget) child, [int](flutter-docs://api/dart-core/int)? frame, [bool](flutter-docs://api/dart-core/bool) wasSynchronouslyLoaded)
+[ImageFrameBuilder](flutter-docs://api/widgets/ImageFrameBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [Widget](flutter-docs://api/widgets/Widget) child, [int](flutter-docs://api/dart-core/int)? frame, [bool](flutter-docs://api/dart-core/bool) wasSynchronouslyLoaded)
 Signature used by [Image.frameBuilder](flutter-docs://api/widgets/Image/frameBuilder) to control the widget that will be
 used when an [Image](flutter-docs://api/widgets/Image) is built.
 
-[ImageListener](flutter-docs://api/painting/ImageListener)= void Function([ImageInfo](flutter-docs://api/painting/ImageInfo) image, [bool](flutter-docs://api/dart-core/bool) synchronousCall)
+[ImageListener](flutter-docs://api/painting/ImageListener) = void Function([ImageInfo](flutter-docs://api/painting/ImageInfo) image, [bool](flutter-docs://api/dart-core/bool) synchronousCall)
 Signature for callbacks reporting that an image is available.
 
-[ImageLoadingBuilder](flutter-docs://api/widgets/ImageLoadingBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [Widget](flutter-docs://api/widgets/Widget) child, [ImageChunkEvent](flutter-docs://api/painting/ImageChunkEvent)? loadingProgress)
+[ImageLoadingBuilder](flutter-docs://api/widgets/ImageLoadingBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [Widget](flutter-docs://api/widgets/Widget) child, [ImageChunkEvent](flutter-docs://api/painting/ImageChunkEvent)? loadingProgress)
 Signature used by [Image.loadingBuilder](flutter-docs://api/widgets/Image/loadingBuilder) to build a representation of the
 image's loading progress.
 
-[IndexedWidgetBuilder](flutter-docs://api/widgets/IndexedWidgetBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [int](flutter-docs://api/dart-core/int) index)
+[IndexedWidgetBuilder](flutter-docs://api/widgets/IndexedWidgetBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [int](flutter-docs://api/dart-core/int) index)
 Signature for a function that creates a widget for a given index, e.g., in a
 list.
 
-[InitialRouteListFactory](flutter-docs://api/widgets/InitialRouteListFactory)= [List](flutter-docs://api/dart-core/List)<[Route](flutter-docs://api/widgets/Route)> Function([String](flutter-docs://api/dart-core/String) initialRoute)
+[InitialRouteListFactory](flutter-docs://api/widgets/InitialRouteListFactory) = [List](flutter-docs://api/dart-core/List)<[Route](flutter-docs://api/widgets/Route)> Function([String](flutter-docs://api/dart-core/String) initialRoute)
 The signature of [WidgetsApp.onGenerateInitialRoutes](flutter-docs://api/widgets/WidgetsApp/onGenerateInitialRoutes).
 
-[InlineSpanVisitor](flutter-docs://api/painting/InlineSpanVisitor)= [bool](flutter-docs://api/dart-core/bool) Function([InlineSpan](flutter-docs://api/painting/InlineSpan) span)
+[InlineSpanVisitor](flutter-docs://api/painting/InlineSpanVisitor) = [bool](flutter-docs://api/dart-core/bool) Function([InlineSpan](flutter-docs://api/painting/InlineSpan) span)
 Called on each span as [InlineSpan.visitChildren](flutter-docs://api/painting/InlineSpan/visitChildren) walks the [InlineSpan](flutter-docs://api/painting/InlineSpan) tree.
 
-[InputCounterWidgetBuilder](flutter-docs://api/material/InputCounterWidgetBuilder)= [Widget](flutter-docs://api/widgets/Widget)? Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, {required [int](flutter-docs://api/dart-core/int) currentLength, required [bool](flutter-docs://api/dart-core/bool) isFocused, required [int](flutter-docs://api/dart-core/int)? maxLength})
+[InputCounterWidgetBuilder](flutter-docs://api/material/InputCounterWidgetBuilder) = [Widget](flutter-docs://api/widgets/Widget)? Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, {required [int](flutter-docs://api/dart-core/int) currentLength, required [bool](flutter-docs://api/dart-core/bool) isFocused, required [int](flutter-docs://api/dart-core/int)? maxLength})
 Signature for the [TextField.buildCounter](flutter-docs://api/material/TextField/buildCounter) callback.
 
-[InspectorSelectionChangedCallback](flutter-docs://api/widgets/InspectorSelectionChangedCallback)= void Function()
+[InspectorSelectionChangedCallback](flutter-docs://api/widgets/InspectorSelectionChangedCallback) = void Function()
 Signature for the selection change callback used by
 [WidgetInspectorService.selectionChangedCallback](flutter-docs://api/widgets/WidgetInspectorService/selectionChangedCallback).
 
-[InteractiveViewerWidgetBuilder](flutter-docs://api/widgets/InteractiveViewerWidgetBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [Quad](flutter-docs://api/package-vector_math_vector_math_64/Quad) viewport)
+[InteractiveViewerWidgetBuilder](flutter-docs://api/widgets/InteractiveViewerWidgetBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [Quad](flutter-docs://api/package-vector_math_vector_math_64/Quad) viewport)
 A signature for widget builders that take a [Quad](flutter-docs://api/package-vector_math_vector_math_64/Quad) of the current viewport.
 
-[LayoutWidgetBuilder](flutter-docs://api/widgets/LayoutWidgetBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [BoxConstraints](flutter-docs://api/rendering/BoxConstraints) constraints)
+[LayoutWidgetBuilder](flutter-docs://api/widgets/LayoutWidgetBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [BoxConstraints](flutter-docs://api/rendering/BoxConstraints) constraints)
 The signature of the [LayoutBuilder](flutter-docs://api/widgets/LayoutBuilder) builder function.
 
-[LocaleListResolutionCallback](flutter-docs://api/widgets/LocaleListResolutionCallback)= [Locale](flutter-docs://api/dart-ui/Locale)? Function([List](flutter-docs://api/dart-core/List)<[Locale](flutter-docs://api/dart-ui/Locale)>? locales, [Iterable](flutter-docs://api/dart-core/Iterable)<[Locale](flutter-docs://api/dart-ui/Locale)> supportedLocales)
+[LocaleListResolutionCallback](flutter-docs://api/widgets/LocaleListResolutionCallback) = [Locale](flutter-docs://api/dart-ui/Locale)? Function([List](flutter-docs://api/dart-core/List)<[Locale](flutter-docs://api/dart-ui/Locale)>? locales, [Iterable](flutter-docs://api/dart-core/Iterable)<[Locale](flutter-docs://api/dart-ui/Locale)> supportedLocales)
 The signature of [WidgetsApp.localeListResolutionCallback](flutter-docs://api/widgets/WidgetsApp/localeListResolutionCallback).
 
-[LocaleResolutionCallback](flutter-docs://api/widgets/LocaleResolutionCallback)= [Locale](flutter-docs://api/dart-ui/Locale)? Function([Locale](flutter-docs://api/dart-ui/Locale)? locale, [Iterable](flutter-docs://api/dart-core/Iterable)<[Locale](flutter-docs://api/dart-ui/Locale)> supportedLocales)
+[LocaleResolutionCallback](flutter-docs://api/widgets/LocaleResolutionCallback) = [Locale](flutter-docs://api/dart-ui/Locale)? Function([Locale](flutter-docs://api/dart-ui/Locale)? locale, [Iterable](flutter-docs://api/dart-core/Iterable)<[Locale](flutter-docs://api/dart-ui/Locale)> supportedLocales)
 The signature of [WidgetsApp.localeResolutionCallback](flutter-docs://api/widgets/WidgetsApp/localeResolutionCallback).
 
-[MagnifierBuilder](flutter-docs://api/widgets/MagnifierBuilder)= [Widget](flutter-docs://api/widgets/Widget)? Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [MagnifierController](flutter-docs://api/widgets/MagnifierController) controller, [ValueNotifier](flutter-docs://api/foundation/ValueNotifier)<[MagnifierInfo](flutter-docs://api/widgets/MagnifierInfo)> magnifierInfo)
+[MagnifierBuilder](flutter-docs://api/widgets/MagnifierBuilder) = [Widget](flutter-docs://api/widgets/Widget)? Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [MagnifierController](flutter-docs://api/widgets/MagnifierController) controller, [ValueNotifier](flutter-docs://api/foundation/ValueNotifier)<[MagnifierInfo](flutter-docs://api/widgets/MagnifierInfo)> magnifierInfo)
 Signature for a builder that builds a [Widget](flutter-docs://api/widgets/Widget) with a [MagnifierController](flutter-docs://api/widgets/MagnifierController).
 
-[MaterialPropertyResolver](flutter-docs://api/material/MaterialPropertyResolver)<T>= [WidgetPropertyResolver](flutter-docs://api/widgets/WidgetPropertyResolver)<T>
+[MaterialPropertyResolver](flutter-docs://api/material/MaterialPropertyResolver)<T> = [WidgetPropertyResolver](flutter-docs://api/widgets/WidgetPropertyResolver)<T>
 Signature for the function that returns a value of type `T` based on a given
 set of states.
 
@@ -6062,151 +6062,151 @@ Manages a set of [MaterialState](flutter-docs://api/material/MaterialState) s an
 [MaterialStateTextStyle](flutter-docs://api/material/MaterialStateTextStyle) = [WidgetStateTextStyle](flutter-docs://api/widgets/WidgetStateTextStyle)
 Defines a [TextStyle](flutter-docs://api/painting/TextStyle) that is also a [MaterialStateProperty](flutter-docs://api/material/MaterialStateProperty).
 
-[MenuAcceleratorChildBuilder](flutter-docs://api/material/MenuAcceleratorChildBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [String](flutter-docs://api/dart-core/String) label, [int](flutter-docs://api/dart-core/int) index)
+[MenuAcceleratorChildBuilder](flutter-docs://api/material/MenuAcceleratorChildBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [String](flutter-docs://api/dart-core/String) label, [int](flutter-docs://api/dart-core/int) index)
 The type of builder function used for building a [MenuAcceleratorLabel](flutter-docs://api/material/MenuAcceleratorLabel)'s
 [MenuAcceleratorLabel.builder](flutter-docs://api/material/MenuAcceleratorLabel/builder) function.
 
-[MenuAnchorChildBuilder](flutter-docs://api/material/MenuAnchorChildBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [MenuController](flutter-docs://api/widgets/MenuController) controller, [Widget](flutter-docs://api/widgets/Widget)? child)
+[MenuAnchorChildBuilder](flutter-docs://api/material/MenuAnchorChildBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [MenuController](flutter-docs://api/widgets/MenuController) controller, [Widget](flutter-docs://api/widgets/Widget)? child)
 The type of builder function used by [MenuAnchor.builder](flutter-docs://api/material/MenuAnchor/builder) to build the
 widget that the [MenuAnchor](flutter-docs://api/material/MenuAnchor) surrounds.
 
-[MenuItemSerializableIdGenerator](flutter-docs://api/widgets/MenuItemSerializableIdGenerator)= [int](flutter-docs://api/dart-core/int) Function([PlatformMenuItem](flutter-docs://api/widgets/PlatformMenuItem) item)
+[MenuItemSerializableIdGenerator](flutter-docs://api/widgets/MenuItemSerializableIdGenerator) = [int](flutter-docs://api/dart-core/int) Function([PlatformMenuItem](flutter-docs://api/widgets/PlatformMenuItem) item)
 The signature for a function that generates unique menu item IDs for
 serialization of a [PlatformMenuItem](flutter-docs://api/widgets/PlatformMenuItem).
 
-[MoveExitWidgetSelectionButtonBuilder](flutter-docs://api/widgets/MoveExitWidgetSelectionButtonBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, {required [VoidCallback](flutter-docs://api/dart-ui/VoidCallback) onPressed, required [String](flutter-docs://api/dart-core/String) semanticsLabel, [bool](flutter-docs://api/dart-core/bool) usesDefaultAlignment})
+[MoveExitWidgetSelectionButtonBuilder](flutter-docs://api/widgets/MoveExitWidgetSelectionButtonBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, {required [VoidCallback](flutter-docs://api/dart-ui/VoidCallback) onPressed, required [String](flutter-docs://api/dart-core/String) semanticsLabel, [bool](flutter-docs://api/dart-core/bool) usesDefaultAlignment})
 Signature for the builder callback used by
 [WidgetInspector.moveExitWidgetSelectionButtonBuilder](flutter-docs://api/widgets/WidgetInspector/moveExitWidgetSelectionButtonBuilder).
 
-[NavigatorFinderCallback](flutter-docs://api/widgets/NavigatorFinderCallback)= [NavigatorState](flutter-docs://api/widgets/NavigatorState) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context)
+[NavigatorFinderCallback](flutter-docs://api/widgets/NavigatorFinderCallback) = [NavigatorState](flutter-docs://api/widgets/NavigatorState) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context)
 A callback that given a [BuildContext](flutter-docs://api/widgets/BuildContext) finds a [NavigatorState](flutter-docs://api/widgets/NavigatorState).
 
-[NestedScrollViewHeaderSliversBuilder](flutter-docs://api/widgets/NestedScrollViewHeaderSliversBuilder)= [List](flutter-docs://api/dart-core/List)<[Widget](flutter-docs://api/widgets/Widget)> Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [bool](flutter-docs://api/dart-core/bool) innerBoxIsScrolled)
+[NestedScrollViewHeaderSliversBuilder](flutter-docs://api/widgets/NestedScrollViewHeaderSliversBuilder) = [List](flutter-docs://api/dart-core/List)<[Widget](flutter-docs://api/widgets/Widget)> Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [bool](flutter-docs://api/dart-core/bool) innerBoxIsScrolled)
 Signature used by [NestedScrollView](flutter-docs://api/widgets/NestedScrollView) for building its header.
 
-[NotificationListenerCallback](flutter-docs://api/widgets/NotificationListenerCallback)<T extends [Notification](flutter-docs://api/widgets/Notification)>= [bool](flutter-docs://api/dart-core/bool) Function(T notification)
+[NotificationListenerCallback](flutter-docs://api/widgets/NotificationListenerCallback)<T extends [Notification](flutter-docs://api/widgets/Notification)> = [bool](flutter-docs://api/dart-core/bool) Function(T notification)
 Signature for [Notification](flutter-docs://api/widgets/Notification) listeners.
 
-[NullableIndexedWidgetBuilder](flutter-docs://api/widgets/NullableIndexedWidgetBuilder)= [Widget](flutter-docs://api/widgets/Widget)? Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [int](flutter-docs://api/dart-core/int) index)
+[NullableIndexedWidgetBuilder](flutter-docs://api/widgets/NullableIndexedWidgetBuilder) = [Widget](flutter-docs://api/widgets/Widget)? Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [int](flutter-docs://api/dart-core/int) index)
 Signature for a function that creates a widget for a given index, e.g., in a
 list, but may return null.
 
-[OnInvokeCallback](flutter-docs://api/widgets/OnInvokeCallback)<T extends [Intent](flutter-docs://api/widgets/Intent)>= [Object](flutter-docs://api/dart-core/Object)? Function(T intent)
+[OnInvokeCallback](flutter-docs://api/widgets/OnInvokeCallback)<T extends [Intent](flutter-docs://api/widgets/Intent)> = [Object](flutter-docs://api/dart-core/Object)? Function(T intent)
 The signature of a callback accepted by [CallbackAction.onInvoke](flutter-docs://api/widgets/CallbackAction/onInvoke).
 
-[OnKeyEventCallback](flutter-docs://api/widgets/OnKeyEventCallback)= [KeyEventResult](flutter-docs://api/widgets/KeyEventResult) Function([KeyEvent](flutter-docs://api/services/KeyEvent) event)
+[OnKeyEventCallback](flutter-docs://api/widgets/OnKeyEventCallback) = [KeyEventResult](flutter-docs://api/widgets/KeyEventResult) Function([KeyEvent](flutter-docs://api/services/KeyEvent) event)
 Signature of a callback used by [FocusManager.addEarlyKeyEventHandler](flutter-docs://api/widgets/FocusManager/addEarlyKeyEventHandler) and
 [FocusManager.addLateKeyEventHandler](flutter-docs://api/widgets/FocusManager/addLateKeyEventHandler).
 
-[OrientationWidgetBuilder](flutter-docs://api/widgets/OrientationWidgetBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [Orientation](flutter-docs://api/widgets/Orientation) orientation)
+[OrientationWidgetBuilder](flutter-docs://api/widgets/OrientationWidgetBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [Orientation](flutter-docs://api/widgets/Orientation) orientation)
 Signature for a function that builds a widget given an [Orientation](flutter-docs://api/widgets/Orientation).
 
-[OverlayChildLayoutBuilder](flutter-docs://api/widgets/OverlayChildLayoutBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [OverlayChildLayoutInfo](flutter-docs://api/widgets/OverlayChildLayoutInfo) info)
+[OverlayChildLayoutBuilder](flutter-docs://api/widgets/OverlayChildLayoutBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [OverlayChildLayoutInfo](flutter-docs://api/widgets/OverlayChildLayoutInfo) info)
 The signature of the widget builder callback used in
 [OverlayPortal.overlayChildLayoutBuilder](flutter-docs://api/widgets/OverlayPortal/OverlayPortal.overlayChildLayoutBuilder).
 
-[PageRouteFactory](flutter-docs://api/widgets/PageRouteFactory)= [PageRoute](flutter-docs://api/widgets/PageRoute)<T> Function<T>([RouteSettings](flutter-docs://api/widgets/RouteSettings) settings, [WidgetBuilder](flutter-docs://api/widgets/WidgetBuilder) builder)
+[PageRouteFactory](flutter-docs://api/widgets/PageRouteFactory) = [PageRoute](flutter-docs://api/widgets/PageRoute)<T> Function<T>([RouteSettings](flutter-docs://api/widgets/RouteSettings) settings, [WidgetBuilder](flutter-docs://api/widgets/WidgetBuilder) builder)
 The signature of [WidgetsApp.pageRouteBuilder](flutter-docs://api/widgets/WidgetsApp/pageRouteBuilder).
 
-[PaintImageCallback](flutter-docs://api/painting/PaintImageCallback)= void Function([ImageSizeInfo](flutter-docs://api/painting/ImageSizeInfo) info)
+[PaintImageCallback](flutter-docs://api/painting/PaintImageCallback) = void Function([ImageSizeInfo](flutter-docs://api/painting/ImageSizeInfo) info)
 Called when the framework is about to paint an [Image](flutter-docs://api/dart-ui/Image) to a [Canvas](flutter-docs://api/dart-ui/Canvas) with an
 [ImageSizeInfo](flutter-docs://api/painting/ImageSizeInfo) that contains the decoded size of the image as well as its
 output size.
 
-[PaintRangeValueIndicator](flutter-docs://api/material/PaintRangeValueIndicator)= void Function([PaintingContext](flutter-docs://api/rendering/PaintingContext) context, [Offset](flutter-docs://api/dart-ui/Offset) offset)
+[PaintRangeValueIndicator](flutter-docs://api/material/PaintRangeValueIndicator) = void Function([PaintingContext](flutter-docs://api/rendering/PaintingContext) context, [Offset](flutter-docs://api/dart-ui/Offset) offset)
 [RangeSlider](flutter-docs://api/material/RangeSlider) uses this callback to paint the value indicator on the overlay.
 Since the value indicator is painted on the Overlay; this method paints the
 value indicator in a [RenderBox](flutter-docs://api/rendering/RenderBox) that appears in the [Overlay](flutter-docs://api/widgets/Overlay).
 
-[PaintValueIndicator](flutter-docs://api/material/PaintValueIndicator)= void Function([PaintingContext](flutter-docs://api/rendering/PaintingContext) context, [Offset](flutter-docs://api/dart-ui/Offset) offset)
+[PaintValueIndicator](flutter-docs://api/material/PaintValueIndicator) = void Function([PaintingContext](flutter-docs://api/rendering/PaintingContext) context, [Offset](flutter-docs://api/dart-ui/Offset) offset)
 [Slider](flutter-docs://api/material/Slider) uses this callback to paint the value indicator on the overlay.
 
-[PlatformViewSurfaceFactory](flutter-docs://api/widgets/PlatformViewSurfaceFactory)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [PlatformViewController](flutter-docs://api/services/PlatformViewController) controller)
+[PlatformViewSurfaceFactory](flutter-docs://api/widgets/PlatformViewSurfaceFactory) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [PlatformViewController](flutter-docs://api/services/PlatformViewController) controller)
 A factory for a surface presenting a platform view as part of the widget hierarchy.
 
-[PointerCancelEventListener](flutter-docs://api/rendering/PointerCancelEventListener)= void Function([PointerCancelEvent](flutter-docs://api/gestures/PointerCancelEvent) event)
+[PointerCancelEventListener](flutter-docs://api/rendering/PointerCancelEventListener) = void Function([PointerCancelEvent](flutter-docs://api/gestures/PointerCancelEvent) event)
 Signature for listening to [PointerCancelEvent](flutter-docs://api/gestures/PointerCancelEvent) events.
 
-[PointerDownEventListener](flutter-docs://api/rendering/PointerDownEventListener)= void Function([PointerDownEvent](flutter-docs://api/gestures/PointerDownEvent) event)
+[PointerDownEventListener](flutter-docs://api/rendering/PointerDownEventListener) = void Function([PointerDownEvent](flutter-docs://api/gestures/PointerDownEvent) event)
 Signature for listening to [PointerDownEvent](flutter-docs://api/gestures/PointerDownEvent) events.
 
-[PointerMoveEventListener](flutter-docs://api/rendering/PointerMoveEventListener)= void Function([PointerMoveEvent](flutter-docs://api/gestures/PointerMoveEvent) event)
+[PointerMoveEventListener](flutter-docs://api/rendering/PointerMoveEventListener) = void Function([PointerMoveEvent](flutter-docs://api/gestures/PointerMoveEvent) event)
 Signature for listening to [PointerMoveEvent](flutter-docs://api/gestures/PointerMoveEvent) events.
 
-[PointerUpEventListener](flutter-docs://api/rendering/PointerUpEventListener)= void Function([PointerUpEvent](flutter-docs://api/gestures/PointerUpEvent) event)
+[PointerUpEventListener](flutter-docs://api/rendering/PointerUpEventListener) = void Function([PointerUpEvent](flutter-docs://api/gestures/PointerUpEvent) event)
 Signature for listening to [PointerUpEvent](flutter-docs://api/gestures/PointerUpEvent) events.
 
-[PopInvokedCallback](flutter-docs://api/widgets/PopInvokedCallback)= void Function([bool](flutter-docs://api/dart-core/bool) didPop)
+[PopInvokedCallback](flutter-docs://api/widgets/PopInvokedCallback) = void Function([bool](flutter-docs://api/dart-core/bool) didPop)
 A callback type for informing that a navigation pop has been invoked,
 whether or not it was handled successfully.
 
-[PopInvokedWithResultCallback](flutter-docs://api/widgets/PopInvokedWithResultCallback)<T>= void Function([bool](flutter-docs://api/dart-core/bool) didPop, T? result)
+[PopInvokedWithResultCallback](flutter-docs://api/widgets/PopInvokedWithResultCallback)<T> = void Function([bool](flutter-docs://api/dart-core/bool) didPop, T? result)
 A callback type for informing that a navigation pop has been invoked,
 whether or not it was handled successfully.
 
-[PopPageCallback](flutter-docs://api/widgets/PopPageCallback)= [bool](flutter-docs://api/dart-core/bool) Function([Route](flutter-docs://api/widgets/Route) route, dynamic result)
+[PopPageCallback](flutter-docs://api/widgets/PopPageCallback) = [bool](flutter-docs://api/dart-core/bool) Function([Route](flutter-docs://api/widgets/Route) route, dynamic result)
 Signature for the [Navigator.onPopPage](flutter-docs://api/widgets/Navigator/onPopPage) callback.
 
-[PopResultCallback](flutter-docs://api/widgets/PopResultCallback)<T>= void Function(T? result)
+[PopResultCallback](flutter-docs://api/widgets/PopResultCallback)<T> = void Function(T? result)
 A signature for a function that is passed the result of a [Route](flutter-docs://api/widgets/Route).
 
-[PopupMenuCanceled](flutter-docs://api/material/PopupMenuCanceled)= void Function()
+[PopupMenuCanceled](flutter-docs://api/material/PopupMenuCanceled) = void Function()
 Signature for the callback invoked when a [PopupMenuButton](flutter-docs://api/material/PopupMenuButton) is dismissed
 without selecting an item.
 
-[PopupMenuItemBuilder](flutter-docs://api/material/PopupMenuItemBuilder)<T>= [List](flutter-docs://api/dart-core/List)<[PopupMenuEntry](flutter-docs://api/material/PopupMenuEntry)<T>> Function([BuildContext](flutter-docs://api/widgets/BuildContext) context)
+[PopupMenuItemBuilder](flutter-docs://api/material/PopupMenuItemBuilder)<T> = [List](flutter-docs://api/dart-core/List)<[PopupMenuEntry](flutter-docs://api/material/PopupMenuEntry)<T>> Function([BuildContext](flutter-docs://api/widgets/BuildContext) context)
 Signature used by [PopupMenuButton](flutter-docs://api/material/PopupMenuButton) to lazily construct the items shown when
 the button is pressed.
 
-[PopupMenuItemSelected](flutter-docs://api/material/PopupMenuItemSelected)<T>= void Function(T value)
+[PopupMenuItemSelected](flutter-docs://api/material/PopupMenuItemSelected)<T> = void Function(T value)
 Signature for the callback invoked when a menu item is selected. The
 argument is the value of the [PopupMenuItem](flutter-docs://api/material/PopupMenuItem) that caused its menu to be
 dismissed.
 
-[PopupMenuPositionBuilder](flutter-docs://api/material/PopupMenuPositionBuilder)= [RelativeRect](flutter-docs://api/rendering/RelativeRect) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [BoxConstraints](flutter-docs://api/rendering/BoxConstraints) constraints)
+[PopupMenuPositionBuilder](flutter-docs://api/material/PopupMenuPositionBuilder) = [RelativeRect](flutter-docs://api/rendering/RelativeRect) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [BoxConstraints](flutter-docs://api/rendering/BoxConstraints) constraints)
 A builder that creates a [RelativeRect](flutter-docs://api/rendering/RelativeRect) to position a popup menu.
 Both [BuildContext](flutter-docs://api/widgets/BuildContext) and [BoxConstraints](flutter-docs://api/rendering/BoxConstraints) are from the [PopupRoute](flutter-docs://api/widgets/PopupRoute) that
 displays this menu.
 
-[RadioBuilder](flutter-docs://api/widgets/RadioBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [ToggleableStateMixin](flutter-docs://api/widgets/ToggleableStateMixin)<[StatefulWidget](flutter-docs://api/widgets/StatefulWidget)> state)
+[RadioBuilder](flutter-docs://api/widgets/RadioBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [ToggleableStateMixin](flutter-docs://api/widgets/ToggleableStateMixin)<[StatefulWidget](flutter-docs://api/widgets/StatefulWidget)> state)
 Signature for [RawRadio.builder](flutter-docs://api/widgets/RawRadio/builder).
 
-[RangeThumbSelector](flutter-docs://api/material/RangeThumbSelector)= [Thumb](flutter-docs://api/material/Thumb)? Function([TextDirection](flutter-docs://api/dart-ui/TextDirection) textDirection, [RangeValues](flutter-docs://api/material/RangeValues) values, [double](flutter-docs://api/dart-core/double) tapValue, [Size](flutter-docs://api/dart-ui/Size) thumbSize, [Size](flutter-docs://api/dart-ui/Size) trackSize, [double](flutter-docs://api/dart-core/double) dx)
+[RangeThumbSelector](flutter-docs://api/material/RangeThumbSelector) = [Thumb](flutter-docs://api/material/Thumb)? Function([TextDirection](flutter-docs://api/dart-ui/TextDirection) textDirection, [RangeValues](flutter-docs://api/material/RangeValues) values, [double](flutter-docs://api/dart-core/double) tapValue, [Size](flutter-docs://api/dart-ui/Size) thumbSize, [Size](flutter-docs://api/dart-ui/Size) trackSize, [double](flutter-docs://api/dart-core/double) dx)
 Decides which thumbs (if any) should be selected.
 
-[RawMenuAnchorChildBuilder](flutter-docs://api/widgets/RawMenuAnchorChildBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [MenuController](flutter-docs://api/widgets/MenuController) controller, [Widget](flutter-docs://api/widgets/Widget)? child)
+[RawMenuAnchorChildBuilder](flutter-docs://api/widgets/RawMenuAnchorChildBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [MenuController](flutter-docs://api/widgets/MenuController) controller, [Widget](flutter-docs://api/widgets/Widget)? child)
 Signature for the builder function used by [RawMenuAnchor.builder](flutter-docs://api/widgets/RawMenuAnchor/builder) to build
 the widget that the [RawMenuAnchor](flutter-docs://api/widgets/RawMenuAnchor) surrounds.
 
-[RawMenuAnchorCloseRequestedCallback](flutter-docs://api/widgets/RawMenuAnchorCloseRequestedCallback)= void Function([VoidCallback](flutter-docs://api/dart-ui/VoidCallback) hideOverlay)
+[RawMenuAnchorCloseRequestedCallback](flutter-docs://api/widgets/RawMenuAnchorCloseRequestedCallback) = void Function([VoidCallback](flutter-docs://api/dart-ui/VoidCallback) hideOverlay)
 Signature for the callback used by [RawMenuAnchor.onCloseRequested](flutter-docs://api/widgets/RawMenuAnchor/onCloseRequested) to
 intercept requests to close a menu.
 
-[RawMenuAnchorOpenRequestedCallback](flutter-docs://api/widgets/RawMenuAnchorOpenRequestedCallback)= void Function([Offset](flutter-docs://api/dart-ui/Offset)? position, [VoidCallback](flutter-docs://api/dart-ui/VoidCallback) showOverlay)
+[RawMenuAnchorOpenRequestedCallback](flutter-docs://api/widgets/RawMenuAnchorOpenRequestedCallback) = void Function([Offset](flutter-docs://api/dart-ui/Offset)? position, [VoidCallback](flutter-docs://api/dart-ui/VoidCallback) showOverlay)
 Signature for the callback used by [RawMenuAnchor.onOpenRequested](flutter-docs://api/widgets/RawMenuAnchor/onOpenRequested) to
 intercept requests to open a menu.
 
-[RawMenuAnchorOverlayBuilder](flutter-docs://api/widgets/RawMenuAnchorOverlayBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [RawMenuOverlayInfo](flutter-docs://api/widgets/RawMenuOverlayInfo) info)
+[RawMenuAnchorOverlayBuilder](flutter-docs://api/widgets/RawMenuAnchorOverlayBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [RawMenuOverlayInfo](flutter-docs://api/widgets/RawMenuOverlayInfo) info)
 Signature for the builder function used by [RawMenuAnchor.overlayBuilder](flutter-docs://api/widgets/RawMenuAnchor/overlayBuilder) to
 build a menu's overlay.
 
-[RebuildDirtyWidgetCallback](flutter-docs://api/widgets/RebuildDirtyWidgetCallback)= void Function([Element](flutter-docs://api/widgets/Element) e, [bool](flutter-docs://api/dart-core/bool) builtOnce)
+[RebuildDirtyWidgetCallback](flutter-docs://api/widgets/RebuildDirtyWidgetCallback) = void Function([Element](flutter-docs://api/widgets/Element) e, [bool](flutter-docs://api/dart-core/bool) builtOnce)
 Signature for [debugOnRebuildDirtyWidget](flutter-docs://api/cupertino/debugOnRebuildDirtyWidget) implementations.
 
-[RectCallback](flutter-docs://api/material/RectCallback)= [Rect](flutter-docs://api/dart-ui/Rect) Function()
+[RectCallback](flutter-docs://api/material/RectCallback) = [Rect](flutter-docs://api/dart-ui/Rect) Function()
 Signature for the callback used by ink effects to obtain the rectangle for the effect.
 
-[RefreshCallback](flutter-docs://api/material/RefreshCallback)= [Future](flutter-docs://api/dart-async/Future)<void> Function()
+[RefreshCallback](flutter-docs://api/material/RefreshCallback) = [Future](flutter-docs://api/dart-async/Future)<void> Function()
 The signature for a function that's called when the user has dragged a
 [RefreshIndicator](flutter-docs://api/material/RefreshIndicator) far enough to demonstrate that they want the app to
 refresh. The returned [Future](flutter-docs://api/dart-async/Future) must complete when the refresh operation is
 finished.
 
-[RegisterServiceExtensionCallback](flutter-docs://api/widgets/RegisterServiceExtensionCallback)= void Function({required [ServiceExtensionCallback](flutter-docs://api/foundation/ServiceExtensionCallback) callback, required [String](flutter-docs://api/dart-core/String) name})
+[RegisterServiceExtensionCallback](flutter-docs://api/widgets/RegisterServiceExtensionCallback) = void Function({required [ServiceExtensionCallback](flutter-docs://api/foundation/ServiceExtensionCallback) callback, required [String](flutter-docs://api/dart-core/String) name})
 Signature for a method that registers the service extension `callback` with
 the given `name`.
 
-[RegisterViewFactory](flutter-docs://api/widgets/RegisterViewFactory)= void Function([String](flutter-docs://api/dart-core/String), [Object](flutter-docs://api/dart-core/Object) ([int](flutter-docs://api/dart-core/int) viewId), {[bool](flutter-docs://api/dart-core/bool) isVisible})
+[RegisterViewFactory](flutter-docs://api/widgets/RegisterViewFactory) = void Function([String](flutter-docs://api/dart-core/String), [Object](flutter-docs://api/dart-core/Object) ([int](flutter-docs://api/dart-core/int) viewId), {[bool](flutter-docs://api/dart-core/bool) isVisible})
 Function signature for `ui_web.platformViewRegistry.registerViewFactory`.
 
 [RenderConstrainedLayoutBuilder](flutter-docs://api/widgets/RenderConstrainedLayoutBuilder)<LayoutInfoType, ChildType extends [RenderObject](flutter-docs://api/rendering/RenderObject)>
@@ -6214,210 +6214,210 @@ Function signature for `ui_web.platformViewRegistry.registerViewFactory`.
 Generic mixin for [RenderObject](flutter-docs://api/rendering/RenderObject) s created by an [AbstractLayoutBuilder](flutter-docs://api/widgets/AbstractLayoutBuilder) with
 the the same `LayoutInfoType`.
 
-[ReorderCallback](flutter-docs://api/widgets/ReorderCallback)= void Function([int](flutter-docs://api/dart-core/int) oldIndex, [int](flutter-docs://api/dart-core/int) newIndex)
+[ReorderCallback](flutter-docs://api/widgets/ReorderCallback) = void Function([int](flutter-docs://api/dart-core/int) oldIndex, [int](flutter-docs://api/dart-core/int) newIndex)
 A callback used by [ReorderableList](flutter-docs://api/widgets/ReorderableList) to report that a list item has moved
 to a new position in the list.
 
-[ReorderDragBoundaryProvider](flutter-docs://api/widgets/ReorderDragBoundaryProvider)= [DragBoundaryDelegate](flutter-docs://api/widgets/DragBoundaryDelegate)<[Rect](flutter-docs://api/dart-ui/Rect)>? Function([BuildContext](flutter-docs://api/widgets/BuildContext) context)
+[ReorderDragBoundaryProvider](flutter-docs://api/widgets/ReorderDragBoundaryProvider) = [DragBoundaryDelegate](flutter-docs://api/widgets/DragBoundaryDelegate)<[Rect](flutter-docs://api/dart-ui/Rect)>? Function([BuildContext](flutter-docs://api/widgets/BuildContext) context)
 Used to provide drag boundaries during drag-and-drop reordering.
 
-[ReorderItemProxyDecorator](flutter-docs://api/widgets/ReorderItemProxyDecorator)= [Widget](flutter-docs://api/widgets/Widget) Function([Widget](flutter-docs://api/widgets/Widget) child, [int](flutter-docs://api/dart-core/int) index, [Animation](flutter-docs://api/animation/Animation)<[double](flutter-docs://api/dart-core/double)> animation)
+[ReorderItemProxyDecorator](flutter-docs://api/widgets/ReorderItemProxyDecorator) = [Widget](flutter-docs://api/widgets/Widget) Function([Widget](flutter-docs://api/widgets/Widget) child, [int](flutter-docs://api/dart-core/int) index, [Animation](flutter-docs://api/animation/Animation)<[double](flutter-docs://api/dart-core/double)> animation)
 Signature for the builder callback used to decorate the dragging item in
 [ReorderableList](flutter-docs://api/widgets/ReorderableList) and [SliverReorderableList](flutter-docs://api/widgets/SliverReorderableList).
 
-[RestorableRouteBuilder](flutter-docs://api/widgets/RestorableRouteBuilder)<T>= [Route](flutter-docs://api/widgets/Route)<T> Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [Object](flutter-docs://api/dart-core/Object)? arguments)
+[RestorableRouteBuilder](flutter-docs://api/widgets/RestorableRouteBuilder)<T> = [Route](flutter-docs://api/widgets/Route)<T> Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [Object](flutter-docs://api/dart-core/Object)? arguments)
 Creates a [Route](flutter-docs://api/widgets/Route) that is to be added to a [Navigator](flutter-docs://api/widgets/Navigator).
 
-[RouteCompletionCallback](flutter-docs://api/widgets/RouteCompletionCallback)<T>= void Function(T result)
+[RouteCompletionCallback](flutter-docs://api/widgets/RouteCompletionCallback)<T> = void Function(T result)
 A callback to handle the result of a completed [Route](flutter-docs://api/widgets/Route).
 
-[RouteFactory](flutter-docs://api/widgets/RouteFactory)= [Route](flutter-docs://api/widgets/Route)? Function([RouteSettings](flutter-docs://api/widgets/RouteSettings) settings)
+[RouteFactory](flutter-docs://api/widgets/RouteFactory) = [Route](flutter-docs://api/widgets/Route)? Function([RouteSettings](flutter-docs://api/widgets/RouteSettings) settings)
 Creates a route for the given route settings.
 
-[RouteListFactory](flutter-docs://api/widgets/RouteListFactory)= [List](flutter-docs://api/dart-core/List)<[Route](flutter-docs://api/widgets/Route)> Function([NavigatorState](flutter-docs://api/widgets/NavigatorState) navigator, [String](flutter-docs://api/dart-core/String) initialRoute)
+[RouteListFactory](flutter-docs://api/widgets/RouteListFactory) = [List](flutter-docs://api/dart-core/List)<[Route](flutter-docs://api/widgets/Route)> Function([NavigatorState](flutter-docs://api/widgets/NavigatorState) navigator, [String](flutter-docs://api/dart-core/String) initialRoute)
 Creates a series of one or more routes.
 
-[RoutePageBuilder](flutter-docs://api/widgets/RoutePageBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [Animation](flutter-docs://api/animation/Animation)<[double](flutter-docs://api/dart-core/double)> animation, [Animation](flutter-docs://api/animation/Animation)<[double](flutter-docs://api/dart-core/double)> secondaryAnimation)
+[RoutePageBuilder](flutter-docs://api/widgets/RoutePageBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [Animation](flutter-docs://api/animation/Animation)<[double](flutter-docs://api/dart-core/double)> animation, [Animation](flutter-docs://api/animation/Animation)<[double](flutter-docs://api/dart-core/double)> secondaryAnimation)
 Signature for the function that builds a route's primary contents.
 Used in [PageRouteBuilder](flutter-docs://api/widgets/PageRouteBuilder) and [showGeneralDialog](flutter-docs://api/widgets/showGeneralDialog).
 
-[RoutePredicate](flutter-docs://api/widgets/RoutePredicate)= [bool](flutter-docs://api/dart-core/bool) Function([Route](flutter-docs://api/widgets/Route) route)
+[RoutePredicate](flutter-docs://api/widgets/RoutePredicate) = [bool](flutter-docs://api/dart-core/bool) Function([Route](flutter-docs://api/widgets/Route) route)
 Signature for the [Navigator.popUntil](flutter-docs://api/widgets/Navigator/popUntil) predicate argument.
 
-[RoutePresentationCallback](flutter-docs://api/widgets/RoutePresentationCallback)= [String](flutter-docs://api/dart-core/String) Function([NavigatorState](flutter-docs://api/widgets/NavigatorState) navigator, [Object](flutter-docs://api/dart-core/Object)? arguments)
+[RoutePresentationCallback](flutter-docs://api/widgets/RoutePresentationCallback) = [String](flutter-docs://api/dart-core/String) Function([NavigatorState](flutter-docs://api/widgets/NavigatorState) navigator, [Object](flutter-docs://api/dart-core/Object)? arguments)
 A callback that given some `arguments` and a `navigator` adds a new
 restorable route to that `navigator` and returns the opaque ID of that
 new route.
 
-[RouteTransitionsBuilder](flutter-docs://api/widgets/RouteTransitionsBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [Animation](flutter-docs://api/animation/Animation)<[double](flutter-docs://api/dart-core/double)> animation, [Animation](flutter-docs://api/animation/Animation)<[double](flutter-docs://api/dart-core/double)> secondaryAnimation, [Widget](flutter-docs://api/widgets/Widget) child)
+[RouteTransitionsBuilder](flutter-docs://api/widgets/RouteTransitionsBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [Animation](flutter-docs://api/animation/Animation)<[double](flutter-docs://api/dart-core/double)> animation, [Animation](flutter-docs://api/animation/Animation)<[double](flutter-docs://api/dart-core/double)> secondaryAnimation, [Widget](flutter-docs://api/widgets/Widget) child)
 Signature for the function that builds a route's transitions.
 Used in [PageRouteBuilder](flutter-docs://api/widgets/PageRouteBuilder) and [showGeneralDialog](flutter-docs://api/widgets/showGeneralDialog).
 
-[ScrollableWidgetBuilder](flutter-docs://api/widgets/ScrollableWidgetBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [ScrollController](flutter-docs://api/widgets/ScrollController) scrollController)
+[ScrollableWidgetBuilder](flutter-docs://api/widgets/ScrollableWidgetBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [ScrollController](flutter-docs://api/widgets/ScrollController) scrollController)
 The signature of a method that provides a [BuildContext](flutter-docs://api/widgets/BuildContext) and
 [ScrollController](flutter-docs://api/widgets/ScrollController) for building a widget that may overflow the draggable
 [Axis](flutter-docs://api/painting/Axis) of the containing [DraggableScrollableSheet](flutter-docs://api/widgets/DraggableScrollableSheet).
 
-[ScrollControllerCallback](flutter-docs://api/widgets/ScrollControllerCallback)= void Function([ScrollPosition](flutter-docs://api/widgets/ScrollPosition) position)
+[ScrollControllerCallback](flutter-docs://api/widgets/ScrollControllerCallback) = void Function([ScrollPosition](flutter-docs://api/widgets/ScrollPosition) position)
 Signature for when a [ScrollController](flutter-docs://api/widgets/ScrollController) has added or removed a
 [ScrollPosition](flutter-docs://api/widgets/ScrollPosition).
 
-[ScrollIncrementCalculator](flutter-docs://api/widgets/ScrollIncrementCalculator)= [double](flutter-docs://api/dart-core/double) Function([ScrollIncrementDetails](flutter-docs://api/widgets/ScrollIncrementDetails) details)
+[ScrollIncrementCalculator](flutter-docs://api/widgets/ScrollIncrementCalculator) = [double](flutter-docs://api/dart-core/double) Function([ScrollIncrementDetails](flutter-docs://api/widgets/ScrollIncrementDetails) details)
 A typedef for a function that can calculate the offset for a type of scroll
 increment given a [ScrollIncrementDetails](flutter-docs://api/widgets/ScrollIncrementDetails).
 
-[ScrollNotificationCallback](flutter-docs://api/widgets/ScrollNotificationCallback)= void Function([ScrollNotification](flutter-docs://api/widgets/ScrollNotification) notification)
+[ScrollNotificationCallback](flutter-docs://api/widgets/ScrollNotificationCallback) = void Function([ScrollNotification](flutter-docs://api/widgets/ScrollNotification) notification)
 A [ScrollNotification](flutter-docs://api/widgets/ScrollNotification) listener for [ScrollNotificationObserver](flutter-docs://api/widgets/ScrollNotificationObserver).
 
-[ScrollNotificationPredicate](flutter-docs://api/widgets/ScrollNotificationPredicate)= [bool](flutter-docs://api/dart-core/bool) Function([ScrollNotification](flutter-docs://api/widgets/ScrollNotification) notification)
+[ScrollNotificationPredicate](flutter-docs://api/widgets/ScrollNotificationPredicate) = [bool](flutter-docs://api/dart-core/bool) Function([ScrollNotification](flutter-docs://api/widgets/ScrollNotification) notification)
 A predicate for [ScrollNotification](flutter-docs://api/widgets/ScrollNotification), used to customize widgets that
 listen to notifications from their children.
 
-[SearchAnchorChildBuilder](flutter-docs://api/material/SearchAnchorChildBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [SearchController](flutter-docs://api/material/SearchController) controller)
+[SearchAnchorChildBuilder](flutter-docs://api/material/SearchAnchorChildBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [SearchController](flutter-docs://api/material/SearchController) controller)
 Signature for a function that creates a [Widget](flutter-docs://api/widgets/Widget) which is used to open a search view.
 
-[SearchCallback](flutter-docs://api/material/SearchCallback)<T>= [int](flutter-docs://api/dart-core/int)? Function([List](flutter-docs://api/dart-core/List)<[DropdownMenuEntry](flutter-docs://api/material/DropdownMenuEntry)<T>> entries, [String](flutter-docs://api/dart-core/String) query)
+[SearchCallback](flutter-docs://api/material/SearchCallback)<T> = [int](flutter-docs://api/dart-core/int)? Function([List](flutter-docs://api/dart-core/List)<[DropdownMenuEntry](flutter-docs://api/material/DropdownMenuEntry)<T>> entries, [String](flutter-docs://api/dart-core/String) query)
 A callback function that returns the index of the item that matches the
 current contents of a text field.
 
-[SelectableDayForRangePredicate](flutter-docs://api/material/SelectableDayForRangePredicate)= [bool](flutter-docs://api/dart-core/bool) Function([DateTime](flutter-docs://api/dart-core/DateTime) day, [DateTime](flutter-docs://api/dart-core/DateTime)? selectedStartDay, [DateTime](flutter-docs://api/dart-core/DateTime)? selectedEndDay)
+[SelectableDayForRangePredicate](flutter-docs://api/material/SelectableDayForRangePredicate) = [bool](flutter-docs://api/dart-core/bool) Function([DateTime](flutter-docs://api/dart-core/DateTime) day, [DateTime](flutter-docs://api/dart-core/DateTime)? selectedStartDay, [DateTime](flutter-docs://api/dart-core/DateTime)? selectedEndDay)
 Signature for predicating enabled dates in date range pickers.
 
-[SelectableDayPredicate](flutter-docs://api/widgets/SelectableDayPredicate)= [bool](flutter-docs://api/dart-core/bool) Function([DateTime](flutter-docs://api/dart-core/DateTime) day)
+[SelectableDayPredicate](flutter-docs://api/widgets/SelectableDayPredicate) = [bool](flutter-docs://api/dart-core/bool) Function([DateTime](flutter-docs://api/dart-core/DateTime) day)
 Signature for predicating dates for enabled date selections.
 
-[SelectableRegionContextMenuBuilder](flutter-docs://api/widgets/SelectableRegionContextMenuBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [SelectableRegionState](flutter-docs://api/widgets/SelectableRegionState) selectableRegionState)
+[SelectableRegionContextMenuBuilder](flutter-docs://api/widgets/SelectableRegionContextMenuBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [SelectableRegionState](flutter-docs://api/widgets/SelectableRegionState) selectableRegionState)
 Signature for a widget builder that builds a context menu for the given
 [SelectableRegionState](flutter-docs://api/widgets/SelectableRegionState).
 
-[SelectionChangedCallback](flutter-docs://api/widgets/SelectionChangedCallback)= void Function([TextSelection](flutter-docs://api/services/TextSelection) selection, [SelectionChangedCause](flutter-docs://api/services/SelectionChangedCause)? cause)
+[SelectionChangedCallback](flutter-docs://api/widgets/SelectionChangedCallback) = void Function([TextSelection](flutter-docs://api/services/TextSelection) selection, [SelectionChangedCause](flutter-docs://api/services/SelectionChangedCause)? cause)
 Signature for the callback that reports when the user changes the selection
 (including the cursor location).
 
-[SemanticFormatterCallback](flutter-docs://api/material/SemanticFormatterCallback)= [String](flutter-docs://api/dart-core/String) Function([double](flutter-docs://api/dart-core/double) value)
+[SemanticFormatterCallback](flutter-docs://api/material/SemanticFormatterCallback) = [String](flutter-docs://api/dart-core/String) Function([double](flutter-docs://api/dart-core/double) value)
 A callback that formats a numeric value from a [Slider](flutter-docs://api/material/Slider) or [RangeSlider](flutter-docs://api/material/RangeSlider) widget.
 
-[SemanticIndexCallback](flutter-docs://api/widgets/SemanticIndexCallback)= [int](flutter-docs://api/dart-core/int)? Function([Widget](flutter-docs://api/widgets/Widget) widget, [int](flutter-docs://api/dart-core/int) localIndex)
+[SemanticIndexCallback](flutter-docs://api/widgets/SemanticIndexCallback) = [int](flutter-docs://api/dart-core/int)? Function([Widget](flutter-docs://api/widgets/Widget) widget, [int](flutter-docs://api/dart-core/int) localIndex)
 A callback which produces a semantic index given a widget and the local index.
 
-[SemanticsBuilderCallback](flutter-docs://api/rendering/SemanticsBuilderCallback)= [List](flutter-docs://api/dart-core/List)<[CustomPainterSemantics](flutter-docs://api/rendering/CustomPainterSemantics)> Function([Size](flutter-docs://api/dart-ui/Size) size)
+[SemanticsBuilderCallback](flutter-docs://api/rendering/SemanticsBuilderCallback) = [List](flutter-docs://api/dart-core/List)<[CustomPainterSemantics](flutter-docs://api/rendering/CustomPainterSemantics)> Function([Size](flutter-docs://api/dart-ui/Size) size)
 Signature of the function returned by [CustomPainter.semanticsBuilder](flutter-docs://api/rendering/CustomPainter/semanticsBuilder).
 
-[ShaderCallback](flutter-docs://api/rendering/ShaderCallback)= [Shader](flutter-docs://api/dart-ui/Shader) Function([Rect](flutter-docs://api/dart-ui/Rect) bounds)
+[ShaderCallback](flutter-docs://api/rendering/ShaderCallback) = [Shader](flutter-docs://api/dart-ui/Shader) Function([Rect](flutter-docs://api/dart-ui/Rect) bounds)
 Signature for a function that creates a [Shader](flutter-docs://api/dart-ui/Shader) for a given [Rect](flutter-docs://api/dart-ui/Rect).
 
-[ShaderWarmUpImageCallback](flutter-docs://api/painting/ShaderWarmUpImageCallback)= [bool](flutter-docs://api/dart-core/bool) Function([Image](flutter-docs://api/dart-ui/Image) image)
+[ShaderWarmUpImageCallback](flutter-docs://api/painting/ShaderWarmUpImageCallback) = [bool](flutter-docs://api/dart-core/bool) Function([Image](flutter-docs://api/dart-ui/Image) image)
 The signature of [debugCaptureShaderWarmUpImage](flutter-docs://api/rendering/debugCaptureShaderWarmUpImage).
 
-[ShaderWarmUpPictureCallback](flutter-docs://api/painting/ShaderWarmUpPictureCallback)= [bool](flutter-docs://api/dart-core/bool) Function([Picture](flutter-docs://api/dart-ui/Picture) picture)
+[ShaderWarmUpPictureCallback](flutter-docs://api/painting/ShaderWarmUpPictureCallback) = [bool](flutter-docs://api/dart-core/bool) Function([Picture](flutter-docs://api/dart-ui/Picture) picture)
 The signature of [debugCaptureShaderWarmUpPicture](flutter-docs://api/rendering/debugCaptureShaderWarmUpPicture).
 
-[SharedAppDataInitCallback](flutter-docs://api/widgets/SharedAppDataInitCallback)<T>= T Function()
+[SharedAppDataInitCallback](flutter-docs://api/widgets/SharedAppDataInitCallback)<T> = T Function()
 The type of the [SharedAppData.getValue](flutter-docs://api/widgets/SharedAppData/getValue) `init` parameter.
 
-[SliverLayoutWidgetBuilder](flutter-docs://api/widgets/SliverLayoutWidgetBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [SliverConstraints](flutter-docs://api/rendering/SliverConstraints) constraints)
+[SliverLayoutWidgetBuilder](flutter-docs://api/widgets/SliverLayoutWidgetBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [SliverConstraints](flutter-docs://api/rendering/SliverConstraints) constraints)
 The signature of the [SliverLayoutBuilder](flutter-docs://api/widgets/SliverLayoutBuilder) builder function.
 
-[StatefulWidgetBuilder](flutter-docs://api/widgets/StatefulWidgetBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [StateSetter](flutter-docs://api/widgets/StateSetter) setState)
+[StatefulWidgetBuilder](flutter-docs://api/widgets/StatefulWidgetBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [StateSetter](flutter-docs://api/widgets/StateSetter) setState)
 Signature for the builder callback used by [StatefulBuilder](flutter-docs://api/widgets/StatefulBuilder).
 
-[StateSetter](flutter-docs://api/widgets/StateSetter)= void Function([VoidCallback](flutter-docs://api/dart-ui/VoidCallback) fn)
+[StateSetter](flutter-docs://api/widgets/StateSetter) = void Function([VoidCallback](flutter-docs://api/dart-ui/VoidCallback) fn)
 The signature of [State.setState](flutter-docs://api/widgets/State/setState) functions.
 
-[StepIconBuilder](flutter-docs://api/material/StepIconBuilder)= [Widget](flutter-docs://api/widgets/Widget)? Function([int](flutter-docs://api/dart-core/int) stepIndex, [StepState](flutter-docs://api/material/StepState) stepState)
+[StepIconBuilder](flutter-docs://api/material/StepIconBuilder) = [Widget](flutter-docs://api/widgets/Widget)? Function([int](flutter-docs://api/dart-core/int) stepIndex, [StepState](flutter-docs://api/material/StepState) stepState)
 A builder that creates the icon widget for the [Step](flutter-docs://api/material/Step) at `stepIndex`, given
 `stepState`.
 
-[SuggestionsBuilder](flutter-docs://api/material/SuggestionsBuilder)= [FutureOr](flutter-docs://api/dart-async/FutureOr)<[Iterable](flutter-docs://api/dart-core/Iterable)<[Widget](flutter-docs://api/widgets/Widget)>> Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [SearchController](flutter-docs://api/material/SearchController) controller)
+[SuggestionsBuilder](flutter-docs://api/material/SuggestionsBuilder) = [FutureOr](flutter-docs://api/dart-async/FutureOr)<[Iterable](flutter-docs://api/dart-core/Iterable)<[Widget](flutter-docs://api/widgets/Widget)>> Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [SearchController](flutter-docs://api/material/SearchController) controller)
 Signature for a function that creates a [Widget](flutter-docs://api/widgets/Widget) to build the suggestion list
 based on the input in the search bar.
 
-[TabValueChanged](flutter-docs://api/material/TabValueChanged)<T>= void Function(T value, [int](flutter-docs://api/dart-core/int) index)
+[TabValueChanged](flutter-docs://api/material/TabValueChanged)<T> = void Function(T value, [int](flutter-docs://api/dart-core/int) index)
 Signature for [TabBar](flutter-docs://api/material/TabBar) callbacks that report that an underlying value has
 changed for a given [Tab](flutter-docs://api/material/Tab) at `index`.
 
-[TapBehaviorButtonBuilder](flutter-docs://api/widgets/TapBehaviorButtonBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, {required [VoidCallback](flutter-docs://api/dart-ui/VoidCallback) onPressed, required [bool](flutter-docs://api/dart-core/bool) selectionOnTapEnabled, required [String](flutter-docs://api/dart-core/String) semanticsLabel})
+[TapBehaviorButtonBuilder](flutter-docs://api/widgets/TapBehaviorButtonBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, {required [VoidCallback](flutter-docs://api/dart-ui/VoidCallback) onPressed, required [bool](flutter-docs://api/dart-core/bool) selectionOnTapEnabled, required [String](flutter-docs://api/dart-core/String) semanticsLabel})
 Signature for the builder callback used by
 [WidgetInspector.tapBehaviorButtonBuilder](flutter-docs://api/widgets/WidgetInspector/tapBehaviorButtonBuilder).
 
-[TapRegionCallback](flutter-docs://api/widgets/TapRegionCallback)= void Function([PointerDownEvent](flutter-docs://api/gestures/PointerDownEvent) event)
+[TapRegionCallback](flutter-docs://api/widgets/TapRegionCallback) = void Function([PointerDownEvent](flutter-docs://api/gestures/PointerDownEvent) event)
 Signature for a callback called for a [PointerDownEvent](flutter-docs://api/gestures/PointerDownEvent) relative to a [TapRegion](flutter-docs://api/widgets/TapRegion).
 
-[TapRegionUpCallback](flutter-docs://api/widgets/TapRegionUpCallback)= void Function([PointerUpEvent](flutter-docs://api/gestures/PointerUpEvent) event)
+[TapRegionUpCallback](flutter-docs://api/widgets/TapRegionUpCallback) = void Function([PointerUpEvent](flutter-docs://api/gestures/PointerUpEvent) event)
 Signature for a callback called for a [PointerUpEvent](flutter-docs://api/gestures/PointerUpEvent) relative to a [TapRegion](flutter-docs://api/widgets/TapRegion).
 
-[ToolbarBuilder](flutter-docs://api/widgets/ToolbarBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [Widget](flutter-docs://api/widgets/Widget) child)
+[ToolbarBuilder](flutter-docs://api/widgets/ToolbarBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [Widget](flutter-docs://api/widgets/Widget) child)
 The type for a Function that builds a toolbar's container with the given
 child.
 
-[TooltipTriggeredCallback](flutter-docs://api/material/TooltipTriggeredCallback)= void Function()
+[TooltipTriggeredCallback](flutter-docs://api/material/TooltipTriggeredCallback) = void Function()
 Signature for when a tooltip is triggered.
 
-[TransformCallback](flutter-docs://api/widgets/TransformCallback)= [Matrix4](flutter-docs://api/package-vector_math_vector_math_64/Matrix4) Function([double](flutter-docs://api/dart-core/double) animationValue)
+[TransformCallback](flutter-docs://api/widgets/TransformCallback) = [Matrix4](flutter-docs://api/package-vector_math_vector_math_64/Matrix4) Function([double](flutter-docs://api/dart-core/double) animationValue)
 Signature for the callback to [MatrixTransition.onTransform](flutter-docs://api/widgets/MatrixTransition/onTransform).
 
-[TransitionBuilder](flutter-docs://api/widgets/TransitionBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [Widget](flutter-docs://api/widgets/Widget)? child)
+[TransitionBuilder](flutter-docs://api/widgets/TransitionBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [Widget](flutter-docs://api/widgets/Widget)? child)
 A builder that builds a widget given a child.
 
-[TraversalRequestFocusCallback](flutter-docs://api/widgets/TraversalRequestFocusCallback)= void Function([FocusNode](flutter-docs://api/widgets/FocusNode) node, {[double](flutter-docs://api/dart-core/double)? alignment, [ScrollPositionAlignmentPolicy](flutter-docs://api/widgets/ScrollPositionAlignmentPolicy)? alignmentPolicy, [Curve](flutter-docs://api/animation/Curve)? curve, [Duration](flutter-docs://api/dart-core/Duration)? duration})
+[TraversalRequestFocusCallback](flutter-docs://api/widgets/TraversalRequestFocusCallback) = void Function([FocusNode](flutter-docs://api/widgets/FocusNode) node, {[double](flutter-docs://api/dart-core/double)? alignment, [ScrollPositionAlignmentPolicy](flutter-docs://api/widgets/ScrollPositionAlignmentPolicy)? alignmentPolicy, [Curve](flutter-docs://api/animation/Curve)? curve, [Duration](flutter-docs://api/dart-core/Duration)? duration})
 Signature for the callback that's called when a traversal policy
 requests focus.
 
-[TreeSliverNodeBuilder](flutter-docs://api/widgets/TreeSliverNodeBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [TreeSliverNode](flutter-docs://api/widgets/TreeSliverNode)<[Object](flutter-docs://api/dart-core/Object)?> node, [AnimationStyle](flutter-docs://api/animation/AnimationStyle) animationStyle)
+[TreeSliverNodeBuilder](flutter-docs://api/widgets/TreeSliverNodeBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [TreeSliverNode](flutter-docs://api/widgets/TreeSliverNode)<[Object](flutter-docs://api/dart-core/Object)?> node, [AnimationStyle](flutter-docs://api/animation/AnimationStyle) animationStyle)
 Signature for a function that creates a [Widget](flutter-docs://api/widgets/Widget) to represent the given
 [TreeSliverNode](flutter-docs://api/widgets/TreeSliverNode) in the [TreeSliver](flutter-docs://api/widgets/TreeSliver).
 
-[TreeSliverNodeCallback](flutter-docs://api/widgets/TreeSliverNodeCallback)= void Function([TreeSliverNode](flutter-docs://api/widgets/TreeSliverNode)<[Object](flutter-docs://api/dart-core/Object)?> node)
+[TreeSliverNodeCallback](flutter-docs://api/widgets/TreeSliverNodeCallback) = void Function([TreeSliverNode](flutter-docs://api/widgets/TreeSliverNode)<[Object](flutter-docs://api/dart-core/Object)?> node)
 Signature for a function that is called when a [TreeSliverNode](flutter-docs://api/widgets/TreeSliverNode) is toggled,
 changing its expanded state.
 
-[TreeSliverRowExtentBuilder](flutter-docs://api/widgets/TreeSliverRowExtentBuilder)= [double](flutter-docs://api/dart-core/double) Function([TreeSliverNode](flutter-docs://api/widgets/TreeSliverNode)<[Object](flutter-docs://api/dart-core/Object)?> node, [SliverLayoutDimensions](flutter-docs://api/rendering/SliverLayoutDimensions) dimensions)
+[TreeSliverRowExtentBuilder](flutter-docs://api/widgets/TreeSliverRowExtentBuilder) = [double](flutter-docs://api/dart-core/double) Function([TreeSliverNode](flutter-docs://api/widgets/TreeSliverNode)<[Object](flutter-docs://api/dart-core/Object)?> node, [SliverLayoutDimensions](flutter-docs://api/rendering/SliverLayoutDimensions) dimensions)
 Signature for a function that returns an extent for the given
 [TreeSliverNode](flutter-docs://api/widgets/TreeSliverNode) in the [TreeSliver](flutter-docs://api/widgets/TreeSliver).
 
-[TweenConstructor](flutter-docs://api/widgets/TweenConstructor)<T extends [Object](flutter-docs://api/dart-core/Object)>= [Tween](flutter-docs://api/animation/Tween)<T> Function(T targetValue)
+[TweenConstructor](flutter-docs://api/widgets/TweenConstructor)<T extends [Object](flutter-docs://api/dart-core/Object)> = [Tween](flutter-docs://api/animation/Tween)<T> Function(T targetValue)
 Signature for a [Tween](flutter-docs://api/animation/Tween) factory.
 
-[TweenVisitor](flutter-docs://api/widgets/TweenVisitor)<T extends [Object](flutter-docs://api/dart-core/Object)>= [Tween](flutter-docs://api/animation/Tween)<T>? Function([Tween](flutter-docs://api/animation/Tween)<T>? tween, T targetValue, [TweenConstructor](flutter-docs://api/widgets/TweenConstructor)<T> constructor)
+[TweenVisitor](flutter-docs://api/widgets/TweenVisitor)<T extends [Object](flutter-docs://api/dart-core/Object)> = [Tween](flutter-docs://api/animation/Tween)<T>? Function([Tween](flutter-docs://api/animation/Tween)<T>? tween, T targetValue, [TweenConstructor](flutter-docs://api/widgets/TweenConstructor)<T> constructor)
 Signature for callbacks passed to [ImplicitlyAnimatedWidgetState.forEachTween](flutter-docs://api/widgets/ImplicitlyAnimatedWidgetState/forEachTween).
 
-[TwoDimensionalIndexedWidgetBuilder](flutter-docs://api/widgets/TwoDimensionalIndexedWidgetBuilder)= [Widget](flutter-docs://api/widgets/Widget)? Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [ChildVicinity](flutter-docs://api/widgets/ChildVicinity) vicinity)
+[TwoDimensionalIndexedWidgetBuilder](flutter-docs://api/widgets/TwoDimensionalIndexedWidgetBuilder) = [Widget](flutter-docs://api/widgets/Widget)? Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [ChildVicinity](flutter-docs://api/widgets/ChildVicinity) vicinity)
 Signature for a function that creates a widget for a given [ChildVicinity](flutter-docs://api/widgets/ChildVicinity),
 e.g., in a [TwoDimensionalScrollView](flutter-docs://api/widgets/TwoDimensionalScrollView), but may return null.
 
-[TwoDimensionalViewportBuilder](flutter-docs://api/widgets/TwoDimensionalViewportBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [ViewportOffset](flutter-docs://api/rendering/ViewportOffset) verticalPosition, [ViewportOffset](flutter-docs://api/rendering/ViewportOffset) horizontalPosition)
+[TwoDimensionalViewportBuilder](flutter-docs://api/widgets/TwoDimensionalViewportBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [ViewportOffset](flutter-docs://api/rendering/ViewportOffset) verticalPosition, [ViewportOffset](flutter-docs://api/rendering/ViewportOffset) horizontalPosition)
 Signature used by [TwoDimensionalScrollable](flutter-docs://api/widgets/TwoDimensionalScrollable) to build the viewport through
 which the scrollable content is displayed.
 
-[ValueChanged](flutter-docs://api/foundation/ValueChanged)<T>= void Function(T value)
+[ValueChanged](flutter-docs://api/foundation/ValueChanged)<T> = void Function(T value)
 Signature for callbacks that report that an underlying value has changed.
 
-[ValueGetter](flutter-docs://api/foundation/ValueGetter)<T>= T Function()
+[ValueGetter](flutter-docs://api/foundation/ValueGetter)<T> = T Function()
 Signature for callbacks that are to report a value on demand.
 
-[ValueListenableTransformer](flutter-docs://api/animation/ValueListenableTransformer)<T>= T Function(T)
+[ValueListenableTransformer](flutter-docs://api/animation/ValueListenableTransformer)<T> = T Function(T)
 Signature for method used to transform values in [Animation.fromValueListenable](flutter-docs://api/animation/Animation/Animation.fromValueListenable).
 
-[ValueSetter](flutter-docs://api/foundation/ValueSetter)<T>= void Function(T value)
+[ValueSetter](flutter-docs://api/foundation/ValueSetter)<T> = void Function(T value)
 Signature for callbacks that report that a value has been set.
 
-[ValueWidgetBuilder](flutter-docs://api/widgets/ValueWidgetBuilder)<T>= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, T value, [Widget](flutter-docs://api/widgets/Widget)? child)
+[ValueWidgetBuilder](flutter-docs://api/widgets/ValueWidgetBuilder)<T> = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, T value, [Widget](flutter-docs://api/widgets/Widget)? child)
 Builds a [Widget](flutter-docs://api/widgets/Widget) when given a concrete value of a [ValueListenable<T>](flutter-docs://api/foundation/ValueListenable).
 
-[ViewBuilder](flutter-docs://api/material/ViewBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([Iterable](flutter-docs://api/dart-core/Iterable)<[Widget](flutter-docs://api/widgets/Widget)> suggestions)
+[ViewBuilder](flutter-docs://api/material/ViewBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([Iterable](flutter-docs://api/dart-core/Iterable)<[Widget](flutter-docs://api/widgets/Widget)> suggestions)
 Signature for a function that creates a [Widget](flutter-docs://api/widgets/Widget) to layout the suggestion list.
 
-[ViewportBuilder](flutter-docs://api/widgets/ViewportBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [ViewportOffset](flutter-docs://api/rendering/ViewportOffset) position)
+[ViewportBuilder](flutter-docs://api/widgets/ViewportBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context, [ViewportOffset](flutter-docs://api/rendering/ViewportOffset) position)
 Signature used by [Scrollable](flutter-docs://api/widgets/Scrollable) to build the viewport through which the
 scrollable content is displayed.
 
-[VoidCallback](flutter-docs://api/dart-ui/VoidCallback)= void Function()
+[VoidCallback](flutter-docs://api/dart-ui/VoidCallback) = void Function()
 Signature of callbacks that have no arguments and return no data.
 
-[WidgetBuilder](flutter-docs://api/widgets/WidgetBuilder)= [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context)
+[WidgetBuilder](flutter-docs://api/widgets/WidgetBuilder) = [Widget](flutter-docs://api/widgets/Widget) Function([BuildContext](flutter-docs://api/widgets/BuildContext) context)
 Signature for a function that creates a widget, e.g. [StatelessWidget.build](flutter-docs://api/widgets/StatelessWidget/build) or [State.build](flutter-docs://api/widgets/State/build).
 
-[WidgetPropertyResolver](flutter-docs://api/widgets/WidgetPropertyResolver)<T>= T Function([Set](flutter-docs://api/dart-core/Set)<[WidgetState](flutter-docs://api/widgets/WidgetState)> states)
+[WidgetPropertyResolver](flutter-docs://api/widgets/WidgetPropertyResolver)<T> = T Function([Set](flutter-docs://api/dart-core/Set)<[WidgetState](flutter-docs://api/widgets/WidgetState)> states)
 Signature for the function that returns a value of type `T` based on a given
 set of states.
 
@@ -6426,7 +6426,7 @@ set of states.
 A [Map](flutter-docs://api/dart-core/Map) used to resolve to a single value of type `T` based on
 the current set of Widget states.
 
-[WillPopCallback](flutter-docs://api/widgets/WillPopCallback)= [Future](flutter-docs://api/dart-async/Future)<[bool](flutter-docs://api/dart-core/bool)> Function()
+[WillPopCallback](flutter-docs://api/widgets/WillPopCallback) = [Future](flutter-docs://api/dart-async/Future)<[bool](flutter-docs://api/dart-core/bool)> Function()
 Signature for a callback that verifies that it's OK to call [Navigator.pop](flutter-docs://api/widgets/Navigator/pop).
 
 ## Exceptions / Errors

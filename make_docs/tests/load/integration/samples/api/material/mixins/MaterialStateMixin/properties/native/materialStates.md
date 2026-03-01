@@ -2,7 +2,7 @@
 
 1. @[protected](flutter-docs://api/meta/protected)
 
-[Set](flutter-docs://api/dart-core/Set)<[WidgetState](flutter-docs://api/widgets/WidgetState)>materialStates
+[Set](flutter-docs://api/dart-core/Set)<[WidgetState](flutter-docs://api/widgets/WidgetState)> materialStates
 
 
 Managed set of active [WidgetState](flutter-docs://api/widgets/WidgetState) values; designed to be passed to [WidgetStateProperty.resolve](flutter-docs://api/widgets/WidgetStateProperty/resolve) methods.

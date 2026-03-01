@@ -1,7 +1,7 @@
 # updateMaterialState method
 
 @[protected](flutter-docs://api/meta/protected)
-[ValueChanged](flutter-docs://api/foundation/ValueChanged)<[bool](flutter-docs://api/dart-core/bool)>updateMaterialState(
+[ValueChanged](flutter-docs://api/foundation/ValueChanged)<[bool](flutter-docs://api/dart-core/bool)> updateMaterialState(
 [WidgetState](flutter-docs://api/widgets/WidgetState) key, {
 [ValueChanged](flutter-docs://api/foundation/ValueChanged)<[bool](flutter-docs://api/dart-core/bool)>? onChanged,
 })

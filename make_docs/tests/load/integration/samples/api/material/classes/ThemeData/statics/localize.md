@@ -5,7 +5,7 @@
 [TextTheme](flutter-docs://api/material/TextTheme) localTextGeometry
 )
 
-Returns a new theme built by merging the text geometry provided by the`localTextGeometry` theme with the `baseTheme`.
+Returns a new theme built by merging the text geometry provided by the `localTextGeometry` theme with the `baseTheme`.
 
 For those text styles in the `baseTheme` whose [TextStyle.inherit](flutter-docs://api/painting/TextStyle/inherit) is set
 to true, the returned theme's text styles inherit the geometric properties

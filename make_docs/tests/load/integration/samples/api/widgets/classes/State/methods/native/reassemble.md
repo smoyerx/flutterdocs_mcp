@@ -3,7 +3,7 @@
 1. @[protected](flutter-docs://api/meta/protected)
 2. @[mustCallSuper](flutter-docs://api/meta/mustCallSuper)
 
-voidreassemble()
+void reassemble()
 
 Called whenever the application is reassembled during debugging, for
 example during hot reload.
@@ -24,7 +24,7 @@ reassemble after a hot reload must be resilient to being called out of
 order, e.g. by fizzling instead of throwing. That said, once reassemble is
 called, build will be called after it at least once.
 
-In addition to this method being invoked, it is guaranteed that the[build](flutter-docs://api/widgets/State/build) method will be invoked when a reassemble is signaled. Most
+In addition to this method being invoked, it is guaranteed that the [build](flutter-docs://api/widgets/State/build) method will be invoked when a reassemble is signaled. Most
 widgets therefore do not need to do anything in the [reassemble](flutter-docs://api/widgets/State/reassemble) method.
 
 See also:

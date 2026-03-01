@@ -1,6 +1,6 @@
 # extension<T> method
 
-T?extension<T>()
+T? extension<T>()
 
 Used to obtain a particular [ThemeExtension](flutter-docs://api/material/ThemeExtension) from [extensions](flutter-docs://api/material/ThemeData/extensions).
 

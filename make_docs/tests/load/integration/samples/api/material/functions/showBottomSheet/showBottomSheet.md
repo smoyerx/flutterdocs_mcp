@@ -45,7 +45,7 @@ To create a local project with this code sample, run:  flutter create --sample=m
 
 [Omitted code: Interactive sample]
 
-To rebuild the bottom sheet (e.g. if it is stateful), call[PersistentBottomSheetController.setState](flutter-docs://api/material/ScaffoldFeatureController/setState) on the controller returned by
+To rebuild the bottom sheet (e.g. if it is stateful), call [PersistentBottomSheetController.setState](flutter-docs://api/material/ScaffoldFeatureController/setState) on the controller returned by
 this method.
 
 The new bottom sheet becomes a [LocalHistoryEntry](flutter-docs://api/widgets/LocalHistoryEntry) for the enclosing [ModalRoute](flutter-docs://api/widgets/ModalRoute) and a back button is added to the app bar of the [Scaffold](flutter-docs://api/material/Scaffold) that closes the bottom sheet.
@@ -55,7 +55,7 @@ does not add a back button to the enclosing Scaffold's app bar, use the [Scaffol
 
 A closely related widget is a modal bottom sheet, which is an alternative
 to a menu or a dialog and prevents the user from interacting with the rest
-of the app. Modal bottom sheets can be created and displayed with the[showModalBottomSheet](flutter-docs://api/material/showModalBottomSheet) function.
+of the app. Modal bottom sheets can be created and displayed with the [showModalBottomSheet](flutter-docs://api/material/showModalBottomSheet) function.
 
 The `context` argument is used to look up the [Scaffold](flutter-docs://api/material/Scaffold) for the bottom
 sheet. It is only used when the method is called. Its corresponding widget

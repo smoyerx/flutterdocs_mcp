@@ -1,6 +1,6 @@
 # OverlayChildLayoutInfo extension type
 
-The additional layout information available to the[OverlayPortal.overlayChildLayoutBuilder](flutter-docs://api/widgets/OverlayPortal/OverlayPortal.overlayChildLayoutBuilder) callback.
+The additional layout information available to the [OverlayPortal.overlayChildLayoutBuilder](flutter-docs://api/widgets/OverlayPortal/OverlayPortal.overlayChildLayoutBuilder) callback.
 
 on
 - ([Size](flutter-docs://api/dart-ui/Size), [Matrix4](flutter-docs://api/package-vector_math_vector_math_64/Matrix4), [Size](flutter-docs://api/dart-ui/Size))

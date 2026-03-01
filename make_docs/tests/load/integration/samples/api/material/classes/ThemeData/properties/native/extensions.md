@@ -1,6 +1,6 @@
 # extensions property
 
-[Map](flutter-docs://api/dart-core/Map)<[Object](flutter-docs://api/dart-core/Object), [ThemeExtension](flutter-docs://api/material/ThemeExtension)>extensions
+[Map](flutter-docs://api/dart-core/Map)<[Object](flutter-docs://api/dart-core/Object), [ThemeExtension](flutter-docs://api/material/ThemeExtension)> extensions
 
 
 Arbitrary additions to this theme.

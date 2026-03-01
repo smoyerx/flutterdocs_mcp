@@ -1,7 +1,7 @@
 # setState method
 
 @[protected](flutter-docs://api/meta/protected)
-voidsetState(
+void setState(
 [VoidCallback](flutter-docs://api/dart-ui/VoidCallback) fn
 )
 

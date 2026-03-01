@@ -8,7 +8,7 @@ required [SliderThemeData](flutter-docs://api/material/SliderThemeData) sliderTh
 [bool](flutter-docs://api/dart-core/bool) isDiscrete = false,
 })
 
-Returns a rect that represents the track bounds that fits within the[Slider](flutter-docs://api/material/Slider).
+Returns a rect that represents the track bounds that fits within the [Slider](flutter-docs://api/material/Slider).
 
 The width is the width of the [Slider](flutter-docs://api/material/Slider) or [RangeSlider](flutter-docs://api/material/RangeSlider), but padded by
 the max of the overlay and thumb radius. The height is defined by the [SliderThemeData.trackHeight](flutter-docs://api/material/SliderThemeData/trackHeight).

@@ -106,7 +106,7 @@ color scheme will be based on the tones of `colorSchemeSeed` and all of
 its contrasting color will meet accessibility guidelines for readability.
 (See [ColorScheme.fromSeed](flutter-docs://api/material/ColorScheme/ColorScheme.fromSeed) for more details.)
 
-If the app wants to customize a generated color scheme, it can use[ColorScheme.fromSeed](flutter-docs://api/material/ColorScheme/ColorScheme.fromSeed) directly and then [ColorScheme.copyWith](flutter-docs://api/material/ColorScheme/copyWith) on the
+If the app wants to customize a generated color scheme, it can use [ColorScheme.fromSeed](flutter-docs://api/material/ColorScheme/ColorScheme.fromSeed) directly and then [ColorScheme.copyWith](flutter-docs://api/material/ColorScheme/copyWith) on the
 result to override any colors that need to be replaced. The result of
 this can be used as the `colorScheme` directly.
 

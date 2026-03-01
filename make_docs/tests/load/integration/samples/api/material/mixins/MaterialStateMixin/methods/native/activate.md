@@ -3,7 +3,7 @@
 1. @[protected](flutter-docs://api/meta/protected)
 2. @[mustCallSuper](flutter-docs://api/meta/mustCallSuper)
 
-voidactivate()
+void activate()
 
 
 Called when this object is reinserted into the tree after having been

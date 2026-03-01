@@ -1,7 +1,7 @@
 # debugFillProperties method
 
 @[override](flutter-docs://api/dart-core/override)
-voiddebugFillProperties(
+void debugFillProperties(
 [DiagnosticPropertiesBuilder](flutter-docs://api/foundation/DiagnosticPropertiesBuilder) properties
 )
 

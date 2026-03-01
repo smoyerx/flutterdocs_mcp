@@ -2,7 +2,7 @@
 
 @[mustCallSuper](flutter-docs://api/meta/mustCallSuper)
 @[protected](flutter-docs://api/meta/protected)
-voiddidUpdateWidget(
+void didUpdateWidget(
 covariant T oldWidget
 )
 

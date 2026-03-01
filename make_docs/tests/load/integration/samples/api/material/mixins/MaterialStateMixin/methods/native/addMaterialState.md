@@ -1,7 +1,7 @@
 # addMaterialState method
 
 @[protected](flutter-docs://api/meta/protected)
-voidaddMaterialState(
+void addMaterialState(
 [WidgetState](flutter-docs://api/widgets/WidgetState) state
 )
 

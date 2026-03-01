@@ -1,7 +1,7 @@
 # setMaterialState method
 
 @[protected](flutter-docs://api/meta/protected)
-voidsetMaterialState(
+void setMaterialState(
 [WidgetState](flutter-docs://api/widgets/WidgetState) state,
 [bool](flutter-docs://api/dart-core/bool) isSet
 )

@@ -3,7 +3,7 @@
 [OutlinedButtonThemeData](flutter-docs://api/material/OutlinedButtonThemeData) outlinedButtonTheme
 
 
-A theme for customizing the appearance and internal layout of[OutlinedButton](flutter-docs://api/material/OutlinedButton) s.
+A theme for customizing the appearance and internal layout of [OutlinedButton](flutter-docs://api/material/OutlinedButton) s.
 
 ## Implementation
 

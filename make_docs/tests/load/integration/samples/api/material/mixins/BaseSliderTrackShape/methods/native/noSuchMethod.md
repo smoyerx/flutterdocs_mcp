@@ -1,6 +1,6 @@
 # noSuchMethod method
 
-dynamicnoSuchMethod(
+dynamic noSuchMethod(
 [Invocation](flutter-docs://api/dart-core/Invocation) invocation
 )
 

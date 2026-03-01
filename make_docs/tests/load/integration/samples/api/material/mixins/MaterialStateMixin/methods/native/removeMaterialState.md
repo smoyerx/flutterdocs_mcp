@@ -1,7 +1,7 @@
 # removeMaterialState method
 
 @[protected](flutter-docs://api/meta/protected)
-voidremoveMaterialState(
+void removeMaterialState(
 [WidgetState](flutter-docs://api/widgets/WidgetState) state
 )
 

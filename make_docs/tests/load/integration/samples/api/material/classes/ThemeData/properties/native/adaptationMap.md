@@ -1,6 +1,6 @@
 # adaptationMap property
 
-[Map](flutter-docs://api/dart-core/Map)<[Type](flutter-docs://api/dart-core/Type), [Adaptation](flutter-docs://api/material/Adaptation)<[Object](flutter-docs://api/dart-core/Object)>>adaptationMap
+[Map](flutter-docs://api/dart-core/Map)<[Type](flutter-docs://api/dart-core/Type), [Adaptation](flutter-docs://api/material/Adaptation)<[Object](flutter-docs://api/dart-core/Object)>> adaptationMap
 
 
 A map which contains the adaptations for the theme. The entry's key is the
