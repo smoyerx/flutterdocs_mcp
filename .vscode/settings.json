@@ -2,5 +2,12 @@
     "python.useEnvironmentsExtension": true,
     "python-envs.pythonProjects": [],
     "python-envs.defaultEnvManager": "ms-python.python:system",
-    "chat.useAgentSkills": true
+    "chat.useAgentSkills": true,
+    "cSpell.words": [
+        "DOCDB",
+        "flutterdocs",
+        "libsqlite",
+        "pana",
+        "pubspec"
+    ]
 }

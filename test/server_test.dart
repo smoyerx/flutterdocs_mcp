@@ -211,6 +211,25 @@ void main() {
   });
 
   // -------------------------------------------------------------------------
+  // listLibraries tool
+  // -------------------------------------------------------------------------
+
+  group('listLibraries tool', () {
+    test('returns non-empty sorted list of slugs', () async {
+      final result = await _server.callTool(
+        CallToolRequest(name: 'listLibraries', arguments: {}),
+      );
+      expect(result.isError, isNot(true));
+      final text = (result.content.first as TextContent).text;
+      final slugs = (jsonDecode(text) as List<dynamic>).cast<String>();
+      expect(slugs, isNotEmpty);
+      expect(slugs, contains('material'));
+      expect(slugs, contains('widgets'));
+      expect(slugs, equals([...slugs]..sort()));
+    });
+  });
+
+  // -------------------------------------------------------------------------
   // libraryIndex resource
   // -------------------------------------------------------------------------
 

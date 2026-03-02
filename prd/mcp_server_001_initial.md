@@ -73,7 +73,7 @@ The MCP server must implement the following tools.
   "properties": {
     "name": {
       "type": "string",
-      "description": "The name of the member to find (e.g., 'visualDensisty'). Case-sensitive."
+      "description": "The name of the member to find (e.g., 'visualDensity'). Case-sensitive."
     },
     "libraryHint": {
       "type": "string",
@@ -300,7 +300,7 @@ The package follows the standard Dart convention of separating public API (`lib/
   CHANGELOG.md
   README.md
   lib/
-    flutterdocs_mcp.dart          ← public barrel file; library-level dartdoc; exports FlutterDocsMcpServer only
+    flutterdocs_mcp.dart          ← public barrel file; library-level dart doc; exports FlutterDocsMcpServer only
     db/
       flutter_docs.db             ← bundled sqlite3 database (committed to repo, distributed via pub.dev)
     src/

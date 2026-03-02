@@ -66,38 +66,45 @@ void _populateFixture(Database raw) {
       (3, 'SharedEntity'),
       (4, 'visualDensity'),
       (5, 'padding'),
-      (6, 'onTap')
+      (6, 'onTap'),
+      (7, 'Stream'),
+      (8, 'listen')
   ''');
 
   // Libraries
   raw.execute('''
     INSERT INTO library VALUES
-      (1, 'material', '# material library'),
-      (2, 'widgets',  '# widgets library')
+      (1, 'material',   '# material library'),
+      (2, 'widgets',    '# widgets library'),
+      (3, 'dart-async', '# dart-async library')
   ''');
 
   // Entities
-  //   ListTile  → material (class)
-  //   Container → widgets  (class)
-  //   SharedEntity → both material and widgets (class) — for multi-library test
+  //   ListTile      → material (class)
+  //   Container     → widgets  (class)
+  //   SharedEntity  → both material and widgets (class) — for multi-library test
+  //   Stream        → dart-async (class)
   raw.execute('''
     INSERT INTO entity (id, library_id, identifier_id, entity_type_id, content_markdown) VALUES
       (1, 1, 1, 1, '# ListTile docs'),
       (2, 2, 2, 1, '# Container docs'),
       (3, 1, 3, 1, '# SharedEntity material docs'),
-      (4, 2, 3, 2, '# SharedEntity widgets docs')
+      (4, 2, 3, 2, '# SharedEntity widgets docs'),
+      (5, 3, 7, 1, '# Stream docs')
   ''');
 
   // Members
   //   visualDensity → ListTile/material (property)
   //   padding       → ListTile/material (property) AND Container/widgets (property)
   //   onTap         → ListTile/material (method)
+  //   listen        → Stream/dart-async (method)
   raw.execute('''
     INSERT INTO member (id, entity_id, identifier_id, member_type_id, content_markdown) VALUES
       (1, 1, 4, 1, '# visualDensity docs'),
       (2, 1, 5, 1, '# padding/ListTile docs'),
       (3, 2, 5, 1, '# padding/Container docs'),
-      (4, 1, 6, 2, '# onTap docs')
+      (4, 1, 6, 2, '# onTap docs'),
+      (5, 5, 8, 2, '# listen docs')
   ''');
 }
 
@@ -203,13 +210,58 @@ void main() {
       expect(results, isEmpty);
     });
 
-    test('returns (0, []) for unknown library hint', () {
+    test('recognized hint scopes search — member absent in hinted library', () {
+      // 'visualDensity' belongs to material; hint for widgets is recognized
+      // but yields no match → (0, []).
+      final (total, results) = _db.lookupMember(
+        'visualDensity',
+        libraryHint: 'widgets',
+      );
+      expect(total, 0);
+      expect(results, isEmpty);
+    });
+
+    test('colon-form hint is normalized to slug', () {
+      // 'dart:async' is not a slug, but after colon→hyphen it matches 'dart-async'.
+      final (total, results) = _db.lookupMember(
+        'listen',
+        libraryHint: 'dart:async',
+      );
+      expect(total, 1);
+      expect(results, hasLength(1));
+      final (library, entity, member, _) = results.first;
+      expect(library, 'dart-async'); // slug, not the colon-form
+      expect(entity, 'Stream');
+      expect(member, 'listen');
+    });
+
+    test('unrecognized hint is ignored — falls back to unscoped search', () {
+      // 'unknownLib' is not a known slug even after normalization; the hint is
+      // silently dropped and the full unscoped result set is returned.
       final (total, results) = _db.lookupMember(
         'visualDensity',
         libraryHint: 'unknownLib',
       );
-      expect(total, 0);
-      expect(results, isEmpty);
+      expect(total, 1);
+      expect(results, hasLength(1));
+      expect(results.first.$1, 'material');
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // listLibraries
+  // -------------------------------------------------------------------------
+
+  group('listLibraries', () {
+    test('returns all library slugs', () {
+      final slugs = _db.listLibraries();
+      expect(slugs, containsAll(['material', 'widgets', 'dart-async']));
+      expect(slugs, hasLength(3));
+    });
+
+    test('result is sorted alphabetically', () {
+      final slugs = _db.listLibraries();
+      expect(slugs, equals([...slugs]..sort()));
     });
   });
 

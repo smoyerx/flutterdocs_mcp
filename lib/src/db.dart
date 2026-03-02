@@ -149,31 +149,41 @@ final class DocDatabase {
     final rows = _entityResultsStmt.select([identifierId]);
     final results = <(String, String, String)>[];
     for (final row in rows) {
-      final libraryName =
-          _libraryById[row['library_id'] as int]?.name ?? '';
-      final category =
-          _entityTypeIdToName[row['entity_type_id'] as int] ?? '';
+      final libraryName = _libraryById[row['library_id'] as int]?.name ?? '';
+      final category = _entityTypeIdToName[row['entity_type_id'] as int] ?? '';
       results.add((libraryName, name, category));
     }
     return (total, results);
   }
 
+  /// Resolves a [hint] to a [LibraryRecord] by trying it as-is first, then
+  /// with colons replaced by hyphens (e.g., `dart:io` → `dart-io`). Returns
+  /// `null` if neither form matches a known library slug.
+  LibraryRecord? _resolveLibraryHint(String hint) =>
+      _libraryByName[hint] ?? _libraryByName[hint.replaceAll(':', '-')];
+
   /// Looks up members by [name], with an optional [libraryHint] to narrow
   /// results to a specific library. Returns a tuple of the total match count
   /// and up to 10 results as `(library, entity, member, category)` 4-tuples.
+  ///
+  /// [libraryHint] is matched against known library slugs. If it is not
+  /// recognized (even after colon→hyphen normalization), the hint is silently
+  /// ignored and an unscoped search is performed.
   (
     int total,
     List<(String library, String entity, String member, String category)>
-        results,
+    results,
   )
   lookupMember(String name, {String? libraryHint}) {
     final memberIdentifierId = _identifierNameToId[name];
     if (memberIdentifierId == null) return (0, const []);
 
-    if (libraryHint != null) {
-      final libraryRecord = _libraryByName[libraryHint];
-      if (libraryRecord == null) return (0, const []);
-      final libraryId = libraryRecord.id;
+    final resolvedLibrary = libraryHint != null
+        ? _resolveLibraryHint(libraryHint)
+        : null;
+
+    if (resolvedLibrary != null) {
+      final libraryId = resolvedLibrary.id;
 
       final countRow = _memberCountWithHintStmt.select([
         memberIdentifierId,
@@ -192,10 +202,12 @@ final class DocDatabase {
             _identifierIdToName[row['identifier_id'] as int] ?? '';
         final category =
             _memberTypeIdToName[row['member_type_id'] as int] ?? '';
-        results.add((libraryHint, entityName, name, category));
+        // Use the resolved slug, not the raw hint, so results are always slugs.
+        results.add((resolvedLibrary.name, entityName, name, category));
       }
       return (total, results);
     } else {
+      // No hint, or hint was not recognized — perform unscoped search.
       final countRow = _memberCountNoHintStmt.select([memberIdentifierId]);
       final total = countRow.first['cnt'] as int;
       if (total == 0) return (0, const []);
@@ -203,8 +215,7 @@ final class DocDatabase {
       final rows = _memberResultsNoHintStmt.select([memberIdentifierId]);
       final results = <(String, String, String, String)>[];
       for (final row in rows) {
-        final libraryName =
-            _libraryById[row['library_id'] as int]?.name ?? '';
+        final libraryName = _libraryById[row['library_id'] as int]?.name ?? '';
         final entityName =
             _identifierIdToName[row['identifier_id'] as int] ?? '';
         final category =
@@ -214,6 +225,10 @@ final class DocDatabase {
       return (total, results);
     }
   }
+
+  /// Returns all library slugs sorted alphabetically. These are the URI-safe
+  /// identifiers used in resource URIs and the `libraryHint` parameter.
+  List<String> listLibraries() => _libraryByName.keys.toList()..sort();
 
   /// Returns the content markdown for the given [library], served entirely
   /// from the in-memory cache. Returns `null` if the library is not found.
