@@ -31,12 +31,11 @@ void _populateFixture(Database raw) {
     CREATE TABLE entity (
       id INTEGER PRIMARY KEY,
       library_id INTEGER NOT NULL,
-      identifier_id INTEGER NOT NULL,
+      identifier TEXT NOT NULL,
       entity_type_id INTEGER NOT NULL,
       content_markdown TEXT NOT NULL,
-      UNIQUE(identifier_id, library_id),
+      UNIQUE(identifier, library_id),
       FOREIGN KEY (library_id) REFERENCES library(id),
-      FOREIGN KEY (identifier_id) REFERENCES identifier(id),
       FOREIGN KEY (entity_type_id) REFERENCES entity_type(id)
     );
     CREATE TABLE member (
@@ -50,7 +49,7 @@ void _populateFixture(Database raw) {
       FOREIGN KEY (identifier_id) REFERENCES identifier(id),
       FOREIGN KEY (member_type_id) REFERENCES member_type(id)
     );
-    CREATE INDEX idx_entity_unique ON entity(identifier_id, library_id);
+    CREATE INDEX idx_entity_unique ON entity(identifier, library_id);
     CREATE INDEX idx_member_unique ON member(identifier_id, entity_id);
   ''');
 
@@ -58,17 +57,13 @@ void _populateFixture(Database raw) {
   raw.execute("INSERT INTO entity_type VALUES (1, 'class'), (2, 'enum')");
   raw.execute("INSERT INTO member_type VALUES (1, 'property'), (2, 'method')");
 
-  // Identifiers
+  // Identifiers (member names only — entity names live directly in entity.identifier)
   raw.execute('''
     INSERT INTO identifier VALUES
-      (1, 'ListTile'),
-      (2, 'Container'),
-      (3, 'SharedEntity'),
-      (4, 'visualDensity'),
-      (5, 'padding'),
-      (6, 'onTap'),
-      (7, 'Stream'),
-      (8, 'listen')
+      (1, 'visualDensity'),
+      (2, 'padding'),
+      (3, 'onTap'),
+      (4, 'listen')
   ''');
 
   // Libraries
@@ -85,12 +80,12 @@ void _populateFixture(Database raw) {
   //   SharedEntity  → both material and widgets (class) — for multi-library test
   //   Stream        → dart-async (class)
   raw.execute('''
-    INSERT INTO entity (id, library_id, identifier_id, entity_type_id, content_markdown) VALUES
-      (1, 1, 1, 1, '# ListTile docs'),
-      (2, 2, 2, 1, '# Container docs'),
-      (3, 1, 3, 1, '# SharedEntity material docs'),
-      (4, 2, 3, 2, '# SharedEntity widgets docs'),
-      (5, 3, 7, 1, '# Stream docs')
+    INSERT INTO entity (id, library_id, identifier, entity_type_id, content_markdown) VALUES
+      (1, 1, 'ListTile', 1, '# ListTile docs'),
+      (2, 2, 'Container', 1, '# Container docs'),
+      (3, 1, 'SharedEntity', 1, '# SharedEntity material docs'),
+      (4, 2, 'SharedEntity', 2, '# SharedEntity widgets docs'),
+      (5, 3, 'Stream', 1, '# Stream docs')
   ''');
 
   // Members
@@ -100,11 +95,11 @@ void _populateFixture(Database raw) {
   //   listen        → Stream/dart-async (method)
   raw.execute('''
     INSERT INTO member (id, entity_id, identifier_id, member_type_id, content_markdown) VALUES
-      (1, 1, 4, 1, '# visualDensity docs'),
-      (2, 1, 5, 1, '# padding/ListTile docs'),
-      (3, 2, 5, 1, '# padding/Container docs'),
-      (4, 1, 6, 2, '# onTap docs'),
-      (5, 5, 8, 2, '# listen docs')
+      (1, 1, 1, 1, '# visualDensity docs'),
+      (2, 1, 2, 1, '# padding/ListTile docs'),
+      (3, 2, 2, 1, '# padding/Container docs'),
+      (4, 1, 3, 2, '# onTap docs'),
+      (5, 5, 4, 2, '# listen docs')
   ''');
 }
 

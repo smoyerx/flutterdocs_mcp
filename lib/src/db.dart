@@ -88,11 +88,11 @@ final class DocDatabase {
 
   void _prepareStatements() {
     _entityCountStmt = _db.prepare(
-      'SELECT COUNT(*) AS cnt FROM entity WHERE identifier_id = ?',
+      'SELECT COUNT(*) AS cnt FROM entity WHERE identifier = ?',
     );
     _entityResultsStmt = _db.prepare(
       'SELECT library_id, entity_type_id '
-      'FROM entity WHERE identifier_id = ? LIMIT 10',
+      'FROM entity WHERE identifier = ? LIMIT 10',
     );
 
     _memberCountNoHintStmt = _db.prepare(
@@ -105,14 +105,14 @@ final class DocDatabase {
       'WHERE m.identifier_id = ? AND e.library_id = ?',
     );
     _memberResultsNoHintStmt = _db.prepare(
-      'SELECT m.member_type_id, e.library_id, e.identifier_id '
+      'SELECT m.member_type_id, e.library_id, e.identifier '
       'FROM member m '
       'JOIN entity e ON m.entity_id = e.id '
       'WHERE m.identifier_id = ? '
       'LIMIT 10',
     );
     _memberResultsWithHintStmt = _db.prepare(
-      'SELECT m.member_type_id, e.identifier_id '
+      'SELECT m.member_type_id, e.identifier '
       'FROM member m '
       'JOIN entity e ON m.entity_id = e.id '
       'WHERE m.identifier_id = ? AND e.library_id = ? '
@@ -121,13 +121,13 @@ final class DocDatabase {
 
     _entityDocStmt = _db.prepare(
       'SELECT content_markdown '
-      'FROM entity WHERE identifier_id = ? AND library_id = ?',
+      'FROM entity WHERE identifier = ? AND library_id = ?',
     );
     _memberDocStmt = _db.prepare(
       'SELECT m.content_markdown '
       'FROM member m '
       'JOIN entity e ON m.entity_id = e.id '
-      'WHERE e.library_id = ? AND e.identifier_id = ? AND m.identifier_id = ?',
+      'WHERE e.library_id = ? AND e.identifier = ? AND m.identifier_id = ?',
     );
   }
 
@@ -139,14 +139,11 @@ final class DocDatabase {
   /// up to 10 results as `(library, entity, category)` triples.
   (int total, List<(String library, String entity, String category)> results)
   lookupEntity(String name) {
-    final identifierId = _identifierNameToId[name];
-    if (identifierId == null) return (0, const []);
-
-    final countRow = _entityCountStmt.select([identifierId]);
+    final countRow = _entityCountStmt.select([name]);
     final total = countRow.first['cnt'] as int;
     if (total == 0) return (0, const []);
 
-    final rows = _entityResultsStmt.select([identifierId]);
+    final rows = _entityResultsStmt.select([name]);
     final results = <(String, String, String)>[];
     for (final row in rows) {
       final libraryName = _libraryById[row['library_id'] as int]?.name ?? '';
@@ -198,8 +195,7 @@ final class DocDatabase {
       ]);
       final results = <(String, String, String, String)>[];
       for (final row in rows) {
-        final entityName =
-            _identifierIdToName[row['identifier_id'] as int] ?? '';
+        final entityName = row['identifier'] as String;
         final category =
             _memberTypeIdToName[row['member_type_id'] as int] ?? '';
         // Use the resolved slug, not the raw hint, so results are always slugs.
@@ -216,8 +212,7 @@ final class DocDatabase {
       final results = <(String, String, String, String)>[];
       for (final row in rows) {
         final libraryName = _libraryById[row['library_id'] as int]?.name ?? '';
-        final entityName =
-            _identifierIdToName[row['identifier_id'] as int] ?? '';
+        final entityName = row['identifier'] as String;
         final category =
             _memberTypeIdToName[row['member_type_id'] as int] ?? '';
         results.add((libraryName, entityName, name, category));
@@ -239,10 +234,9 @@ final class DocDatabase {
   /// Returns `null` if not found.
   String? entityDocumentation(String library, String entity) {
     final libraryId = _libraryByName[library]?.id;
-    final identifierId = _identifierNameToId[entity];
-    if (libraryId == null || identifierId == null) return null;
+    if (libraryId == null) return null;
 
-    final rows = _entityDocStmt.select([identifierId, libraryId]);
+    final rows = _entityDocStmt.select([entity, libraryId]);
     if (rows.isEmpty) return null;
     return rows.first['content_markdown'] as String;
   }
@@ -251,19 +245,10 @@ final class DocDatabase {
   /// Returns `null` if not found.
   String? memberDocumentation(String library, String entity, String member) {
     final libraryId = _libraryByName[library]?.id;
-    final entityIdentifierId = _identifierNameToId[entity];
     final memberIdentifierId = _identifierNameToId[member];
-    if (libraryId == null ||
-        entityIdentifierId == null ||
-        memberIdentifierId == null) {
-      return null;
-    }
+    if (libraryId == null || memberIdentifierId == null) return null;
 
-    final rows = _memberDocStmt.select([
-      libraryId,
-      entityIdentifierId,
-      memberIdentifierId,
-    ]);
+    final rows = _memberDocStmt.select([libraryId, entity, memberIdentifierId]);
     if (rows.isEmpty) return null;
     return rows.first['content_markdown'] as String;
   }
