@@ -66,13 +66,16 @@ class TestBasicConversion:
     def test_output_files_start_with_heading(
         self, section: str, output_dir: Path
     ) -> None:
-        """All output files should start with a markdown heading."""
+        """Non-snippet output files should start with a markdown heading."""
         result = run_convert(SAMPLES_DIR, section, output_dir)
         assert result.returncode == 0
 
         section_builder = build_section_path_builder(output_dir, section)
         api_section_dir = section_builder.get_api_section_dir()
         for md_file in api_section_dir.rglob("*.md"):
+            # Snippet files are plain code fences and do not start with '#'
+            if md_file.parent.name == "snippets":
+                continue
             content = md_file.read_text(encoding="utf-8")
             assert content.startswith("#"), (
                 f"File {md_file} does not start with heading"

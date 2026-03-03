@@ -47,7 +47,7 @@ class TestConvertWithSnippets:
         assert len(snippet_files) > 0, "No snippet files created"
 
     def test_snippet_header_format(self, output_dir: Path) -> None:
-        """Snippet files should have correct header format."""
+        """Snippet files should be plain ```dart code fences."""
         result = run_convert(SAMPLES_DIR, "material", output_dir)
         assert result.returncode == 0
 
@@ -57,10 +57,9 @@ class TestConvertWithSnippets:
         snippets_dir = snippets_builder.get_snippets_dir()
         for snippet_file in snippets_dir.glob("*.md"):
             content = snippet_file.read_text(encoding="utf-8")
-            assert content.startswith("# Code Snippet for ListTile in material"), (
-                f"Snippet {snippet_file} has incorrect header"
+            assert content.startswith("```dart"), (
+                f"Snippet {snippet_file} does not start with ```dart fence"
             )
-            assert "```dart" in content
 
     def test_snippet_short_name(self, output_dir: Path) -> None:
         """Snippet files should use SHORT_NAME without section.class prefix."""

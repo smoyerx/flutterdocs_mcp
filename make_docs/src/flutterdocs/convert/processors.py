@@ -402,8 +402,6 @@ def process_snippets(builder: PathBuilder) -> None:
         prefix = f"{builder.section}.{builder.entity_name}."
         short_name = snippet_file.name[len(prefix) : -len(".dart")]
 
-        markdown_content = convert_dart_snippet(
-            snippet_file, builder.entity_name, builder.section
-        )
+        markdown_content = convert_dart_snippet(snippet_file)
         output_file = builder.get_snippet_file(short_name)
         output_file.write_text(markdown_content, encoding="utf-8")

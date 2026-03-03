@@ -53,18 +53,16 @@ def convert_html_to_markdown(
     return content
 
 
-def convert_dart_snippet(dart_path: Path, entity_name: str, section: str) -> str:
+def convert_dart_snippet(dart_path: Path) -> str:
     """Convert a Dart snippet file to markdown.
 
-    Wraps the Dart code in a markdown code block with a header.
+    Wraps the Dart code in a fenced markdown code block.
 
     Args:
         dart_path: Path to the Dart file to convert.
-        entity_name: The name of the entity the snippet belongs to.
-        section: The documentation section name.
 
     Returns:
-        The Dart code wrapped in markdown format.
+        The Dart code wrapped in a ```dart ... ``` code fence.
 
     Raises:
         FileNotFoundError: If the Dart file does not exist.
@@ -73,4 +71,4 @@ def convert_dart_snippet(dart_path: Path, entity_name: str, section: str) -> str
         raise FileNotFoundError(f"Dart file not found: {dart_path}")
 
     content = dart_path.read_text(encoding="utf-8")
-    return f"# Code Snippet for {entity_name} in {section}\n\n```dart\n{content}\n```"
+    return f"```dart\n{content}\n```\n"

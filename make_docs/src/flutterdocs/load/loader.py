@@ -37,13 +37,15 @@ def collect_snippets(builder: PathBuilder) -> str | None:
     """Collect and concatenate snippet markdown for an entity.
 
     Globs all *.md files from the snippets directory, sorts alphabetically
-    by filename, and joins their contents with two blank lines between each.
+    by filename, and emits each snippet under a numbered '### Example N'
+    subheading.
 
     Args:
         builder: PathBuilder configured for the entity.
 
     Returns:
-        Concatenated snippet markdown string, or None if no snippets found.
+        Concatenated snippet markdown string with numbered example headings,
+        or None if no snippets found.
     """
     snippets_dir = builder.get_snippets_dir()
     if not snippets_dir.exists():
@@ -51,8 +53,11 @@ def collect_snippets(builder: PathBuilder) -> str | None:
     snippet_files = sorted(snippets_dir.glob("*.md"), key=lambda p: p.name)
     if not snippet_files:
         return None
-    concatenated = "\n\n".join(f.read_text() for f in snippet_files)
-    return "\n\n## Code Examples\n\n" + concatenated
+    sections = [
+        f"### Example {i}\n\n{f.read_text()}"
+        for i, f in enumerate(snippet_files, start=1)
+    ]
+    return "\n\n## Code Examples\n\n" + "\n\n".join(sections)
 
 
 def collect_members(
