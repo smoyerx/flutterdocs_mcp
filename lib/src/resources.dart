@@ -32,6 +32,12 @@ Never _notFound(String uri) =>
     throw RpcException(-32002, 'Resource not found', data: {'uri': uri});
 
 // ---------------------------------------------------------------------------
+// Annotations common to all resources.
+// ---------------------------------------------------------------------------
+
+final _annotations = Annotations(audience: [Role.user, Role.assistant]);
+
+// ---------------------------------------------------------------------------
 // libraryIndex  flutter-docs://api/{library_slug}
 // ---------------------------------------------------------------------------
 
@@ -47,7 +53,7 @@ final _libraryIndexTemplate = ResourceTemplate(
       'Note: The library_slug value in the URI template is a URI slug '
       '(not the library display name). '
       'Call listLibraries to see all available library_slug values.',
-  annotations: Annotations(audience: [Role.user, Role.assistant]),
+  annotations: _annotations,
 );
 
 void _registerLibraryIndex(ResourcesSupport server, DocDatabase db) {
@@ -83,7 +89,7 @@ final _entityDocumentationTemplate = ResourceTemplate(
       'Note: The library_slug value in the URI template is a URI slug '
       '(not the library display name). '
       'Call listLibraries to see all available library_slug values.',
-  annotations: Annotations(audience: [Role.user, Role.assistant]),
+  annotations: _annotations,
 );
 
 void _registerEntityDocumentation(ResourcesSupport server, DocDatabase db) {
@@ -117,7 +123,7 @@ final _memberDocumentationTemplate = ResourceTemplate(
       'Note: The library_slug value in the URI template is a URI slug '
       '(not the library display name). '
       'Call listLibraries to see all available library_slug values.',
-  annotations: Annotations(audience: [Role.user, Role.assistant]),
+  annotations: _annotations,
 );
 
 void _registerMemberDocumentation(ResourcesSupport server, DocDatabase db) {

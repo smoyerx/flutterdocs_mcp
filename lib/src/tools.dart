@@ -23,6 +23,17 @@ void registerTools(ToolsSupport server, DocDatabase db) {
 }
 
 // ---------------------------------------------------------------------------
+// Annotations common to all tools.
+// ---------------------------------------------------------------------------
+
+final _toolAnnotations = ToolAnnotations(
+  destructiveHint: false,
+  idempotentHint: true,
+  openWorldHint: false,
+  readOnlyHint: true,
+);
+
+// ---------------------------------------------------------------------------
 // lookupEntity
 // ---------------------------------------------------------------------------
 
@@ -75,6 +86,7 @@ final _lookupEntityTool = Tool(
     },
     required: ['total', 'results'],
   ),
+  annotations: _toolAnnotations,
 );
 
 FutureOr<CallToolResult> _lookupEntity(
@@ -159,6 +171,7 @@ final _lookupMemberTool = Tool(
     },
     required: ['total', 'results'],
   ),
+  annotations: _toolAnnotations,
 );
 
 FutureOr<CallToolResult> _lookupMember(
@@ -195,6 +208,7 @@ final _listLibrariesTool = Tool(
       'to discover available library_slug values or confirm the correct library '
       'slug before constructing resource URIs.',
   inputSchema: Schema.object(properties: {}),
+  annotations: _toolAnnotations,
 );
 
 FutureOr<CallToolResult> _listLibraries(
