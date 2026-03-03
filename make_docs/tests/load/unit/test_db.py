@@ -10,9 +10,7 @@ from flutterdocs.load.db import (
     get_member_type_id,
     get_or_insert_identifier,
     init_db,
-    rebuild_search_index,
     upsert_entity,
-    upsert_entity_search,
     upsert_library,
     upsert_member,
 )
@@ -47,6 +45,15 @@ class TestInitDb:
         ).fetchall()
         actual = {row["name"] for row in rows}
         assert expected.issubset(actual)
+
+    def test_creates_triggers(self, mem_conn: sqlite3.Connection) -> None:
+        """The three entity FTS5 triggers must be created."""
+        expected = {"entity_ai", "entity_ad", "entity_au"}
+        rows = mem_conn.execute(
+            "SELECT name FROM sqlite_master WHERE type='trigger'"
+        ).fetchall()
+        actual = {row["name"] for row in rows}
+        assert expected == actual
 
     def test_prepopulates_entity_types(self, mem_conn: sqlite3.Connection) -> None:
         """entity_type table must contain exactly the values from ALL_CATEGORIES."""
@@ -221,104 +228,81 @@ class TestGetOrInsertIdentifier:
         assert id1 != id2
 
 
-class TestUpsertEntitySearch:
-    """Tests for upsert_entity_search."""
+class TestContentSearchTriggers:
+    """Tests that AFTER INSERT/UPDATE/DELETE triggers keep content_search in sync."""
 
-    def _setup_entity(self, conn: sqlite3.Connection) -> tuple[int, int]:
-        """Insert a library and entity; return (entity_id, library_id)."""
+    def _setup(self, conn: sqlite3.Connection) -> tuple[int, int]:
+        """Insert prerequisite rows and return (library_id, entity_type_id)."""
         with conn:
             lib_id = upsert_library(conn, "material", "# material")
             type_id = get_entity_type_id(conn, "class")
-            entity_id = upsert_entity(
-                conn, lib_id, "InkWell", type_id, "# InkWell content"
-            )
-        return entity_id, lib_id
+        return lib_id, type_id
 
-    def test_insert_new_entity_is_searchable(
+    def test_insert_populates_content_search(
         self, mem_conn: sqlite3.Connection
     ) -> None:
-        """After inserting a new entity into content_search, it must be findable."""
-        entity_id, _ = self._setup_entity(mem_conn)
+        """Inserting an entity must automatically add a row to content_search."""
+        lib_id, type_id = self._setup(mem_conn)
         with mem_conn:
-            upsert_entity_search(mem_conn, entity_id, "InkWell", "# InkWell content")
+            upsert_entity(mem_conn, lib_id, "InkWell", type_id, "# InkWell content")
         rows = mem_conn.execute(
             "SELECT rowid FROM content_search WHERE identifier MATCH 'InkWell'"
         ).fetchall()
         assert len(rows) > 0
 
-    def test_update_entity_reflects_new_content(
-        self, mem_conn: sqlite3.Connection
-    ) -> None:
-        """After updating an entity in content_search, the new content is searchable."""
-        entity_id, lib_id = self._setup_entity(mem_conn)
+    def test_update_reflects_new_content(self, mem_conn: sqlite3.Connection) -> None:
+        """Updating an entity must update content_search to reflect new content."""
+        lib_id, type_id = self._setup(mem_conn)
         with mem_conn:
-            upsert_entity_search(mem_conn, entity_id, "InkWell", "# InkWell content")
-        # Update entity content and FTS index together
+            upsert_entity(mem_conn, lib_id, "InkWell", type_id, "# original content")
         with mem_conn:
-            type_id = get_entity_type_id(mem_conn, "class")
-            upsert_entity(mem_conn, lib_id, "InkWell", type_id, "# Updated content")
-            upsert_entity_search(
-                mem_conn,
-                entity_id,
-                "InkWell",
-                "# Updated content",
-                old_identifier="InkWell",
-                old_content_markdown="# InkWell content",
-            )
+            upsert_entity(mem_conn, lib_id, "InkWell", type_id, "# updated content")
         rows = mem_conn.execute(
-            "SELECT rowid FROM content_search WHERE content_search MATCH 'Updated'"
+            "SELECT rowid FROM content_search WHERE content_search MATCH 'updated'"
         ).fetchall()
         assert len(rows) > 0
 
-    def test_update_does_not_duplicate_results(
-        self, mem_conn: sqlite3.Connection
-    ) -> None:
-        """Updating via delete+insert must yield exactly one FTS result row."""
-        entity_id, _ = self._setup_entity(mem_conn)
+    def test_update_removes_old_content(self, mem_conn: sqlite3.Connection) -> None:
+        """After an update, the old FTS tokens must no longer match."""
+        lib_id, type_id = self._setup(mem_conn)
         with mem_conn:
-            upsert_entity_search(mem_conn, entity_id, "InkWell", "# content v1")
-        with mem_conn:
-            upsert_entity_search(
-                mem_conn,
-                entity_id,
-                "InkWell",
-                "# content v2",
-                old_identifier="InkWell",
-                old_content_markdown="# content v1",
+            upsert_entity(
+                mem_conn, lib_id, "InkWell", type_id, "# uniqueOldToken content"
             )
+        with mem_conn:
+            upsert_entity(mem_conn, lib_id, "InkWell", type_id, "# updated content")
+        rows = mem_conn.execute(
+            "SELECT rowid FROM content_search WHERE content_search MATCH 'uniqueOldToken'"
+        ).fetchall()
+        assert len(rows) == 0
+
+    def test_update_does_not_duplicate_rows(self, mem_conn: sqlite3.Connection) -> None:
+        """Re-upserting an entity must leave exactly one FTS row."""
+        lib_id, type_id = self._setup(mem_conn)
+        with mem_conn:
+            upsert_entity(mem_conn, lib_id, "InkWell", type_id, "# v1")
+        with mem_conn:
+            upsert_entity(mem_conn, lib_id, "InkWell", type_id, "# v2")
         rows = mem_conn.execute(
             "SELECT rowid FROM content_search WHERE identifier MATCH 'InkWell'"
         ).fetchall()
         assert len(rows) == 1
 
-
-class TestRebuildSearchIndex:
-    """Tests for rebuild_search_index."""
-
-    def test_rebuild_empty_db(self, mem_conn: sqlite3.Connection) -> None:
-        """rebuild_search_index must succeed on a database with no entities."""
-        rebuild_search_index(mem_conn)  # should not raise
-
-    def test_rebuild_after_load(self, mem_conn: sqlite3.Connection) -> None:
-        """rebuild_search_index must succeed after entity data has been loaded."""
-        with mem_conn:
-            lib_id = upsert_library(mem_conn, "material", "# material")
-            type_id = get_entity_type_id(mem_conn, "class")
-            upsert_entity(mem_conn, lib_id, "Widget", type_id, "# Widget")
-        rebuild_search_index(mem_conn)  # should not raise
-
-    def test_rebuild_makes_content_searchable(
+    def test_delete_removes_from_content_search(
         self, mem_conn: sqlite3.Connection
     ) -> None:
-        """After rebuild, a known entity identifier must match in content_search."""
+        """Deleting an entity row must remove its entry from content_search."""
+        lib_id, type_id = self._setup(mem_conn)
         with mem_conn:
-            lib_id = upsert_library(mem_conn, "material", "# material")
-            type_id = get_entity_type_id(mem_conn, "class")
             upsert_entity(
-                mem_conn, lib_id, "ScaffoldWidget", type_id, "# ScaffoldWidget"
+                mem_conn, lib_id, "EphemeralWidget", type_id, "# EphemeralWidget"
             )
-        rebuild_search_index(mem_conn)
+        with mem_conn:
+            mem_conn.execute(
+                "DELETE FROM entity WHERE identifier = ? AND library_id = ?",
+                ("EphemeralWidget", lib_id),
+            )
         rows = mem_conn.execute(
-            "SELECT rowid FROM content_search WHERE identifier MATCH 'ScaffoldWidget'"
+            "SELECT rowid FROM content_search WHERE identifier MATCH 'EphemeralWidget'"
         ).fetchall()
-        assert len(rows) > 0
+        assert len(rows) == 0

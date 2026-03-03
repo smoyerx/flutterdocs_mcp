@@ -66,23 +66,38 @@ CREATE VIRTUAL TABLE content_search USING fts5(
     content_rowid='id',
     tokenize='porter'
 );
+
+CREATE TRIGGER entity_ai AFTER INSERT ON entity BEGIN
+    INSERT INTO content_search(rowid, identifier, content_markdown)
+    VALUES (new.id, new.identifier, new.content_markdown);
+END;
+
+CREATE TRIGGER entity_ad AFTER DELETE ON entity BEGIN
+    INSERT INTO content_search(content_search, rowid, identifier, content_markdown)
+    VALUES ('delete', old.id, old.identifier, old.content_markdown);
+END;
+
+CREATE TRIGGER entity_au AFTER UPDATE ON entity BEGIN
+    INSERT INTO content_search(content_search, rowid, identifier, content_markdown)
+    VALUES ('delete', old.id, old.identifier, old.content_markdown);
+    INSERT INTO content_search(rowid, identifier, content_markdown)
+    VALUES (new.id, new.identifier, new.content_markdown);
+END;
 """
 
 
 def init_db(conn: sqlite3.Connection) -> None:
     """Initialize database schema and pre-populate lookup tables.
 
-    Executes DDL, then pre-populates entity_type and member_type tables
-    using ALL_CATEGORIES and ALL_MEMBERS. All steps run in a single transaction.
+    Executes DDL via executescript (which handles multi-statement trigger
+    bodies correctly), then pre-populates entity_type and member_type tables
+    using ALL_CATEGORIES and ALL_MEMBERS in a single transaction.
 
     Args:
         conn: Open sqlite3 connection to a newly created database.
     """
+    conn.executescript(SCHEMA_DDL)
     with conn:
-        for statement in SCHEMA_DDL.strip().split(";"):
-            stmt = statement.strip()
-            if stmt:
-                conn.execute(stmt)
         for category in ALL_CATEGORIES:
             conn.execute("INSERT INTO entity_type(name) VALUES (?)", (str(category),))
         for member in ALL_MEMBERS:
@@ -257,54 +272,3 @@ def upsert_member(
         """,
         (entity_id, identifier_id, member_type_id, content_markdown),
     )
-
-
-def upsert_entity_search(
-    conn: sqlite3.Connection,
-    entity_id: int,
-    identifier: str,
-    content_markdown: str,
-    old_identifier: str | None = None,
-    old_content_markdown: str | None = None,
-) -> None:
-    """Insert or update a single entity row in the content_search FTS5 table.
-
-    For external-content FTS5 tables, updates require explicitly deleting the
-    old entry before inserting the new one. If old_identifier and
-    old_content_markdown are provided, a delete command is issued first using
-    the old values so that stale tokens are removed from the index.
-
-    Args:
-        conn: Open sqlite3 connection (within an active transaction).
-        entity_id: The rowid (entity.id) of the entity to index.
-        identifier: New entity identifier string.
-        content_markdown: New entity markdown content.
-        old_identifier: Pre-upsert identifier; provide when the entity already
-            existed so the old FTS tokens are removed.
-        old_content_markdown: Pre-upsert content_markdown; provide when the
-            entity already existed so the old FTS tokens are removed.
-    """
-    if old_identifier is not None and old_content_markdown is not None:
-        conn.execute(
-            "INSERT INTO content_search(content_search, rowid, identifier, content_markdown)"
-            " VALUES('delete', ?, ?, ?)",
-            (entity_id, old_identifier, old_content_markdown),
-        )
-    conn.execute(
-        "INSERT INTO content_search(rowid, identifier, content_markdown) VALUES (?, ?, ?)",
-        (entity_id, identifier, content_markdown),
-    )
-
-
-def rebuild_search_index(conn: sqlite3.Connection) -> None:
-    """Rebuild the FTS5 content_search index from the entity table.
-
-    Should be called after all sections are loaded when the --reindex flag is
-    used. Safe to call on an already-indexed database; it replaces the existing
-    index content.
-
-    Args:
-        conn: Open sqlite3 connection.
-    """
-    with conn:
-        conn.execute("INSERT INTO content_search(content_search) VALUES('rebuild')")

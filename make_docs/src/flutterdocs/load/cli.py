@@ -16,7 +16,7 @@ from flutterdocs._shared.logging import (
     log_processing_error,
 )
 from flutterdocs._shared.paths import PathBuilder, list_entity_names, read_section_list
-from flutterdocs.load.db import open_or_create_db, rebuild_search_index, upsert_library
+from flutterdocs.load.db import open_or_create_db, upsert_library
 from flutterdocs.load.loader import load_entity
 
 
@@ -98,7 +98,6 @@ def process_section(
     doc_dir: Path,
     progress_logger: object,
     notification_logger: object,
-    update_search: bool = True,
 ) -> dict[str, int]:
     """Load all entities for a single section into the database.
 
@@ -108,9 +107,6 @@ def process_section(
         doc_dir: Root markdown output directory from convert.py.
         progress_logger: Logger for per-entity progress messages.
         notification_logger: Logger for informational notices (skips, etc.).
-        update_search: When True (default), each entity is also written to the
-            content_search FTS5 table. Pass False when --reindex is used and
-            the index will be rebuilt in bulk after all sections are loaded.
 
     Returns:
         Dict mapping category string to number of entities loaded.
@@ -167,7 +163,6 @@ def process_section(
                     library_id=library_id,
                     entity_name=entity_name,
                     category_type_str=category_str,
-                    update_search=update_search,
                 )
             except Exception as e:
                 log_processing_error(
@@ -227,14 +222,6 @@ def main() -> None:
         action="store_true",
         help="Enable verbose logging output",
     )
-    parser.add_argument(
-        "--reindex",
-        action="store_true",
-        help=(
-            "Rebuild the FTS5 full-text search index in bulk after all sections are loaded. "
-            "When omitted (default), each entity is written to content_search during loading."
-        ),
-    )
 
     args = parser.parse_args()
 
@@ -270,7 +257,6 @@ def main() -> None:
     total_entities = 0
     all_counts: dict[str, int] = {}
     skipped = 0
-    update_search = not args.reindex
 
     try:
         for section in sections:
@@ -284,7 +270,6 @@ def main() -> None:
                 doc_dir,
                 progress_logger,
                 notification_logger,
-                update_search=update_search,
             )
             if not counts:
                 # Library file was missing; section was already reported
@@ -299,9 +284,6 @@ def main() -> None:
             for cat, n in counts.items():
                 all_counts[cat] = all_counts.get(cat, 0) + n
 
-        if args.reindex:
-            rebuild_search_index(conn)  # type: ignore[arg-type]
-            print("Rebuilt FTS5 search index.")
     finally:
         conn.close()  # type: ignore[union-attr]
 

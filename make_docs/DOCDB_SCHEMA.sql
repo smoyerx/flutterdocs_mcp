@@ -53,3 +53,20 @@ CREATE VIRTUAL TABLE content_search USING fts5(
     content_rowid='id',
     tokenize='porter'
 );
+
+CREATE TRIGGER entity_ai AFTER INSERT ON entity BEGIN
+    INSERT INTO content_search(rowid, identifier, content_markdown)
+    VALUES (new.id, new.identifier, new.content_markdown);
+END;
+
+CREATE TRIGGER entity_ad AFTER DELETE ON entity BEGIN
+    INSERT INTO content_search(content_search, rowid, identifier, content_markdown)
+    VALUES ('delete', old.id, old.identifier, old.content_markdown);
+END;
+
+CREATE TRIGGER entity_au AFTER UPDATE ON entity BEGIN
+    INSERT INTO content_search(content_search, rowid, identifier, content_markdown)
+    VALUES ('delete', old.id, old.identifier, old.content_markdown);
+    INSERT INTO content_search(rowid, identifier, content_markdown)
+    VALUES (new.id, new.identifier, new.content_markdown);
+END;

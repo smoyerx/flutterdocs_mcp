@@ -15,7 +15,6 @@ from flutterdocs.load.db import (
     get_member_type_id,
     get_or_insert_identifier,
     upsert_entity,
-    upsert_entity_search,
     upsert_member,
 )
 
@@ -94,12 +93,13 @@ def load_entity(
     library_id: int,
     entity_name: str,
     category_type_str: str,
-    update_search: bool = True,
 ) -> int:
     """Load a single entity and all its members into the database.
 
     Reads entity root file, collects snippets, collects member files,
     then writes everything in a single transaction (Transaction 3).
+    The content_search FTS5 table is kept in sync automatically via
+    database triggers on the entity table.
 
     Args:
         conn: Open sqlite3 connection.
@@ -107,9 +107,6 @@ def load_entity(
         library_id: Foreign key to the library row for this section.
         entity_name: Name of the entity (used as identifier).
         category_type_str: String value of the CategoryType (e.g., "class").
-        update_search: When True (default), also write the entity to the
-            content_search FTS5 table after each upsert. Pass False when
-            the caller will rebuild the index in bulk via rebuild_search_index().
 
     Returns:
         Number of member files loaded.
@@ -123,15 +120,6 @@ def load_entity(
 
     entity_type_id = get_entity_type_id(conn, category_type_str)
 
-    # Capture pre-upsert values for FTS5 delete when update_search is active.
-    existing = conn.execute(
-        "SELECT identifier, content_markdown FROM entity"
-        " WHERE identifier = ? AND library_id = ?",
-        (entity_name, library_id),
-    ).fetchone()
-    old_identifier = existing["identifier"] if existing else None
-    old_content_markdown = existing["content_markdown"] if existing else None
-
     with conn:
         entity_id = upsert_entity(
             conn,
@@ -140,15 +128,6 @@ def load_entity(
             entity_type_id=entity_type_id,
             content_markdown=content_markdown,
         )
-        if update_search:
-            upsert_entity_search(
-                conn,
-                entity_id=entity_id,
-                identifier=entity_name,
-                content_markdown=content_markdown,
-                old_identifier=old_identifier,
-                old_content_markdown=old_content_markdown,
-            )
         for member_name, member_type, member_file in members:
             member_markdown = member_file.read_text()
             member_type_id = get_member_type_id(conn, str(member_type))
