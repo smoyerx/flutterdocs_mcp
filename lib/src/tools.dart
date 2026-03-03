@@ -40,8 +40,8 @@ final _lookupEntityTool = Tool(
       'values to construct resource URIs: '
       'flutter-docs://api/{library_slug}/{entity}. '
       'Note: The returned library_slug value is a URI slug (not the display name) '
-      '— use it as-is in resource URIs and as libraryHint. Call '
-      'listLibraries to see all available library_slug values.',
+      '— use it as-is in resource URIs and as libraryHint. '
+      'Call listLibraries to see all available library_slug values.',
   inputSchema: Schema.object(
     properties: {
       'name': Schema.string(
@@ -52,41 +52,29 @@ final _lookupEntityTool = Tool(
     },
     required: ['name'],
   ),
-  outputSchema: ObjectSchema.fromMap({
-    'type': 'array',
-    'description': 'A navigation tuple [totalMatches, resultList].',
-    'prefixItems': [
-      {
-        'type': 'integer',
-        'description': 'The total number of entity name matches found.',
-      },
-      {
-        'type': 'array',
-        'description':
-            'List of up to 10 match results ([library_slug, entity, category] tuples).',
-        'items': {
-          'type': 'array',
-          'description':
-              'Construct resource URIs from these results as: '
+  outputSchema: Schema.object(
+    description: 'An object with a total match count and up to 10 results.',
+    properties: {
+      'total': Schema.int(
+        description: 'The total number of entity name matches found.',
+      ),
+      'results': Schema.list(
+        description: 'List of up to 10 match results.',
+        items: Schema.list(
+          description:
+              'A [library_slug, entity, category] array. '
+              'Construct resource URIs as: '
               'flutter-docs://api/{library_slug}/{entity}',
-          'prefixItems': [
-            {
-              'type': 'string',
-              'description': "Library slug (e.g., 'material').",
-            },
-            {
-              'type': 'string',
-              'description': "Entity name (e.g., 'ListTile').",
-            },
-            {
-              'type': 'string',
-              'description': "Category of entity (e.g., 'class').",
-            },
+          prefixItems: [
+            Schema.string(description: "Library slug (e.g., 'material')."),
+            Schema.string(description: "Entity name (e.g., 'ListTile')."),
+            Schema.string(description: "Category of entity (e.g., 'class')."),
           ],
-        },
-      },
-    ],
-  }),
+        ),
+      ),
+    },
+    required: ['total', 'results'],
+  ),
 );
 
 FutureOr<CallToolResult> _lookupEntity(
@@ -95,11 +83,14 @@ FutureOr<CallToolResult> _lookupEntity(
 ) {
   final name = request.arguments!['name'] as String;
   final (total, results) = db.lookupEntity(name);
-  final encoded = jsonEncode([
-    total,
-    results.map((r) => [r.$1, r.$2, r.$3]).toList(),
-  ]);
-  return CallToolResult(content: [TextContent(text: encoded)]);
+  final structured = {
+    'total': total,
+    'results': results.map((r) => [r.$1, r.$2, r.$3]).toList(),
+  };
+  return CallToolResult(
+    content: [TextContent(text: jsonEncode(structured))],
+    structuredContent: structured,
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -121,8 +112,8 @@ final _lookupMemberTool = Tool(
       '[library_slug, entity, member, category] values to construct resource URIs: '
       'flutter-docs://api/{library_slug}/{entity}/{member}. '
       'Note: The returned library_slug value is a URI slug (not the display name) '
-      '— use it as-is in resource URIs and as libraryHint. Call '
-      'listLibraries to see all available library_slug values.',
+      '— use it as-is in resource URIs and as libraryHint. '
+      'Call listLibraries to see all available library_slug values.',
   inputSchema: Schema.object(
     properties: {
       'name': Schema.string(
@@ -136,51 +127,38 @@ final _lookupMemberTool = Tool(
             "(e.g., 'material', 'dart-io'). Colon forms are also accepted "
             "(e.g., 'dart:io' is treated as 'dart-io'). If the value is not "
             'recognized as a known slug, the hint is ignored and an unscoped '
-            'search is performed. Call listLibraries to see all available slugs.',
+            'search is performed. '
+            'Call listLibraries to see all available library slug values.',
       ),
     },
     required: ['name'],
   ),
-  outputSchema: ObjectSchema.fromMap({
-    'type': 'array',
-    'description': 'A navigation tuple [totalMatches, resultList].',
-    'prefixItems': [
-      {
-        'type': 'integer',
-        'description': 'The total number of member name matches found.',
-      },
-      {
-        'type': 'array',
-        'description':
-            'List of up to 10 match results '
-            '([library_slug, entity, member, category] tuples).',
-        'items': {
-          'type': 'array',
-          'description':
-              'Construct resource URIs from these results as: '
+  outputSchema: Schema.object(
+    description: 'An object with a total match count and up to 10 results.',
+    properties: {
+      'total': Schema.int(
+        description: 'The total number of member name matches found.',
+      ),
+      'results': Schema.list(
+        description: 'List of up to 10 match results.',
+        items: Schema.list(
+          description:
+              'A [library_slug, entity, member, category] array. '
+              'Construct resource URIs as: '
               'flutter-docs://api/{library_slug}/{entity}/{member}',
-          'prefixItems': [
-            {
-              'type': 'string',
-              'description': "Library slug (e.g., 'material').",
-            },
-            {
-              'type': 'string',
-              'description': "Entity name (e.g., 'ListTile').",
-            },
-            {
-              'type': 'string',
-              'description': "Member name (e.g., 'visualDensity').",
-            },
-            {
-              'type': 'string',
-              'description': "Category of member (e.g., 'property').",
-            },
+          prefixItems: [
+            Schema.string(description: "Library slug (e.g., 'material')."),
+            Schema.string(description: "Entity name (e.g., 'ListTile')."),
+            Schema.string(description: "Member name (e.g., 'visualDensity')."),
+            Schema.string(
+              description: "Category of member (e.g., 'property').",
+            ),
           ],
-        },
-      },
-    ],
-  }),
+        ),
+      ),
+    },
+    required: ['total', 'results'],
+  ),
 );
 
 FutureOr<CallToolResult> _lookupMember(
@@ -191,11 +169,14 @@ FutureOr<CallToolResult> _lookupMember(
   final name = args['name'] as String;
   final libraryHint = args['libraryHint'] as String?;
   final (total, results) = db.lookupMember(name, libraryHint: libraryHint);
-  final encoded = jsonEncode([
-    total,
-    results.map((r) => [r.$1, r.$2, r.$3, r.$4]).toList(),
-  ]);
-  return CallToolResult(content: [TextContent(text: encoded)]);
+  final structured = {
+    'total': total,
+    'results': results.map((r) => [r.$1, r.$2, r.$3, r.$4]).toList(),
+  };
+  return CallToolResult(
+    content: [TextContent(text: jsonEncode(structured))],
+    structuredContent: structured,
+  );
 }
 
 // ---------------------------------------------------------------------------

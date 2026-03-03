@@ -28,10 +28,10 @@ bool _setupDone = false;
 (int total, List<List<dynamic>> results) _decodeTool(CallToolResult result) {
   expect(result.isError, isNot(true));
   final text = (result.content.first as TextContent).text;
-  final decoded = jsonDecode(text) as List<dynamic>;
+  final decoded = jsonDecode(text) as Map<String, dynamic>;
   return (
-    decoded[0] as int,
-    (decoded[1] as List<dynamic>).cast<List<dynamic>>(),
+    decoded['total'] as int,
+    (decoded['results'] as List<dynamic>).cast<List<dynamic>>(),
   );
 }
 
@@ -159,10 +159,7 @@ void main() {
   group('lookupMember tool', () {
     test('hit — no library hint', () async {
       final result = await _server.callTool(
-        CallToolRequest(
-          name: 'lookupMember',
-          arguments: {'name': 'autofocus'},
-        ),
+        CallToolRequest(name: 'lookupMember', arguments: {'name': 'autofocus'}),
       );
       final (total, results) = _decodeTool(result);
       expect(total, greaterThan(0));
@@ -281,9 +278,7 @@ void main() {
     test('throws RpcException(-32002) for unknown library', () async {
       expect(
         () => _server.readResource(
-          ReadResourceRequest(
-            uri: 'flutter-docs://api/unknownLib99/ListTile',
-          ),
+          ReadResourceRequest(uri: 'flutter-docs://api/unknownLib99/ListTile'),
         ),
         throwsA(isA<RpcException>().having((e) => e.code, 'code', -32002)),
       );
