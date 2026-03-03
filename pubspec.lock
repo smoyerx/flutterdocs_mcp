@@ -93,10 +93,10 @@ packages:
     dependency: "direct main"
     description:
       name: dart_mcp
-      sha256: dda8a8a8ef613b63a6c4b6a8e00163a5b3360195ae6247946985f78fbd0779e4
+      sha256: "92a2ee1cca577ed54fa4f3d5ae0e80ce2dd61e1892e793bb4f951b30eab9c4b1"
       url: "https://pub.dev"
     source: hosted
-    version: "0.4.1"
+    version: "0.5.0"
   ffi:
     dependency: transitive
     description:

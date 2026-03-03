@@ -9,11 +9,11 @@ This skill provides guidance, references, and examples for building and maintain
 
 Both MCP server and client references are provided. Client references support developing a test client for the MCP server, which can be useful for integration testing and debugging.
 
-Links in this skill reference `dart_mcp` version `0.4.1`, which is the latest version at the time of this writing. If a newer version becomes available, the links can be updated by replacing `dart_mcp-v0.4.1` with the appropriate version number in the URLs.
+Links in this skill reference `dart_mcp` version `0.5.0`, which is the latest version at the time of this writing. If a newer version becomes available, the links can be updated by replacing `dart_mcp-v0.5.0` with the appropriate version number in the URLs.
 
 ## Overview (`README.md`)
 
-- `dart_mcp` package overview: https://raw.githubusercontent.com/dart-lang/ai/dart_mcp-v0.4.1/pkgs/dart_mcp/README.md
+- `dart_mcp` package overview: https://raw.githubusercontent.com/dart-lang/ai/dart_mcp-v0.5.0/pkgs/dart_mcp/README.md
 
 ## MCP Server Resources
 
@@ -21,7 +21,7 @@ Resources for building an MCP server with `dart_mcp`. Only resources for the MCP
 
 ### Base Class
 
-`MCPServer` is the base class to extend when building an MCP server: https://raw.githubusercontent.com/dart-lang/ai/dart_mcp-v0.4.1/pkgs/dart_mcp/lib/src/server/server.dart
+`MCPServer` is the base class to extend when building an MCP server: https://raw.githubusercontent.com/dart-lang/ai/dart_mcp-v0.5.0/pkgs/dart_mcp/lib/src/server/server.dart
 
 ### Feature Mixins
 
@@ -29,27 +29,27 @@ For each MCP server feature (tools, resources, etc.), there is a mixin that can 
 
 #### Tools Mixin (`ToolsSupport`)
 
-- `ToolsSupport` mixin: https://raw.githubusercontent.com/dart-lang/ai/dart_mcp-v0.4.1/pkgs/dart_mcp/lib/src/server/tools_support.dart
-- Related enums and extension types: https://raw.githubusercontent.com/dart-lang/ai/dart_mcp-v0.4.1/pkgs/dart_mcp/lib/src/api/tools.dart
+- `ToolsSupport` mixin: https://raw.githubusercontent.com/dart-lang/ai/dart_mcp-v0.5.0/pkgs/dart_mcp/lib/src/server/tools_support.dart
+- Related enums and extension types: https://raw.githubusercontent.com/dart-lang/ai/dart_mcp-v0.5.0/pkgs/dart_mcp/lib/src/api/tools.dart
 
 #### Resources Mixin (`ResourcesSupport`)
 
-- `ResourcesSupport` mixin: https://raw.githubusercontent.com/dart-lang/ai/dart_mcp-v0.4.1/pkgs/dart_mcp/lib/src/server/resources_support.dart
-- Related enums and extension types: https://raw.githubusercontent.com/dart-lang/ai/dart_mcp-v0.4.1/pkgs/dart_mcp/lib/src/api/resources.dart
+- `ResourcesSupport` mixin: https://raw.githubusercontent.com/dart-lang/ai/dart_mcp-v0.5.0/pkgs/dart_mcp/lib/src/server/resources_support.dart
+- Related enums and extension types: https://raw.githubusercontent.com/dart-lang/ai/dart_mcp-v0.5.0/pkgs/dart_mcp/lib/src/api/resources.dart
 
 #### Logging Mixin (`LoggingSupport`)
 
-- `LoggingSupport` mixin: https://raw.githubusercontent.com/dart-lang/ai/dart_mcp-v0.4.1/pkgs/dart_mcp/lib/src/server/logging_support.dart
-- Related enums and extension types: https://raw.githubusercontent.com/dart-lang/ai/dart_mcp-v0.4.1/pkgs/dart_mcp/lib/src/api/logging.dart
+- `LoggingSupport` mixin: https://raw.githubusercontent.com/dart-lang/ai/dart_mcp-v0.5.0/pkgs/dart_mcp/lib/src/server/logging_support.dart
+- Related enums and extension types: https://raw.githubusercontent.com/dart-lang/ai/dart_mcp-v0.5.0/pkgs/dart_mcp/lib/src/api/logging.dart
 
 ### Server Feature Examples
 
-- Server tools example: https://raw.githubusercontent.com/dart-lang/ai/dart_mcp-v0.4.1/pkgs/dart_mcp/example/tools_server.dart
-- Server resources example: https://raw.githubusercontent.com/dart-lang/ai/dart_mcp-v0.4.1/pkgs/dart_mcp/example/resources_server.dart
+- Server tools example: https://raw.githubusercontent.com/dart-lang/ai/dart_mcp-v0.5.0/pkgs/dart_mcp/example/tools_server.dart
+- Server resources example: https://raw.githubusercontent.com/dart-lang/ai/dart_mcp-v0.5.0/pkgs/dart_mcp/example/resources_server.dart
 
 ### Complete MCP File System Server Example
 
-A basic file server built with `dart_mcp`: https://raw.githubusercontent.com/dart-lang/ai/dart_mcp-v0.4.1/mcp_examples/bin/file_system_server.dart
+A basic file server built with `dart_mcp`: https://raw.githubusercontent.com/dart-lang/ai/dart_mcp-v0.5.0/mcp_examples/bin/file_system_server.dart
 
 
 ## MCP Client Resources
@@ -58,12 +58,12 @@ Resources for building an MCP client with `dart_mcp`. A client is required for M
 
 ### Base Class
 
-`MCPClient` is the base class to extend when building an MCP client: https://raw.githubusercontent.com/dart-lang/ai/dart_mcp-v0.4.1/pkgs/dart_mcp/lib/src/client/client.dart
+`MCPClient` is the base class to extend when building an MCP client: https://raw.githubusercontent.com/dart-lang/ai/dart_mcp-v0.5.0/pkgs/dart_mcp/lib/src/client/client.dart
 
 ### Client Examples
 
-- Client tool invocation example: https://raw.githubusercontent.com/dart-lang/ai/dart_mcp-v0.4.1/pkgs/dart_mcp/example/tools_client.dart
-- Client resource access example: https://raw.githubusercontent.com/dart-lang/ai/dart_mcp-v0.4.1/pkgs/dart_mcp/example/resources_client.dart
+- Client tool invocation example: https://raw.githubusercontent.com/dart-lang/ai/dart_mcp-v0.5.0/pkgs/dart_mcp/example/tools_client.dart
+- Client resource access example: https://raw.githubusercontent.com/dart-lang/ai/dart_mcp-v0.5.0/pkgs/dart_mcp/example/resources_client.dart
 
 ## How to Use These References
 
