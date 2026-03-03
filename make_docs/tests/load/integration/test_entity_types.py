@@ -30,33 +30,22 @@ class TestEntityLoading:
         conn = sqlite3.connect(db_path)
         conn.row_factory = sqlite3.Row
         row = conn.execute(
-            """
-            SELECT e.content_markdown
-            FROM entity e
-            JOIN identifier i ON e.identifier_id = i.id
-            WHERE i.name = 'ListTile'
-            """
+            "SELECT content_markdown FROM entity WHERE identifier = 'ListTile'"
         ).fetchone()
         conn.close()
         assert row is not None
         assert len(row["content_markdown"]) > 0
 
-    def test_entity_identifier_linked(self, db_path: Path) -> None:
-        """Each entity row must reference a valid identifier."""
+    def test_entity_identifier_present(self, db_path: Path) -> None:
+        """Each entity row must have a non-empty identifier text."""
         run_load(SAMPLES_DIR, "material", db_path)
         conn = sqlite3.connect(db_path)
         conn.row_factory = sqlite3.Row
-        # Entities whose identifier_id has no matching identifier row
-        orphan_count = conn.execute(
-            """
-            SELECT COUNT(*) FROM entity e
-            WHERE NOT EXISTS (
-                SELECT 1 FROM identifier i WHERE i.id = e.identifier_id
-            )
-            """
+        empty_count = conn.execute(
+            "SELECT COUNT(*) FROM entity WHERE identifier = ''"
         ).fetchone()[0]
         conn.close()
-        assert orphan_count == 0
+        assert empty_count == 0
 
     def test_entity_snippets_in_content_markdown(self, db_path: Path) -> None:
         """Entities with snippets must have numbered examples in content_markdown."""

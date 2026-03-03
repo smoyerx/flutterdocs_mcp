@@ -8,6 +8,7 @@
         "flutterdocs",
         "libsqlite",
         "pana",
-        "pubspec"
+        "pubspec",
+        "pyproject"
     ]
 }

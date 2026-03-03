@@ -22,12 +22,11 @@ CREATE TABLE library (
 CREATE TABLE entity (
     id INTEGER PRIMARY KEY,
     library_id INTEGER NOT NULL,
-    identifier_id INTEGER NOT NULL,
+    identifier TEXT NOT NULL,
     entity_type_id INTEGER NOT NULL,
     content_markdown TEXT NOT NULL,
-    UNIQUE(identifier_id, library_id),
+    UNIQUE(identifier, library_id),
     FOREIGN KEY (library_id) REFERENCES library(id),
-    FOREIGN KEY (identifier_id) REFERENCES identifier(id),
     FOREIGN KEY (entity_type_id) REFERENCES entity_type(id)
 );
 
@@ -43,6 +42,14 @@ CREATE TABLE member (
     FOREIGN KEY (member_type_id) REFERENCES member_type(id)
 );
 
-CREATE INDEX idx_entity_unique ON entity(identifier_id, library_id);
+CREATE INDEX idx_entity_unique ON entity(identifier, library_id);
 
 CREATE INDEX idx_member_unique ON member(identifier_id, entity_id);
+
+CREATE VIRTUAL TABLE content_search USING fts5(
+    identifier,
+    content_markdown,
+    content='entity',
+    content_rowid='id',
+    tokenize='porter'
+);

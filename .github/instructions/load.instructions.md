@@ -15,7 +15,7 @@ applyTo: "make_docs/src/flutterdocs/load/**,make_docs/tests/load/**"
 `-s` and `-S` are mutually exclusive; exactly one is required.
 
 ```
-load -d <doc_dir> (-s <section> | -S <section_list_file>) -o <db_file> [-v]
+load -d <doc_dir> (-s <section> | -S <section_list_file>) -o <db_file> [-v] [--reindex]
 ```
 
 - `-d` / `--documents`: Root markdown output directory produced by `convert.py`.
@@ -23,10 +23,11 @@ load -d <doc_dir> (-s <section> | -S <section_list_file>) -o <db_file> [-v]
 - `-S` / `--section-list`: Path to a text file of section names, one per line; blank lines and `#` comments are ignored.
 - `-o` / `--output`: Path to the sqlite3 database file to create or add to.
 - `-v` / `--verbose`: Enable verbose logging.
+- `--reindex`: Rebuild the FTS5 full-text search index in bulk after all sections are loaded. When omitted (default), each entity is written to `content_search` during loading.
 
 ## Database Schema
 
-Tables: `identifier`, `entity_type`, `member_type`, `library`, `entity`, `member`. The full DDL is embedded in `db.py` as `SCHEMA_DDL` and applied once on `open_or_create_db()`.
+Tables: `identifier`, `entity_type`, `member_type`, `library`, `entity`, `member`. FTS5 virtual table: `content_search` (external-content, backed by `entity`, tokenizer `porter`). The full DDL is embedded in `db.py` as `SCHEMA_DDL` and applied once on `open_or_create_db()`. The `entity.identifier` column stores the entity name as inline `TEXT` (not a FK to the `identifier` table); the `identifier` lookup table is retained for the `member` table.
 
 ## Shared Code
 

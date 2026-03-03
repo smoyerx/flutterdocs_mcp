@@ -35,12 +35,11 @@ CREATE TABLE library (
 CREATE TABLE entity (
     id INTEGER PRIMARY KEY,
     library_id INTEGER NOT NULL,
-    identifier_id INTEGER NOT NULL,
+    identifier TEXT NOT NULL,
     entity_type_id INTEGER NOT NULL,
     content_markdown TEXT NOT NULL,
-    UNIQUE(identifier_id, library_id),
+    UNIQUE(identifier, library_id),
     FOREIGN KEY (library_id) REFERENCES library(id),
-    FOREIGN KEY (identifier_id) REFERENCES identifier(id),
     FOREIGN KEY (entity_type_id) REFERENCES entity_type(id)
 );
 
@@ -56,9 +55,17 @@ CREATE TABLE member (
     FOREIGN KEY (member_type_id) REFERENCES member_type(id)
 );
 
-CREATE INDEX idx_entity_unique ON entity(identifier_id, library_id);
+CREATE INDEX idx_entity_unique ON entity(identifier, library_id);
 
 CREATE INDEX idx_member_unique ON member(identifier_id, entity_id);
+
+CREATE VIRTUAL TABLE content_search USING fts5(
+    identifier,
+    content_markdown,
+    content='entity',
+    content_rowid='id',
+    tokenize='porter'
+);
 """
 
 
@@ -188,7 +195,7 @@ def upsert_library(
 def upsert_entity(
     conn: sqlite3.Connection,
     library_id: int,
-    identifier_id: int,
+    identifier: str,
     entity_type_id: int,
     content_markdown: str,
 ) -> int:
@@ -199,7 +206,7 @@ def upsert_entity(
     Args:
         conn: Open sqlite3 connection (within an active transaction).
         library_id: Foreign key to library.id.
-        identifier_id: Foreign key to identifier.id for the entity name.
+        identifier: Entity name string (e.g., "InkWell").
         entity_type_id: Foreign key to entity_type.id.
         content_markdown: Markdown content of the entity root file, including
             any appended snippet content.
@@ -209,16 +216,16 @@ def upsert_entity(
     """
     conn.execute(
         """
-        INSERT INTO entity(library_id, identifier_id, entity_type_id, content_markdown)
+        INSERT INTO entity(library_id, identifier, entity_type_id, content_markdown)
         VALUES (?, ?, ?, ?)
-        ON CONFLICT(identifier_id, library_id) DO UPDATE SET
+        ON CONFLICT(identifier, library_id) DO UPDATE SET
             content_markdown = excluded.content_markdown
         """,
-        (library_id, identifier_id, entity_type_id, content_markdown),
+        (library_id, identifier, entity_type_id, content_markdown),
     )
     row = conn.execute(
-        "SELECT id FROM entity WHERE identifier_id = ? AND library_id = ?",
-        (identifier_id, library_id),
+        "SELECT id FROM entity WHERE identifier = ? AND library_id = ?",
+        (identifier, library_id),
     ).fetchone()
     return int(row["id"])
 
@@ -250,3 +257,54 @@ def upsert_member(
         """,
         (entity_id, identifier_id, member_type_id, content_markdown),
     )
+
+
+def upsert_entity_search(
+    conn: sqlite3.Connection,
+    entity_id: int,
+    identifier: str,
+    content_markdown: str,
+    old_identifier: str | None = None,
+    old_content_markdown: str | None = None,
+) -> None:
+    """Insert or update a single entity row in the content_search FTS5 table.
+
+    For external-content FTS5 tables, updates require explicitly deleting the
+    old entry before inserting the new one. If old_identifier and
+    old_content_markdown are provided, a delete command is issued first using
+    the old values so that stale tokens are removed from the index.
+
+    Args:
+        conn: Open sqlite3 connection (within an active transaction).
+        entity_id: The rowid (entity.id) of the entity to index.
+        identifier: New entity identifier string.
+        content_markdown: New entity markdown content.
+        old_identifier: Pre-upsert identifier; provide when the entity already
+            existed so the old FTS tokens are removed.
+        old_content_markdown: Pre-upsert content_markdown; provide when the
+            entity already existed so the old FTS tokens are removed.
+    """
+    if old_identifier is not None and old_content_markdown is not None:
+        conn.execute(
+            "INSERT INTO content_search(content_search, rowid, identifier, content_markdown)"
+            " VALUES('delete', ?, ?, ?)",
+            (entity_id, old_identifier, old_content_markdown),
+        )
+    conn.execute(
+        "INSERT INTO content_search(rowid, identifier, content_markdown) VALUES (?, ?, ?)",
+        (entity_id, identifier, content_markdown),
+    )
+
+
+def rebuild_search_index(conn: sqlite3.Connection) -> None:
+    """Rebuild the FTS5 content_search index from the entity table.
+
+    Should be called after all sections are loaded when the --reindex flag is
+    used. Safe to call on an already-indexed database; it replaces the existing
+    index content.
+
+    Args:
+        conn: Open sqlite3 connection.
+    """
+    with conn:
+        conn.execute("INSERT INTO content_search(content_search) VALUES('rebuild')")

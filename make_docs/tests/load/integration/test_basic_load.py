@@ -32,8 +32,9 @@ class TestDbCreation:
             "library",
             "entity",
             "member",
+            "content_search",
         }
-        assert expected == tables
+        assert expected.issubset(tables)
         conn.close()
 
     def test_library_row_created(self, db_path: Path) -> None:

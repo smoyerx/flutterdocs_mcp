@@ -17,6 +17,7 @@ def run_load(
     section: str,
     db_file: Path,
     verbose: bool = False,
+    reindex: bool = False,
 ) -> subprocess.CompletedProcess[str]:
     """Run the load command with the given arguments.
 
@@ -25,6 +26,7 @@ def run_load(
         section: Section name to load.
         db_file: Path to the sqlite3 database file to create or update.
         verbose: Whether to enable verbose output.
+        reindex: Whether to pass --reindex to rebuild the FTS5 index in bulk.
 
     Returns:
         CompletedProcess with stdout, stderr, and returncode.
@@ -46,6 +48,8 @@ def run_load(
     ]
     if verbose:
         cmd.append("-v")
+    if reindex:
+        cmd.append("--reindex")
 
     return subprocess.run(cmd, capture_output=True, text=True)
 
@@ -55,6 +59,7 @@ def run_load_list(
     section_list_file: Path,
     db_file: Path,
     verbose: bool = False,
+    reindex: bool = False,
 ) -> subprocess.CompletedProcess[str]:
     """Run the load command using a section list file (-S).
 
@@ -63,6 +68,7 @@ def run_load_list(
         section_list_file: Path to text file containing section names.
         db_file: Path to the sqlite3 database file to create or update.
         verbose: Whether to enable verbose output.
+        reindex: Whether to pass --reindex to rebuild the FTS5 index in bulk.
 
     Returns:
         CompletedProcess with stdout, stderr, and returncode.
@@ -84,6 +90,8 @@ def run_load_list(
     ]
     if verbose:
         cmd.append("-v")
+    if reindex:
+        cmd.append("--reindex")
 
     return subprocess.run(cmd, capture_output=True, text=True)
 

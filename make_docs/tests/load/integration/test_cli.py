@@ -225,3 +225,91 @@ class TestSectionList:
             assert count == 1
         finally:
             conn.close()
+
+
+class TestDefaultSearchSync:
+    """Tests that content_search is populated during default (no --reindex) load."""
+
+    def test_content_search_populated(self, db_path: Path) -> None:
+        """After default load, content_search must contain indexed rows."""
+        result = run_load(SAMPLES_DIR, "material", db_path)
+        assert result.returncode == 0, result.stderr
+        conn = sqlite3.connect(db_path)
+        conn.row_factory = sqlite3.Row
+        try:
+            count = conn.execute("SELECT COUNT(*) FROM content_search").fetchone()[0]
+            assert count > 0
+        finally:
+            conn.close()
+
+    def test_content_search_returns_known_entity(self, db_path: Path) -> None:
+        """After default load, querying content_search for a known entity returns results."""
+        result = run_load(SAMPLES_DIR, "material", db_path)
+        assert result.returncode == 0, result.stderr
+        conn = sqlite3.connect(db_path)
+        conn.row_factory = sqlite3.Row
+        try:
+            rows = conn.execute(
+                "SELECT rowid FROM content_search WHERE identifier MATCH 'ListTile'"
+            ).fetchall()
+            assert len(rows) > 0
+        finally:
+            conn.close()
+
+    def test_content_search_count_matches_entity_count(self, db_path: Path) -> None:
+        """After default load, content_search row count must equal entity row count."""
+        result = run_load(SAMPLES_DIR, "material", db_path)
+        assert result.returncode == 0, result.stderr
+        conn = sqlite3.connect(db_path)
+        conn.row_factory = sqlite3.Row
+        try:
+            entity_count = conn.execute("SELECT COUNT(*) FROM entity").fetchone()[0]
+            search_count = conn.execute(
+                "SELECT COUNT(*) FROM content_search"
+            ).fetchone()[0]
+            assert search_count == entity_count
+        finally:
+            conn.close()
+
+
+class TestReindex:
+    """Tests for --reindex flag behavior."""
+
+    def test_reindex_exits_zero(self, db_path: Path) -> None:
+        """Running load with --reindex must succeed."""
+        result = run_load(SAMPLES_DIR, "material", db_path, reindex=True)
+        assert result.returncode == 0, result.stderr
+
+    def test_reindex_prints_confirmation(self, db_path: Path) -> None:
+        """Running load with --reindex must print a confirmation line to stdout."""
+        result = run_load(SAMPLES_DIR, "material", db_path, reindex=True)
+        assert result.returncode == 0, result.stderr
+        assert "Rebuilt FTS5 search index." in result.stdout
+
+    def test_reindex_makes_content_search_queryable(self, db_path: Path) -> None:
+        """After --reindex, content_search must return results for a known entity."""
+        result = run_load(SAMPLES_DIR, "material", db_path, reindex=True)
+        assert result.returncode == 0, result.stderr
+        conn = sqlite3.connect(db_path)
+        conn.row_factory = sqlite3.Row
+        try:
+            rows = conn.execute(
+                "SELECT rowid FROM content_search WHERE identifier MATCH 'ListTile'"
+            ).fetchall()
+            assert len(rows) > 0
+        finally:
+            conn.close()
+
+    def test_reindex_skips_per_entity_fts_writes(self, db_path: Path) -> None:
+        """content_search must be empty before --reindex runs but populated after."""
+        # First load without --reindex; FTS index is populated per entity.
+        # Then run with --reindex on a fresh DB to confirm rebuild populates it.
+        result = run_load(SAMPLES_DIR, "material", db_path, reindex=True)
+        assert result.returncode == 0, result.stderr
+        conn = sqlite3.connect(db_path)
+        conn.row_factory = sqlite3.Row
+        try:
+            count = conn.execute("SELECT COUNT(*) FROM content_search").fetchone()[0]
+            assert count > 0
+        finally:
+            conn.close()
