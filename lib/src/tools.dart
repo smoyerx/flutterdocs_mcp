@@ -5,8 +5,8 @@ import 'package:dart_mcp/server.dart';
 
 import 'db.dart';
 
-/// Registers the [lookupEntity], [lookupMember], and [listLibraries] tools
-/// on [server].
+/// Registers the [lookupEntity], [lookupMember], [listLibraries], and
+/// [searchDocumentation] tools on [server].
 void registerTools(ToolsSupport server, DocDatabase db) {
   server.registerTool(
     _lookupEntityTool,
@@ -19,6 +19,10 @@ void registerTools(ToolsSupport server, DocDatabase db) {
   server.registerTool(
     _listLibrariesTool,
     (request) => _listLibraries(request, db),
+  );
+  server.registerTool(
+    _searchDocumentationTool,
+    (request) => _searchDocumentation(request, db),
   );
 }
 
@@ -217,4 +221,81 @@ FutureOr<CallToolResult> _listLibraries(
 ) {
   final slugs = db.listLibraries();
   return CallToolResult(content: [TextContent(text: jsonEncode(slugs))]);
+}
+
+// ---------------------------------------------------------------------------
+// searchDocumentation
+// ---------------------------------------------------------------------------
+
+final _searchDocumentationTool = Tool(
+  name: 'searchDocumentation',
+  title: 'Search Flutter/Dart documentation',
+  description:
+      'Perform a full-text search across the Flutter/Dart documentation '
+      'to find Flutter/Dart entities (class, mixin, enum, extension, '
+      'extension type, typedef, top-level function, top-level constant) '
+      'whose documentation contains the given keywords. All words are '
+      'matched with AND semantics — every word must appear somewhere in '
+      'the entity\'s documentation, but not necessarily adjacent. '
+      'Navigation Tip: Use the returned [library_slug, entity, '
+      'documentation_excerpt] values to construct resource URIs: '
+      'flutter-docs://api/{library_slug}/{entity}. '
+      'Note: The returned library_slug value is a URI slug (not the library '
+      'display name).',
+  inputSchema: Schema.object(
+    properties: {
+      'query': Schema.string(
+        description:
+            'The search keywords (e.g., "scrolling", "stateful widget"). '
+            'All words are matched with AND semantics — every word must '
+            'appear somewhere in the entity\'s documentation. Word order '
+            'and punctuation are ignored.',
+      ),
+    },
+    required: ['query'],
+  ),
+  outputSchema: Schema.object(
+    description:
+        'An object with a total query match count and up to 20 results.',
+    properties: {
+      'total': Schema.int(
+        description: 'The total number of query matches found.',
+      ),
+      'results': Schema.list(
+        description: 'List of up to 20 query match results.',
+        items: Schema.list(
+          description:
+              'A [library_slug, entity, documentation_excerpt] array. '
+              'Construct resource URIs as: '
+              'flutter-docs://api/{library_slug}/{entity}',
+          prefixItems: [
+            Schema.string(description: "Library slug (e.g., 'material')."),
+            Schema.string(description: "Entity name (e.g., 'ListTile')."),
+            Schema.string(
+              description:
+                  'Documentation excerpt with query matches emphasized.',
+            ),
+          ],
+        ),
+      ),
+    },
+    required: ['total', 'results'],
+  ),
+  annotations: _toolAnnotations,
+);
+
+FutureOr<CallToolResult> _searchDocumentation(
+  CallToolRequest request,
+  DocDatabase db,
+) {
+  final query = request.arguments!['query'] as String;
+  final (total, results) = db.searchDocumentation(query);
+  final structured = {
+    'total': total,
+    'results': results.map((r) => [r.$1, r.$2, r.$3]).toList(),
+  };
+  return CallToolResult(
+    content: [TextContent(text: jsonEncode(structured))],
+    structuredContent: structured,
+  );
 }

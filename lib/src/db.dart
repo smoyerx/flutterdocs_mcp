@@ -1,5 +1,23 @@
 import 'package:sqlite3/sqlite3.dart';
 
+/// Sanitizes [input] for safe use as an FTS5 MATCH expression.
+///
+/// Extracts Unicode word tokens and wraps each in double quotes, producing a
+/// space-joined AND query. This neutralizes all FTS5 operators and special
+/// characters (AND, OR, NOT, NEAR, -, *, etc.) while preserving porter
+/// stemming (quoting tokens does not suppress it).
+///
+/// Returns `null` if [input] contains no word tokens (blank or symbol-only
+/// input); callers should return `(0, [])` without issuing a database query.
+String? _sanitizeFtsQuery(String input) {
+  final words = RegExp(
+    r'\w+',
+    unicode: true,
+  ).allMatches(input).map((m) => m.group(0)!).toList();
+  if (words.isEmpty) return null;
+  return words.map((w) => '"$w"').join(' ');
+}
+
 /// In-memory representation of a library record from the `library` table.
 final class LibraryRecord {
   const LibraryRecord({
@@ -52,6 +70,7 @@ final class DocDatabase {
   late final PreparedStatement _memberResultsWithHintStmt;
   late final PreparedStatement _entityDocStmt;
   late final PreparedStatement _memberDocStmt;
+  late final PreparedStatement _searchDocumentationStmt;
 
   // ---------------------------------------------------------------------------
   // Startup helpers
@@ -128,6 +147,25 @@ final class DocDatabase {
       'FROM member m '
       'JOIN entity e ON m.entity_id = e.id '
       'WHERE e.library_id = ? AND e.identifier = ? AND m.identifier_id = ?',
+    );
+
+    _searchDocumentationStmt = _db.prepare(
+      'SELECT '
+      '    e.library_id, '
+      '    e.identifier, '
+      '    fts.excerpt, '
+      '    COUNT(*) OVER() AS total '
+      'FROM ('
+      '    SELECT '
+      '        rowid AS fts_rowid, '
+      '        snippet(content_search, 1, \'***\', \'***\', \'...\', 15) AS excerpt, '
+      '        bm25(content_search, 10.0, 1.0) AS rank '
+      '    FROM content_search '
+      '    WHERE content_search MATCH ? '
+      ') AS fts '
+      'JOIN entity e ON fts.fts_rowid = e.id '
+      'ORDER BY fts.rank '
+      'LIMIT 20',
     );
   }
 
@@ -253,6 +291,30 @@ final class DocDatabase {
     return rows.first['content_markdown'] as String;
   }
 
+  /// Full-text searches entity documentation for [query]. Returns a tuple of
+  /// the total match count and up to 20 results as
+  /// `(library_slug, entity, excerpt)` triples.
+  ///
+  /// [query] is sanitized via [_sanitizeFtsQuery] before being passed to the
+  /// FTS5 `MATCH` operator. Returns `(0, [])` if [query] contains no word
+  /// tokens.
+  (int total, List<(String library, String entity, String excerpt)> results)
+  searchDocumentation(String query) {
+    final sanitized = _sanitizeFtsQuery(query);
+    if (sanitized == null) return (0, const []);
+    final rows = _searchDocumentationStmt.select([sanitized]);
+    if (rows.isEmpty) return (0, const []);
+    final total = rows.first['total'] as int;
+    final results = <(String, String, String)>[];
+    for (final row in rows) {
+      final library = _libraryById[row['library_id'] as int]?.name ?? '';
+      final entity = row['identifier'] as String;
+      final excerpt = row['excerpt'] as String;
+      results.add((library, entity, excerpt));
+    }
+    return (total, results);
+  }
+
   /// Disposes all prepared statements and closes the database.
   void close() {
     _entityCountStmt.close();
@@ -263,6 +325,7 @@ final class DocDatabase {
     _memberResultsWithHintStmt.close();
     _entityDocStmt.close();
     _memberDocStmt.close();
+    _searchDocumentationStmt.close();
     _db.close();
   }
 }

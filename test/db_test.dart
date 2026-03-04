@@ -51,6 +51,19 @@ void _populateFixture(Database raw) {
     );
     CREATE INDEX idx_entity_unique ON entity(identifier, library_id);
     CREATE INDEX idx_member_unique ON member(identifier_id, entity_id);
+
+    CREATE VIRTUAL TABLE content_search USING fts5(
+        identifier,
+        content_markdown,
+        content='entity',
+        content_rowid='id',
+        tokenize='porter'
+    );
+
+    CREATE TRIGGER entity_ai AFTER INSERT ON entity BEGIN
+        INSERT INTO content_search(rowid, identifier, content_markdown)
+        VALUES (new.id, new.identifier, new.content_markdown);
+    END;
   ''');
 
   // Lookup tables
@@ -362,6 +375,50 @@ void main() {
         _db.memberDocumentation('material', 'ListTile', 'noSuchMember'),
         isNull,
       );
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // searchDocumentation
+  // -------------------------------------------------------------------------
+
+  group('searchDocumentation', () {
+    test('returns matching results for a known term', () {
+      // 'ListTile' appears as the identifier of entity 1.
+      final (total, results) = _db.searchDocumentation('ListTile');
+      expect(total, greaterThan(0));
+      expect(results, isNotEmpty);
+      final entities = results.map((r) => r.$2).toList();
+      expect(entities, contains('ListTile'));
+    });
+
+    test('returns (0, []) for a term with no matches', () {
+      final (total, results) = _db.searchDocumentation('xyzzy99nonexistent');
+      expect(total, 0);
+      expect(results, isEmpty);
+    });
+
+    test('result library slug is looked up from _libraryById', () {
+      final (_, results) = _db.searchDocumentation('ListTile');
+      expect(results.first.$1, 'material');
+    });
+
+    test('excerpt field is non-empty for a matching result', () {
+      final (_, results) = _db.searchDocumentation('ListTile');
+      expect(results.first.$3, isNotEmpty);
+    });
+
+    test('returns (0, []) for blank input', () {
+      final (total, results) = _db.searchDocumentation('   ');
+      expect(total, 0);
+      expect(results, isEmpty);
+    });
+
+    test('returns (0, []) for symbol-only input', () {
+      // Input with no \w+ tokens sanitizes to null → short-circuits before DB.
+      final (total, results) = _db.searchDocumentation('--- *** :::');
+      expect(total, 0);
+      expect(results, isEmpty);
     });
   });
 }

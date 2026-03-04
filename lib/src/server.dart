@@ -23,7 +23,8 @@ base class FlutterDocsMcpServer extends MCPServer
         ),
         instructions:
             'This server provides tools and resources for navigating '
-            'Flutter/Dart API documentation. Use lookupEntity to find which '
+            'Flutter/Dart API documentation. Use searchDocumentation to find '
+            'entities by keyword or phrase. Use lookupEntity to find which '
             'library an entity belongs to, and lookupMember to find which '
             'entity a member belongs to. Then use the resource URIs to '
             'retrieve the full documentation.',
@@ -36,19 +37,18 @@ base class FlutterDocsMcpServer extends MCPServer
   ///
   /// Exits with code 1 if `--db` is missing or the file cannot be read.
   static void run(List<String> args) {
-    final parser =
-        ArgParser()
-          ..addOption(
-            'db',
-            help: 'Path to the sqlite3 documentation database file.',
-            valueHelp: 'path',
-          )
-          ..addFlag(
-            'help',
-            abbr: 'h',
-            negatable: false,
-            help: 'Print usage information.',
-          );
+    final parser = ArgParser()
+      ..addOption(
+        'db',
+        help: 'Path to the sqlite3 documentation database file.',
+        valueHelp: 'path',
+      )
+      ..addFlag(
+        'help',
+        abbr: 'h',
+        negatable: false,
+        help: 'Print usage information.',
+      );
 
     late ArgResults results;
     try {

@@ -334,4 +334,53 @@ void main() {
       );
     });
   });
+
+  // -------------------------------------------------------------------------
+  // searchDocumentation tool
+  // -------------------------------------------------------------------------
+
+  group('searchDocumentation tool', () {
+    test('hit — returns results with total, entities, and excerpts', () async {
+      final result = await _server.callTool(
+        CallToolRequest(
+          name: 'searchDocumentation',
+          arguments: {'query': 'widget'},
+        ),
+      );
+      final (total, results) = _decodeTool(result);
+      expect(total, greaterThan(0));
+      expect(results, isNotEmpty);
+      // Each result is a 3-element array: [library_slug, entity, excerpt].
+      for (final r in results) {
+        expect(r, hasLength(3));
+        expect(r[0], isA<String>());
+        expect(r[1], isA<String>());
+        expect(r[2], isA<String>());
+      }
+    });
+
+    test('miss — returns total 0 and empty results', () async {
+      final result = await _server.callTool(
+        CallToolRequest(
+          name: 'searchDocumentation',
+          arguments: {'query': 'xyzzy99nonexistent'},
+        ),
+      );
+      final (total, results) = _decodeTool(result);
+      expect(total, 0);
+      expect(results, isEmpty);
+    });
+
+    test('symbol-only input — returns total 0 and empty results', () async {
+      final result = await _server.callTool(
+        CallToolRequest(
+          name: 'searchDocumentation',
+          arguments: {'query': '--- *** :::'},
+        ),
+      );
+      final (total, results) = _decodeTool(result);
+      expect(total, 0);
+      expect(results, isEmpty);
+    });
+  });
 }
