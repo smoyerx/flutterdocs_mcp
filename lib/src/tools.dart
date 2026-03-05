@@ -272,8 +272,7 @@ final _searchDocumentationTool = Tool(
             Schema.string(description: "Library slug (e.g., 'material')."),
             Schema.string(description: "Entity name (e.g., 'ListTile')."),
             Schema.string(
-              description:
-                  'Documentation excerpt with query matches emphasized.',
+              description: 'Documentation excerpt matching the query.',
             ),
           ],
         ),

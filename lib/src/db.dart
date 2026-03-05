@@ -4,8 +4,7 @@ import 'package:sqlite3/sqlite3.dart';
 ///
 /// Extracts Unicode word tokens and wraps each in double quotes, producing a
 /// space-joined AND query. This neutralizes all FTS5 operators and special
-/// characters (AND, OR, NOT, NEAR, -, *, etc.) while preserving porter
-/// stemming (quoting tokens does not suppress it).
+/// characters (AND, OR, NOT, NEAR, -, *, etc.).
 ///
 /// Returns `null` if [input] contains no word tokens (blank or symbol-only
 /// input); callers should return `(0, [])` without issuing a database query.
@@ -158,7 +157,7 @@ final class DocDatabase {
       'FROM ('
       '    SELECT '
       '        rowid AS fts_rowid, '
-      '        snippet(content_search, 1, \'***\', \'***\', \'...\', 15) AS excerpt, '
+      '        snippet(content_search, 1, \'\', \'\', \'...\', 64) AS excerpt, '
       '        bm25(content_search, 10.0, 1.0) AS rank '
       '    FROM content_search '
       '    WHERE content_search MATCH ? '

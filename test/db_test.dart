@@ -57,7 +57,7 @@ void _populateFixture(Database raw) {
         content_markdown,
         content='entity',
         content_rowid='id',
-        tokenize='porter'
+        tokenize='unicode61 remove_diacritics 2'
     );
 
     CREATE TRIGGER entity_ai AFTER INSERT ON entity BEGIN

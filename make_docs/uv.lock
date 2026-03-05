@@ -32,7 +32,7 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "html-to-markdown", specifier = "==2.27.1" }]
+requires-dist = [{ name = "html-to-markdown", specifier = "==2.24.1" }]
 
 [package.metadata.requires-dev]
 dev = [
@@ -42,13 +42,13 @@ dev = [
 
 [[package]]
 name = "html-to-markdown"
-version = "2.27.1"
+version = "2.24.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/2f/bd/0991bb0e301f80a3cee8343d24d7a97aaf178e175802c06e347fe0323640/html_to_markdown-2.27.1.tar.gz", hash = "sha256:e1c244075d6e992229fc2b60999dadb98a4f2297dda050e8e5434d0308ca42a1", size = 302600, upload-time = "2026-03-01T18:04:48.692Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/9d/5d/44db8f2c1497385d3fade5a899fddf29bc327b8b5e0e0d18ca714fa90c19/html_to_markdown-2.24.1.tar.gz", hash = "sha256:5585d36f252164705ef498a82655dfab2d44335e906a929966c6d53761535e90", size = 292476, upload-time = "2026-01-29T16:14:54.379Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/fc/9c/c7b7d01883aa44dc27000fcaf21f8215eaa37dbc1f11326114bf2165d6bb/html_to_markdown-2.27.1-cp310-abi3-macosx_11_0_arm64.whl", hash = "sha256:f8d84defa882f5d253b56cc212ffb050b7e0a47b53efb0e1c15a5889e2a2b55d", size = 8866046, upload-time = "2026-03-01T18:04:41.027Z" },
-    { url = "https://files.pythonhosted.org/packages/58/1c/a77817e3cdff925d3869130722fd8adb60fceefb8df66fc00671df5fe4ba/html_to_markdown-2.27.1-cp310-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:8527ec621e910064a7bac520f9701603d12d898dcdd3e5b5a9ff6ca6f5ed885c", size = 9686310, upload-time = "2026-03-01T18:04:43.795Z" },
-    { url = "https://files.pythonhosted.org/packages/a4/c5/a8b9602c2a24724afa3d17762f87ee16c04508ed89c9c0a7e1dd937b7892/html_to_markdown-2.27.1-cp310-abi3-win_amd64.whl", hash = "sha256:b034b4d93aa53ffdad8b9c4a6a2f67b89f9de5e25bfb232f81d83dad1bd44819", size = 9295970, upload-time = "2026-03-01T18:04:46.774Z" },
+    { url = "https://files.pythonhosted.org/packages/69/fd/feb56aae7969ca919f4b997a2935a704063b9732db1d92c2321bdc4006b7/html_to_markdown-2.24.1-cp310-abi3-macosx_11_0_arm64.whl", hash = "sha256:1a89d55432368a4b5b2e7cd552ec2d02eab5e4440f0c949d3ca84443f7da32a0", size = 8842889, upload-time = "2026-01-29T16:14:47.194Z" },
+    { url = "https://files.pythonhosted.org/packages/a7/54/6b8720ef46e2dbbffdd3764490391786c909fa2aa02f424d76751a72338f/html_to_markdown-2.24.1-cp310-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:34b18069cf187bfc762236150f4d166947afc317d33060bd3a7a29472348d840", size = 9658949, upload-time = "2026-01-29T16:14:49.425Z" },
+    { url = "https://files.pythonhosted.org/packages/8f/79/6c170045a4a4fbb40b1afd005033944674b031dc9d3fdda346582aaba21a/html_to_markdown-2.24.1-cp310-abi3-win_amd64.whl", hash = "sha256:73a0c25a92b299e359e50b083089138853c7b2cb79a27b448a51090fecab5981", size = 9258522, upload-time = "2026-01-29T16:14:52.249Z" },
 ]
 
 [[package]]
