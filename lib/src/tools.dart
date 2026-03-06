@@ -43,20 +43,12 @@ final _toolAnnotations = ToolAnnotations(
 
 final _lookupEntityTool = Tool(
   name: 'lookupEntity',
-  title:
-      'Resolve Flutter/Dart entity (class, mixin, enum, extension, extension '
-      'type, typedef, top-level function, top-level constant) by name',
+  title: 'Resolve Flutter/Dart entity (class, mixin, etc.) by name.',
   description:
       'Finds Flutter/Dart entity (class, mixin, enum, extension, extension '
-      'type, typedef, top-level function, top-level constant) by identifier '
-      'name. Use this when you have an entity name (e.g., ListTile, '
-      'HourFormat) and need to know which library (or libraries) it belongs '
-      'to. Navigation Tip: Use the returned [library_slug, entity, category] '
-      'values to construct resource URIs: '
-      'flutter-docs://api/{library_slug}/{entity}. '
-      'Note: The returned library_slug value is a URI slug (not the display name) '
-      '— use it as-is in resource URIs and as libraryHint. '
-      'Call listLibraries to see all available library_slug values.',
+      'type, typedef, top-level function/constant) by identifier name. '
+      'Use the returned [library_slug, entity, category] values to construct '
+      'resource URIs for entityDocumentation.',
   inputSchema: Schema.object(
     properties: {
       'name': Schema.string(
@@ -76,10 +68,7 @@ final _lookupEntityTool = Tool(
       'results': Schema.list(
         description: 'List of up to 10 match results.',
         items: Schema.list(
-          description:
-              'A [library_slug, entity, category] array. '
-              'Construct resource URIs as: '
-              'flutter-docs://api/{library_slug}/{entity}',
+          description: 'A [library_slug, entity, category] array.',
           prefixItems: [
             Schema.string(description: "Library slug (e.g., 'material')."),
             Schema.string(description: "Entity name (e.g., 'ListTile')."),
@@ -116,20 +105,14 @@ FutureOr<CallToolResult> _lookupEntity(
 final _lookupMemberTool = Tool(
   name: 'lookupMember',
   title:
-      'Resolve Flutter/Dart member (constructor, property, method, operator, '
-      'constant, static method) by name and optional library hint.',
+      'Resolve Flutter/Dart member (constructor, property, method, etc.) '
+      'by name and optional library slug hint.',
   description:
       'Finds Flutter/Dart member (constructor, property, method, operator, '
       'constant, static method) by identifier name and optional library slug '
-      'hint. Use this when you have a member name (e.g., visualDensity, '
-      'addMaterialState) and need to know which entity it belongs to. The '
-      'optional library slug hint limits the search to that library, which is '
-      'useful for common member names. Navigation Tip: Use the returned '
-      '[library_slug, entity, member, category] values to construct resource URIs: '
-      'flutter-docs://api/{library_slug}/{entity}/{member}. '
-      'Note: The returned library_slug value is a URI slug (not the display name) '
-      '— use it as-is in resource URIs and as libraryHint. '
-      'Call listLibraries to see all available library_slug values.',
+      'hint. '
+      'Use the returned [library_slug, entity, member, category] values to '
+      'construct resource URIs for memberDocumentation.',
   inputSchema: Schema.object(
     properties: {
       'name': Schema.string(
@@ -137,14 +120,11 @@ final _lookupMemberTool = Tool(
             "The name of the member to find (e.g., 'visualDensity'). "
             'Case-sensitive.',
       ),
-      'libraryHint': Schema.string(
+      'librarySlugHint': Schema.string(
         description:
-            'Optional: Limit search to a specific library using its slug '
-            "(e.g., 'material', 'dart-io'). Colon forms are also accepted "
-            "(e.g., 'dart:io' is treated as 'dart-io'). If the value is not "
-            'recognized as a known slug, the hint is ignored and an unscoped '
-            'search is performed. '
-            'Call listLibraries to see all available library slug values.',
+            'Optional: Limit search to a specific library slug '
+            "(e.g., 'material', 'dart-io'). If the slug is not valid, the "
+            'hint is ignored and an unscoped search is performed.',
       ),
     },
     required: ['name'],
@@ -158,10 +138,7 @@ final _lookupMemberTool = Tool(
       'results': Schema.list(
         description: 'List of up to 10 match results.',
         items: Schema.list(
-          description:
-              'A [library_slug, entity, member, category] array. '
-              'Construct resource URIs as: '
-              'flutter-docs://api/{library_slug}/{entity}/{member}',
+          description: 'A [library_slug, entity, member, category] array.',
           prefixItems: [
             Schema.string(description: "Library slug (e.g., 'material')."),
             Schema.string(description: "Entity name (e.g., 'ListTile')."),
@@ -184,8 +161,11 @@ FutureOr<CallToolResult> _lookupMember(
 ) {
   final args = request.arguments!;
   final name = args['name'] as String;
-  final libraryHint = args['libraryHint'] as String?;
-  final (total, results) = db.lookupMember(name, libraryHint: libraryHint);
+  final librarySlugHint = args['librarySlugHint'] as String?;
+  final (total, results) = db.lookupMember(
+    name,
+    librarySlugHint: librarySlugHint,
+  );
   final structured = {
     'total': total,
     'results': results.map((r) => [r.$1, r.$2, r.$3, r.$4]).toList(),
@@ -202,15 +182,13 @@ FutureOr<CallToolResult> _lookupMember(
 
 final _listLibrariesTool = Tool(
   name: 'listLibraries',
-  title: 'List all available Flutter/Dart library slugs',
+  title: 'List all available Flutter/Dart library slugs.',
   description:
-      'Returns all available library slugs — the URI-safe identifiers used '
-      'in resource URIs (flutter-docs://api/{library_slug}/...) and as the '
-      'libraryHint parameter. Library slugs do not always match the library '
-      'display name (e.g., dart:io uses slug dart-io; package libraries use '
-      'slugs like package-material_color_utilities_blend_blend). Call this '
-      'to discover available library_slug values or confirm the correct library '
-      'slug before constructing resource URIs.',
+      'Returns all available library slugs that can be used to construct '
+      'resource URIs (flutter-docs://api/{library_slug}/...). '
+      'Library slugs and library display names often differ '
+      '(e.g., library dart:io uses slug dart-io; package libraries use '
+      'slugs like package-material_color_utilities_blend_blend).',
   inputSchema: Schema.object(properties: {}),
   annotations: _toolAnnotations,
 );
@@ -229,27 +207,20 @@ FutureOr<CallToolResult> _listLibraries(
 
 final _searchDocumentationTool = Tool(
   name: 'searchDocumentation',
-  title: 'Search Flutter/Dart documentation',
+  title: 'Search Flutter/Dart API documentation',
   description:
-      'Perform a full-text search across the Flutter/Dart documentation '
-      'to find Flutter/Dart entities (class, mixin, enum, extension, '
-      'extension type, typedef, top-level function, top-level constant) '
-      'whose documentation contains the given keywords. All words are '
-      'matched with AND semantics — every word must appear somewhere in '
-      'the entity\'s documentation, but not necessarily adjacent. '
-      'Navigation Tip: Use the returned [library_slug, entity, '
-      'documentation_excerpt] values to construct resource URIs: '
-      'flutter-docs://api/{library_slug}/{entity}. '
-      'Note: The returned library_slug value is a URI slug (not the library '
-      'display name).',
+      'Perform a full-text search across the Flutter/Dart API documentation '
+      'to find entities (classes, mixins, etc.) whose documentation contains '
+      'the specified keywords. '
+      'All words are matched with AND semantics — every word must appear, '
+      'but not necessarily adjacent. '
+      'Use the returned [library_slug, entity, documentation_excerpt] values '
+      'to construct resource URIs for entityDocumentation.',
   inputSchema: Schema.object(
     properties: {
       'query': Schema.string(
         description:
-            'The search keywords (e.g., "scrolling", "stateful widget"). '
-            'All words are matched with AND semantics — every word must '
-            'appear somewhere in the entity\'s documentation. Word order '
-            'and punctuation are ignored.',
+            'The search keywords (e.g., "scrolling", "stateful widget").',
       ),
     },
     required: ['query'],
@@ -264,10 +235,7 @@ final _searchDocumentationTool = Tool(
       'results': Schema.list(
         description: 'List of up to 20 query match results.',
         items: Schema.list(
-          description:
-              'A [library_slug, entity, documentation_excerpt] array. '
-              'Construct resource URIs as: '
-              'flutter-docs://api/{library_slug}/{entity}',
+          description: 'A [library_slug, entity, documentation_excerpt] array.',
           prefixItems: [
             Schema.string(description: "Library slug (e.g., 'material')."),
             Schema.string(description: "Entity name (e.g., 'ListTile')."),

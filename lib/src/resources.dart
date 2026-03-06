@@ -44,15 +44,12 @@ final _annotations = Annotations(audience: [Role.user, Role.assistant]);
 final _libraryIndexTemplate = ResourceTemplate(
   uriTemplate: '$_scheme://api/{library_slug}',
   name: 'libraryIndex',
-  title: 'Flutter/Dart library documentation index',
+  title: 'Flutter/Dart library documentation',
   description:
-      'High-level summary of the library and all of its entities (classes, '
-      'mixins, enums, extensions, extension types, typedefs, top-level '
-      'functions, top-level constants). Contains embedded navigation links '
-      '(resource URIs) to the detailed documentation for each entity. '
-      'Note: The library_slug value in the URI template is a URI slug '
-      '(not the library display name). '
-      'Call listLibraries to see all available library_slug values.',
+      'Summary of the library and its entities (classes, mixins, enums, '
+      'extensions, extension types, typedefs, top-level functions/constants). '
+      'The markdown content returned embeds actionable resource URIs '
+      '({$_scheme}://) as navigation links.',
   annotations: _annotations,
 );
 
@@ -81,14 +78,9 @@ final _entityDocumentationTemplate = ResourceTemplate(
   title: 'Flutter/Dart entity documentation',
   description:
       'Detailed documentation for the Flutter/Dart entity (class, mixin, '
-      'enum, extension, extension type, typedef, top-level function, '
-      'top-level constant) in the specified library. Includes a summary of '
-      'all its members (constructors, properties, methods, operators, '
-      'constants, static methods), with embedded navigation links (resource '
-      'URIs) to the detailed documentation for each member. '
-      'Note: The library_slug value in the URI template is a URI slug '
-      '(not the library display name). '
-      'Call listLibraries to see all available library_slug values.',
+      'enum, extension, extension type, typedef, top-level function/constant). '
+      'The markdown content returned embeds actionable resource URIs '
+      '({$_scheme}://) as navigation links.',
   annotations: _annotations,
 );
 
@@ -118,11 +110,9 @@ final _memberDocumentationTemplate = ResourceTemplate(
   title: 'Flutter/Dart member documentation',
   description:
       'Detailed documentation for the Flutter/Dart member (constructor, '
-      'property, method, operator, constant, static method) of the specified '
-      'entity in the specified library. '
-      'Note: The library_slug value in the URI template is a URI slug '
-      '(not the library display name). '
-      'Call listLibraries to see all available library_slug values.',
+      'property, method, operator, constant, static method). '
+      'The markdown content returned embeds actionable resource URIs '
+      '({$_scheme}://) as navigation links.',
   annotations: _annotations,
 );
 

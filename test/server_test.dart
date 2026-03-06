@@ -185,7 +185,7 @@ void main() {
       final result = await _server.callTool(
         CallToolRequest(
           name: 'lookupMember',
-          arguments: {'name': 'autofocus', 'libraryHint': 'material'},
+          arguments: {'name': 'autofocus', 'librarySlugHint': 'material'},
         ),
       );
       final (total, results) = _decodeTool(result);

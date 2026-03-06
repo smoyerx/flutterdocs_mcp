@@ -8,11 +8,10 @@ import 'db.dart';
 import 'resources.dart';
 import 'tools.dart';
 
-/// An MCP server that serves Flutter/Dart API documentation.
+/// An MCP server for Flutter/Dart API documentation.
 ///
-/// The server connects over the stdio transport and provides two tools
-/// ([lookupEntity], [lookupMember]) and three resource templates
-/// ([libraryIndex], [entityDocumentation], [memberDocumentation]).
+/// The server connects over the stdio transport and provides tools and resource
+/// templates for navigating and fetching Flutter/Dart API documentation.
 base class FlutterDocsMcpServer extends MCPServer
     with ToolsSupport, ResourcesSupport, LoggingSupport {
   FlutterDocsMcpServer.fromChannel(super.channel, DocDatabase db)
@@ -20,14 +19,24 @@ base class FlutterDocsMcpServer extends MCPServer
         implementation: Implementation(
           name: 'flutterdocs_mcp',
           version: '0.1.0',
+          title: 'FlutterDocsMcpServer',
+          description: 'Flutter/Dart API documentation for AI assistants.',
         ),
         instructions:
-            'This server provides tools and resources for navigating '
-            'Flutter/Dart API documentation. Use searchDocumentation to find '
-            'entities by keyword or phrase. Use lookupEntity to find which '
-            'library an entity belongs to, and lookupMember to find which '
-            'entity a member belongs to. Then use the resource URIs to '
-            'retrieve the full documentation.',
+            'Use listLibraries to get library slugs for libraryIndex. '
+            'Use lookupEntity (for classes, mixins, etc.) to get library slugs '
+            'for entityDocumentation. '
+            'Use lookupMember (for constructors, properties, methods, etc.) to '
+            'get library slugs and entity names for memberDocumentation. '
+            'Use searchDocumentation to discover entities conceptually; it '
+            'returns all identifiers needed to fetch documentation. '
+            'Mandatory: all libraryIndex, entityDocumentation, and '
+            'memberDocumentation URIs must either be constructed using '
+            'identifiers returned by a tool or found as actionable '
+            'flutter-docs:// URIs within markdown content; never '
+            'guess or rely on internal training data. '
+            'Note: the library slug value in a resource URI is a URI slug, '
+            'not the library display name.',
       ) {
     registerTools(this, db);
     registerResources(this, db);

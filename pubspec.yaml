@@ -1,6 +1,6 @@
 name: flutterdocs_mcp
-description: An MCP server for Flutter and Dart API documentation.
-version: 0.0.1
+description: Flutter/Dart API documentation for AI assistants.
+version: 0.1.0
 repository: https://github.com/smoyerx/flutterdocs_mcp
 
 executables:

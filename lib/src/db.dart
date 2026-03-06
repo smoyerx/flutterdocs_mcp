@@ -193,14 +193,14 @@ final class DocDatabase {
   /// Resolves a [hint] to a [LibraryRecord] by trying it as-is first, then
   /// with colons replaced by hyphens (e.g., `dart:io` → `dart-io`). Returns
   /// `null` if neither form matches a known library slug.
-  LibraryRecord? _resolveLibraryHint(String hint) =>
+  LibraryRecord? _resolveLibrarySlugHint(String hint) =>
       _libraryByName[hint] ?? _libraryByName[hint.replaceAll(':', '-')];
 
-  /// Looks up members by [name], with an optional [libraryHint] to narrow
+  /// Looks up members by [name], with an optional [librarySlugHint] to narrow
   /// results to a specific library. Returns a tuple of the total match count
   /// and up to 10 results as `(library, entity, member, category)` 4-tuples.
   ///
-  /// [libraryHint] is matched against known library slugs. If it is not
+  /// [librarySlugHint] is matched against known library slugs. If it is not
   /// recognized (even after colon→hyphen normalization), the hint is silently
   /// ignored and an unscoped search is performed.
   (
@@ -208,12 +208,12 @@ final class DocDatabase {
     List<(String library, String entity, String member, String category)>
     results,
   )
-  lookupMember(String name, {String? libraryHint}) {
+  lookupMember(String name, {String? librarySlugHint}) {
     final memberIdentifierId = _identifierNameToId[name];
     if (memberIdentifierId == null) return (0, const []);
 
-    final resolvedLibrary = libraryHint != null
-        ? _resolveLibraryHint(libraryHint)
+    final resolvedLibrary = librarySlugHint != null
+        ? _resolveLibrarySlugHint(librarySlugHint)
         : null;
 
     if (resolvedLibrary != null) {
@@ -259,7 +259,7 @@ final class DocDatabase {
   }
 
   /// Returns all library slugs sorted alphabetically. These are the URI-safe
-  /// identifiers used in resource URIs and the `libraryHint` parameter.
+  /// identifiers used in resource URIs and the `librarySlugHint` parameter.
   List<String> listLibraries() => _libraryByName.keys.toList()..sort();
 
   /// Returns the content markdown for the given [library], served entirely

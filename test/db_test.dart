@@ -195,7 +195,7 @@ void main() {
     test('filters by library hint', () {
       final (total, results) = _db.lookupMember(
         'padding',
-        libraryHint: 'material',
+        librarySlugHint: 'material',
       );
       expect(total, 1);
       expect(results, hasLength(1));
@@ -206,7 +206,7 @@ void main() {
       // 'visualDensity' belongs to material; hint for widgets should miss.
       final (total, results) = _db.lookupMember(
         'visualDensity',
-        libraryHint: 'widgets',
+        librarySlugHint: 'widgets',
       );
       expect(total, 0);
       expect(results, isEmpty);
@@ -223,7 +223,7 @@ void main() {
       // but yields no match → (0, []).
       final (total, results) = _db.lookupMember(
         'visualDensity',
-        libraryHint: 'widgets',
+        librarySlugHint: 'widgets',
       );
       expect(total, 0);
       expect(results, isEmpty);
@@ -233,7 +233,7 @@ void main() {
       // 'dart:async' is not a slug, but after colon→hyphen it matches 'dart-async'.
       final (total, results) = _db.lookupMember(
         'listen',
-        libraryHint: 'dart:async',
+        librarySlugHint: 'dart:async',
       );
       expect(total, 1);
       expect(results, hasLength(1));
@@ -248,7 +248,7 @@ void main() {
       // silently dropped and the full unscoped result set is returned.
       final (total, results) = _db.lookupMember(
         'visualDensity',
-        libraryHint: 'unknownLib',
+        librarySlugHint: 'unknownLib',
       );
       expect(total, 1);
       expect(results, hasLength(1));
