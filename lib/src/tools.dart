@@ -209,7 +209,7 @@ final _searchDocumentationTool = Tool(
   name: 'searchDocumentation',
   title: 'Search Flutter/Dart API documentation',
   description:
-      'Perform a full-text search across the Flutter/Dart API documentation '
+      'Performs a full-text search across the Flutter/Dart API documentation '
       'to find entities (classes, mixins, etc.) whose documentation contains '
       'the specified keywords. '
       'All words are matched with AND semantics — every word must appear, '

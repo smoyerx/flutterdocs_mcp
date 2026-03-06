@@ -46,7 +46,7 @@ final _libraryIndexTemplate = ResourceTemplate(
   name: 'libraryIndex',
   title: 'Flutter/Dart library documentation',
   description:
-      'Summary of the library and its entities (classes, mixins, enums, '
+      'Returns a summary of the library and its entities (classes, mixins, enums, '
       'extensions, extension types, typedefs, top-level functions/constants). '
       'The markdown content returned embeds actionable resource URIs '
       '($_scheme://) as navigation links.',
@@ -77,7 +77,7 @@ final _entityDocumentationTemplate = ResourceTemplate(
   name: 'entityDocumentation',
   title: 'Flutter/Dart entity documentation',
   description:
-      'Detailed documentation for the Flutter/Dart entity (class, mixin, '
+      'Returns detailed documentation for the Flutter/Dart entity (class, mixin, '
       'enum, extension, extension type, typedef, top-level function/constant). '
       'The markdown content returned embeds actionable resource URIs '
       '($_scheme://) as navigation links.',
@@ -109,7 +109,7 @@ final _memberDocumentationTemplate = ResourceTemplate(
   name: 'memberDocumentation',
   title: 'Flutter/Dart member documentation',
   description:
-      'Detailed documentation for the Flutter/Dart member (constructor, '
+      'Returns detailed documentation for the Flutter/Dart member (constructor, '
       'property, method, operator, constant, static method). '
       'The markdown content returned embeds actionable resource URIs '
       '($_scheme://) as navigation links.',
