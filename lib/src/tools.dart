@@ -53,9 +53,8 @@ final _lookupEntityTool = Tool(
       'Finds Flutter/Dart entity (class, mixin, enum, extension, extension '
       'type, typedef, top-level function/constant) by identifier name. '
       'Use the returned [library_slug, entity, category] values to construct '
-      'resource URIs for entityDocumentation. '
-      'Pass library_slug and entity to getDocumentation as '
-      'flutter-docs://api/{library_slug}/{entity}.',
+      'flutter-docs://api/{library_slug}/{entity} URIs to pass '
+      'to getDocumentation.',
   inputSchema: Schema.object(
     properties: {
       'name': Schema.string(
@@ -119,9 +118,8 @@ final _lookupMemberTool = Tool(
       'constant, static method) by identifier name and optional library slug '
       'hint. '
       'Use the returned [library_slug, entity, member, category] values to '
-      'construct resource URIs for memberDocumentation. '
-      'Pass library_slug, entity, and member to getDocumentation as '
-      'flutter-docs://api/{library_slug}/{entity}/{member}.',
+      'construct flutter-docs://api/{library_slug}/{entity}/{member} URIs to '
+      'pass to getDocumentation.',
   inputSchema: Schema.object(
     properties: {
       'name': Schema.string(
@@ -194,12 +192,10 @@ final _listLibrariesTool = Tool(
   title: 'List all available Flutter/Dart library slugs.',
   description:
       'Returns all available library slugs that can be used to construct '
-      'resource URIs (flutter-docs://api/{library_slug}/...). '
+      'flutter-docs://api/{library_slug}/... URIs to pass to getDocumentation. '
       'Library slugs and library display names often differ '
       '(e.g., library dart:io uses slug dart-io; package libraries use '
-      'slugs like package-material_color_utilities_blend_blend). '
-      'Pass a library_slug to getDocumentation as '
-      'flutter-docs://api/{library_slug}.',
+      'slugs like package-material_color_utilities_blend_blend).',
   inputSchema: Schema.object(properties: {}),
   annotations: _toolAnnotations,
 );
@@ -226,9 +222,8 @@ final _searchDocumentationTool = Tool(
       'All words are matched with AND semantics — every word must appear, '
       'but not necessarily adjacent. '
       'Use the returned [library_slug, entity, documentation_excerpt] values '
-      'to construct resource URIs for entityDocumentation. '
-      'Pass library_slug and entity to getDocumentation as '
-      'flutter-docs://api/{library_slug}/{entity}.',
+      'to construct flutter-docs://api/{library_slug}/{entity} URIs '
+      'to pass to getDocumentation.',
   inputSchema: Schema.object(
     properties: {
       'query': Schema.string(
@@ -286,7 +281,7 @@ FutureOr<CallToolResult> _searchDocumentation(
 
 final _getDocumentationTool = Tool(
   name: 'getDocumentation',
-  title: 'Fetch Flutter/Dart documentation by flutter-docs:// URI.',
+  title: 'Fetch Flutter/Dart API documentation by flutter-docs:// URI.',
   description:
       'Returns the markdown documentation for a library '
       '(flutter-docs://api/{library_slug}), entity '
@@ -301,8 +296,9 @@ final _getDocumentationTool = Tool(
     properties: {
       'uri': Schema.string(
         description:
-            'A flutter-docs://api/... URI identifying a library, entity, '
-            'or member.',
+            'A flutter-docs://api/... URI identifying a library, '
+            'entity (class, mixin, etc.), or '
+            'member (constructor, property, method, etc.).',
       ),
     },
     required: ['uri'],
