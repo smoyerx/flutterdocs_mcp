@@ -84,8 +84,7 @@ Add a private top-level function (outside `DocDatabase`, alongside the file's ot
 ///
 /// Extracts Unicode word tokens and wraps each in double quotes, producing a
 /// space-joined AND query. This neutralizes all FTS5 operators and special
-/// characters (AND, OR, NOT, NEAR, -, *, etc.) while preserving porter
-/// stemming (quoting tokens does not suppress it).
+/// characters (AND, OR, NOT, NEAR, -, *, etc.).
 ///
 /// Returns `null` if [input] contains no word tokens (blank or symbol-only
 /// input); callers should return `(0, [])` without issuing a database query.
@@ -296,7 +295,7 @@ CREATE VIRTUAL TABLE content_search USING fts5(
     content_markdown,
     content='entity',
     content_rowid='id',
-    tokenize='porter'
+    tokenize='unicode61 remove_diacritics 2'
 );
 
 CREATE TRIGGER entity_ai AFTER INSERT ON entity BEGIN

@@ -26,7 +26,7 @@ load -d <doc_dir> (-s <section> | -S <section_list_file>) -o <db_file> [-v]
 
 ## Database Schema
 
-Tables: `identifier`, `entity_type`, `member_type`, `library`, `entity`, `member`. FTS5 virtual table: `content_search` (external-content, backed by `entity`, tokenizer `porter`). Three triggers on `entity` (`entity_ai`, `entity_ad`, `entity_au`) keep `content_search` in sync automatically — no manual FTS writes are needed. The full DDL is embedded in `db.py` as `SCHEMA_DDL` and applied once on `open_or_create_db()`. The `entity.identifier` column stores the entity name as inline `TEXT` (not a FK to the `identifier` table); the `identifier` lookup table is retained for the `member` table.
+Tables: `identifier`, `entity_type`, `member_type`, `library`, `entity`, `member`. FTS5 virtual table: `content_search` (external-content, backed by `entity`, tokenizer `unicode61`). Three triggers on `entity` (`entity_ai`, `entity_ad`, `entity_au`) keep `content_search` in sync automatically — no manual FTS writes are needed. The full DDL is embedded in `db.py` as `SCHEMA_DDL` and applied once on `open_or_create_db()`. The `entity.identifier` column stores the entity name as inline `TEXT` (not a FK to the `identifier` table); the `identifier` lookup table is retained for the `member` table.
 
 `init_db()` sets `PRAGMA user_version = DB_VERSION` (imported from `_shared/version.py`) immediately after executing `SCHEMA_DDL`, so every newly created database carries the version of the tool that created it.
 

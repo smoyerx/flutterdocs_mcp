@@ -18,3 +18,9 @@ In addition to the standard Dart project files and directories, the repository i
 ## Instructions File Maintenance
 
 `.github/instructions/convert.instructions.md` and `.github/instructions/load.instructions.md` document the CLI, source structure, and test structure for `convert.py` and `load.py` respectively. Any change to those tools or their shared code (`_shared/`) that renders either instructions file inaccurate or incomplete must include a corresponding update to the affected instructions file(s) in the same change set.
+
+`.github/instructions/flutterdocs_mcp.instructions.md` documents the CLI, source structure, MCP surface, database coupling, versioning, and test structure for `flutterdocs_mcp`. Any change to `flutterdocs_mcp` that renders this instructions file inaccurate or incomplete must include a corresponding update to it in the same change set.
+
+## PRD files
+
+Never read documents in the `prd` directory for implementation details; they are not maintained. They may be useful for understanding the original rationale behind design decisions, but they are not a source of truth for the current state of the project. Always refer to the instructions files and source code for the current state of the project.

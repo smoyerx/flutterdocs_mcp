@@ -71,7 +71,7 @@ CREATE VIRTUAL TABLE content_search USING fts5(
     content_markdown,
     content='entity',
     content_rowid='id',
-    tokenize='porter'
+    tokenize='unicode61 remove_diacritics 2'
 );
 ```
 
