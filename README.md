@@ -1,11 +1,11 @@
-# Flutter/Dart Documentation for AI assistants
+# Flutter/Dart API Documentation for AI assistants
 
-`flutterdocs_mcp` is an MCP server for Flutter/Dart API documentation.
+Wraps the native Flutter/Dart API documentation in an MCP server that AI assistants can search and navigate.
 
 ## Features
 
 - Stores documentation in a local `sqlite3` database file for fast response.
-- Defines a resource URI scheme that AI assistants can predict, navigate, and understand.
+- Defines a resource URI scheme that AI assistants can predict and navigate.
 - Supports both targeted documentation retrieval and full-text queries.
 
 ## Getting Started
@@ -13,7 +13,7 @@
 Install the latest version of `flutterdocs_mcp`.
 
 ```bash
-dart pub install flutterdocs_mcp
+dart install flutterdocs_mcp
 ```
 
 The install command will print a message if you need to add the install directory to your shell's path.
@@ -32,12 +32,14 @@ Put the database file in a directory accessible by `flutterdocs_mcp`, which take
 
 ## Usage
 
-Something here.
+Add `flutterdocs_mcp` to your MCP server configuration, specifying the path to the documentation database file.
+
+For example, to use `flutterdocs_mcp` with [VS Code](https://code.visualstudio.com/docs/copilot/customization/mcp-servers) add the following to your `mcp.json`:
 
 ```json
 {
 	"servers": {
-		"FlutterDocs MCP Server": {
+		"Flutter Documentation": {
 			"type": "stdio",
 			"command": "flutterdocs_mcp",
 			"args": [
