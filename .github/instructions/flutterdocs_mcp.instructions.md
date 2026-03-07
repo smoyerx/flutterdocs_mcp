@@ -30,8 +30,11 @@ Startup validates that `PRAGMA user_version` of `--db` equals `kDbVersion` (in `
 | `lookupMember` | `{total, results: [[library_slug, entity, member, category]]}` — accepts optional `library_slug` hint |
 | `listLibraries` | `{total, results: [library_slug]}` |
 | `searchDocumentation` | `{total, results: [[library_slug, entity, excerpt]]}` — FTS5 unicode61-tokenized |
+| `getDocumentation` | markdown string in `content[0].text` — dispatches on URI segment count: 1 → `libraryIndex`, 2 → `entityDocumentation`, 3 → `memberDocumentation`; returns `isError: true` on miss or unrecognized URI shape |
 
-All tools are read-only, idempotent, closed-world, and return JSON in both `content[0].text` and `structuredContent`.
+Discovery tools (`lookupEntity`, `lookupMember`, `listLibraries`, `searchDocumentation`) return JSON in both `content[0].text` and `structuredContent`. `getDocumentation` returns plain markdown with no `structuredContent`.
+
+All tools are read-only, idempotent, and closed-world.
 
 ### Resource Templates (`lib/src/resources.dart`)
 

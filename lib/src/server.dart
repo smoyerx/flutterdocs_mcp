@@ -24,20 +24,21 @@ base class FlutterDocsMcpServer extends MCPServer
           description: 'Flutter/Dart API documentation for AI assistants.',
         ),
         instructions:
-            'Use listLibraries to get library slugs for libraryIndex. '
-            'Use lookupEntity (for classes, mixins, etc.) to get library slugs '
-            'for entityDocumentation. '
-            'Use lookupMember (for constructors, properties, methods, etc.) to '
-            'get library slugs and entity names for memberDocumentation. '
-            'Use searchDocumentation to discover entities conceptually; it '
-            'returns all identifiers needed to fetch documentation. '
-            'Mandatory: all libraryIndex, entityDocumentation, and '
-            'memberDocumentation URIs must either be constructed using '
-            'identifiers returned by a tool or found as actionable '
-            'flutter-docs:// URIs within markdown content; never '
-            'guess or rely on internal training data. '
-            'Note: the library slug value in a resource URI is a URI slug, '
-            'not the library display name.',
+            'Workflow: (1) use listLibraries, lookupEntity, lookupMember, or '
+            'searchDocumentation to obtain library slug and identifier values; '
+            '(2) call getDocumentation with a constructed flutter-docs://api/... '
+            'URI to fetch markdown content; (3) follow any embedded '
+            'flutter-docs:// links in that markdown by passing them directly '
+            'to getDocumentation. '
+            'URI shapes: flutter-docs://api/{library_slug} for a library, '
+            'flutter-docs://api/{library_slug}/{entity} for an entity, '
+            'flutter-docs://api/{library_slug}/{entity}/{member} for a member. '
+            'Only use identifiers from tool results or embedded links — never '
+            'guess URIs or rely on internal training data. '
+            'Note: library slugs differ from display names '
+            '(e.g., dart:io → dart-io). '
+            'Note: flutter-docs:// URIs are also accessible as resources to '
+            'resource-capable clients.',
       ) {
     registerTools(this, db);
     registerResources(this, db);

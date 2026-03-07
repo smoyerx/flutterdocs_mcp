@@ -4,9 +4,10 @@ import 'dart:convert';
 import 'package:dart_mcp/server.dart';
 
 import 'db.dart';
+import 'scheme.dart';
 
-/// Registers the [lookupEntity], [lookupMember], [listLibraries], and
-/// [searchDocumentation] tools on [server].
+/// Registers the [lookupEntity], [lookupMember], [listLibraries],
+/// [searchDocumentation], and [getDocumentation] tools on [server].
 void registerTools(ToolsSupport server, DocDatabase db) {
   server.registerTool(
     _lookupEntityTool,
@@ -23,6 +24,10 @@ void registerTools(ToolsSupport server, DocDatabase db) {
   server.registerTool(
     _searchDocumentationTool,
     (request) => _searchDocumentation(request, db),
+  );
+  server.registerTool(
+    _getDocumentationTool,
+    (request) => _getDocumentation(request, db),
   );
 }
 
@@ -48,7 +53,9 @@ final _lookupEntityTool = Tool(
       'Finds Flutter/Dart entity (class, mixin, enum, extension, extension '
       'type, typedef, top-level function/constant) by identifier name. '
       'Use the returned [library_slug, entity, category] values to construct '
-      'resource URIs for entityDocumentation.',
+      'resource URIs for entityDocumentation. '
+      'Pass library_slug and entity to getDocumentation as '
+      'flutter-docs://api/{library_slug}/{entity}.',
   inputSchema: Schema.object(
     properties: {
       'name': Schema.string(
@@ -112,7 +119,9 @@ final _lookupMemberTool = Tool(
       'constant, static method) by identifier name and optional library slug '
       'hint. '
       'Use the returned [library_slug, entity, member, category] values to '
-      'construct resource URIs for memberDocumentation.',
+      'construct resource URIs for memberDocumentation. '
+      'Pass library_slug, entity, and member to getDocumentation as '
+      'flutter-docs://api/{library_slug}/{entity}/{member}.',
   inputSchema: Schema.object(
     properties: {
       'name': Schema.string(
@@ -188,7 +197,9 @@ final _listLibrariesTool = Tool(
       'resource URIs (flutter-docs://api/{library_slug}/...). '
       'Library slugs and library display names often differ '
       '(e.g., library dart:io uses slug dart-io; package libraries use '
-      'slugs like package-material_color_utilities_blend_blend).',
+      'slugs like package-material_color_utilities_blend_blend). '
+      'Pass a library_slug to getDocumentation as '
+      'flutter-docs://api/{library_slug}.',
   inputSchema: Schema.object(properties: {}),
   annotations: _toolAnnotations,
 );
@@ -215,7 +226,9 @@ final _searchDocumentationTool = Tool(
       'All words are matched with AND semantics — every word must appear, '
       'but not necessarily adjacent. '
       'Use the returned [library_slug, entity, documentation_excerpt] values '
-      'to construct resource URIs for entityDocumentation.',
+      'to construct resource URIs for entityDocumentation. '
+      'Pass library_slug and entity to getDocumentation as '
+      'flutter-docs://api/{library_slug}/{entity}.',
   inputSchema: Schema.object(
     properties: {
       'query': Schema.string(
@@ -265,4 +278,100 @@ FutureOr<CallToolResult> _searchDocumentation(
     content: [TextContent(text: jsonEncode(structured))],
     structuredContent: structured,
   );
+}
+
+// ---------------------------------------------------------------------------
+// getDocumentation
+// ---------------------------------------------------------------------------
+
+final _getDocumentationTool = Tool(
+  name: 'getDocumentation',
+  title: 'Fetch Flutter/Dart documentation by flutter-docs:// URI.',
+  description:
+      'Returns the markdown documentation for a library '
+      '(flutter-docs://api/{library_slug}), entity '
+      '(flutter-docs://api/{library_slug}/{entity}), or member '
+      '(flutter-docs://api/{library_slug}/{entity}/{member}). '
+      'The returned markdown embeds additional flutter-docs:// URIs as '
+      'navigation links that can be passed directly back to this tool. '
+      'Construct the URI from identifiers returned by lookupEntity, '
+      'lookupMember, listLibraries, or searchDocumentation; or re-use an '
+      'embedded link found in previously fetched markdown.',
+  inputSchema: Schema.object(
+    properties: {
+      'uri': Schema.string(
+        description:
+            'A flutter-docs://api/... URI identifying a library, entity, '
+            'or member.',
+      ),
+    },
+    required: ['uri'],
+  ),
+  annotations: _toolAnnotations,
+);
+
+FutureOr<CallToolResult> _getDocumentation(
+  CallToolRequest request,
+  DocDatabase db,
+) {
+  final uri = request.arguments!['uri'] as String;
+  final segments = apiSegments(uri);
+  if (segments == null) {
+    return CallToolResult(
+      isError: true,
+      content: [TextContent(text: 'Invalid URI: must start with $kApiPrefix')],
+    );
+  }
+
+  String? content;
+  switch (segments.length) {
+    case 1:
+      content = db.libraryIndex(segments[0]);
+      if (content == null) {
+        return CallToolResult(
+          isError: true,
+          content: [TextContent(text: 'Library not found: ${segments[0]}')],
+        );
+      }
+    case 2:
+      content = db.entityDocumentation(segments[0], segments[1]);
+      if (content == null) {
+        return CallToolResult(
+          isError: true,
+          content: [
+            TextContent(
+              text:
+                  'Entity not found: ${segments[1]} in library ${segments[0]}',
+            ),
+          ],
+        );
+      }
+    case 3:
+      content = db.memberDocumentation(segments[0], segments[1], segments[2]);
+      if (content == null) {
+        return CallToolResult(
+          isError: true,
+          content: [
+            TextContent(
+              text:
+                  'Member not found: ${segments[2]} on ${segments[1]} '
+                  'in library ${segments[0]}',
+            ),
+          ],
+        );
+      }
+    default:
+      return CallToolResult(
+        isError: true,
+        content: [
+          TextContent(
+            text:
+                'Invalid URI: expected 1–3 path segments after $kApiPrefix, '
+                'got ${segments.length}',
+          ),
+        ],
+      );
+  }
+
+  return CallToolResult(content: [TextContent(text: content)]);
 }

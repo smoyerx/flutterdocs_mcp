@@ -383,4 +383,88 @@ void main() {
       expect(results, isEmpty);
     });
   });
+
+  // -------------------------------------------------------------------------
+  // getDocumentation tool
+  // -------------------------------------------------------------------------
+
+  group('getDocumentation tool', () {
+    test('library hit — returns non-empty markdown', () async {
+      final result = await _server.callTool(
+        CallToolRequest(
+          name: 'getDocumentation',
+          arguments: {'uri': 'flutter-docs://api/material'},
+        ),
+      );
+      expect(result.isError, isNot(true));
+      final text = (result.content.first as TextContent).text;
+      expect(text, isNotEmpty);
+    });
+
+    test('entity hit — returns non-empty markdown', () async {
+      final result = await _server.callTool(
+        CallToolRequest(
+          name: 'getDocumentation',
+          arguments: {'uri': 'flutter-docs://api/material/ListTile'},
+        ),
+      );
+      expect(result.isError, isNot(true));
+      final text = (result.content.first as TextContent).text;
+      expect(text, isNotEmpty);
+    });
+
+    test('member hit — returns non-empty markdown', () async {
+      final result = await _server.callTool(
+        CallToolRequest(
+          name: 'getDocumentation',
+          arguments: {'uri': 'flutter-docs://api/material/ListTile/autofocus'},
+        ),
+      );
+      expect(result.isError, isNot(true));
+      final text = (result.content.first as TextContent).text;
+      expect(text, isNotEmpty);
+    });
+
+    test('miss — unknown library returns isError true', () async {
+      final result = await _server.callTool(
+        CallToolRequest(
+          name: 'getDocumentation',
+          arguments: {'uri': 'flutter-docs://api/unknownLib99'},
+        ),
+      );
+      expect(result.isError, true);
+    });
+
+    test('miss — unknown entity returns isError true', () async {
+      final result = await _server.callTool(
+        CallToolRequest(
+          name: 'getDocumentation',
+          arguments: {'uri': 'flutter-docs://api/material/NoSuchEntity99'},
+        ),
+      );
+      expect(result.isError, true);
+    });
+
+    test('miss — unknown member returns isError true', () async {
+      final result = await _server.callTool(
+        CallToolRequest(
+          name: 'getDocumentation',
+          arguments: {
+            'uri': 'flutter-docs://api/material/ListTile/noSuchMember99',
+          },
+        ),
+      );
+      expect(result.isError, true);
+    });
+
+    test('invalid URI — too many segments returns isError true', () async {
+      final result = await _server.callTool(
+        CallToolRequest(
+          name: 'getDocumentation',
+          arguments: {'uri': 'flutter-docs://api/a/b/c/d'},
+        ),
+      );
+      expect(result.isError, true);
+    });
+  });
 }

@@ -32,3 +32,20 @@ Put the database file in a directory accessible by `flutterdocs_mcp`, which take
 
 ## Usage
 
+Something here.
+
+```json
+{
+	"servers": {
+		"FlutterDocs MCP Server": {
+			"type": "stdio",
+			"command": "flutterdocs_mcp",
+			"args": [
+				"--db",
+				"~/Documents/flutterdocs.db"
+			]
+		}
+	},
+	"inputs": []
+}
+```
