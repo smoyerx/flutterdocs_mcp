@@ -18,9 +18,9 @@ base class FlutterDocsMcpServer extends MCPServer
   FlutterDocsMcpServer.fromChannel(super.channel, DocDatabase db)
     : super.fromStreamChannel(
         implementation: Implementation(
-          name: 'flutterdocs_mcp',
+          name: 'flutter-docs',
           version: kVersion,
-          title: 'FlutterDocsMcpServer',
+          title: 'Flutter/Dart API Documentation',
           description: 'Flutter/Dart API documentation for AI assistants.',
         ),
         instructions:
