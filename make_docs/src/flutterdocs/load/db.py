@@ -8,6 +8,7 @@ import sqlite3
 from pathlib import Path
 
 from flutterdocs._shared.constants import ALL_CATEGORIES, ALL_MEMBERS
+from flutterdocs._shared.version import DB_VERSION
 
 # Full DDL for database schema initialization
 SCHEMA_DDL = """
@@ -97,6 +98,7 @@ def init_db(conn: sqlite3.Connection) -> None:
         conn: Open sqlite3 connection to a newly created database.
     """
     conn.executescript(SCHEMA_DDL)
+    conn.execute(f"PRAGMA user_version = {DB_VERSION}")
     with conn:
         for category in ALL_CATEGORIES:
             conn.execute("INSERT INTO entity_type(name) VALUES (?)", (str(category),))

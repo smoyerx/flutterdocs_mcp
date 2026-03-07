@@ -314,6 +314,27 @@ final class DocDatabase {
     return (total, results);
   }
 
+  /// The `PRAGMA user_version` value stored in the database.
+  ///
+  /// Returns `0` if the value has never been set (the SQLite default).
+  int get userVersion =>
+      (_db.select('PRAGMA user_version').first['user_version'] as int?) ?? 0;
+
+  /// Opens [dbPath] read-only, reads `PRAGMA user_version`, and closes the
+  /// connection immediately.
+  ///
+  /// Useful for a lightweight version check before fully initializing a
+  /// [DocDatabase]. Returns `0` if the value has never been set.
+  static int readUserVersion(String dbPath) {
+    final db = sqlite3.open(dbPath, mode: OpenMode.readOnly);
+    try {
+      return (db.select('PRAGMA user_version').first['user_version'] as int?) ??
+          0;
+    } finally {
+      db.close();
+    }
+  }
+
   /// Disposes all prepared statements and closes the database.
   void close() {
     _entityCountStmt.close();

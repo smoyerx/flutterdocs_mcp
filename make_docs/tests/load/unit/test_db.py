@@ -67,6 +67,13 @@ class TestInitDb:
         names = {row["name"] for row in rows}
         assert names == {str(m) for m in ALL_MEMBERS}
 
+    def test_sets_user_version(self, mem_conn: sqlite3.Connection) -> None:
+        """init_db must set PRAGMA user_version to DB_VERSION."""
+        from flutterdocs._shared.version import DB_VERSION
+
+        row = mem_conn.execute("PRAGMA user_version").fetchone()
+        assert row[0] == DB_VERSION
+
     def test_creates_indexes(self, mem_conn: sqlite3.Connection) -> None:
         """Expected indexes must be created."""
         expected = {

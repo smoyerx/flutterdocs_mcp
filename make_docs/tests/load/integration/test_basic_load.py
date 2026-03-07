@@ -48,6 +48,16 @@ class TestDbCreation:
         assert row is not None
         conn.close()
 
+    def test_sets_user_version(self, db_path: Path) -> None:
+        """PRAGMA user_version must equal DB_VERSION after a successful load."""
+        from flutterdocs._shared.version import DB_VERSION
+
+        run_load(SAMPLES_DIR, "material", db_path)
+        conn = sqlite3.connect(db_path)
+        row = conn.execute("PRAGMA user_version").fetchone()
+        assert row[0] == DB_VERSION
+        conn.close()
+
 
 class TestIdempotency:
     """Tests that loading twice produces a stable result."""

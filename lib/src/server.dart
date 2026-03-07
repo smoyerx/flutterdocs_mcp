@@ -7,6 +7,7 @@ import 'package:dart_mcp/stdio.dart';
 import 'db.dart';
 import 'resources.dart';
 import 'tools.dart';
+import 'version.dart';
 
 /// An MCP server for Flutter/Dart API documentation.
 ///
@@ -18,7 +19,7 @@ base class FlutterDocsMcpServer extends MCPServer
     : super.fromStreamChannel(
         implementation: Implementation(
           name: 'flutterdocs_mcp',
-          version: '0.1.0',
+          version: kVersion,
           title: 'FlutterDocsMcpServer',
           description: 'Flutter/Dart API documentation for AI assistants.',
         ),
@@ -44,7 +45,8 @@ base class FlutterDocsMcpServer extends MCPServer
 
   /// Parses [args], validates the `--db` path, and starts the server on stdio.
   ///
-  /// Exits with code 1 if `--db` is missing or the file cannot be read.
+  /// Exits with code 1 if `--db` is missing, the file cannot be read, or the
+  /// database version does not match [kDbVersion].
   static void run(List<String> args) {
     final parser = ArgParser()
       ..addOption(
@@ -57,6 +59,16 @@ base class FlutterDocsMcpServer extends MCPServer
         abbr: 'h',
         negatable: false,
         help: 'Print usage information.',
+      )
+      ..addFlag(
+        'version',
+        negatable: false,
+        help: 'Print the server version and exit.',
+      )
+      ..addFlag(
+        'db-version',
+        negatable: false,
+        help: 'Print the version of the --db database file and exit.',
       );
 
     late ArgResults results;
@@ -75,16 +87,62 @@ base class FlutterDocsMcpServer extends MCPServer
       return;
     }
 
+    if (results.flag('version')) {
+      io.stdout.writeln(kVersion);
+      return;
+    }
+
     final dbPath = results.option('db');
+    final dbFile = dbPath != null ? io.File(dbPath) : null;
+
+    if (results.flag('db-version')) {
+      if (dbPath == null) {
+        io.stderr.writeln('Error: --db is required with --db-version.');
+        io.stderr.writeln(parser.usage);
+        io.exit(1);
+      }
+      if (!dbFile!.existsSync()) {
+        io.stderr.writeln('Error: database file not found: $dbPath');
+        io.exit(1);
+      }
+      late int userVersion;
+      try {
+        userVersion = DocDatabase.readUserVersion(dbPath);
+      } catch (e) {
+        io.stderr.writeln('Error: failed to read database version: $e');
+        io.exit(1);
+      }
+      if (userVersion == 0) {
+        io.stderr.writeln('Error: database has no version information.');
+        io.exit(1);
+      }
+      io.stdout.writeln(_dbVersionToSemver(userVersion));
+      return;
+    }
+
     if (dbPath == null) {
       io.stderr.writeln('Error: --db is required.');
       io.stderr.writeln(parser.usage);
       io.exit(1);
     }
-
-    final dbFile = io.File(dbPath);
-    if (!dbFile.existsSync()) {
+    if (!dbFile!.existsSync()) {
       io.stderr.writeln('Error: database file not found: $dbPath');
+      io.exit(1);
+    }
+
+    late int dbUserVersion;
+    try {
+      dbUserVersion = DocDatabase.readUserVersion(dbPath);
+    } catch (e) {
+      io.stderr.writeln('Error: failed to read database version: $e');
+      io.exit(1);
+    }
+    if (dbUserVersion != kDbVersion) {
+      io.stderr.writeln(
+        'Error: database version mismatch: '
+        'server expects ${_dbVersionToSemver(kDbVersion)}, '
+        'database has ${_dbVersionToSemver(dbUserVersion)}.',
+      );
       io.exit(1);
     }
 
@@ -101,4 +159,13 @@ base class FlutterDocsMcpServer extends MCPServer
       db,
     );
   }
+}
+
+/// Decodes a db version integer (major * 1_000_000 + minor * 1_000 + patch)
+/// back to a semver string.
+String _dbVersionToSemver(int v) {
+  final major = v ~/ 1000000;
+  final minor = (v ~/ 1000) % 1000;
+  final patch = v % 1000;
+  return '$major.$minor.$patch';
 }

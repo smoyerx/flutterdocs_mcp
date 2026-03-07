@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutterdocs_mcp/src/db.dart';
+import 'package:flutterdocs_mcp/src/version.dart';
 import 'package:sqlite3/sqlite3.dart';
 import 'package:test/test.dart';
 
@@ -65,6 +66,7 @@ void _populateFixture(Database raw) {
         VALUES (new.id, new.identifier, new.content_markdown);
     END;
   ''');
+  raw.execute('PRAGMA user_version = $kDbVersion;');
 
   // Lookup tables
   raw.execute("INSERT INTO entity_type VALUES (1, 'class'), (2, 'enum')");
@@ -419,6 +421,16 @@ void main() {
       final (total, results) = _db.searchDocumentation('--- *** :::');
       expect(total, 0);
       expect(results, isEmpty);
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // userVersion
+  // -------------------------------------------------------------------------
+
+  group('userVersion', () {
+    test('returns kDbVersion from fixture database', () {
+      expect(_db.userVersion, kDbVersion);
     });
   });
 }

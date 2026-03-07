@@ -28,6 +28,8 @@ load -d <doc_dir> (-s <section> | -S <section_list_file>) -o <db_file> [-v]
 
 Tables: `identifier`, `entity_type`, `member_type`, `library`, `entity`, `member`. FTS5 virtual table: `content_search` (external-content, backed by `entity`, tokenizer `porter`). Three triggers on `entity` (`entity_ai`, `entity_ad`, `entity_au`) keep `content_search` in sync automatically — no manual FTS writes are needed. The full DDL is embedded in `db.py` as `SCHEMA_DDL` and applied once on `open_or_create_db()`. The `entity.identifier` column stores the entity name as inline `TEXT` (not a FK to the `identifier` table); the `identifier` lookup table is retained for the `member` table.
 
+`init_db()` sets `PRAGMA user_version = DB_VERSION` (imported from `_shared/version.py`) immediately after executing `SCHEMA_DDL`, so every newly created database carries the version of the tool that created it.
+
 ## Shared Code
 
 All shared code lives in `make_docs/src/flutterdocs/_shared/`:
@@ -35,6 +37,7 @@ All shared code lives in `make_docs/src/flutterdocs/_shared/`:
 - `constants.py`: `CategoryType` (StrEnum), `MemberType` (StrEnum), `ALL_CATEGORIES`, `ALL_MEMBERS`.
 - `paths.py`: `PathBuilder`, `ensure_dir_exists()`, `list_entity_names()`, `read_section_list()`.
 - `logging.py`: `configure_logging()`, `get_progress_logger()`, `get_notification_logger()`, `log_processing_error()`.
+- `version.py`: `VERSION` (semver string) and `DB_VERSION` (integer encoding: `major * 1_000_000 + minor * 1_000 + patch`). Both are maintained in sync by `dart run tool/set_version.dart` — import `DB_VERSION` from here rather than computing it inline.
 
 Key `PathBuilder` usage (omit `doc_dir`; use `output_dir` for `doc_dir`):
 - `builder.get_library_file()` → section library markdown file.
@@ -50,6 +53,7 @@ make_docs/src/flutterdocs/
     constants.py       # CategoryType, MemberType, ALL_CATEGORIES, ALL_MEMBERS
     paths.py           # PathBuilder, ensure_dir_exists, list_entity_names, read_section_list
     logging.py         # Logging helpers
+    version.py         # VERSION (str), DB_VERSION (int) — managed by set_version.dart
   load/
     __main__.py        # Entry point (calls cli.main)
     cli.py             # Argument parsing, validation, orchestration loop
