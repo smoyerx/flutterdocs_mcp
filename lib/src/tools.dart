@@ -60,7 +60,7 @@ final _lookupEntityTool = Tool(
       'name': Schema.string(
         description:
             "The name of the entity to find (e.g., 'ListTile'). "
-            'Case-sensitive.',
+            'Case-insensitive; results always use the canonical identifier name.',
       ),
     },
     required: ['name'],
@@ -125,7 +125,7 @@ final _lookupMemberTool = Tool(
       'name': Schema.string(
         description:
             "The name of the member to find (e.g., 'visualDensity'). "
-            'Case-sensitive.',
+            'Case-insensitive; results always use the canonical identifier name.',
       ),
       'librarySlugHint': Schema.string(
         description:

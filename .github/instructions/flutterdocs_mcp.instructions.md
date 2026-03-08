@@ -26,11 +26,11 @@ Startup validates that `PRAGMA user_version` of `--db` equals `kDbVersion` (in `
 
 | Tool | Returns |
 |---|---|
-| `lookupEntity` | `{total, results: [[library_slug, entity, category]]}` |
-| `lookupMember` | `{total, results: [[library_slug, entity, member, category]]}` — accepts optional `library_slug` hint |
+| `lookupEntity` | `{total, results: [[library_slug, entity, category]]}` — `name` param is case-insensitive; results always carry the canonical identifier name |
+| `lookupMember` | `{total, results: [[library_slug, entity, member, category]]}` — `name` param is case-insensitive; results always carry canonical names |
 | `listLibraries` | `{total, results: [[library_slug, library_display_name]]}` |
-| `searchDocumentation` | `{total, results: [[library_slug, entity, excerpt]]}` — FTS5 unicode61-tokenized |
-| `getDocumentation` | markdown string in `content[0].text` — dispatches on URI segment count: 1 → `libraryIndex`, 2 → `entityDocumentation`, 3 → `memberDocumentation`; returns `isError: true` on miss or unrecognized URI shape |
+| `searchDocumentation` | `{total, results: [[library_slug, entity, excerpt]]}` — FTS5 unicode61-tokenized (case-insensitive) |
+| `getDocumentation` | markdown string in `content[0].text` — dispatches on URI segment count: 1 → `libraryIndex`, 2 → `entityDocumentation`, 3 → `memberDocumentation`; returns `isError: true` on miss or unrecognized URI shape; **case-sensitive** (use canonical names from lookup results) |
 
 Discovery tools (`lookupEntity`, `lookupMember`, `listLibraries`, `searchDocumentation`) return JSON in both `content[0].text` and `structuredContent`. `getDocumentation` returns plain markdown with no `structuredContent`.
 

@@ -169,6 +169,24 @@ void main() {
       expect(total, 0);
       expect(results, isEmpty);
     });
+
+    test('match is case-insensitive; result uses canonical name', () {
+      final (total, results) = _db.lookupEntity('listtile');
+      expect(total, 1);
+      expect(results, hasLength(1));
+      final (library, entity, category) = results.first;
+      expect(library, 'material');
+      expect(entity, 'ListTile'); // canonical, not 'listtile'
+      expect(category, 'class');
+    });
+
+    test('case-insensitive match returns canonical name across libraries', () {
+      final (total, results) = _db.lookupEntity('SHAREDENTITY');
+      expect(total, 2);
+      expect(results, hasLength(2));
+      final names = results.map((r) => r.$2).toSet();
+      expect(names, {'SharedEntity'}); // canonical name in both results
+    });
   });
 
   // -------------------------------------------------------------------------
@@ -219,6 +237,17 @@ void main() {
       final (total, results) = _db.lookupMember('noSuchMember');
       expect(total, 0);
       expect(results, isEmpty);
+    });
+
+    test('match is case-insensitive; result uses canonical member name', () {
+      final (total, results) = _db.lookupMember('VisualDensity');
+      expect(total, 1);
+      expect(results, hasLength(1));
+      final (library, entity, member, category) = results.first;
+      expect(library, 'material');
+      expect(entity, 'ListTile');
+      expect(member, 'visualDensity'); // canonical, not 'VisualDensity'
+      expect(category, 'property');
     });
 
     test('recognized hint scopes search — member absent in hinted library', () {

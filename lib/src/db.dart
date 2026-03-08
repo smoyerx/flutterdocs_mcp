@@ -54,6 +54,10 @@ final class DocDatabase {
 
   final Map<int, String> _identifierIdToName = {};
   final Map<String, int> _identifierNameToId = {};
+  // Maps lowercase identifier name → (id, canonicalName) for case-insensitive
+  // member lookups. Populated with putIfAbsent so first-stored entry wins on
+  // the rare collision where two identifiers share the same lowercase form.
+  final Map<String, (int, String)> _identifierByLowerName = {};
   final Map<int, String> _entityTypeIdToName = {};
   final Map<int, String> _memberTypeIdToName = {};
   final Map<int, LibraryRecord> _libraryById = {};
@@ -83,6 +87,7 @@ final class DocDatabase {
       final name = row['name'] as String;
       _identifierIdToName[id] = name;
       _identifierNameToId[name] = id;
+      _identifierByLowerName.putIfAbsent(name.toLowerCase(), () => (id, name));
     }
 
     for (final row in _db.select('SELECT id, name FROM entity_type')) {
@@ -109,11 +114,11 @@ final class DocDatabase {
 
   void _prepareStatements() {
     _entityCountStmt = _db.prepare(
-      'SELECT COUNT(*) AS cnt FROM entity WHERE identifier = ?',
+      'SELECT COUNT(*) AS cnt FROM entity WHERE identifier = ? COLLATE NOCASE',
     );
     _entityResultsStmt = _db.prepare(
-      'SELECT library_id, entity_type_id '
-      'FROM entity WHERE identifier = ? LIMIT 10',
+      'SELECT library_id, entity_type_id, identifier '
+      'FROM entity WHERE identifier = ? COLLATE NOCASE LIMIT 10',
     );
 
     _memberCountNoHintStmt = _db.prepare(
@@ -188,7 +193,8 @@ final class DocDatabase {
     for (final row in rows) {
       final libraryName = _libraryById[row['library_id'] as int]?.name ?? '';
       final category = _entityTypeIdToName[row['entity_type_id'] as int] ?? '';
-      results.add((libraryName, name, category));
+      final canonicalName = row['identifier'] as String;
+      results.add((libraryName, canonicalName, category));
     }
     return (total, results);
   }
@@ -212,8 +218,18 @@ final class DocDatabase {
     results,
   )
   lookupMember(String name, {String? librarySlugHint}) {
-    final memberIdentifierId = _identifierNameToId[name];
-    if (memberIdentifierId == null) return (0, const []);
+    final int memberIdentifierId;
+    final String canonicalMemberName;
+    final exactId = _identifierNameToId[name];
+    if (exactId != null) {
+      memberIdentifierId = exactId;
+      canonicalMemberName = name;
+    } else {
+      final fallback = _identifierByLowerName[name.toLowerCase()];
+      if (fallback == null) return (0, const []);
+      memberIdentifierId = fallback.$1;
+      canonicalMemberName = fallback.$2;
+    }
 
     final resolvedLibrary = librarySlugHint != null
         ? _resolveLibrarySlugHint(librarySlugHint)
@@ -238,8 +254,13 @@ final class DocDatabase {
         final entityName = row['identifier'] as String;
         final category =
             _memberTypeIdToName[row['member_type_id'] as int] ?? '';
-        // Use the resolved slug, not the raw hint, so results are always slugs.
-        results.add((resolvedLibrary.name, entityName, name, category));
+        // Use resolved slug and canonical member name in results.
+        results.add((
+          resolvedLibrary.name,
+          entityName,
+          canonicalMemberName,
+          category,
+        ));
       }
       return (total, results);
     } else {
@@ -255,7 +276,7 @@ final class DocDatabase {
         final entityName = row['identifier'] as String;
         final category =
             _memberTypeIdToName[row['member_type_id'] as int] ?? '';
-        results.add((libraryName, entityName, name, category));
+        results.add((libraryName, entityName, canonicalMemberName, category));
       }
       return (total, results);
     }
