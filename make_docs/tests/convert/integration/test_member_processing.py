@@ -482,3 +482,60 @@ class TestFunctionDeclarationCleanup:
                 assert not matches, (
                     f"Found {len(matches)} ordered list marker(s) in static method file"
                 )
+
+
+class TestTlsExceptionMemberProcessing:
+    """Integration tests for TlsException conversion in the dart-io section."""
+
+    def test_convert_succeeds(self, output_dir: Path) -> None:
+        """Converting dart-io should succeed without error."""
+        result = run_convert(SAMPLES_DIR, "dart-io", output_dir)
+        assert result.returncode == 0, f"convert failed with stderr:\n{result.stderr}"
+
+    def test_native_property_files_generated(self, output_dir: Path) -> None:
+        """Native properties without a description in the class listing should convert."""
+        result = run_convert(SAMPLES_DIR, "dart-io", output_dir)
+        assert result.returncode == 0
+
+        builder = build_entity_path_builder(
+            output_dir, "dart-io", "TlsException", CategoryType.CLASS
+        )
+        for prop in ("message", "osError", "type"):
+            prop_file = builder.get_native_property_file(prop)
+            assert prop_file.exists(), f"Missing native property file: {prop_file}"
+
+    def test_inherited_property_files_generated(self, output_dir: Path) -> None:
+        """Inherited property files should be generated for TlsException."""
+        result = run_convert(SAMPLES_DIR, "dart-io", output_dir)
+        assert result.returncode == 0
+
+        builder = build_entity_path_builder(
+            output_dir, "dart-io", "TlsException", CategoryType.CLASS
+        )
+        for prop in ("hashCode", "runtimeType"):
+            prop_file = builder.get_inherited_property_file(prop)
+            assert prop_file.exists(), f"Missing inherited property file: {prop_file}"
+
+    def test_inherited_method_file_generated(self, output_dir: Path) -> None:
+        """Inherited method file should be generated for TlsException."""
+        result = run_convert(SAMPLES_DIR, "dart-io", output_dir)
+        assert result.returncode == 0
+
+        builder = build_entity_path_builder(
+            output_dir, "dart-io", "TlsException", CategoryType.CLASS
+        )
+        method_file = builder.get_inherited_method_file("noSuchMethod")
+        assert method_file.exists(), f"Missing inherited method file: {method_file}"
+
+    def test_inherited_operator_file_generated(self, output_dir: Path) -> None:
+        """Inherited operator file should be generated for TlsException."""
+        result = run_convert(SAMPLES_DIR, "dart-io", output_dir)
+        assert result.returncode == 0
+
+        builder = build_entity_path_builder(
+            output_dir, "dart-io", "TlsException", CategoryType.CLASS
+        )
+        operator_file = builder.get_inherited_operator_file("operator_equals")
+        assert operator_file.exists(), (
+            f"Missing inherited operator file: {operator_file}"
+        )

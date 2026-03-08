@@ -122,10 +122,11 @@ def process_properties(
             output_file.write_text(markdown_content, encoding="utf-8")
         else:
             # Inherited property
-            if not member["result_type"] or not member["description"]:
+            if not member["result_type"]:
                 log_processing_error(
-                    f"Unable to capture result_type or description for inherited property "
-                    f"{member['member']} from {member['section']}/{member['entity_name']}"
+                    f"Unable to capture result_type for inherited property "
+                    f"{member['member']} from {member['section']}/{member['entity_name']} "
+                    f"(while processing {builder.section}/{builder.entity_name})"
                 )
 
             ensure_dir_exists(inherited_dir)
@@ -185,10 +186,11 @@ def process_methods(
             output_file.write_text(markdown_content, encoding="utf-8")
         else:
             # Inherited method
-            if not member["result_type"] or not member["description"]:
+            if not member["result_type"]:
                 log_processing_error(
-                    f"Unable to capture result_type or description for inherited method "
-                    f"{member['member']} from {member['section']}/{member['entity_name']}"
+                    f"Unable to capture result_type for inherited method "
+                    f"{member['member']} from {member['section']}/{member['entity_name']} "
+                    f"(while processing {builder.section}/{builder.entity_name})"
                 )
 
             ensure_dir_exists(inherited_dir)
@@ -248,10 +250,11 @@ def process_operators(
             output_file.write_text(markdown_content, encoding="utf-8")
         else:
             # Inherited operator
-            if not member["result_type"] or not member["description"]:
+            if not member["result_type"]:
                 log_processing_error(
-                    f"Unable to capture result_type or description for inherited operator "
-                    f"{member['member']} from {member['section']}/{member['entity_name']}"
+                    f"Unable to capture result_type for inherited operator "
+                    f"{member['member']} from {member['section']}/{member['entity_name']} "
+                    f"(while processing {builder.section}/{builder.entity_name})"
                 )
 
             ensure_dir_exists(inherited_dir)
