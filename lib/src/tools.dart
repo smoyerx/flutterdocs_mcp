@@ -189,14 +189,38 @@ FutureOr<CallToolResult> _lookupMember(
 
 final _listLibrariesTool = Tool(
   name: 'listLibraries',
-  title: 'List all available Flutter/Dart library slugs.',
+  title:
+      'List all available Flutter/Dart libraries with slugs and display names.',
   description:
-      'Returns all available library slugs that can be used to construct '
-      'flutter-docs://api/{library_slug}/... URIs to pass to getDocumentation. '
-      'Library slugs and library display names often differ '
-      '(e.g., library dart:io uses slug dart-io; package libraries use '
-      'slugs like package-material_color_utilities_blend_blend).',
+      'Returns all available libraries as [library_slug, library_display_name] pairs. '
+      'Use library_slug to construct flutter-docs://api/{library_slug}/... URIs to pass '
+      'to getDocumentation. Library slugs and display names often differ '
+      '(e.g., dart:io uses slug dart-io).',
   inputSchema: Schema.object(properties: {}),
+  outputSchema: Schema.object(
+    description: 'An object with a total count and all library pairs.',
+    properties: {
+      'total': Schema.int(
+        description: 'The total number of available libraries.',
+      ),
+      'results': Schema.list(
+        description: 'List of [library_slug, library_display_name] pairs.',
+        items: Schema.list(
+          description: 'A [library_slug, library_display_name] array.',
+          prefixItems: [
+            Schema.string(
+              description:
+                  "Library slug used in flutter-docs:// URIs (e.g., 'dart-io').",
+            ),
+            Schema.string(
+              description: "Human-readable library name (e.g., 'dart:io').",
+            ),
+          ],
+        ),
+      ),
+    },
+    required: ['total', 'results'],
+  ),
   annotations: _toolAnnotations,
 );
 
@@ -204,8 +228,15 @@ FutureOr<CallToolResult> _listLibraries(
   CallToolRequest request,
   DocDatabase db,
 ) {
-  final slugs = db.listLibraries();
-  return CallToolResult(content: [TextContent(text: jsonEncode(slugs))]);
+  final libraries = db.listLibraries();
+  final structured = {
+    'total': libraries.length,
+    'results': libraries.map((e) => [e.$1, e.$2]).toList(),
+  };
+  return CallToolResult(
+    content: [TextContent(text: jsonEncode(structured))],
+    structuredContent: structured,
+  );
 }
 
 // ---------------------------------------------------------------------------

@@ -216,6 +216,14 @@ class PathBuilder:
         """
         return self.get_api_section_dir() / f"{self.section}.md"
 
+    def get_library_display_name_file(self) -> Path:
+        """Get output path for the library display name sidecar file.
+
+        Returns:
+            Path like output_dir/api/{section}/_display_name.txt
+        """
+        return self.get_api_section_dir() / "_display_name.txt"
+
     def get_entity_dir(self) -> Path:
         self._require_entity_context()
         assert self._entity_dir is not None  # Type hint for mypy / Pylance

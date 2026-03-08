@@ -30,6 +30,7 @@ CREATE TABLE member_type (
 CREATE TABLE library (
     id INTEGER PRIMARY KEY,
     name TEXT UNIQUE NOT NULL,
+    display_name TEXT NOT NULL DEFAULT '',
     content_markdown TEXT NOT NULL
 );
 
@@ -183,6 +184,7 @@ def get_member_type_id(conn: sqlite3.Connection, name: str) -> int:
 def upsert_library(
     conn: sqlite3.Connection,
     name: str,
+    display_name: str,
     content_markdown: str,
 ) -> int:
     """Insert or update a library row and return its id.
@@ -192,6 +194,7 @@ def upsert_library(
     Args:
         conn: Open sqlite3 connection (within an active transaction).
         name: Section name (e.g., "material").
+        display_name: Human-readable library name (e.g., "dart:io").
         content_markdown: Markdown content of the library file.
 
     Returns:
@@ -199,11 +202,13 @@ def upsert_library(
     """
     conn.execute(
         """
-        INSERT INTO library(name, content_markdown)
-        VALUES (?, ?)
-        ON CONFLICT(name) DO UPDATE SET content_markdown = excluded.content_markdown
+        INSERT INTO library(name, display_name, content_markdown)
+        VALUES (?, ?, ?)
+        ON CONFLICT(name) DO UPDATE SET
+            display_name = excluded.display_name,
+            content_markdown = excluded.content_markdown
         """,
-        (name, content_markdown),
+        (name, display_name, content_markdown),
     )
     row = conn.execute("SELECT id FROM library WHERE name = ?", (name,)).fetchone()
     return int(row["id"])

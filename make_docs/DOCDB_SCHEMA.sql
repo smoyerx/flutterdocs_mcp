@@ -16,6 +16,7 @@ CREATE TABLE member_type (
 CREATE TABLE library (
     id INTEGER PRIMARY KEY,
     name TEXT UNIQUE NOT NULL,
+    display_name TEXT NOT NULL DEFAULT '',
     content_markdown TEXT NOT NULL
 );
 

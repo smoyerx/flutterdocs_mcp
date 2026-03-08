@@ -22,11 +22,13 @@ final class LibraryRecord {
   const LibraryRecord({
     required this.id,
     required this.name,
+    required this.displayName,
     required this.contentMarkdown,
   });
 
   final int id;
   final String name;
+  final String displayName;
   final String contentMarkdown;
 }
 
@@ -92,11 +94,12 @@ final class DocDatabase {
     }
 
     for (final row in _db.select(
-      'SELECT id, name, content_markdown FROM library',
+      'SELECT id, name, display_name, content_markdown FROM library',
     )) {
       final record = LibraryRecord(
         id: row['id'] as int,
         name: row['name'] as String,
+        displayName: row['display_name'] as String,
         contentMarkdown: row['content_markdown'] as String,
       );
       _libraryById[record.id] = record;
@@ -258,9 +261,15 @@ final class DocDatabase {
     }
   }
 
-  /// Returns all library slugs sorted alphabetically. These are the URI-safe
+  /// Returns all libraries sorted alphabetically by slug as
+  /// `(library_slug, library_display_name)` pairs. These are the URI-safe
   /// identifiers used in resource URIs and the `librarySlugHint` parameter.
-  List<String> listLibraries() => _libraryByName.keys.toList()..sort();
+  List<(String, String)> listLibraries() {
+    final entries =
+        _libraryByName.entries.map((e) => (e.key, e.value.displayName)).toList()
+          ..sort((a, b) => a.$1.compareTo(b.$1));
+    return entries;
+  }
 
   /// Returns the content markdown for the given [library], served entirely
   /// from the in-memory cache. Returns `null` if the library is not found.

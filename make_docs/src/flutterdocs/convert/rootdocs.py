@@ -9,6 +9,7 @@ as opposed to member documentation files (constructors, methods, properties, etc
 which are processed by the functions in the processors module.
 """
 
+import re
 from pathlib import Path
 
 from html_to_markdown import ConversionOptionsHandle
@@ -479,3 +480,10 @@ def process_library(
     library_markdown = convert_html_to_markdown(options_handle, library_input_file)
     library_output_file = builder.get_library_file()
     library_output_file.write_text(library_markdown, encoding="utf-8")
+
+    # Extract display name from first header line: "# <name> library"
+    first_line = library_markdown.split("\n", 1)[0]
+    match = re.match(r"#\s+(.+?)\s+library\s*$", first_line)
+    if match:
+        display_name_file = builder.get_library_display_name_file()
+        display_name_file.write_text(match.group(1), encoding="utf-8")

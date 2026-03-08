@@ -27,6 +27,7 @@ void _populateFixture(Database raw) {
     CREATE TABLE library (
       id INTEGER PRIMARY KEY,
       name TEXT UNIQUE NOT NULL,
+      display_name TEXT NOT NULL DEFAULT '',
       content_markdown TEXT NOT NULL
     );
     CREATE TABLE entity (
@@ -84,9 +85,9 @@ void _populateFixture(Database raw) {
   // Libraries
   raw.execute('''
     INSERT INTO library VALUES
-      (1, 'material',   '# material library'),
-      (2, 'widgets',    '# widgets library'),
-      (3, 'dart-async', '# dart-async library')
+      (1, 'material',   'material',   '# material library'),
+      (2, 'widgets',    'widgets',    '# widgets library'),
+      (3, 'dart-async', 'dart:async', '# dart-async library')
   ''');
 
   // Entities
@@ -263,14 +264,22 @@ void main() {
   // -------------------------------------------------------------------------
 
   group('listLibraries', () {
-    test('returns all library slugs', () {
-      final slugs = _db.listLibraries();
+    test('returns all library slug-displayName pairs', () {
+      final libraries = _db.listLibraries();
+      final slugs = libraries.map((e) => e.$1).toList();
       expect(slugs, containsAll(['material', 'widgets', 'dart-async']));
-      expect(slugs, hasLength(3));
+      expect(libraries, hasLength(3));
     });
 
-    test('result is sorted alphabetically', () {
-      final slugs = _db.listLibraries();
+    test('displayName reflects stored value', () {
+      final libraries = _db.listLibraries();
+      final dartAsync = libraries.firstWhere((e) => e.$1 == 'dart-async');
+      expect(dartAsync.$2, 'dart:async');
+    });
+
+    test('result is sorted alphabetically by slug', () {
+      final libraries = _db.listLibraries();
+      final slugs = libraries.map((e) => e.$1).toList();
       expect(slugs, equals([...slugs]..sort()));
     });
   });

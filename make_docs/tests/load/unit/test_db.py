@@ -93,28 +93,48 @@ class TestUpsertLibrary:
     def test_insert_returns_id(self, mem_conn: sqlite3.Connection) -> None:
         """upsert_library must return a positive integer id."""
         with mem_conn:
-            lib_id = upsert_library(mem_conn, "material", "# material")
+            lib_id = upsert_library(mem_conn, "material", "material", "# material")
         assert isinstance(lib_id, int)
         assert lib_id > 0
 
     def test_update_preserves_id(self, mem_conn: sqlite3.Connection) -> None:
         """Re-upserting the same library must return the same id."""
         with mem_conn:
-            id1 = upsert_library(mem_conn, "material", "# material v1")
+            id1 = upsert_library(mem_conn, "material", "material", "# material v1")
         with mem_conn:
-            id2 = upsert_library(mem_conn, "material", "# material v2")
+            id2 = upsert_library(mem_conn, "material", "material", "# material v2")
         assert id1 == id2
 
     def test_update_changes_content(self, mem_conn: sqlite3.Connection) -> None:
         """Re-upserting must update content_markdown."""
         with mem_conn:
-            upsert_library(mem_conn, "material", "# old")
+            upsert_library(mem_conn, "material", "material", "# old")
         with mem_conn:
-            upsert_library(mem_conn, "material", "# new")
+            upsert_library(mem_conn, "material", "material", "# new")
         row = mem_conn.execute(
             "SELECT content_markdown FROM library WHERE name = 'material'"
         ).fetchone()
         assert row["content_markdown"] == "# new"
+
+    def test_insert_stores_display_name(self, mem_conn: sqlite3.Connection) -> None:
+        """upsert_library must store the provided display_name."""
+        with mem_conn:
+            upsert_library(mem_conn, "dart-io", "dart:io", "# dart:io library")
+        row = mem_conn.execute(
+            "SELECT display_name FROM library WHERE name = 'dart-io'"
+        ).fetchone()
+        assert row["display_name"] == "dart:io"
+
+    def test_update_changes_display_name(self, mem_conn: sqlite3.Connection) -> None:
+        """Re-upserting must update display_name."""
+        with mem_conn:
+            upsert_library(mem_conn, "material", "material v1", "# old")
+        with mem_conn:
+            upsert_library(mem_conn, "material", "material v2", "# new")
+        row = mem_conn.execute(
+            "SELECT display_name FROM library WHERE name = 'material'"
+        ).fetchone()
+        assert row["display_name"] == "material v2"
 
 
 class TestUpsertEntity:
@@ -123,7 +143,7 @@ class TestUpsertEntity:
     def _setup(self, conn: sqlite3.Connection) -> tuple[int, int]:
         """Insert prerequisite rows and return (library_id, entity_type_id)."""
         with conn:
-            lib_id = upsert_library(conn, "material", "# material")
+            lib_id = upsert_library(conn, "material", "material", "# material")
             type_id = get_entity_type_id(conn, "class")
         return lib_id, type_id
 
@@ -169,7 +189,7 @@ class TestUpsertMember:
     def _setup(self, conn: sqlite3.Connection) -> tuple[int, int, int]:
         """Setup entity and return (entity_id, identifier_id, member_type_id)."""
         with conn:
-            lib_id = upsert_library(conn, "material", "# material")
+            lib_id = upsert_library(conn, "material", "material", "# material")
             etype_id = get_entity_type_id(conn, "class")
             entity_id = upsert_entity(conn, lib_id, "ListTile", etype_id, "content")
 
@@ -241,7 +261,7 @@ class TestContentSearchTriggers:
     def _setup(self, conn: sqlite3.Connection) -> tuple[int, int]:
         """Insert prerequisite rows and return (library_id, entity_type_id)."""
         with conn:
-            lib_id = upsert_library(conn, "material", "# material")
+            lib_id = upsert_library(conn, "material", "material", "# material")
             type_id = get_entity_type_id(conn, "class")
         return lib_id, type_id
 

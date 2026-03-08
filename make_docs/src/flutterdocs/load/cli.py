@@ -124,9 +124,13 @@ def process_section(
         return {}
 
     library_content = library_file.read_text()
+    display_name_file = lib_builder.get_library_display_name_file()
+    display_name = (
+        display_name_file.read_text().strip() if display_name_file.exists() else section
+    )
     try:
         with conn:  # type: ignore[attr-defined]
-            library_id = upsert_library(conn, section, library_content)  # type: ignore[arg-type]
+            library_id = upsert_library(conn, section, display_name, library_content)  # type: ignore[arg-type]
     except Exception as e:
         log_processing_error(f"Failed to load library for section '{section}': {e}")
 

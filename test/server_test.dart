@@ -212,14 +212,20 @@ void main() {
   // -------------------------------------------------------------------------
 
   group('listLibraries tool', () {
-    test('returns non-empty sorted list of slugs', () async {
+    test('returns non-empty sorted list of slug-displayName pairs', () async {
       final result = await _server.callTool(
         CallToolRequest(name: 'listLibraries', arguments: {}),
       );
       expect(result.isError, isNot(true));
       final text = (result.content.first as TextContent).text;
-      final slugs = (jsonDecode(text) as List<dynamic>).cast<String>();
-      expect(slugs, isNotEmpty);
+      final decoded = jsonDecode(text) as Map<String, dynamic>;
+      final total = decoded['total'] as int;
+      final results = (decoded['results'] as List<dynamic>)
+          .map((e) => e as List<dynamic>)
+          .toList();
+      expect(total, isPositive);
+      expect(results, isNotEmpty);
+      final slugs = results.map((r) => r[0] as String).toList();
       expect(slugs, contains('material'));
       expect(slugs, contains('widgets'));
       expect(slugs, equals([...slugs]..sort()));

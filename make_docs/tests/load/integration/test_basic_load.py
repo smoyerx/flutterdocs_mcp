@@ -48,6 +48,18 @@ class TestDbCreation:
         assert row is not None
         conn.close()
 
+    def test_library_has_display_name(self, db_path: Path) -> None:
+        """The library row must have a display_name matching the sidecar file."""
+        run_load(SAMPLES_DIR, "material", db_path)
+        conn = sqlite3.connect(db_path)
+        conn.row_factory = sqlite3.Row
+        row = conn.execute(
+            "SELECT display_name FROM library WHERE name = 'material'"
+        ).fetchone()
+        assert row is not None
+        assert row["display_name"] == "material"
+        conn.close()
+
     def test_sets_user_version(self, db_path: Path) -> None:
         """PRAGMA user_version must equal DB_VERSION after a successful load."""
         from flutterdocs._shared.version import DB_VERSION

@@ -97,6 +97,20 @@ class TestBasicConversion:
             )
 
     @pytest.mark.parametrize("section", get_available_sections())
+    def test_creates_library_display_name_sidecar(
+        self, section: str, output_dir: Path
+    ) -> None:
+        """Conversion should create a _display_name.txt sidecar alongside the library file."""
+        result = run_convert(SAMPLES_DIR, section, output_dir)
+        assert result.returncode == 0
+
+        section_builder = build_section_path_builder(output_dir, section)
+        sidecar = section_builder.get_library_display_name_file()
+        assert sidecar.exists(), f"Missing display name sidecar: {sidecar}"
+        content = sidecar.read_text(encoding="utf-8").strip()
+        assert len(content) > 0, "Display name sidecar must not be empty"
+
+    @pytest.mark.parametrize("section", get_available_sections())
     def test_verbose_output_shows_processing(
         self, section: str, output_dir: Path
     ) -> None:
