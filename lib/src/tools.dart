@@ -59,8 +59,9 @@ final _lookupEntityTool = Tool(
     properties: {
       'name': Schema.string(
         description:
-            "The name of the entity to find (e.g., 'ListTile'). "
-            'Case-insensitive; results always use the canonical identifier name.',
+            "The name of the entity to find. "
+            'Case-insensitive input; returned identifiers use the canonical '
+            'casing (listtile → ListTile) for use with getDocumentation.',
       ),
     },
     required: ['name'],
@@ -124,8 +125,9 @@ final _lookupMemberTool = Tool(
     properties: {
       'name': Schema.string(
         description:
-            "The name of the member to find (e.g., 'visualDensity'). "
-            'Case-insensitive; results always use the canonical identifier name.',
+            "The name of the member to find. "
+            'Case-insensitive input; returned identifiers use the canonical '
+            'casing (visualdensity → visualDensity) for use with getDocumentation.',
       ),
       'librarySlugHint': Schema.string(
         description:
@@ -329,7 +331,7 @@ final _getDocumentationTool = Tool(
         description:
             'A flutter-docs://api/... URI identifying a library, '
             'entity (class, mixin, etc.), or '
-            'member (constructor, property, method, etc.).',
+            'member (constructor, property, method, etc.). Case-sensitive.',
       ),
     },
     required: ['uri'],
