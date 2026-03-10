@@ -134,8 +134,8 @@ My motivations for creating `flutterdocs_mcp` were to:
 
 - Develop A/B tests to quantify what (if any) benefits AI assistants derive from having local access to the documentation.
 - Experiment with tools, resource templates, and associated instructions to determine how best to get AI assistants the information they need efficiently.
-- Define a `flutterdocs_mcp` skill to determine if additional instructions, beyond those built into the server, improves performance or accuracy.
-- Add Flutter/Dart guides within a flutter-docs://guide/... URI space.
+- Define a `flutterdocs_mcp` skill to determine if additional instructions, beyond those built into the server, improve performance or accuracy.
+- Add Flutter/Dart guides within a new flutter-docs://guide/... URI space.
 - Support pagination for `searchDocumentation`.
 - Automate the database file download via the `data_assets` package.
 
