@@ -56,7 +56,7 @@ flutterdocs_mcp --db-version --db </path/to/flutterdocs.db>
 
 ## Usage
 
-Add `flutterdocs_mcp` to your MCP server configuration, specifying the path to the documentation database file.
+Add `flutterdocs_mcp` to your host configuration, specifying the path to the documentation database file.
 
 For example, to use `flutterdocs_mcp` with [VS Code](https://code.visualstudio.com/docs/copilot/customization/mcp-servers) add the following to your `mcp.json`:
 
@@ -95,13 +95,13 @@ Below is a summary of how `flutterdocs_mcp` operates as an MCP server. You do no
 - Entity (class, mixin, etc.) documentation: flutter-docs://api/{library_slug}/{entity}
 - Member (constructor, properties, etc.) documentation: flutter-docs://api/{library_slug}/{entity}/{member}
 
-Library slugs are used in place of library display names to form valid URIs (e.g., `dart:io` uses slug `dart-io`). The slugs are the same as used for the native HTML documentation. AI assistants can access the mapping from library display name to slug with the `listLibraries` tool.
+Library slugs are used in place of library display names to form valid URIs (e.g., `dart:io` uses slug `dart-io`). The slugs are the same as used for the native HTML documentation. AI assistants can access the mapping from library display name to slug using the `listLibraries` tool.
 
 
 ### Tools
 
 - `listLibraries`: lists slugs and display names for all available library documentation.
-- `searchDocumentation`: performs a full-text search across the documentation (all libraries).
+- `searchDocumentation`: performs a full-text search across all the library documentation.
 - `lookupEntity`: resolves entity (class, mixin, etc.) identifier names.
 - `lookupMember`: resolves member (constructor, property, method, etc.) identifier names.
 - `getDocumentation`: fetches documentation for the specified URI.
@@ -118,25 +118,33 @@ Not all MCP hosts use resource templates. For example, VS Code does not at the t
 
 ## Motivation
 
-There are several other excellent MCP server projects that provide Flutter/Dart documentation, including:
-- [Context7](https://context7.com/), which is the best-known MCP-based documentation service and includes various Flutter documentation sets in its inventory.
-- [flutter-mcp](https://github.com/adamsmaka/flutter-mcp), which is built with the [FastMCP](https://gofastmcp.com/getting-started/welcome) Python library and fetches/caches Flutter documentation dynamically.
-- [flutter_mcp_2](https://github.com/dvillegastech/flutter_mcp_2), which is built with JavaScript and fetches/caches Flutter documentation dynamically.
+There are several other MCP server projects for Flutter/Dart documentation, including:
+- [Context7](https://context7.com/), which is a widely-used MCP documentation service that includes various Flutter documentation sets in its inventory.
+- [flutter-mcp](https://github.com/adamsmaka/flutter-mcp), which is built with the [FastMCP](https://gofastmcp.com/getting-started/welcome) Python library and fetches/caches online Flutter documentation.
+- [flutter_mcp_2](https://github.com/dvillegastech/flutter_mcp_2), which is built with JavaScript and also fetches/caches online Flutter documentation.
 
 My motivations for creating `flutterdocs_mcp` were to:
-- Store documentation locally for fast full-text search across all libraries.
+- Store all documentation locally for fast full-text search across all libraries.
+- Eliminate first-time load delays.
 - Avoid in-line conversion from HTML to markdown.
 - Implement in `Dart` using `dart_mcp` for native hosting on `pub.dev`.
 
 
 ## TODOs
 
-- Develop A/B tests to quantify what (if any) benefits AI assistants derive from having local access to the complete documentation.
+- Develop A/B tests to quantify what (if any) benefits AI assistants derive from having local access to the documentation.
 - Experiment with tools, resource templates, and associated instructions to determine how best to get AI assistants the information they need efficiently.
-- Define a `flutterdocs_mcp` skill to determine if additional instructions beyond built into the server improves performance and accuracy.
+- Define a `flutterdocs_mcp` skill to determine if additional instructions, beyond those built into the server, improves performance or accuracy.
 - Add Flutter/Dart guides within a flutter-docs://guide/... URI space.
 - Support pagination for `searchDocumentation`.
-- Automate the database file download (via the `data_assets` package) provided sufficient interest.
+- Automate the database file download via the `data_assets` package.
+
+
+## Contribute Your Feedback
+
+At this early state, I am not yet prepared to accept PRs for `flutterdocs_mcp`. However, any [feedback or data](CONTRIBUTING.md) that you can provide is greatly appreciated!
+
+With LLMs being released or updated at an accelerating rate, its not clear that having the most up-to-date documentation will meaningly improve the performance of AI assistants. But I am interested in finding out.
 
 
 ## Acknowledgements
