@@ -67,7 +67,7 @@ class TestConvertErrorHandling:
         assert result.returncode != 0
 
     def test_empty_section_exits_zero(self, tmp_path: Path, output_dir: Path) -> None:
-        """Empty section (no class files) should exit with zero status."""
+        """Empty section should exit with zero status."""
         # Create empty directory structure
         doc_dir = tmp_path / "empty_docs"
         input_builder = build_input_path_builder(doc_dir, "empty_section")
@@ -76,7 +76,6 @@ class TestConvertErrorHandling:
 
         result = run_convert(doc_dir, "empty_section", output_dir)
         assert result.returncode == 0
-        assert "No files found" in result.stdout
 
 
 class TestConvertOverwrite:

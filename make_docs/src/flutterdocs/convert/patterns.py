@@ -29,6 +29,11 @@ NOISE_STRINGS: tuple[tuple[str, str, str], ...] = (
         "# Heading\nBody content",
     ),
     (
+        "getter/setter pairinherited",
+        "# Heading\ngetter/setter pairinherited\nBody content",
+        "# Heading\nBody content",
+    ),
+    (
         "no setterinherited",
         "# Heading\nno setterinherited\nBody content",
         "# Heading\nBody content",

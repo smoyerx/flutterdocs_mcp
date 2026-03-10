@@ -10,6 +10,7 @@ from pathlib import Path
 
 from html_to_markdown import (
     ConversionOptions,
+    ConversionOptionsHandle,
     create_options_handle,
 )
 
@@ -122,7 +123,7 @@ def create_output_directory(output_dir: Path, section: str) -> Path:
 
 def process_section(
     section: str,
-    options_handle: object,
+    options_handle: ConversionOptionsHandle,
     doc_dir: Path,
     output_dir: Path,
 ) -> None:
@@ -138,6 +139,7 @@ def process_section(
         output_dir: Root output directory for converted markdown files.
     """
     progress_logger = get_progress_logger()
+    notification_logger = get_notification_logger()
 
     # Create output directory for this section
     create_output_directory(output_dir, section)
@@ -145,12 +147,8 @@ def process_section(
     # Find and categorize all root documentation files
     categorized_files = find_and_categorize_root_files(doc_dir, section)
 
-    # Count total files
+    # Count total files. This can be zero (0) in sections that are deprecated or moved.
     total_files = sum(len(files) for files in categorized_files.values())
-
-    if total_files == 0:
-        print(f"No files found matching pattern in section '{section}'")
-        return
 
     # Process library file first if it exists
     library_input_file = PathBuilder(
@@ -172,6 +170,11 @@ def process_section(
                 f"Cannot write output file for {section}: {e}",
                 library_input_file,
             )
+    else:
+        notification_logger.info(
+            f"No library file found for section '{section}', skipping it."
+        )
+        return
 
     for class_name, class_file in categorized_files[CategoryType.CLASS]:
         progress_logger.info(f"Converting class: {class_name}")
