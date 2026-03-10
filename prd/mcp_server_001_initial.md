@@ -1,6 +1,6 @@
 # flutterdocs_mcp PRD
 
-`flutterdocs_mcp.dart` is a Model Context Protocol (MCP) server for Flutter and Dart documentation built with the `dart_mcp` package. It serves documentation content retrieved from a sqlite3 database file with the schema defined in `make_docs/DOCDB_SCHEMA.sql`. This PRD defines the requirements, design, and implementation plan for the `flutterdocs_mcp` server.
+`flutterdocs_mcp.dart` is a Model Context Protocol (MCP) server for Flutter and Dart documentation built with the `dart_mcp` package. It serves documentation content retrieved from a sqlite3 database file with the schema defined in `make_docs/DOCDB_SCHEMA.txt`. This PRD defines the requirements, design, and implementation plan for the `flutterdocs_mcp` server.
 
 ## Technology Stack
 

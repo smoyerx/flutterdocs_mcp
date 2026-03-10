@@ -1,6 +1,6 @@
 # load_002_snippets PRD
 
-This PRD specifies a change to how code snippets are handled in `load.py`. It supersedes the snippet-handling behavior defined in `load_001_initial.md` and requires corresponding updates to `DOCDB_SCHEMA.sql`.
+This PRD specifies a change to how code snippets are handled in `load.py`. It supersedes the snippet-handling behavior defined in `load_001_initial.md`.
 
 ## Summary of Changes
 
@@ -45,7 +45,7 @@ The revised implementation must:
 
 ### Remove `entity.snippet_markdown`
 
-The `snippet_markdown TEXT` column must be removed from the `entity` table in both `DOCDB_SCHEMA.sql` and the embedded `SCHEMA_DDL` constant in `db.py`.
+The `snippet_markdown TEXT` column must be removed from the `entity` table in the embedded `SCHEMA_DDL` constant in `db.py`.
 
 #### Updated `entity` table DDL
 
@@ -63,7 +63,7 @@ CREATE TABLE entity (
 );
 ```
 
-The full updated DDL (to replace both `DOCDB_SCHEMA.sql` and `SCHEMA_DDL` in `db.py`) is:
+The full updated DDL (to replace `SCHEMA_DDL` in `db.py`) is:
 
 ```sql
 CREATE TABLE identifier (
@@ -143,7 +143,6 @@ ON CONFLICT(identifier_id, library_id) DO UPDATE SET
 
 | File | Change |
 |---|---|
-| `make_docs/DOCDB_SCHEMA.sql` | Remove `snippet_markdown TEXT` from `entity` table |
 | `make_docs/src/flutterdocs/load/db.py` | Update `SCHEMA_DDL` constant; remove `snippet_markdown` parameter from `upsert_entity()` |
 | `make_docs/src/flutterdocs/load/loader.py` | Update `collect_snippets()` to prepend heading; update `load_entity()` to append snippets to `content_markdown` instead of passing separately |
 

@@ -12,7 +12,6 @@ This PRD specifies changes to the sqlite3 database schema and loading algorithm 
 - Add three triggers on `entity` (`entity_ai`, `entity_ad`, `entity_au`) so that SQLite automatically keeps `content_search` in sync on every insert, update, and delete.
 - Update `upsert_entity()` in `db.py` to accept `identifier: str` in place of `identifier_id: int` and to write it inline.
 - Update `load_entity()` in `loader.py` to pass `entity_name` as `identifier` directly — removing the `get_or_insert_identifier()` call for entities. No extra FTS bookkeeping is required in `loader.py` because the triggers handle it.
-- Update `DOCDB_SCHEMA.sql` to match the new schema.
 - Update `load.instructions.md` to reflect the new schema.
 - Update and add tests.
 
@@ -140,10 +139,6 @@ with conn:
 ```
 
 ## File Updates
-
-### `DOCDB_SCHEMA.sql`
-
-Apply the same schema changes as `SCHEMA_DDL` in `db.py` — updated `entity` table, updated `idx_entity_unique`, and the new `content_search` virtual table and three triggers appended at the end.
 
 ### `load.instructions.md`
 
