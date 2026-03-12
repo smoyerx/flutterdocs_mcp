@@ -18,3 +18,11 @@ To use `flutterdocs_mcp` with [VS Code](https://code.visualstudio.com/docs/copil
 	}
 }
 ```
+
+### MCP Inspector
+
+[MCP Inspector](https://modelcontextprotocol.io/docs/tools/inspector) is a tool for testing and debugging MCP servers. To use `flutterdocs_mcp` with MCP Inspector first [install Node.js and npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) on your system and then run:
+
+```bash
+npx @modelcontextprotocol/inspector flutterdocs_mcp -- --db /path/to/flutterdocs.db
+```

@@ -50,7 +50,7 @@ flutterdocs_mcp --version
 To check the database file version run:
 
 ```bash
-flutterdocs_mcp --db-version --db </path/to/flutterdocs.db>
+flutterdocs_mcp --db-version --db /path/to/flutterdocs.db
 ```
 
 
@@ -74,7 +74,8 @@ For example, to use `flutterdocs_mcp` with [VS Code](https://code.visualstudio.c
 
 See [examples](example/examples.md) for configuring `flutterdocs_mcp` with various hosts.
 
-## Documentation Database Generation
+
+## Documentation Database
 
 The documentation database file is generated from the Flutter stable [offline documentation](https://api.flutter.dev/index.html) as follows:
 - HTML content is convert to markdown and sanitized.
@@ -83,6 +84,27 @@ The documentation database file is generated from the Flutter stable [offline do
 - DartPad interactive code links are converted to text indicating the interactive code is omitted.
 - Stub entries are generated for inherited members to keep the URI scheme robust.
 - Code examples (snippets), where available, are appended as a new section of the documentation for classes, mixins, etc.
+
+
+## Motivation
+
+There are several other MCP server projects for Flutter/Dart documentation, including:
+- [Context7](https://context7.com/), which is a widely-used MCP documentation service that includes various Flutter documentation sets in its inventory.
+- [flutter-mcp](https://github.com/adamsmaka/flutter-mcp), which is built with the [FastMCP](https://gofastmcp.com/getting-started/welcome) Python library and fetches/caches online Flutter documentation.
+- [flutter_mcp_2](https://github.com/dvillegastech/flutter_mcp_2), which is built with JavaScript and also fetches/caches online Flutter documentation.
+
+My motivation for creating `flutterdocs_mcp` was to:
+- Store all documentation locally for fast full-text search across all libraries.
+- Eliminate first-time load delays.
+- Avoid in-line conversion from HTML to markdown.
+- Implement in `Dart` using `dart_mcp` for native hosting on `pub.dev`.
+
+
+## Platforms
+
+I have only tested `flutterdocs_mcp` in limited configurations:
+- Platforms: Ubuntu 24.04
+- Hosts: VS Code, [MCP Inspector](https://modelcontextprotocol.io/docs/tools/inspector)
 
 
 ## MCP Server Operational Details
@@ -116,40 +138,28 @@ There is a resource template for each of the URI shapes above: `libraryIndex`, `
 Not all MCP hosts use resource templates. For example, VS Code does not at the time of writing.
 
 
-## Motivation
-
-There are several other MCP server projects for Flutter/Dart documentation, including:
-- [Context7](https://context7.com/), which is a widely-used MCP documentation service that includes various Flutter documentation sets in its inventory.
-- [flutter-mcp](https://github.com/adamsmaka/flutter-mcp), which is built with the [FastMCP](https://gofastmcp.com/getting-started/welcome) Python library and fetches/caches online Flutter documentation.
-- [flutter_mcp_2](https://github.com/dvillegastech/flutter_mcp_2), which is built with JavaScript and also fetches/caches online Flutter documentation.
-
-My motivations for creating `flutterdocs_mcp` were to:
-- Store all documentation locally for fast full-text search across all libraries.
-- Eliminate first-time load delays.
-- Avoid in-line conversion from HTML to markdown.
-- Implement in `Dart` using `dart_mcp` for native hosting on `pub.dev`.
-
-
 ## TODOs
 
 - Develop A/B tests to quantify what (if any) benefits AI assistants derive from having local access to the documentation.
-- Experiment with tools, resource templates, and associated instructions to determine how best to get AI assistants the information they need efficiently.
 - Define a `flutterdocs_mcp` skill to determine if additional instructions, beyond those built into the server, improve performance or accuracy.
+- Experiment with tools, resource templates, and associated instructions to determine how best to get AI assistants the information they need efficiently.
 - Add Flutter/Dart guides within a new flutter-docs://guide/... URI space.
+- Test with a wider range of platforms and hosts.
 - Support pagination for `searchDocumentation`.
 - Automate the database file download via the `data_assets` package.
 
+LLMs are being released or updated at an accelerating rate, so it's not clear that having the most up-to-date documentation will meaningly improve the performance of AI assistants. Hence why I am prioritizing A/B testing and related experimentation over additional features.
 
-## Contribute Your Feedback
 
-At this early state, I am not yet prepared to accept PRs for `flutterdocs_mcp`. However, any [feedback or data](CONTRIBUTING.md) that you can provide is greatly appreciated!
+## Contributing
 
-With LLMs being released or updated at an accelerating rate, its not clear that having the most up-to-date documentation will meaningly improve the performance of AI assistants. But I am interested in finding out.
+Contributions are always appreciated and welcome! Please [see these details](CONTRIBUTING.md) on how you can help.
+
+I am particularly interested in data regarding the efficacy of `flutterdocs_mcp` or any other MCP server that wraps Flutter/Dart documentation.
 
 
 ## Acknowledgements
 
-- Flutter/Dart teams for making their excellent documentation available offline.
-- Dart team for the [`dart_mcp`](https://pub.dev/packages/dart_mcp) package which makes building MCP servers a breeze.
+- Flutter/Dart team for making their excellent documentation available offline, and for providing the [`dart_mcp`](https://pub.dev/packages/dart_mcp) package which makes building MCP servers a breeze.
 - Developers of the [`html-to-markdown`](https://github.com/kreuzberg-dev/html-to-markdown) package which has proven robust and blazingly fast.
 - Sonnet 4.5/4.6 for writing most of the code. Yes, I reviewed it (OK, the tests not so much).
