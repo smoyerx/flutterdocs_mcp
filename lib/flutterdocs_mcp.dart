@@ -6,8 +6,8 @@
 /// ## Activation
 ///
 /// ```
-/// dart pub global activate flutterdocs_mcp
-/// flutterdocs_mcp --db /path/to/flutter_docs.db
+/// dart install flutterdocs_mcp
+/// flutterdocs_mcp --db /path/to/flutterdocs.db
 /// ```
 library;
 

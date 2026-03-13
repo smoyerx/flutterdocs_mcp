@@ -15,13 +15,16 @@ import 'version.dart';
 /// templates for navigating and fetching Flutter/Dart API documentation.
 base class FlutterDocsMcpServer extends MCPServer
     with ToolsSupport, ResourcesSupport, LoggingSupport {
+  /// Constructs a [FlutterDocsMcpServer] with the given stdio channel and
+  /// documentation database.
   FlutterDocsMcpServer.fromChannel(super.channel, DocDatabase db)
     : super.fromStreamChannel(
         implementation: Implementation(
           name: 'flutter-docs',
           version: kVersion,
           title: 'Flutter/Dart API Documentation',
-          description: 'Flutter/Dart API documentation for AI assistants.',
+          description:
+              'Flutter/Dart API documentation for AI assistants and tools.',
         ),
         instructions:
             'Workflow: (1) use listLibraries, lookupEntity, lookupMember, or '

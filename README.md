@@ -72,7 +72,7 @@ For example, to use `flutterdocs_mcp` with [VS Code](https://code.visualstudio.c
 }
 ```
 
-See [examples](example/examples.md) for configuring `flutterdocs_mcp` with various hosts.
+See [examples](example/example.md) for configuring `flutterdocs_mcp` with various hosts.
 
 
 ## Documentation Database
