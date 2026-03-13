@@ -85,6 +85,8 @@ The documentation database file is generated from the Flutter stable [offline do
 - Stub entries are generated for inherited members to keep the URI scheme robust.
 - Code examples (snippets), where available, are appended as a new section of the documentation for classes, mixins, etc.
 
+The [changelog](CHANGELOG.md) specifies the snapshot date of the Flutter offline documentation included with a given `flutterdocs_mcp` release.
+
 
 ## Motivation
 
