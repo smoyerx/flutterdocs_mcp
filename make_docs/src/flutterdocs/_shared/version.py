@@ -7,5 +7,5 @@ Both constants are maintained in sync by ``dart run tool/set_version.dart``
 — do not edit manually.
 """
 
-VERSION = "0.1.0"
-DB_VERSION = 1000
+VERSION = "0.1.1"
+DB_VERSION = 1001
