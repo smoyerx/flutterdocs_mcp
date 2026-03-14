@@ -63,7 +63,7 @@ For example, to use `flutterdocs_mcp` with [VS Code](https://code.visualstudio.c
 ```json
 {
 	"servers": {
-		"Flutter API Documentation": {
+		"flutterdocs": {
 			"type": "stdio",
 			"command": "flutterdocs_mcp",
 			"args": ["--db", "/path/to/flutterdocs.db"]
@@ -72,7 +72,7 @@ For example, to use `flutterdocs_mcp` with [VS Code](https://code.visualstudio.c
 }
 ```
 
-See [examples](example/example.md) for configuring `flutterdocs_mcp` with various hosts.
+See [examples and tips](example/example.md) for configuring `flutterdocs_mcp` with various hosts and using it effectively.
 
 
 ## Documentation Database
@@ -128,7 +128,7 @@ Library slugs are used in place of library display names to form valid URIs (e.g
 - `searchDocumentation`: performs a full-text search across all the library documentation.
 - `lookupEntity`: resolves entity (class, mixin, etc.) identifier names.
 - `lookupMember`: resolves member (constructor, property, method, etc.) identifier names.
-- `getDocumentation`: fetches documentation for the specified URI.
+- `getDocumentation`: fetches documentation for the specified URI; returns same result as the corresponding resource template.
 
 The `lookupEntity` and `lookupMember` tools return arrays of `[library_slug, entity, category]` or `[library_slug, entity, member, category]` tuples, respectively, for constructing URIs to use with the `getDocumentation` tool or resource templates.
 
@@ -137,12 +137,12 @@ The `lookupEntity` and `lookupMember` tools return arrays of `[library_slug, ent
 
 There is a resource template for each of the URI shapes above: `libraryIndex`, `entityDocumentation`, and `memberDocumentation`. They can be used instead of the `getDocumentation` tool.
 
-Not all MCP hosts use resource templates. For example, VS Code does not at the time of writing.
+Not all MCP hosts support resource templates, which is why the getDocumentation tool is also provided.
 
 
 ## TODOs
 
-- Develop A/B tests to quantify what (if any) benefits AI assistants derive from having local access to the documentation.
+- Develop A/B tests to quantify the benefits AI assistants derive from having local access to the documentation.
 - Define a `flutterdocs_mcp` skill to determine if additional instructions, beyond those built into the server, improve performance or accuracy.
 - Experiment with tools, resource templates, and associated instructions to determine how best to get AI assistants the information they need efficiently.
 - Add Flutter/Dart guides within a new flutter-docs://guide/... URI space.
@@ -150,7 +150,7 @@ Not all MCP hosts use resource templates. For example, VS Code does not at the t
 - Support pagination for `searchDocumentation`.
 - Automate the database file download via the `data_assets` package.
 
-LLMs are being released or updated at an accelerating rate, so it's not clear that having the most up-to-date documentation will meaningly improve the performance of AI assistants. Hence why I am prioritizing A/B testing and related experimentation over additional features.
+LLMs are being released or updated at an accelerating rate, so it's an open question as to how much having the most up-to-date documentation will improve the performance of AI assistants. Hence why I am prioritizing A/B testing and related experimentation over additional features.
 
 
 ## Contributing

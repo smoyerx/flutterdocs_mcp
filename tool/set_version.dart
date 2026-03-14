@@ -6,7 +6,7 @@ import 'package:sqlite3/sqlite3.dart';
 /// Updates all version strings and constants across the project to a new
 /// semver, keeping every derived location in sync with a single command.
 ///
-/// Usage: dart run tool/set_version.dart <major.minor.patch> [--db <path>]
+/// Usage: dart run tool/set_version.dart `<major.minor.patch>` [--db `<path>`]
 ///
 /// Files updated:
 ///   - pubspec.yaml                                          (version: field)
@@ -15,12 +15,12 @@ import 'package:sqlite3/sqlite3.dart';
 ///   - make_docs/src/flutterdocs/_shared/version.py          (VERSION, DB_VERSION)
 ///
 /// Optional:
-///   --db <path>   Path to a sqlite3 documentation database file. When
-///                 provided, sets PRAGMA user_version of that file to the same
-///                 integer (major * 1_000_000 + minor * 1_000 + patch) that
-///                 load.py writes when it creates the database. Use this when
-///                 releasing a version that does not change the database schema
-///                 or content (e.g. a README-only change).
+///   --db `<path>`   Path to a sqlite3 documentation database file. When
+///                   provided, sets PRAGMA user_version of that file to the same
+///                   integer (major * 1_000_000 + minor * 1_000 + patch) that
+///                   load.py writes when it creates the database. Use this when
+///                   releasing a version that does not change the database schema
+///                   or content (e.g. a README-only change).
 void main(List<String> args) {
   final parser = ArgParser()
     ..addOption('db', valueHelp: 'path', help: 'Path to docs sqlite3 file');
@@ -116,7 +116,7 @@ void main(List<String> args) {
       stderr.writeln('Error: failed to set user_version in $dbPath: $e');
       exit(1);
     } finally {
-      db?.dispose();
+      db?.close();
     }
   }
 }
