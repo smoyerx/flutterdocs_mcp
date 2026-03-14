@@ -65,6 +65,8 @@ lib/src/
 
 `kVersion` and `kDbVersion` in `version.dart` are kept in sync with `pubspec.yaml` and `_shared/version.py` (Python side) by `dart run tool/set_version.dart`. Never edit these constants manually.
 
+`set_version.dart` accepts an optional `--db <path>` flag. When provided, it also updates `PRAGMA user_version` of the given sqlite3 database file to the same integer as `DB_VERSION` / `kDbVersion`. Use this for releases that do not change the database schema or content (e.g. a README-only change) so that the existing database file stays compatible with the new server version without needing to be regenerated.
+
 ## Testing
 
 Tests live in `test/`. The test suite uses an in-process `StreamChannelController` — no subprocess, no `dart run` contamination on the MCP stdio channel.

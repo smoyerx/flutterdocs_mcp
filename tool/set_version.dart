@@ -1,22 +1,49 @@
 import 'dart:io';
 
+import 'package:args/args.dart';
+import 'package:sqlite3/sqlite3.dart';
+
 /// Updates all version strings and constants across the project to a new
 /// semver, keeping every derived location in sync with a single command.
 ///
-/// Usage: dart run tool/set_version.dart `<major.minor.patch>`
+/// Usage: dart run tool/set_version.dart <major.minor.patch> [--db <path>]
 ///
 /// Files updated:
 ///   - pubspec.yaml                                          (version: field)
 ///   - lib/src/version.dart                                  (kVersion, kDbVersion)
 ///   - make_docs/pyproject.toml                              (version = field)
 ///   - make_docs/src/flutterdocs/_shared/version.py          (VERSION, DB_VERSION)
+///
+/// Optional:
+///   --db <path>   Path to a sqlite3 documentation database file. When
+///                 provided, sets PRAGMA user_version of that file to the same
+///                 integer (major * 1_000_000 + minor * 1_000 + patch) that
+///                 load.py writes when it creates the database. Use this when
+///                 releasing a version that does not change the database schema
+///                 or content (e.g. a README-only change).
 void main(List<String> args) {
-  if (args.length != 1) {
-    stderr.writeln('Usage: dart run tool/set_version.dart <major.minor.patch>');
+  final parser = ArgParser()
+    ..addOption('db', valueHelp: 'path', help: 'Path to docs sqlite3 file');
+
+  final ArgResults parsed;
+  try {
+    parsed = parser.parse(args);
+  } on FormatException catch (e) {
+    stderr.writeln('Error: ${e.message}');
+    stderr.writeln(
+      'Usage: dart run tool/set_version.dart <major.minor.patch> [--db <path>]',
+    );
     exit(1);
   }
 
-  final version = args[0];
+  if (parsed.rest.length != 1) {
+    stderr.writeln(
+      'Usage: dart run tool/set_version.dart <major.minor.patch> [--db <path>]',
+    );
+    exit(1);
+  }
+
+  final version = parsed.rest[0];
   final parts = version.split('.');
   if (parts.length != 3) {
     stderr.writeln(
@@ -72,6 +99,26 @@ void main(List<String> args) {
   );
 
   stdout.writeln('Version updated to $version  (DB_VERSION=$dbVersion)');
+
+  final dbPath = parsed['db'] as String?;
+  if (dbPath != null) {
+    final dbFile = File(dbPath);
+    if (!dbFile.existsSync()) {
+      stderr.writeln('Error: database file not found: $dbPath');
+      exit(1);
+    }
+    Database? db;
+    try {
+      db = sqlite3.open(dbPath);
+      db.execute('PRAGMA user_version = $dbVersion');
+      stdout.writeln('user_version set to $dbVersion in $dbPath');
+    } on SqliteException catch (e) {
+      stderr.writeln('Error: failed to set user_version in $dbPath: $e');
+      exit(1);
+    } finally {
+      db?.dispose();
+    }
+  }
 }
 
 /// Replaces the first (and expected only) match of [pattern] in [filePath]
