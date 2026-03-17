@@ -1,6 +1,6 @@
 # Configuration Examples and Best Practices
 
-Below are examples and best practices for configuring `flutterdocs_mcp` with various hosts and using it effectively.
+Below are examples of configuring `flutterdocs_mcp` with various hosts and best practices for using it effectively.
 
 
 ## Host Configuration
