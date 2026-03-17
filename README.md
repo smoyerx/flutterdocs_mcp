@@ -56,23 +56,7 @@ flutterdocs_mcp --db-version --db /path/to/flutterdocs.db
 
 ## Usage
 
-Add `flutterdocs_mcp` to your host configuration, specifying the path to the documentation database file.
-
-For example, to use `flutterdocs_mcp` with [VS Code](https://code.visualstudio.com/docs/copilot/customization/mcp-servers) add the following to your `mcp.json`:
-
-```json
-{
-	"servers": {
-		"flutterdocs": {
-			"type": "stdio",
-			"command": "flutterdocs_mcp",
-			"args": ["--db", "/path/to/flutterdocs.db"]
-		}
-	}
-}
-```
-
-See [examples and tips](example/example.md) for configuring `flutterdocs_mcp` with various hosts and using it effectively.
+See [examples and best practices](example/example.md) for configuring `flutterdocs_mcp` with various hosts (e.g., GitHub Copilot in VS Code) and using it effectively.
 
 
 ## Documentation Database
@@ -106,7 +90,7 @@ My motivation for creating `flutterdocs_mcp` was to:
 
 I have only tested `flutterdocs_mcp` in limited configurations:
 - Platforms: Ubuntu 24.04
-- Hosts: VS Code, [MCP Inspector](https://modelcontextprotocol.io/docs/tools/inspector)
+- Hosts: [GitHub Copilot in VS Code](https://code.visualstudio.com/docs/copilot/overview), [MCP Inspector](https://modelcontextprotocol.io/docs/tools/inspector)
 
 
 ## MCP Server Operational Details
@@ -143,14 +127,13 @@ Not all MCP hosts support resource templates, which is why the getDocumentation 
 ## TODOs
 
 - Develop A/B tests to quantify the benefits AI assistants derive from having local access to the documentation.
-- Define a `flutterdocs_mcp` skill to determine if additional instructions, beyond those built into the server, improve performance or accuracy.
-- Experiment with tools, resource templates, and associated instructions to determine how best to get AI assistants the information they need efficiently.
+- Experiment with additional tools and agent skill enhancements to increase the efficiency and effectiveness of documentation search, navigation, and retrieval.
 - Add Flutter/Dart guides within a new flutter-docs://guide/... URI space.
 - Test with a wider range of platforms and hosts.
 - Support pagination for `searchDocumentation`.
 - Automate the database file download via the `data_assets` package.
 
-LLMs are being released or updated at an accelerating rate, so it's an open question as to how much having the most up-to-date documentation will improve the performance of AI assistants. Hence why I am prioritizing A/B testing and related experimentation over additional features.
+LLMs are being released or updated at an accelerating rate, so it's an open question as to how much having the most up-to-date documentation improves the performance of AI assistants. Hence why I am prioritizing A/B testing and related experimentation over additional features.
 
 
 ## Contributing
