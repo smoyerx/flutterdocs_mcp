@@ -1,11 +1,11 @@
-# Configuration and Best Practices
+# Configuration Examples and Best Practices
 
 Below are examples and best practices for configuring `flutterdocs_mcp` with various hosts and using it effectively.
 
 
 ## Host Configuration
 
-The following host configuration examples use `flutterdocs` as the **MCP server name**, where applicable. This is the name that hosts will generally use in tools, menus, chat sessions, and invocations (e.g., slash commands).
+The following host configuration examples use `flutterdocs` as the **MCP server name**, where applicable. This is the name that hosts will generally use in tools, menus, chat sessions, etc.
 
 The server name `flutterdocs` also appears in the associated [agent skill](#agent-skill) and so its use is strongly encouraged.
 
@@ -58,11 +58,13 @@ curl -L -O https://raw.githubusercontent.com/smoyerx/flutterdocs_mcp/refs/heads/
 
 ### Prompting
 
-With the `flutterdocs-usage` agent skill installed, AI assistants will normally consult the Flutter/Dart API documentation from `flutterdocs_mcp` when needed. You can also force assistants to search or consult this documentation by referencing `flutterdocs` in prompts or using host-specific mechanisms.
+With the `flutterdocs-usage` agent skill installed, AI assistants will normally consult the Flutter/Dart API documentation from `flutterdocs_mcp` when needed. You can force assistants to search or consult this documentation by referencing `flutterdocs` in prompts or by using host-specific mechanisms.
 
 Prompt examples:
 - summarize materialpageroute usage from flutterdocs
 - explain flutter slivers. reference flutterdocs to verify api details.
 - search flutterdocs for widgets that support nested scrolling
 
-Host-specific mechanisms are described with the corresponding host configuration details.
+You can also reference `flutter-docs://api/...` URIs in prompts (e.g., flutter-docs://api/material/ListTile), but this is less convenient except when used to attach context.
+
+Host-specific mechanisms are described with corresponding host configuration details.
